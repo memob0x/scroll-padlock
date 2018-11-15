@@ -1,18 +1,13 @@
-import { html, body } from './toolbox/src/toolbox.client.mjs';
+export let status = false;
+export const setStatus = (bool = true) => (status = bool);
 
-let status = false;
-export const setStatus = bool => (status = bool);
-export const getStatus = () => status;
-
-let scrollTo = {
+export let scrollState = {
     top: 0,
     left: 0,
     behavior: 'auto'
 };
-export const setScrollTo = () => {
-    scrollTo = {
-        top: body.scrollTop || html.scrollTop,
-        left: body.scrollLeft || html.scrollLeft
-    };
-};
-export const getScrollTo = () => scrollTo;
+export const setScrollState = (obj = {}) =>
+    (scrollState = {
+        ...scrollState,
+        ...obj
+    });

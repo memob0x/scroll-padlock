@@ -1,57 +1,82 @@
-import { setScrollTo, getScrollTo, getStatus, setStatus } from './body-scroll.state.mjs';
-import { body, head } from './toolbox/src/toolbox.client.mjs';
+import { html, body, head, styler } from './body-scroll.client.mjs';
+import { setScrollState, status, setStatus } from './body-scroll.state.mjs';
 import { stringContains } from './toolbox/src/toolbox.utils.mjs';
-import { getWindowWidth, getWindowHeight } from './toolbox/src/toolbox.viewport.mjs';
-import { scrollbarCompensations } from './body-scroll.register-selectors.mjs';
+import { scrollbarGapSelectors } from './body-scroll.register-selectors.mjs';
 
 export const lock = () => {
-    if (!getStatus()) {
-        setScrollTo();
-        const scrollTo = getScrollTo();
+    if (!status) {
+        let vw = 0;
+        let vh = 0;
+        let hw = 0;
+        let hh = 0;
+        let scrollbars = {};
 
-        const w = body.clientWidth - (body.clientWidth - body.offsetWidth);
-        const h = body.clientHeight - (body.clientHeight - body.offsetHeight);
+        const hasScrollbarsGapSelectors = scrollbarGapSelectors.length;
 
-        const style = document.createElement('style');
-        style.type = 'text/css';
-        style.id = 'body-scroll-lock';
+        const scrollState = setScrollState({
+            top: html.scrollTop,
+            left: html.scrollLeft
+        });
+        let bw = body.clientWidth;
+        let bh = body.clientHeight;
+        bw -= bw - body.offsetWidth;
+        bh -= bh - body.offsetHeight;
+        if (hasScrollbarsGapSelectors) {
+            vw = window.innerWidth;
+            vh = window.innerHeight;
+            hw = html.clientWidth;
+            hh = html.clientHeight;
+            scrollbars = {
+                y: vw > hw ? vw - hw : 0,
+                x: vh > hh ? vh - hh : 0
+            };
+        }
 
         let css = `
+        html {
+            overflow: visible!important;
+            margin-right: 0!important;
+        }
         html,
         body {
-            overflow: hidden!important;
+            padding-right: 0!important;
+            min-width: ${bw}px!important;
+            width: ${bw}px!important;
+            max-width: ${bw}px!important;
+            min-height: ${bh}px!important;
+            height: ${bh}px!important;
+            max-height: ${bh}px!important;
         }
         body {
+            overflow: hidden!important;
             position: fixed!important;
             top: 0!important;
             left: 0!important;
             right: auto!important;
             bottom: auto!important;
-            margin: -${scrollTo.top}px 0 0 -${scrollTo.left}px!important;
-            min-width: ${w}px!important;
-            width: ${w}px!important;
-            max-width: ${w}px!important;
-            min-height: ${h}px!important;
-            height: ${h}px!important;
-            max-height: ${h}px!important;
+            margin: -${scrollState.top}px 0 0 -${scrollState.left}px!important;
         }`;
 
-        if (scrollbarCompensations.length) {
-            const vw = getWindowWidth();
-            const vh = getWindowHeight();
-
-            const scroll = { y: vw > w ? vw - w : 0, x: vh > h ? vh - h : 0 };
-
-            scrollbarCompensations.forEach(x => (css += `${x.selector} { ${x.property}: ${scroll[stringContains(x.property, 'right') ? 'y' : 'x']}px!important; }`));
+        if (hasScrollbarsGapSelectors) {
+            scrollbarGapSelectors.forEach(entry => {
+                const gap = scrollbars[stringContains(entry.property, 'right') ? 'y' : 'x'];
+                if (gap > 0) {
+                    css += `
+                    ${entry.selector} {
+                        ${entry.property}: ${gap}px!important;
+                    }`;
+                }
+            });
         }
 
-        if (style.styleSheet) {
-            style.styleSheet.cssText = css;
+        if (styler.styleSheet) {
+            styler.styleSheet.cssText = css;
         } else {
-            style.appendChild(document.createTextNode(css));
+            styler.innerHTML = '';
+            styler.appendChild(document.createTextNode(css));
         }
 
-        head.appendChild(style);
+        head.appendChild(styler);
 
         setStatus(true);
     }

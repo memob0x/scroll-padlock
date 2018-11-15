@@ -1,16 +1,7 @@
 import bodyScroll from '../../../../src/body-scroll.mjs';
 import { log } from '../main.js';
 
-bodyScroll.registerSelectors([
-    {
-        selector: '#console',
-        property: 'margin-right'
-    },
-    {
-        selector: '#nav',
-        property: 'margin-right'
-    }
-]);
+bodyScroll.registerScrollbarGapSelectors(['#nav', '#console']);
 
 document.querySelector('.toggle-body-scroll-lock').addEventListener('click', () => {
     if (bodyScroll.isLocked()) {
