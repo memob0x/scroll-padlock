@@ -1,0 +1,5 @@
+{
+    "presets": ["@babel/env"],
+    "plugins": ["@babel/proposal-object-rest-spread", "@babel/plugin-transform-classes"],
+    "comments": false
+}

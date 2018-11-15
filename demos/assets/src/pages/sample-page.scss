@@ -1,0 +1,44 @@
+@import '../main.scss';
+
+body {
+    min-height: 1800px;
+    position: relative;
+}
+
+%test-element {
+    left: 120px;
+    width: 200px;
+    height: 120px;
+    z-index: 9999;
+    backface-visibility: hidden;
+    opacity: 0.5;
+    z-index: 4;
+
+    > span {
+        position: sticky;
+        top: 0;
+        left: 0;
+    }
+}
+
+#fixed {
+    @extend %test-element;
+    top: 200px;
+    position: fixed;
+    z-index: 1;
+    background: cornflowerblue;
+}
+
+#absolute {
+    @extend %test-element;
+    top: 800px;
+    position: absolute;
+    background: orangered;
+}
+
+#nav {
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 6;
+}

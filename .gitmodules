@@ -1,0 +1,4 @@
+[submodule "src/toolbox"]
+	path = src/toolbox
+	url = https://github.com/memob0x/toolbox.git
+	branch = master

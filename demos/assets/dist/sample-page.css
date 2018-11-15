@@ -1,0 +1,229 @@
+/* - - - - -
+ * dependencies
+ * - - - - - */
+/* - - - - -
+ * palette
+ * - - - - - */
+/* - - - - -
+ * typography
+ * - - - - - */
+/* - - - - -
+ * grid
+ * - - - - - */
+/* - - - - -
+ * supported devices
+ * - - - - - */
+/* - - - - -
+ * base
+ * - - - - - */
+html,
+body,
+p,
+ol,
+ul,
+li,
+dl,
+dt,
+dd,
+blockquote,
+figure,
+fieldset,
+legend,
+textarea,
+pre,
+iframe,
+hr,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+  padding: 0;
+  font-family: "Open Sans", sans-serif;
+  font-size: 13px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: 100%;
+  font-weight: normal;
+}
+
+ul {
+  list-style: none;
+}
+
+button,
+input,
+select,
+textarea {
+  margin: 0;
+}
+
+html {
+  box-sizing: border-box;
+}
+
+* {
+  box-sizing: inherit;
+}
+
+*:before, *:after {
+  box-sizing: inherit;
+}
+
+img,
+embed,
+iframe,
+object,
+audio,
+video {
+  height: auto;
+  max-width: 100%;
+}
+
+iframe {
+  border: 0;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+td,
+th {
+  padding: 0;
+  text-align: left;
+}
+
+pre, #console {
+  overflow-x: auto;
+  white-space: pre-wrap;
+  background: #000;
+  color: #fff;
+  font-family: Consolas, 'Andale Mono WT', 'Andale Mono', 'Lucida Console', 'Lucida Sans Typewriter', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', 'Liberation Mono', 'Nimbus Mono L', Monaco, 'Courier New', Courier, monospace;
+}
+
+/* - - - - -
+ * playground
+ * - - - - - */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  position: relative;
+}
+
+body::after, body::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  pointer-events: none;
+}
+
+body::before {
+  background-color: #434343;
+  background-image: linear-gradient(#434343, #282828);
+}
+
+body::after {
+  background-color: transparent;
+  background-image: linear-gradient(0deg, transparent 24%, rgba(255, 255, 255, 0.05) 25%, rgba(255, 255, 255, 0.05) 26%, transparent 27%, transparent 74%, rgba(255, 255, 255, 0.05) 75%, rgba(255, 255, 255, 0.05) 76%, transparent 77%, transparent), linear-gradient(90deg, transparent 24%, rgba(255, 255, 255, 0.05) 25%, rgba(255, 255, 255, 0.05) 26%, transparent 27%, transparent 74%, rgba(255, 255, 255, 0.05) 75%, rgba(255, 255, 255, 0.05) 76%, transparent 77%, transparent);
+  background-size: 50px 50px;
+}
+
+#console {
+  width: 314px;
+  height: 153px;
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  opacity: 0.75;
+  max-width: 100%;
+  z-index: 5;
+}
+
+#console ul,
+#console ol,
+#console li {
+  list-style: none;
+}
+
+#console li {
+  margin: 10px;
+}
+
+#console li:before {
+  content: '$: ';
+}
+
+html.custom-scrollbar body::-webkit-scrollbar {
+  width: 8px;
+}
+
+html.custom-scrollbar body::-webkit-scrollbar-track {
+  background: black;
+}
+
+html.custom-scrollbar body::-webkit-scrollbar-thumb {
+  background: grey;
+}
+
+body {
+  min-height: 1800px;
+  position: relative;
+}
+
+#fixed, #absolute {
+  left: 120px;
+  width: 200px;
+  height: 120px;
+  z-index: 9999;
+  -webkit-backface-visibility: hidden;
+          backface-visibility: hidden;
+  opacity: 0.5;
+  z-index: 4;
+}
+
+#fixed > span, #absolute > span {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  left: 0;
+}
+
+#fixed {
+  top: 200px;
+  position: fixed;
+  z-index: 1;
+  background: cornflowerblue;
+}
+
+#absolute {
+  top: 800px;
+  position: absolute;
+  background: orangered;
+}
+
+#nav {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 6;
+}
+
+/*# sourceMappingURL=sample-page.css.map */
