@@ -18,39 +18,4 @@ global.HTMLElement = global.window.HTMLElement;
 global.NodeList = global.window.NodeList;
 global.navigator = global.window.navigator;
 
-const dummies = (() => {
-    const urls = {
-        images: ['http://placehold.it/1x1.jpg', 'http://placehold.it/1x2.jpg']
-    };
-
-    const appendImgs = () => {
-        const container = document.createElement('div');
-        urls.images.forEach(url => {
-            const img = document.createElement('img');
-            img.src = url;
-            container.append(img);
-        });
-        container.classList.add('images');
-        document.body.append(container);
-    };
-
-    const appendBackgroundElement = () => {
-        const background = document.createElement('div');
-        background.style.backgroundImage = 'url(' + urls.images[0] + ')';
-        background.classList.add('background');
-        document.body.append(background);
-    };
-
-    return {
-        urls: urls,
-        append: {
-            imgs: appendImgs,
-            background: appendBackgroundElement,
-            pictures: () => {}, // TODO: ...
-            audios: () => {}, // TODO: ...
-            videos: () => {} // TODO: ...
-        }
-    };
-})();
-
-export { Mocha, mocha, expect, dummies };
+export { Mocha, mocha, expect };

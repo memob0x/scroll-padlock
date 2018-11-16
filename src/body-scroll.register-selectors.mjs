@@ -4,6 +4,8 @@ const defaults = {
     property: 'margin-right'
 };
 export const registerScrollbarGapSelectors = (collection = []) => {
+    scrollbarGapSelectors = [];
+    
     const collectionType = typeof collection;
     if (collectionType === 'string' || (!Array.isArray(collection) && collectionType === 'object')) {
         collection = [collection];

@@ -55,6 +55,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
   var registerScrollbarGapSelectors = function registerScrollbarGapSelectors() {
     var collection = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+    scrollbarGapSelectors = [];
 
     var collectionType = _typeof(collection);
 
