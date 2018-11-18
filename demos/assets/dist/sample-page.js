@@ -35,23 +35,12 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     return scrollState = _objectSpread({}, scrollState, obj);
   };
 
-  var s4 = function s4() {
-    return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
-  };
-
-  var uniqueID = function uniqueID() {
-    return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-  };
-
-  var stringContains = function stringContains(heystack, needle) {
-    return String.prototype.includes ? heystack.includes(needle) : heystack.indexOf(needle, 0) !== -1;
-  };
-
   var scrollbarGapSelectors = [];
   var defaults = {
     selector: null,
     property: 'margin-right'
   };
+  var supportedProperty = ['margin-right', 'margin-bottom', 'padding-right', 'padding-bottom', 'right', 'bottom'];
 
   var registerScrollbarGapSelectors = function registerScrollbarGapSelectors() {
     var collection = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
@@ -73,7 +62,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
           }));
         }
 
-        if (!Array.isArray(entry) && entryType === 'object' && entry.selector && (!entry.property || entry.property === 'margin-right' || entry.property === 'margin-bottom' || entry.property === 'padding-right' || entry.property === 'padding-bottom')) {
+        if (!Array.isArray(entry) && entryType === 'object' && entry.selector && (!entry.property || supportedProperty.indexOf(entry.property) > -1)) {
           scrollbarGapSelectors.push(_objectSpread({}, defaults, entry));
         }
       }
@@ -112,7 +101,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
       if (hasScrollbarsGapSelectors) {
         scrollbarGapSelectors.forEach(function (entry) {
-          var gap = scrollbars[stringContains(entry.property, 'right') ? 'y' : 'x'];
+          var gap = scrollbars[entry.property.indexOf('right') > -1 ? 'y' : 'x'];
 
           if (gap > 0) {
             css += "\n                    ".concat(entry.selector, " {\n                        ").concat(entry.property, ": ").concat(gap, "px!important;\n                    }");
@@ -140,122 +129,16 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     }
   };
 
-  var namespacesKey = 'namespaces_' + uniqueID();
-
-  var addEventListener = function addEventListener(element, event, handler, options) {
-    if (!element[namespacesKey]) {
-      element[namespacesKey] = {};
-    }
-
-    element[namespacesKey][event] = handler;
-    element.addEventListener(event.split('.')[0], handler, options || false);
-  };
-
-  var _requestAnimationFrame = window.requestAnimationFrame;
-  var _cancelAnimationFrame = window.cancelAnimationFrame;
-  ['ms', 'moz', 'webkit', 'o'].forEach(function (vendor) {
-    _requestAnimationFrame = _requestAnimationFrame || window[vendor + 'RequestAnimationFrame'];
-    _cancelAnimationFrame = _cancelAnimationFrame || window[vendor + 'CancelAnimationFrame'] || window[vendor + 'CancelRequestAnimationFrame'];
+  var timer = null;
+  window.addEventListener('resize', function () {
+    clearTimeout(timer);
+    timer = setTimeout(function () {
+      if (status) {
+        unlock();
+        lock();
+      }
+    }, 500);
   });
-  var requestAnimationFrame = _requestAnimationFrame;
-  var cancelAnimationFrame = _cancelAnimationFrame;
-
-  var CustomEvent = window.CustomEvent || function () {
-    var _polyfill = function _polyfill(event, params) {
-      params = params || {
-        bubbles: false,
-        cancelable: false,
-        detail: undefined
-      };
-      var evt = document.createEvent('CustomEvent');
-      evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
-      return evt;
-    };
-
-    _polyfill.prototype = window.Event.prototype;
-    return _polyfill;
-  }();
-
-  var supportAnimationFrameTimers = cancelAnimationFrame && requestAnimationFrame;
-  var requests = [];
-
-  var requestTimeout = function requestTimeout(fn, delay) {
-    if (!supportAnimationFrameTimers) {
-      return window.setTimeout(fn, delay);
-    }
-
-    var start = Date.now();
-    var id = uniqueID();
-
-    var loop = function loop() {
-      var current = Date.now();
-      var delta = current - start;
-
-      if (delta >= delay) {
-        fn.call();
-      } else {
-        requests[id] = requestAnimationFrame(function () {
-          return loop();
-        });
-      }
-    };
-
-    requests[id] = requestAnimationFrame(function () {
-      return loop();
-    });
-    return id;
-  };
-
-  var clearTimer = function clearTimer(type, id) {
-    if (!supportAnimationFrameTimers) {
-      return window['clear' + type](id);
-    }
-
-    if (id) {
-      cancelAnimationFrame(requests[id]);
-      delete requests[id];
-    }
-
-    return id;
-  };
-
-  var cancelTimeout = function cancelTimeout(id) {
-    return clearTimer('Timeout', id);
-  };
-
-  var debounce = function debounce() {
-    var callback = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : function () {};
-    var wait = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 50;
-    var immediate = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-    var timer = null;
-    return function () {
-      var _this = this;
-
-      for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-        args[_key] = arguments[_key];
-      }
-
-      cancelTimeout(timer);
-      timer = requestTimeout(function () {
-        timer = null;
-
-        if (!immediate) {
-          callback.apply(_this, args);
-        }
-      }, wait);
-
-      if (immediate && !timer) {
-        callback.apply(this, args.concat());
-      }
-    };
-  };
-
-  addEventListener(window, 'resize.body-scroll-lock', debounce(function () {
-    if (status) {
-      unlock();
-      lock();
-    }
-  }, 500));
   var bodyScroll = {
     lock: lock,
     unlock: unlock,
@@ -269,8 +152,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   var log = function log() {
     var _console;
 
-    for (var _len2 = arguments.length, message = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-      message[_key2] = arguments[_key2];
+    for (var _len = arguments.length, message = new Array(_len), _key = 0; _key < _len; _key++) {
+      message[_key] = arguments[_key];
     }
 
     (_console = console).log.apply(_console, message);
@@ -287,7 +170,10 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     logEl.scrollTop = list.offsetHeight;
   };
 
-  bodyScroll.registerScrollbarGapSelectors(['#nav', '#console']);
+  bodyScroll.registerScrollbarGapSelectors([{
+    selector: '#nav',
+    property: 'right'
+  }, '#console']);
   document.querySelector('.toggle-body-scroll-lock').addEventListener('click', function () {
     if (bodyScroll.isLocked()) {
       log('unlocking');

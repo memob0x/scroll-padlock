@@ -1,6 +1,5 @@
 import { html, body, head, styler } from './body-scroll.client.mjs';
 import { setScrollState, status, setStatus } from './body-scroll.state.mjs';
-import { stringContains } from './toolbox/src/toolbox.utils.mjs';
 import { scrollbarGapSelectors } from './body-scroll.register-selectors.mjs';
 
 export const lock = () => {
@@ -59,7 +58,10 @@ export const lock = () => {
 
         if (hasScrollbarsGapSelectors) {
             scrollbarGapSelectors.forEach(entry => {
-                const gap = scrollbars[stringContains(entry.property, 'right') ? 'y' : 'x'];
+                const gap =
+                    scrollbars[
+                        entry.property.indexOf('right') > -1 ? 'y' : 'x'
+                    ];
                 if (gap > 0) {
                     css += `
                     ${entry.selector} {

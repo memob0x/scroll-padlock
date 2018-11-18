@@ -1,13 +1,27 @@
 export let scrollbarGapSelectors = [];
+
 const defaults = {
     selector: null,
     property: 'margin-right'
 };
+
+const supportedProperty = [
+    'margin-right',
+    'margin-bottom',
+    'padding-right',
+    'padding-bottom',
+    'right',
+    'bottom'
+];
+
 export const registerScrollbarGapSelectors = (collection = []) => {
     scrollbarGapSelectors = [];
-    
+
     const collectionType = typeof collection;
-    if (collectionType === 'string' || (!Array.isArray(collection) && collectionType === 'object')) {
+    if (
+        collectionType === 'string' ||
+        (!Array.isArray(collection) && collectionType === 'object')
+    ) {
         collection = [collection];
     }
 
@@ -29,7 +43,7 @@ export const registerScrollbarGapSelectors = (collection = []) => {
                 entryType === 'object' &&
                 entry.selector &&
                 (!entry.property ||
-                    (entry.property === 'margin-right' || entry.property === 'margin-bottom' || entry.property === 'padding-right' || entry.property === 'padding-bottom'))
+                    supportedProperty.indexOf(entry.property) > -1)
             ) {
                 scrollbarGapSelectors.push({
                     ...defaults,
