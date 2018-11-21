@@ -1,11 +1,12 @@
 # Body Scroll Lock
 An **iOS safari compatible** technique to **lock body scroll**.
-This is basically the classic `position: fixed;` on body element approach on steroids: it saves the scroll position and reserves a gap for [scrollbar width](#the-scrollbar-width-issue).
+This is basically the classic `position: fixed;` on **html element** hack on steroids: it saves the scroll position and reserves a gap for [scrollbar width](#the-scrollbar-width-issue).
 
 ## The Backstory
-The proper way to lock body scroll is putting `overflow: hidden;` **on body and html elements**, but unfortunately this approach just doesn't work on iOS safari.<br>
-The cleanest way to overcome this situation would be preventing `touchmove` events, but you might still have issues with some `viewport` metatag configurations along with pinch to zoom taking place and other scroll inertia related artifacts.<br>
-So, if you do use the most common configuration (`<meta name="viewport" content="width=device-width, initial-scale=1">`) you should not have any problems using [that approach](https://github.com/willmcpo/body-scroll-lock), otherwhise you would probably need this script.
+The **proper way** to lock body scroll has always been putting `overflow: hidden;` **on body element**, but unfortunately this approach **just doesn't work on iOS safari**. 🙅<br>
+The cleanest way to overcome this unfortunate situation would be [preventing `touchmove` events](https://github.com/willmcpo/body-scroll-lock), but you might still have **issues** with some **`viewport` configurations** along with **pinch to zoom** taking place or **iOS navigation bars** covering your elements.<br>
+Since **this script** is more of a tool to programmatically **generate some CSS overrides rules** put in head element, I always considered this approach the most convenient solution: no event listeners to add/remove; no scrollable inner-elements to keep in mind, no problems. ✌<br>
+An halfway solution would be using the css **touch-action** property, but, again, **[safari doesn't seem to support it any time soon](https://bugs.webkit.org/show_bug.cgi?id=133112)** 🙄, so...
 
 ## Usage
 The inclusion of **body-scroll.js** sets a global **bodyScroll** variable, which is basically an `Object` with some `methods` in it.
