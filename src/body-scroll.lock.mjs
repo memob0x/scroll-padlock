@@ -31,29 +31,31 @@ export const lock = () => {
             };
         }
 
+        /*
+        p.fixed: freezes scroll on all devices
+        top/left: the scroll position
+        margin/padding: resets purpuses (other libs overwrite)
+        width/height: freeze document width/height and reserve scrollbars gap
+        */
         let css = `
         html {
-            overflow: visible!important;
-            margin-right: 0!important;
+            position: fixed!important;
+            top: ${scrollState.top * -1}px!important;
+            left: ${scrollState.left * -1}px!important;
+            right: auto!important;
+            bottom: auto!important;
         }
         html,
         body {
-            padding-right: 0!important;
+            margin: 0!important;
+            padding: 0!important;
             min-width: ${bw}px!important;
             width: ${bw}px!important;
             max-width: ${bw}px!important;
             min-height: ${bh}px!important;
             height: ${bh}px!important;
             max-height: ${bh}px!important;
-        }
-        body {
-            overflow: hidden!important;
-            position: fixed!important;
-            top: 0!important;
-            left: 0!important;
-            right: auto!important;
-            bottom: auto!important;
-            margin: -${scrollState.top}px 0 0 -${scrollState.left}px!important;
+            overflow: visible!important;
         }`;
 
         if (hasScrollbarsGapSelectors) {
