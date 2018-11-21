@@ -11,15 +11,7 @@ bodyScroll.registerScrollbarGapSelectors([
 
 document
     .querySelector('.toggle-body-scroll-lock')
-    .addEventListener('click', () => {
-        if (bodyScroll.isLocked()) {
-            log('unlocking');
-            bodyScroll.unlock();
-        } else {
-            log('locking');
-            bodyScroll.lock();
-        }
-    });
+    .addEventListener('click', () => bodyScroll.toggle());
 
 document
     .querySelector('button.toggle-body-custom-scrollbar')

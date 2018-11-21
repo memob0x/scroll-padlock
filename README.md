@@ -6,7 +6,7 @@ This is basically the classic `position: fixed;` on **html element** hack on ste
 The **proper way** to lock body scroll has always been putting `overflow: hidden;` **on body element**, but unfortunately this approach **just doesn't work on iOS safari**. 🙅<br>
 The cleanest way to overcome this unfortunate situation would be [preventing `touchmove` events](https://github.com/willmcpo/body-scroll-lock), but you might still have **issues** with some **`viewport` configurations** along with **pinch to zoom** taking place or **iOS navigation bars** covering your elements.<br>
 Since **this script** is more of a tool to programmatically **generate some CSS overrides rules** put in head element, I always considered this approach the most convenient solution: no event listeners to add/remove; no scrollable inner-elements to keep in mind, no problems. ✌<br>
-An halfway solution would be using the css **touch-action** property, but, again, **[safari doesn't seem to support it any time soon](https://bugs.webkit.org/show_bug.cgi?id=133112)** 🙄, so...
+An halfway solution would be using the css **touch-action** property, but, again, [**safari doesn't** seem to **support it**](https://bugs.webkit.org/show_bug.cgi?id=133112) any time soon 🙄, so...
 
 ## Usage
 The inclusion of **body-scroll.js** sets a global **bodyScroll** variable, which is basically an `Object` with some `methods` in it.
@@ -20,9 +20,14 @@ To **unlock** it, call the `unlock` one.
 window.bodyScroll.unlock(); // scroll free, little bird.
 ```
 
-The main aim during the writing of this code was to be as seamless as possible, so, without the use of any css class, inline style or attribute, the only built-in way to keep track of the current **lock status** is to call the `isLocked` method.
+The main aim during the writing of this code was to be as seamless as possible, so, without the use of any css class, inline style or element attribute, the only built-in way to keep track of the current **lock status** is to call the `isLocked` method.
 ```javascript
 window.bodyScroll.isLocked(); // true when locked...
+```
+
+Lazy? Just **toggle** it...
+```javascript
+window.bodyScroll.toggle(); // locks if unlocked, unlocks if locked!
 ```
 
 ## The scrollbar width issue

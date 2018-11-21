@@ -129,6 +129,10 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     }
   };
 
+  var toggle = function toggle() {
+    return !status ? lock() : unlock();
+  };
+
   var timer = null;
   window.addEventListener('resize', function () {
     clearTimeout(timer);
@@ -142,6 +146,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   var bodyScroll = {
     lock: lock,
     unlock: unlock,
+    toggle: toggle,
     registerScrollbarGapSelectors: registerScrollbarGapSelectors,
     isLocked: function isLocked() {
       return status;
@@ -175,13 +180,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     property: 'right'
   }, '#console']);
   document.querySelector('.toggle-body-scroll-lock').addEventListener('click', function () {
-    if (bodyScroll.isLocked()) {
-      log('unlocking');
-      bodyScroll.unlock();
-    } else {
-      log('locking');
-      bodyScroll.lock();
-    }
+    return bodyScroll.toggle();
   });
   document.querySelector('button.toggle-body-custom-scrollbar').addEventListener('click', function () {
     log('toggling custom scrollbars');
