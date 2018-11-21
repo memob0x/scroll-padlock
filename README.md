@@ -6,7 +6,7 @@ This is basically the classic `position: fixed;` on **html element** hack on ste
 The **proper way** to lock body scroll has always been putting `overflow: hidden;` **on body element**, but unfortunately this approach **just doesn't work on iOS safari**. 🙅<br>
 The cleanest way to overcome this unfortunate situation would be [preventing `touchmove` events](https://github.com/willmcpo/body-scroll-lock), but you might still have **issues** with some **`viewport` configurations** along with **pinch to zoom** taking place or **iOS navigation bars** covering your elements.<br>
 Since **this script** is more of a tool to programmatically **generate some CSS overrides rules** put in head element, I always considered this approach the most convenient solution: no event listeners to add/remove; no scrollable inner-elements to keep in mind, no problems. ✌<br>
-An halfway solution would be using the css **touch-action** property, but, again, [**safari doesn't** seem to **support it**](https://bugs.webkit.org/show_bug.cgi?id=133112) any time soon 🙄, so...
+An halfway solution would be using the css `touch-action` property, but, again, [**safari doesn't** seem to **support it**](https://bugs.webkit.org/show_bug.cgi?id=133112) any time soon 🙄, so...
 
 ## Usage
 The inclusion of **body-scroll.js** sets a global **bodyScroll** variable, which is basically an `Object` with some `methods` in it.
@@ -49,6 +49,19 @@ window.bodyScroll.registerScrollbarGapSelectors([
 ]);
 ```
 The `right` property is also supported.
+```javascript
+window.bodyScroll.registerScrollbarGapSelectors([
+    '#header.sticky',
+    {
+        selector: '.lightbox',
+        property: 'padding-right'
+    },
+    {
+        selector: '.bruh',
+        property: 'right'
+    }
+]);
+```
 
 ## Demo
 Have a look at this [demo](https://memob0x.github.io/body-scroll-lock/demos/sample-page.html) to check if this is what you're looking for. 🤞
