@@ -31,7 +31,7 @@ window.bodyScroll.toggle(); // locks if unlocked, unlocks if locked!
 ```
 
 ## The scrollbar width issue
-The `lock` method internally takes care of the infamous unpleasant flickering effect you get when you put `overflow: hidden;` on html or body elements, making the scrollbar disappear, and the body widen, but you may still have it on some **right-aligned _fixed_ elements** in your page.<br>
+The `lock` method internally takes care of the infamous unpleasant flickering effect you get when you put `overflow: hidden;` on the body element (causing the scrollbar to disappear, and the body itself to widen), but you may still experience it on some **right-aligned _fixed_ elements** in your page.<br>
 Registering those elements **selectors** with the `registerScrollbarGapSelectors` method will fix that, adding the scrollbar width to their `margin-right` when the `lock` function is called.
 ```javascript
 window.bodyScroll.registerScrollbarGapSelectors([
