@@ -1,3 +1,4 @@
+import { settings } from './body-scroll.settings.mjs';
 import { state } from './body-scroll.state.mjs';
 
 let corrections = [];
@@ -76,7 +77,9 @@ export const getCorrections = (inverted = false) => {
 
                 css += `
                 ${entry.selector} {
-                    ${entry.property}: ${gap * factor}px!important;
+                    ${entry.property}: ${gap * factor}px${
+                    settings.important ? '!important' : ''
+                };
                 }`;
             }
         });

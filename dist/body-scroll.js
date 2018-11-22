@@ -19,7 +19,9 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   };
 
   var settings = {
-    incubator: false
+    incubator: false,
+    important: true,
+    overflowHidden: false
   };
 
   var setOptions = function setOptions() {
@@ -160,7 +162,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
             factor = entry.inverted ? -1 : 0;
           }
 
-          css += "\n                ".concat(entry.selector, " {\n                    ").concat(entry.property, ": ").concat(gap * factor, "px!important;\n                }");
+          css += "\n                ".concat(entry.selector, " {\n                    ").concat(entry.property, ": ").concat(gap * factor, "px").concat(settings.important ? '!important' : '', ";\n                }");
         }
       });
     }
@@ -182,7 +184,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         body.append(incubator);
       }
 
-      setStyle("\n            html,\n            body\n            ".concat(settings.incubator ? ', #' + incubator.id : '', " {\n                margin: 0!important;\n                padding: 0!important;\n                min-width: auto!important;\n                min-height: auto!important;\n                max-width: none!important;\n                max-height: none!important;\n            }\n\n            html\n            ").concat(settings.incubator ? ', body' : '', " {\n                width: ").concat(state.html.width, "px!important;\n                height: ").concat(state.html.height, "px!important;\n            }\n\n            html {\n                position: fixed!important;\n                top: ").concat(state.scroll.top * -1, "px!important;\n                left: ").concat(state.scroll.left * -1, "px!important;\n            }\n\n            html,\n            body {              \n                overflow: visible!important;\n            }\n\n            ").concat(settings.incubator ? '#' + incubator.id : 'body', " {\n                width: ").concat(state.body.width, "px!important;\n                height: ").concat(state.body.height, "px!important;\n            }\n            \n            ").concat(getCorrections()));
+      var imp = settings.important ? '!important' : '';
+      setStyle("\n            html,\n            body\n            ".concat(settings.incubator ? ', #' + incubator.id : '', " {\n                margin: 0").concat(imp, ";\n                padding: 0").concat(imp, ";\n                min-width: auto").concat(imp, ";\n                min-height: auto").concat(imp, ";\n                max-width: none").concat(imp, ";\n                max-height: none").concat(imp, ";\n            }\n\n            html\n            ").concat(settings.incubator ? ', body' : '', " {\n                width: ").concat(state.html.width, "px").concat(imp, ";\n                height: ").concat(state.html.height, "px").concat(imp, ";\n            }\n\n            html {\n                position: fixed").concat(imp, ";\n                top: ").concat(state.scroll.top * -1, "px").concat(imp, ";\n                left: ").concat(state.scroll.left * -1, "px").concat(imp, ";\n            }\n\n            html,\n            body {              \n                overflow: ").concat(settings.overflowHidden ? 'hidden' : 'visible').concat(imp, ";\n            }\n\n            ").concat(settings.incubator ? '#' + incubator.id : 'body', " {\n                width: ").concat(state.body.width, "px").concat(imp, ";\n                height: ").concat(state.body.height, "px").concat(imp, ";\n                ").concat(settings.incubator ? "position: relative".concat(imp, ";") : '', "\n            }\n            \n            ").concat(getCorrections()));
       setStatus(true);
     }
   };

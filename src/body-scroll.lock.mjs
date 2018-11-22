@@ -18,38 +18,43 @@ export const lock = () => {
             body.append(incubator);
         }
 
+        const imp = settings.important ? '!important' : '';
+
         setStyle(`
             html,
             body
             ${settings.incubator ? ', #' + incubator.id : ''} {
-                margin: 0!important;
-                padding: 0!important;
-                min-width: auto!important;
-                min-height: auto!important;
-                max-width: none!important;
-                max-height: none!important;
+                margin: 0${imp};
+                padding: 0${imp};
+                min-width: auto${imp};
+                min-height: auto${imp};
+                max-width: none${imp};
+                max-height: none${imp};
             }
 
             html
             ${settings.incubator ? ', body' : ''} {
-                width: ${state.html.width}px!important;
-                height: ${state.html.height}px!important;
+                width: ${state.html.width}px${imp};
+                height: ${state.html.height}px${imp};
             }
 
             html {
-                position: fixed!important;
-                top: ${state.scroll.top * -1}px!important;
-                left: ${state.scroll.left * -1}px!important;
+                position: fixed${imp};
+                top: ${state.scroll.top * -1}px${imp};
+                left: ${state.scroll.left * -1}px${imp};
             }
 
             html,
             body {              
-                overflow: visible!important;
+                overflow: ${
+                    settings.overflowHidden ? 'hidden' : 'visible'
+                }${imp};
             }
 
             ${settings.incubator ? '#' + incubator.id : 'body'} {
-                width: ${state.body.width}px!important;
-                height: ${state.body.height}px!important;
+                width: ${state.body.width}px${imp};
+                height: ${state.body.height}px${imp};
+                ${settings.incubator ? `position: relative${imp};` : ''}
             }
             
             ${getCorrections()}`);
