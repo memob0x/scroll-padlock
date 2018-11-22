@@ -11,12 +11,6 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 })(void 0, function () {
   'use strict';
 
-  var html = document.documentElement;
-  var body = document.body || document.getElementsByTagName('body')[0];
-  var head = document.head || document.getElementsByTagName('head')[0];
-  var stylesIncubator = document.createElement('style');
-  stylesIncubator.type = 'text/css';
-  var styler = stylesIncubator;
   var status = false;
 
   var setStatus = function setStatus() {
@@ -24,27 +18,109 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     return status = bool;
   };
 
-  var scrollState = {
-    top: 0,
-    left: 0,
-    behavior: 'auto'
+  var settings = {
+    incubator: false
   };
 
-  var setScrollState = function setScrollState() {
-    var obj = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-    return scrollState = _objectSpread({}, scrollState, obj);
+  var setOptions = function setOptions() {
+    var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+    if (!status) {
+      settings = _objectSpread({}, settings, options);
+    }
   };
 
-  var scrollbarGapSelectors = [];
+  var html = document.documentElement;
+  var body = document.body || document.getElementsByTagName('body')[0];
+  var head = document.head || document.getElementsByTagName('head')[0];
+  var stylerID = 'body-scroll';
+  var styler = document.createElement('style');
+  styler.type = 'text/css';
+  styler.id = stylerID;
+
+  var setStyle = function setStyle() {
+    var css = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+
+    if (!css) {
+      styler.remove();
+      return;
+    }
+
+    if (styler.styleSheet) {
+      styler.styleSheet.cssText = css;
+    } else {
+      styler.innerHTML = '';
+      styler.appendChild(document.createTextNode(css));
+    }
+
+    if (!head.querySelector('style#' + stylerID)) {
+      head.appendChild(styler);
+    }
+  };
+
+  var incubator = function (_incubator) {
+    var s4 = function s4() {
+      return ((1 + Math.random()) * 0x10000 | 0).toString(16).substring(1);
+    };
+
+    _incubator.id = "body-scroll-lock-".concat(s4()).concat(s4(), "-").concat(s4(), "-").concat(s4(), "-").concat(s4(), "-").concat(s4()).concat(s4()).concat(s4());
+    return _incubator;
+  }(document.createElement('div'));
+
+  var state = {
+    scroll: {
+      top: 0,
+      left: 0,
+      behavior: 'auto'
+    },
+    dimensions: {
+      width: 0,
+      height: 0
+    },
+    scrollbar: {
+      y: 0,
+      x: 0
+    }
+  };
+
+  var setState = function setState() {
+    var vw = window.innerWidth;
+    var vh = window.innerHeight;
+    var width = html.clientWidth;
+    var height = html.clientHeight;
+    var scroll = {
+      top: html.scrollTop,
+      left: html.scrollLeft
+    };
+    var scrollbars = {
+      y: vw > width ? vw - width : 0,
+      x: vh > height ? vh - height : 0
+    };
+    state = _objectSpread({}, state, {
+      scroll: scroll,
+      html: {
+        width: vw + scroll.left - scrollbars.y,
+        height: vh + scroll.top - scrollbars.x
+      },
+      body: {
+        width: html.scrollWidth,
+        height: html.scrollHeight
+      },
+      scrollbars: scrollbars
+    });
+  };
+
+  var corrections = [];
   var defaults = {
     selector: null,
-    property: 'margin-right'
+    property: 'margin-right',
+    inverted: false
   };
   var supportedProperty = ['margin-right', 'margin-bottom', 'padding-right', 'padding-bottom', 'right', 'bottom'];
 
-  var registerScrollbarGapSelectors = function registerScrollbarGapSelectors() {
+  var setCorrections = function setCorrections() {
     var collection = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
-    scrollbarGapSelectors = [];
+    corrections = [];
 
     var collectionType = _typeof(collection);
 
@@ -57,74 +133,73 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         var entryType = _typeof(entry);
 
         if (entryType === 'string') {
-          scrollbarGapSelectors.push(_objectSpread({}, defaults, {
+          corrections.push(_objectSpread({}, defaults, {
             selector: entry
           }));
         }
 
         if (!Array.isArray(entry) && entryType === 'object' && entry.selector && (!entry.property || supportedProperty.indexOf(entry.property) > -1)) {
-          scrollbarGapSelectors.push(_objectSpread({}, defaults, entry));
+          corrections.push(_objectSpread({}, defaults, entry));
         }
       }
     });
   };
 
+  var getCorrections = function getCorrections() {
+    var inverted = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+    var css = '';
+
+    if (corrections.length) {
+      corrections.forEach(function (entry) {
+        var gap = state.scrollbars[entry.property.indexOf('right') > -1 ? 'y' : 'x'];
+
+        if (gap > 0) {
+          var factor = 1;
+
+          if (inverted) {
+            factor = entry.inverted ? -1 : 0;
+          }
+
+          css += "\n                ".concat(entry.selector, " {\n                    ").concat(entry.property, ": ").concat(gap * factor, "px!important;\n                }");
+        }
+      });
+    }
+
+    return css;
+  };
+
   var lock = function lock() {
     if (!status) {
-      var vw = 0;
-      var vh = 0;
-      var hw = 0;
-      var hh = 0;
-      var scrollbars = {};
-      var hasScrollbarsGapSelectors = scrollbarGapSelectors.length;
-      var scrollState$$1 = setScrollState({
-        top: html.scrollTop,
-        left: html.scrollLeft
-      });
-      var bw = body.clientWidth;
-      var bh = body.clientHeight;
-      bw -= bw - body.offsetWidth;
-      bh -= bh - body.offsetHeight;
+      setState();
 
-      if (hasScrollbarsGapSelectors) {
-        vw = window.innerWidth;
-        vh = window.innerHeight;
-        hw = html.clientWidth;
-        hh = html.clientHeight;
-        scrollbars = {
-          y: vw > hw ? vw - hw : 0,
-          x: vh > hh ? vh - hh : 0
-        };
+      if (settings.incubator) {
+        incubator.innerHTML = '';
+
+        while (body.firstChild) {
+          incubator.append(body.firstChild);
+        }
+
+        body.append(incubator);
       }
 
-      var css = "\n        html {\n            position: fixed!important;\n            top: ".concat(scrollState$$1.top * -1, "px!important;\n            left: ").concat(scrollState$$1.left * -1, "px!important;\n            right: auto!important;\n            bottom: auto!important;\n        }\n        html,\n        body {\n            margin: 0!important;\n            padding: 0!important;\n            min-width: ").concat(bw, "px!important;\n            width: ").concat(bw, "px!important;\n            max-width: ").concat(bw, "px!important;\n            min-height: ").concat(bh, "px!important;\n            height: ").concat(bh, "px!important;\n            max-height: ").concat(bh, "px!important;\n            overflow: visible!important;\n        }");
-
-      if (hasScrollbarsGapSelectors) {
-        scrollbarGapSelectors.forEach(function (entry) {
-          var gap = scrollbars[entry.property.indexOf('right') > -1 ? 'y' : 'x'];
-
-          if (gap > 0) {
-            css += "\n                    ".concat(entry.selector, " {\n                        ").concat(entry.property, ": ").concat(gap, "px!important;\n                    }");
-          }
-        });
-      }
-
-      if (styler.styleSheet) {
-        styler.styleSheet.cssText = css;
-      } else {
-        styler.innerHTML = '';
-        styler.appendChild(document.createTextNode(css));
-      }
-
-      head.appendChild(styler);
+      setStyle("\n            html,\n            body\n            ".concat(settings.incubator ? ', #' + incubator.id : '', " {\n                margin: 0!important;\n                padding: 0!important;\n                min-width: auto!important;\n                min-height: auto!important;\n                max-width: none!important;\n                max-height: none!important;\n            }\n\n            html\n            ").concat(settings.incubator ? ', body' : '', " {\n                width: ").concat(state.html.width, "px!important;\n                height: ").concat(state.html.height, "px!important;\n            }\n\n            html {\n                position: fixed!important;\n                top: ").concat(state.scroll.top * -1, "px!important;\n                left: ").concat(state.scroll.left * -1, "px!important;\n            }\n\n            html,\n            body {              \n                overflow: visible!important;\n            }\n\n            ").concat(settings.incubator ? '#' + incubator.id : 'body', " {\n                width: ").concat(state.body.width, "px!important;\n                height: ").concat(state.body.height, "px!important;\n            }\n            \n            ").concat(getCorrections()));
       setStatus(true);
     }
   };
 
   var unlock = function unlock() {
     if (status) {
-      styler.remove();
-      window.scrollTo(scrollState);
+      setStyle(getCorrections(true));
+
+      if (settings.incubator) {
+        while (incubator.firstChild) {
+          incubator.before(incubator.firstChild);
+        }
+
+        incubator.remove();
+      }
+
+      window.scrollTo(state.scroll);
       setStatus(false);
     }
   };
@@ -147,10 +222,11 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     lock: lock,
     unlock: unlock,
     toggle: toggle,
-    registerScrollbarGapSelectors: registerScrollbarGapSelectors,
+    setCorrections: setCorrections,
     isLocked: function isLocked() {
       return status;
-    }
+    },
+    setOptions: setOptions
   };
   var logEl = document.querySelector('#console');
 
@@ -175,7 +251,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     logEl.scrollTop = list.offsetHeight;
   };
 
-  bodyScroll.registerScrollbarGapSelectors([{
+  bodyScroll.setCorrections([{
     selector: '#nav',
     property: 'right'
   }, '#console']);
@@ -185,6 +261,24 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   document.querySelector('button.toggle-body-custom-scrollbar').addEventListener('click', function () {
     log('toggling custom scrollbars');
     document.documentElement.classList.toggle('custom-scrollbar');
+  });
+  document.querySelector('button.toggle-body-min-width').addEventListener('click', function () {
+    log('toggling horizontal scrollbar');
+    document.documentElement.classList.toggle('min-width');
+  });
+  var incubator$1 = false;
+  bodyScroll.setOptions({
+    incubator: incubator$1
+  });
+  document.querySelector('button.toggle-incubator').addEventListener('click', function () {
+    log('toggling incubator mode');
+
+    if (!bodyScroll.isLocked()) {
+      incubator$1 = !incubator$1;
+      bodyScroll.setOptions({
+        incubator: incubator$1
+      });
+    }
   });
 });
 //# sourceMappingURL=sample-page.js.map

@@ -1,8 +1,11 @@
-export let scrollbarGapSelectors = [];
+import { state } from './body-scroll.state.mjs';
+
+let corrections = [];
 
 const defaults = {
     selector: null,
-    property: 'margin-right'
+    property: 'margin-right',
+    inverted: false
 };
 
 const supportedProperty = [
@@ -14,8 +17,8 @@ const supportedProperty = [
     'bottom'
 ];
 
-export const registerScrollbarGapSelectors = (collection = []) => {
-    scrollbarGapSelectors = [];
+export const setCorrections = (collection = []) => {
+    corrections = [];
 
     const collectionType = typeof collection;
     if (
@@ -30,7 +33,7 @@ export const registerScrollbarGapSelectors = (collection = []) => {
             const entryType = typeof entry;
 
             if (entryType === 'string') {
-                scrollbarGapSelectors.push({
+                corrections.push({
                     ...defaults,
                     ...{
                         selector: entry
@@ -45,11 +48,39 @@ export const registerScrollbarGapSelectors = (collection = []) => {
                 (!entry.property ||
                     supportedProperty.indexOf(entry.property) > -1)
             ) {
-                scrollbarGapSelectors.push({
+                corrections.push({
                     ...defaults,
                     ...entry
                 });
             }
         }
     });
+};
+
+export const getCorrections = (inverted = false) => {
+    let css = '';
+
+    if (corrections.length) {
+        corrections.forEach(entry => {
+            const gap =
+                state.scrollbars[
+                    entry.property.indexOf('right') > -1 ? 'y' : 'x'
+                ];
+
+            if (gap > 0) {
+                let factor = 1;
+
+                if (inverted) {
+                    factor = entry.inverted ? -1 : 0;
+                }
+
+                css += `
+                ${entry.selector} {
+                    ${entry.property}: ${gap * factor}px!important;
+                }`;
+            }
+        });
+    }
+
+    return css;
 };

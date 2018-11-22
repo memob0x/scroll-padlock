@@ -1,10 +1,22 @@
-import { styler } from './body-scroll.client.mjs';
-import { scrollState, status, setStatus } from './body-scroll.state.mjs';
+import { settings } from './body-scroll.settings.mjs';
+import { setStyle, incubator } from './body-scroll.client.mjs';
+import { status, setStatus } from './body-scroll.status.mjs';
+import { state } from './body-scroll.state.mjs';
+import { getCorrections } from './body-scroll.corrections.mjs';
 
 export const unlock = () => {
     if (status) {
-        styler.remove();
-        window.scrollTo(scrollState);
+        setStyle(getCorrections(true));
+
+        if (settings.incubator) {
+            while (incubator.firstChild) {
+                incubator.before(incubator.firstChild);
+            }
+            incubator.remove();
+        }
+
+        window.scrollTo(state.scroll);
+
         setStatus(false);
     }
 };

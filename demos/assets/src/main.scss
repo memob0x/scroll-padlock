@@ -238,8 +238,10 @@ th {
     white-space: pre-wrap;
     background: #000;
     color: #fff;
-    font-family: Consolas, 'Andale Mono WT', 'Andale Mono', 'Lucida Console', 'Lucida Sans Typewriter', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', 'Liberation Mono',
-        'Nimbus Mono L', Monaco, 'Courier New', Courier, monospace;
+    font-family: Consolas, 'Andale Mono WT', 'Andale Mono', 'Lucida Console',
+        'Lucida Sans Typewriter', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono',
+        'Liberation Mono', 'Nimbus Mono L', Monaco, 'Courier New', Courier,
+        monospace;
 }
 
 pre {
@@ -251,58 +253,6 @@ pre {
  * - - - - - */
 * {
     box-sizing: border-box;
-}
-
-body {
-    position: relative;
-
-    &::after,
-    &::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        z-index: -1;
-        pointer-events: none;
-    }
-
-    &::before {
-        background-color: #434343;
-        background-image: linear-gradient(#434343, #282828);
-    }
-
-    &::after {
-        background-color: transparent;
-        background-image: linear-gradient(
-                0deg,
-                transparent 24%,
-                rgba(255, 255, 255, 0.05) 25%,
-                rgba(255, 255, 255, 0.05) 26%,
-                transparent 27%,
-                transparent 74%,
-                rgba(255, 255, 255, 0.05) 75%,
-                rgba(255, 255, 255, 0.05) 76%,
-                transparent 77%,
-                transparent
-            ),
-            linear-gradient(
-                90deg,
-                transparent 24%,
-                rgba(255, 255, 255, 0.05) 25%,
-                rgba(255, 255, 255, 0.05) 26%,
-                transparent 27%,
-                transparent 74%,
-                rgba(255, 255, 255, 0.05) 75%,
-                rgba(255, 255, 255, 0.05) 76%,
-                transparent 77%,
-                transparent
-            );
-        background-size: 50px 50px;
-    }
 }
 
 #console {
@@ -330,16 +280,4 @@ body {
     }
 
     z-index: 5;
-}
-
-html.custom-scrollbar body {
-    &::-webkit-scrollbar {
-        width: 8px;
-    }
-    &::-webkit-scrollbar-track {
-        background: black;
-    }
-    &::-webkit-scrollbar-thumb {
-        background: grey;
-    }
 }
