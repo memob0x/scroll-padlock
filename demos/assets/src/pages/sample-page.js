@@ -20,4 +20,7 @@ document
         document.documentElement.classList.toggle('custom-scrollbar');
     });
 
+window.addEventListener('bodyScrollLock', () => log('body scroll locked'));
+window.addEventListener('bodyScrollUnlock', () => log('body scroll unlocked'));
+
 window.bodyScroll = bodyScroll;

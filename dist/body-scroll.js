@@ -60,14 +60,34 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     }
   };
 
-  var incubator = function (_incubator) {
+  var incubator = function (incubator) {
     var s4 = function s4() {
       return ((1 + Math.random()) * 0x10000 | 0).toString(16).substring(1);
     };
 
-    _incubator.id = "body-scroll-lock-".concat(s4()).concat(s4(), "-").concat(s4(), "-").concat(s4(), "-").concat(s4(), "-").concat(s4()).concat(s4()).concat(s4());
-    return _incubator;
+    incubator.id = "body-scroll-lock-".concat(s4()).concat(s4(), "-").concat(s4(), "-").concat(s4(), "-").concat(s4(), "-").concat(s4()).concat(s4()).concat(s4());
+    return incubator;
   }(document.createElement('div'));
+
+  var BodyScrollEvent = function () {
+    if (typeof window.CustomEvent === 'function') {
+      return window.CustomEvent;
+    }
+
+    function CustomEvent(event, params) {
+      params = params || {
+        bubbles: false,
+        cancelable: false,
+        detail: undefined
+      };
+      var evt = document.createEvent('CustomEvent');
+      evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
+      return evt;
+    }
+
+    CustomEvent.prototype = window.Event.prototype;
+    return CustomEvent;
+  }();
 
   var state = {
     scroll: {
@@ -187,6 +207,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       var imp = settings.important ? '!important' : '';
       setStyle("\n            html,\n            body\n            ".concat(settings.incubator ? ', #' + incubator.id : '', " {\n                margin: 0").concat(imp, ";\n                padding: 0").concat(imp, ";\n                min-width: auto").concat(imp, ";\n                min-height: auto").concat(imp, ";\n                max-width: none").concat(imp, ";\n                max-height: none").concat(imp, ";\n            }\n\n            html\n            ").concat(settings.incubator ? ', body' : '', " {\n                width: ").concat(state.html.width, "px").concat(imp, ";\n                height: ").concat(state.html.height, "px").concat(imp, ";\n            }\n\n            html {\n                position: fixed").concat(imp, ";\n                top: ").concat(state.scroll.top * -1, "px").concat(imp, ";\n                left: ").concat(state.scroll.left * -1, "px").concat(imp, ";\n            }\n\n            html,\n            body {              \n                overflow: ").concat(settings.overflowHidden ? 'hidden' : 'visible').concat(imp, ";\n            }\n\n            ").concat(settings.incubator ? '#' + incubator.id : 'body', " {\n                width: ").concat(state.body.width, "px").concat(imp, ";\n                height: ").concat(state.body.height, "px").concat(imp, ";\n                ").concat(settings.incubator ? "position: relative".concat(imp, ";") : '', "\n            }\n            \n            ").concat(getCorrections()));
       setStatus(true);
+      window.dispatchEvent(new BodyScrollEvent('bodyScrollLock'));
     }
   };
 
@@ -204,6 +225,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
       window.scrollTo(state.scroll);
       setStatus(false);
+      window.dispatchEvent(new BodyScrollEvent('bodyScrollUnlock'));
     }
   };
 

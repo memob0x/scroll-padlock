@@ -26,12 +26,41 @@ export const setStyle = (css = '') => {
     }
 };
 
-export const incubator = (_incubator => {
+export const incubator = (incubator => {
     const s4 = function() {
         return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
     };
 
-    _incubator.id = `body-scroll-lock-${s4()}${s4()}-${s4()}-${s4()}-${s4()}-${s4()}${s4()}${s4()}`;
+    incubator.id = `body-scroll-lock-${s4()}${s4()}-${s4()}-${s4()}-${s4()}-${s4()}${s4()}${s4()}`;
 
-    return _incubator;
+    return incubator;
 })(document.createElement('div'));
+
+export const BodyScrollEvent = (() => {
+    if (typeof window.CustomEvent === 'function') {
+        return window.CustomEvent;
+    }
+
+    function CustomEvent(event, params) {
+        params = params || {
+            bubbles: false,
+            cancelable: false,
+            detail: undefined
+        };
+
+        const evt = document.createEvent('CustomEvent');
+
+        evt.initCustomEvent(
+            event,
+            params.bubbles,
+            params.cancelable,
+            params.detail
+        );
+
+        return evt;
+    }
+
+    CustomEvent.prototype = window.Event.prototype;
+
+    return CustomEvent;
+})();

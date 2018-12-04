@@ -1,5 +1,5 @@
 import { settings } from './body-scroll.settings.mjs';
-import { setStyle, incubator } from './body-scroll.client.mjs';
+import { setStyle, incubator, BodyScrollEvent } from './body-scroll.client.mjs';
 import { status, setStatus } from './body-scroll.status.mjs';
 import { state } from './body-scroll.state.mjs';
 import { getCorrections } from './body-scroll.corrections.mjs';
@@ -18,5 +18,7 @@ export const unlock = () => {
         window.scrollTo(state.scroll);
 
         setStatus(false);
+
+        window.dispatchEvent(new BodyScrollEvent('bodyScrollUnlock'));
     }
 };

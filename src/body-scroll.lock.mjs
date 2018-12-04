@@ -1,5 +1,10 @@
 import { settings } from './body-scroll.settings.mjs';
-import { body, setStyle, incubator } from './body-scroll.client.mjs';
+import {
+    body,
+    setStyle,
+    incubator,
+    BodyScrollEvent
+} from './body-scroll.client.mjs';
 import { status, setStatus } from './body-scroll.status.mjs';
 import { setState, state } from './body-scroll.state.mjs';
 import { getCorrections } from './body-scroll.corrections.mjs';
@@ -60,5 +65,7 @@ export const lock = () => {
             ${getCorrections()}`);
 
         setStatus(true);
+
+        window.dispatchEvent(new BodyScrollEvent('bodyScrollLock'));
     }
 };
