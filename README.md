@@ -32,10 +32,24 @@ The main aim during the writing of this code was to be as seamless as possible, 
 window.bodyScroll.isLocked(); // true when locked...
 ```
 
-Lazy? Just **toggle** it...
+Lazy? Just `toggle` it...
 
 ```javascript
 window.bodyScroll.toggle(); // locks if unlocked, unlocks if locked!
+```
+
+## Events
+
+Get notified when scroll **state changes** listening to `bodyScrollLock` and `bodyScrollUnlock` **events**.
+
+```javascript
+window.addEventListener('bodyScrollLock', () =>
+    console.log('Body scroll has been locked')
+);
+
+window.addEventListener('bodyScrollUnlock', () =>
+    console.log('Body scroll has been unlocked')
+);
 ```
 
 ## The scrollbar width issue
