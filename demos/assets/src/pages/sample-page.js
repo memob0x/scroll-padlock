@@ -1,13 +1,15 @@
 import bodyScroll from '../../../../src/body-scroll.mjs';
 import { log } from '../main.js';
 
-bodyScroll.setCorrections([
-    {
-        selector: '#nav',
-        property: 'right'
-    },
-    '#console'
-]);
+bodyScroll.setOptions({
+    corrections: [
+        {
+            selector: '#nav',
+            property: 'right'
+        },
+        '#console'
+    ]
+});
 
 document
     .querySelector('.toggle-body-scroll-lock')

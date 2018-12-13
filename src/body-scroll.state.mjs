@@ -6,11 +6,15 @@ export let state = {
         left: 0,
         behavior: 'auto'
     },
-    dimensions: {
+    html: {
         width: 0,
         height: 0
     },
-    scrollbar: {
+    body: {
+        width: 0,
+        height: 0
+    },
+    scrollbars: {
         y: 0,
         x: 0
     }
