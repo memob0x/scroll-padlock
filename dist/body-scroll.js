@@ -138,17 +138,14 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     return corrections;
   };
 
-  var setOptions = function setOptions() {
+  var setSettings = function setSettings() {
     var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-
-    if (!status) {
-      settings = _objectSpread({}, settings, options);
-      settings.corrections = setCorrections(settings.corrections);
-    }
+    settings = _objectSpread({}, settings, options);
+    settings.corrections = setCorrections(settings.corrections);
   };
 
   var styler = function styler(id) {
-    id = "body-scroll-".concat(id);
+    id = "body-scroll__".concat(id);
     var element = head.querySelector("style#".concat(id));
 
     if (!element) {
@@ -171,7 +168,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       $base.sheet.insertRule("\n            html {\n                padding: 0".concat(important, ";\n            }\n        "), 1);
     }
 
-    var $scrollbar = styler('scrollbar');
+    var $scrollbar = styler('bar');
     $scrollbar.disabled = !status;
 
     if ($scrollbar.sheet.cssRules.length) {
@@ -200,28 +197,25 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     }
 
     var corrections = settings.corrections;
+    var $corrections = styler('corrections');
 
-    if (corrections.length) {
-      var $corrections = styler('corrections');
-
-      for (var i = $corrections.sheet.cssRules.length - 1; i >= 0; i--) {
-        $corrections.sheet.deleteRule(i);
-      }
-
-      corrections.forEach(function (entry) {
-        var gap = state.scrollbars[entry.property.indexOf('right') > -1 ? 'y' : 'x'];
-
-        if (gap > 0) {
-          var factor = 1;
-
-          if (!status) {
-            factor = entry.inverted ? -1 : 0;
-          }
-
-          $corrections.sheet.insertRule("\n                    ".concat(entry.selector, " {\n                        ").concat(entry.property, ": ").concat(gap * factor, "px").concat(settings.important ? '!important' : '', ";\n                    }\n                "));
-        }
-      });
+    for (var i = $corrections.sheet.cssRules.length - 1; i >= 0; i--) {
+      $corrections.sheet.deleteRule(i);
     }
+
+    corrections.forEach(function (entry) {
+      var gap = state.scrollbars[entry.property.indexOf('right') > -1 ? 'y' : 'x'];
+
+      if (gap > 0) {
+        var factor = 1;
+
+        if (!status) {
+          factor = entry.inverted ? -1 : 0;
+        }
+
+        $corrections.sheet.insertRule("\n                ".concat(entry.selector, " {\n                    ").concat(entry.property, ": ").concat(gap * factor, "px").concat(settings.important ? '!important' : '', ";\n                }\n            "));
+      }
+    });
   };
 
   var lock = function lock() {
@@ -264,7 +258,11 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     isLocked: function isLocked() {
       return status;
     },
-    setOptions: setOptions
+    setOptions: function setOptions() {
+      var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+      setSettings(options);
+      updateStyle();
+    }
   };
   return bodyScroll;
 });

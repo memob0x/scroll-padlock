@@ -178,6 +178,19 @@ html.custom-scrollbar body::-webkit-scrollbar-thumb {
   top: 0;
   right: 0;
   z-index: 6;
+  text-align: right;
+}
+
+#nav button {
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  background: white;
+  margin: 2px;
+  border: 0 none;
+  outline: none;
+  color: black;
+  border-radius: 0;
 }
 
 #bg::after, #bg::before {

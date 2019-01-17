@@ -4,7 +4,7 @@ import { status } from './body-scroll.status.mjs';
 import { head, isSafariIOS } from './body-scroll.client.mjs';
 
 const styler = id => {
-    id = `body-scroll-${id}`;
+    id = `body-scroll__${id}`;
 
     let element = head.querySelector(`style#${id}`);
 
@@ -43,7 +43,7 @@ export const updateStyle = () => {
         `, 1);
     }
 
-    const $scrollbar = styler('scrollbar');
+    const $scrollbar = styler('bar');
     $scrollbar.disabled = !status;
     if ($scrollbar.sheet.cssRules.length) {
         $scrollbar.sheet.deleteRule(1);
@@ -105,35 +105,30 @@ export const updateStyle = () => {
     }
 
     const corrections = settings.corrections;
+    const $corrections = styler('corrections');
 
-    if (corrections.length) {
-        const $corrections = styler('corrections');
-
-        // prettier-ignore
-        for(let i = $corrections.sheet.cssRules.length - 1; i >= 0; i-- ){
-            $corrections.sheet.deleteRule(i);
-        }
-
-        corrections.forEach(entry => {
-            const gap =
-                state.scrollbars[
-                    entry.property.indexOf('right') > -1 ? 'y' : 'x'
-                ];
-
-            if (gap > 0) {
-                let factor = 1;
-
-                if (!status) {
-                    factor = entry.inverted ? -1 : 0;
-                }
-
-                // prettier-ignore
-                $corrections.sheet.insertRule(`
-                    ${entry.selector} {
-                        ${entry.property}: ${gap * factor}px${settings.important ? '!important' : ''};
-                    }
-                `);
-            }
-        });
+    // prettier-ignore
+    for (let i = $corrections.sheet.cssRules.length - 1; i >= 0; i--) {
+        $corrections.sheet.deleteRule(i);
     }
+
+    corrections.forEach(entry => {
+        const gap =
+            state.scrollbars[entry.property.indexOf('right') > -1 ? 'y' : 'x'];
+
+        if (gap > 0) {
+            let factor = 1;
+
+            if (!status) {
+                factor = entry.inverted ? -1 : 0;
+            }
+
+            // prettier-ignore
+            $corrections.sheet.insertRule(`
+                ${entry.selector} {
+                    ${entry.property}: ${gap * factor}px${settings.important ? '!important' : ''};
+                }
+            `);
+        }
+    });
 };

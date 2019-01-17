@@ -1,5 +1,3 @@
-import { status } from './body-scroll.status.mjs';
-
 export let settings = {
     important: true,
     corrections: []
@@ -63,12 +61,11 @@ const setCorrections = (collection = []) => {
     return corrections;
 };
 
-export const setOptions = (options = {}) => {
-    if (!status) {
-        settings = {
-            ...settings,
-            ...options
-        };
-        settings.corrections = setCorrections(settings.corrections);
-    }
+export const setSettings = (options = {}) => {
+    settings = {
+        ...settings,
+        ...options
+    };
+
+    settings.corrections = setCorrections(settings.corrections);
 };
