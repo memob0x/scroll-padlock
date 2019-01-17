@@ -5,11 +5,11 @@ import { updateStyle } from './body-scroll.style.mjs';
 
 export const lock = () => {
     if (!status) {
+        setStatus(true);
+
         setState();
 
         updateStyle();
-
-        setStatus(true);
 
         window.dispatchEvent(new BodyScrollEvent('bodyScrollLock'));
     }

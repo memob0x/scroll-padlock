@@ -13,6 +13,10 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
   var html = document.documentElement;
   var head = document.head || document.getElementsByTagName('head')[0];
+  var ua = navigator.userAgent;
+  var isSafari = !!ua.match(/Version\/[\d\.]+.*Safari/);
+  var isIOS = /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
+  var isSafariIOS = isIOS && isSafari;
 
   var BodyScrollEvent = function () {
     if (typeof window.CustomEvent === 'function') {
@@ -48,12 +52,14 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       behavior: 'auto'
     },
     html: {
-      width: 0,
-      height: 0
+      width: 'auto',
+      height: 'auto'
     },
     body: {
-      width: 0,
-      height: 0
+      width: 'auto',
+      height: 'auto',
+      paddingRight: 0,
+      paddingBottom: 0
     },
     scrollbars: {
       y: 0,
@@ -64,28 +70,34 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   var setState = function setState() {
     var vw = window.innerWidth;
     var vh = window.innerHeight;
-    var width = html.clientWidth;
-    var height = html.clientHeight;
-    var scroll = {
-      top: html.scrollTop,
-      left: html.scrollLeft
-    };
-    var scrollbars = {
-      y: vw > width ? vw - width : 0,
-      x: vh > height ? vh - height : 0
-    };
-    state = _objectSpread({}, state, {
-      scroll: scroll,
-      html: {
-        width: vw + scroll.left - scrollbars.y,
-        height: vh + scroll.top - scrollbars.x
-      },
-      body: {
+
+    var _state = _objectSpread({}, state, {
+      scroll: {
+        top: html.scrollTop,
+        left: html.scrollLeft
+      }
+    });
+
+    if (isSafariIOS) {
+      _state.html = {
+        width: vw + _state.scroll.left,
+        height: vh + _state.scroll.top
+      };
+      _state.body = {
         width: html.scrollWidth,
         height: html.scrollHeight
-      },
-      scrollbars: scrollbars
-    });
+      };
+    } else {
+      var width = html.clientWidth;
+      var height = html.clientHeight;
+      _state.scrollbars = {
+        y: vw > width ? vw - width : 0,
+        x: vh > height ? vh - height : 0
+      };
+      _state.body.paddingRight = _state.scrollbars.y;
+    }
+
+    state = _state;
   };
 
   var settings = {
@@ -136,78 +148,97 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     }
   };
 
-  var stylerID = 'body-scroll';
-  var styler = document.createElement('style');
-  styler.type = 'text/css';
-  styler.id = stylerID;
+  var styler = function styler(id) {
+    id = "body-scroll-".concat(id);
+    var element = head.querySelector("style#".concat(id));
 
-  var setStyle = function setStyle() {
-    var css = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
-
-    if (!css) {
-      styler.remove();
-      return;
+    if (!element) {
+      element = document.createElement('style');
+      element.type = 'text/css';
+      element.id = id;
+      head.appendChild(element);
     }
 
-    if (styler.styleSheet) {
-      styler.styleSheet.cssText = css;
-    } else {
-      styler.innerHTML = '';
-      styler.appendChild(document.createTextNode(css));
-    }
-
-    if (!head.querySelector("style#".concat(stylerID))) {
-      head.appendChild(styler);
-    }
+    return element;
   };
 
-  var getStyle = function getStyle() {
-    var imp = settings.important ? '!important' : '';
-    var css = '';
+  var updateStyle = function updateStyle() {
+    var important = settings.important ? '!important' : '';
+    var $base = styler('base');
+    $base.disabled = !status;
 
-    if (!status) {
-      css += "html,\n            body {\n            margin: 0".concat(imp, ";\n            padding: 0").concat(imp, ";\n            min-width: auto").concat(imp, ";\n            min-height: auto").concat(imp, ";\n            max-width: none").concat(imp, ";\n            max-height: none").concat(imp, ";\n        }\n\n        html {\n            width: ").concat(state.html.width, "px").concat(imp, ";\n            height: ").concat(state.html.height, "px").concat(imp, ";\n        }\n\n        html {\n            position: fixed").concat(imp, ";\n            top: ").concat(state.scroll.top * -1, "px").concat(imp, ";\n            left: ").concat(state.scroll.left * -1, "px").concat(imp, ";\n        }\n\n        html,\n            body {\n            overflow: visible").concat(imp, ";\n        }\n\n        body{\n            width: ").concat(state.body.width, "px").concat(imp, ";\n            height: ").concat(state.body.height, "px").concat(imp, ";\n        }");
+    if (!$base.sheet.cssRules.length) {
+      $base.sheet.insertRule("\n            html,\n            body {\n                margin: 0".concat(important, ";\n                min-width: auto").concat(important, ";\n                min-height: auto").concat(important, ";\n                max-width: none").concat(important, ";\n                max-height: none").concat(important, ";\n            }\n        "), 0);
+      $base.sheet.insertRule("\n            html {\n                padding: 0".concat(important, ";\n            }\n        "), 1);
+    }
+
+    var $scrollbar = styler('scrollbar');
+    $scrollbar.disabled = !status;
+
+    if ($scrollbar.sheet.cssRules.length) {
+      $scrollbar.sheet.deleteRule(1);
+      $scrollbar.sheet.deleteRule(0);
+    }
+
+    $scrollbar.sheet.insertRule("\n        html {\n            width: ".concat(state.html.width, "px").concat(important, ";\n            height: ").concat(state.html.height, "px").concat(important, ";\n        }\n    "), 0);
+    $scrollbar.sheet.insertRule("\n        body{\n            width: ".concat(state.body.width, "px").concat(important, ";\n            height: ").concat(state.body.height, "px").concat(important, ";\n            padding: 0 ").concat(state.body.paddingRight, "px ").concat(state.body.paddingBottom, "px 0").concat(important, ";\n        }\n    "), 1);
+    var $lock = styler('lock');
+    $lock.disabled = !status;
+
+    if (isSafariIOS) {
+      if (!$lock.sheet.cssRules.length) {
+        $lock.sheet.insertRule("\n                html,\n                body {\n                    overflow: visible".concat(important, ";\n                }\n            "), 0);
+        $lock.sheet.insertRule("\n                html {\n                    position: fixed".concat(important, ";\n                }\n            "), 1);
+      } else {
+        $scrollbar.sheet.deleteRule(2);
+      }
+
+      $lock.sheet.insertRule("\n            html {\n                top: ".concat(state.scroll.top * -1, "px").concat(important, ";\n                left: ").concat(state.scroll.left * -1, "px").concat(important, ";\n            }\n        "), 2);
+    } else {
+      if (!$lock.sheet.cssRules.length) {
+        $lock.sheet.insertRule("\n                body {\n                    overflow: hidden".concat(important, ";\n                }\n            "), 0);
+      }
     }
 
     var corrections = settings.corrections;
 
     if (corrections.length) {
+      var $corrections = styler('corrections');
+
+      for (var i = $corrections.sheet.cssRules.length - 1; i >= 0; i--) {
+        $corrections.sheet.deleteRule(i);
+      }
+
       corrections.forEach(function (entry) {
         var gap = state.scrollbars[entry.property.indexOf('right') > -1 ? 'y' : 'x'];
 
         if (gap > 0) {
           var factor = 1;
 
-          if (status) {
+          if (!status) {
             factor = entry.inverted ? -1 : 0;
           }
 
-          css += "\n                ".concat(entry.selector, " {\n                    ").concat(entry.property, ": ").concat(gap * factor, "px").concat(settings.important ? '!important' : '', ";\n                }");
+          $corrections.sheet.insertRule("\n                    ".concat(entry.selector, " {\n                        ").concat(entry.property, ": ").concat(gap * factor, "px").concat(settings.important ? '!important' : '', ";\n                    }\n                "));
         }
       });
     }
-
-    return css;
-  };
-
-  var updateStyle = function updateStyle() {
-    return setStyle(getStyle());
   };
 
   var lock = function lock() {
     if (!status) {
+      setStatus(true);
       setState();
       updateStyle();
-      setStatus(true);
       window.dispatchEvent(new BodyScrollEvent('bodyScrollLock'));
     }
   };
 
   var unlock = function unlock() {
     if (status) {
+      setStatus(false);
       updateStyle();
       window.scrollTo(state.scroll);
-      setStatus(false);
       window.dispatchEvent(new BodyScrollEvent('bodyScrollUnlock'));
     }
   };
