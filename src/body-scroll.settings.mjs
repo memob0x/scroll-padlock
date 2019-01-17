@@ -18,7 +18,6 @@ const supportedProperties = [
     'bottom'
 ];
 
-// TODO: put in setOptions
 const setCorrections = (collection = []) => {
     let corrections = [];
 

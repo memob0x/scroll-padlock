@@ -1,9 +1,10 @@
+// TODO: cleanup!
 import { html, isSafariIOS } from './body-scroll.client.mjs';
 
 export let state = {
     scroll: {
         top: 0,
-        left: 0,
+        left: 0
     },
     html: {
         width: 'auto',

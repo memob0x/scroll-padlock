@@ -237,10 +237,6 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     }
   };
 
-  var toggle = function toggle() {
-    return !status ? lock() : unlock();
-  };
-
   var timer = null;
   window.addEventListener('resize', function () {
     clearTimeout(timer);
@@ -254,7 +250,9 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   var bodyScroll = {
     lock: lock,
     unlock: unlock,
-    toggle: toggle,
+    toggle: function toggle() {
+      return !status ? lock() : unlock();
+    },
     isLocked: function isLocked() {
       return status;
     },
