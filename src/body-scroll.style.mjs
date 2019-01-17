@@ -83,7 +83,7 @@ export const updateStyle = () => {
                 }
             `, 1);
         } else {
-            $scrollbar.sheet.deleteRule(2);
+            $lock.sheet.deleteRule(2);
         }
 
         // prettier-ignore

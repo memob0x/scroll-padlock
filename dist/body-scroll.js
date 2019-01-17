@@ -189,7 +189,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         $lock.sheet.insertRule("\n                html,\n                body {\n                    overflow: visible".concat(important, ";\n                }\n            "), 0);
         $lock.sheet.insertRule("\n                html {\n                    position: fixed".concat(important, ";\n                }\n            "), 1);
       } else {
-        $scrollbar.sheet.deleteRule(2);
+        $lock.sheet.deleteRule(2);
       }
 
       $lock.sheet.insertRule("\n            html {\n                top: ".concat(state.scroll.top * -1, "px").concat(important, ";\n                left: ").concat(state.scroll.left * -1, "px").concat(important, ";\n            }\n        "), 2);
