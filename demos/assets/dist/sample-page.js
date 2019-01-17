@@ -48,8 +48,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   var state = {
     scroll: {
       top: 0,
-      left: 0,
-      behavior: 'auto'
+      left: 0
     },
     html: {
       width: 'auto',
@@ -238,7 +237,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     if (status) {
       setStatus(false);
       updateStyle();
-      window.scrollTo(state.scroll);
+      html.scrollTop = state.scroll.top;
+      html.scrollLeft = state.scroll.left;
       window.dispatchEvent(new BodyScrollEvent('bodyScrollUnlock'));
     }
   };
