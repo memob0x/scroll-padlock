@@ -50,43 +50,45 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       top: 0,
       left: 0
     },
-    html: {
-      height: 'auto'
-    },
-    body: {
-      height: 'auto',
-      paddingRight: 0
-    },
     bars: {
       x: 0,
       y: 0
+    },
+    html: {
+      width: null,
+      height: null
+    },
+    body: {
+      width: null,
+      height: null
     }
   };
 
   var setState = function setState() {
     var vw = window.innerWidth;
     var vh = window.innerHeight;
-    var width = html.clientWidth;
-    var height = html.clientHeight;
-
-    var _state = _objectSpread({}, state, {
-      scroll: {
-        top: html.scrollTop,
-        left: html.scrollLeft
+    var scroll = {
+      top: html.scrollTop,
+      left: html.scrollLeft
+    };
+    var bars = {
+      y: vw - html.clientWidth,
+      x: vh - html.clientHeight
+    };
+    state = _objectSpread({}, state, {
+      scroll: scroll,
+      bars: bars,
+      html: {
+        width: vw + scroll.left,
+        height: vh + scroll.top
       },
-      bars: {
-        y: vw > width ? vw - width : 0,
-        x: vh > height ? vh - height : 0
+      body: {
+        width: html.scrollWidth,
+        height: html.scrollHeight,
+        paddingRight: bars.y,
+        paddingBottom: bars.x
       }
     });
-
-    if (isSafariIOS) {
-      _state.html.height = vh + _state.scroll.top;
-      _state.body.height = html.scrollHeight;
-    }
-
-    _state.body.paddingRight = _state.bars.y;
-    state = _state;
   };
 
   var settings = {
@@ -154,8 +156,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     $base.disabled = !status;
 
     if (!$base.sheet.cssRules.length) {
-      $base.sheet.insertRule("\n            html,\n            body {\n                margin: 0".concat(important, ";\n                min-width: auto").concat(important, ";\n                min-height: auto").concat(important, ";\n                max-width: none").concat(important, ";\n                max-height: none").concat(important, ";\n                width: auto").concat(important, ";\n            }\n        "), 0);
-      $base.sheet.insertRule("\n            html {\n                padding: 0".concat(important, ";\n            }\n        "), 1);
+      $base.sheet.insertRule("\n            html,\n            body {\n                margin: 0".concat(important, ";\n                padding: 0").concat(important, ";\n                min-width: auto").concat(important, ";\n                min-height: auto").concat(important, ";\n                max-width: none").concat(important, ";\n                max-height: none").concat(important, ";\n            }\n        "), 0);
     }
 
     var $scrollbar = styler('bar');
@@ -166,8 +167,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       $scrollbar.sheet.deleteRule(0);
     }
 
-    $scrollbar.sheet.insertRule("\n        html {\n            height: ".concat(state.html.height, "px").concat(important, ";\n        }\n    "), 0);
-    $scrollbar.sheet.insertRule("\n        body{\n            height: ".concat(state.body.height, "px").concat(important, ";\n            padding: 0 ").concat(state.body.paddingRight, "px 0 0").concat(important, ";\n        }\n    "), 1);
+    $scrollbar.sheet.insertRule("\n        html {\n            width: ".concat(state.html.width, "px").concat(important, ";\n            height: ").concat(state.html.height, "px").concat(important, ";\n        }\n    "), 0);
+    $scrollbar.sheet.insertRule("\n        body{\n            width: ".concat(state.body.width, "px").concat(important, ";\n            height: ").concat(state.body.height, "px").concat(important, ";\n        }\n    "), 1);
     var $lock = styler('lock');
     $lock.disabled = !status;
 
@@ -304,12 +305,17 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       property: 'right'
     }, '#console']
   });
-  document.querySelector('.toggle-body-scroll-lock').addEventListener('click', function () {
+  var html$1 = document.documentElement;
+  document.querySelector('.toggle-scroll-lock').addEventListener('click', function () {
     return bodyScroll.toggle();
   });
-  document.querySelector('button.toggle-body-custom-scrollbar').addEventListener('click', function () {
+  document.querySelector('button.toggle-custom-scrollbar').addEventListener('click', function () {
     log('toggling custom scrollbars');
-    document.documentElement.classList.toggle('custom-scrollbar');
+    html$1.classList.toggle('custom-scrollbar');
+  });
+  document.querySelector('button.toggle-horizontal-orientation').addEventListener('click', function () {
+    log('toggling page orientation');
+    html$1.classList.toggle('horizontal');
   });
   window.addEventListener('bodyScrollLock', function () {
     return log('body scroll locked');

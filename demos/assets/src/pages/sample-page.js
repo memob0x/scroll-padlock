@@ -11,15 +11,24 @@ bodyScroll.setOptions({
     ]
 });
 
+const html = document.documentElement;
+
 document
-    .querySelector('.toggle-body-scroll-lock')
+    .querySelector('.toggle-scroll-lock')
     .addEventListener('click', () => bodyScroll.toggle());
 
 document
-    .querySelector('button.toggle-body-custom-scrollbar')
+    .querySelector('button.toggle-custom-scrollbar')
     .addEventListener('click', () => {
         log('toggling custom scrollbars');
-        document.documentElement.classList.toggle('custom-scrollbar');
+        html.classList.toggle('custom-scrollbar');
+    });
+
+document
+    .querySelector('button.toggle-horizontal-orientation')
+    .addEventListener('click', () => {
+        log('toggling page orientation');
+        html.classList.toggle('horizontal');
     });
 
 window.addEventListener('bodyScrollLock', () => log('body scroll locked'));

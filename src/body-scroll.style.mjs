@@ -29,19 +29,13 @@ export const updateStyle = () => {
             html,
             body {
                 margin: 0${important};
+                padding: 0${important};
                 min-width: auto${important};
                 min-height: auto${important};
                 max-width: none${important};
                 max-height: none${important};
-                width: auto${important};
             }
         `, 0);
-        // prettier-ignore
-        $base.sheet.insertRule(`
-            html {
-                padding: 0${important};
-            }
-        `, 1);
     }
 
     const $scrollbar = styler('bar');
@@ -53,14 +47,15 @@ export const updateStyle = () => {
     // prettier-ignore
     $scrollbar.sheet.insertRule(`
         html {
+            width: ${state.html.width}px${important};
             height: ${state.html.height}px${important};
         }
     `, 0);
     // prettier-ignore
     $scrollbar.sheet.insertRule(`
         body{
+            width: ${state.body.width}px${important};
             height: ${state.body.height}px${important};
-            padding: 0 ${state.body.paddingRight}px 0 0${important};
         }
     `, 1);
 
