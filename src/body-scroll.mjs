@@ -4,7 +4,12 @@ import { status } from './body-scroll.status.mjs';
 import { setSettings } from './body-scroll.settings.mjs';
 import { updateStyle } from './body-scroll.style.mjs';
 
-import './body-scroll.resize';
+let resizeTimer = null;
+window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+
+    resizeTimer = setTimeout(() => updateStyle(), 500);
+});
 
 export default {
     lock: lock,

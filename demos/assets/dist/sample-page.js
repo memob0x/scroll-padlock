@@ -199,10 +199,11 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     var corrections = settings.corrections;
     var $corrections = styler('corrections');
 
-    for (var i = $corrections.sheet.cssRules.length - 1; i >= 0; i--) {
-      $corrections.sheet.deleteRule(i);
+    for (var _i = $corrections.sheet.cssRules.length - 1; _i >= 0; _i--) {
+      $corrections.sheet.deleteRule(_i);
     }
 
+    var i = 0;
     corrections.forEach(function (entry) {
       var gap = state.scrollbars[entry.property.indexOf('right') > -1 ? 'y' : 'x'];
 
@@ -213,7 +214,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
           factor = entry.inverted ? -1 : 0;
         }
 
-        $corrections.sheet.insertRule("\n                ".concat(entry.selector, " {\n                    ").concat(entry.property, ": ").concat(gap * factor, "px").concat(settings.important ? '!important' : '', ";\n                }\n            "));
+        $corrections.sheet.insertRule("\n                ".concat(entry.selector, " {\n                    ").concat(entry.property, ": ").concat(gap * factor, "px").concat(settings.important ? '!important' : '', ";\n                }\n            "), i);
+        i++;
       }
     });
   };
@@ -237,14 +239,11 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     }
   };
 
-  var timer = null;
+  var resizeTimer = null;
   window.addEventListener('resize', function () {
-    clearTimeout(timer);
-    timer = setTimeout(function () {
-      if (status) {
-        unlock();
-        lock();
-      }
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function () {
+      return updateStyle();
     }, 500);
   });
   var bodyScroll = {
@@ -262,6 +261,30 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       updateStyle();
     }
   };
+
+  (function (arr) {
+    arr.forEach(function (item) {
+      if (item.hasOwnProperty('append')) {
+        return;
+      }
+
+      Object.defineProperty(item, 'append', {
+        configurable: true,
+        enumerable: true,
+        writable: true,
+        value: function append() {
+          var argArr = Array.prototype.slice.call(arguments),
+              docFrag = document.createDocumentFragment();
+          argArr.forEach(function (argItem) {
+            var isNode = argItem instanceof Node;
+            docFrag.appendChild(isNode ? argItem : document.createTextNode(String(argItem)));
+          });
+          this.appendChild(docFrag);
+        }
+      });
+    });
+  })([Element.prototype, Document.prototype, DocumentFragment.prototype]);
+
   var logEl = document.querySelector('#console');
 
   var log = function log() {

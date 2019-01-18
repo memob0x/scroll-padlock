@@ -112,9 +112,10 @@ export const updateStyle = () => {
         $corrections.sheet.deleteRule(i);
     }
 
+    let i = 0;
     corrections.forEach(entry => {
-        const gap =
-            state.scrollbars[entry.property.indexOf('right') > -1 ? 'y' : 'x'];
+        // prettier-ignore
+        const gap = state.scrollbars[entry.property.indexOf('right') > -1 ? 'y' : 'x'];
 
         if (gap > 0) {
             let factor = 1;
@@ -128,7 +129,9 @@ export const updateStyle = () => {
                 ${entry.selector} {
                     ${entry.property}: ${gap * factor}px${settings.important ? '!important' : ''};
                 }
-            `);
+            `, i);
+
+            i++;
         }
     });
 };
