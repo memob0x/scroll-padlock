@@ -20,12 +20,10 @@ const supportedProperties = [
 
 const setCorrections = (collection = []) => {
     let corrections = [];
-
     const collectionType = typeof collection;
-    if (
-        collectionType === 'string' ||
-        (!Array.isArray(collection) && collectionType === 'object')
-    ) {
+
+    // prettier-ignore
+    if ( collectionType === 'string' || ( !Array.isArray(collection) && collectionType === 'object' ) ) {
         collection = [collection];
     }
 
@@ -34,25 +32,20 @@ const setCorrections = (collection = []) => {
             const entryType = typeof entry;
 
             if (entryType === 'string') {
-                corrections.push({
-                    ...defaultCorrection,
-                    ...{
-                        selector: entry
-                    }
-                });
+                // prettier-ignore
+                corrections.push({ ...defaultCorrection, ...{ selector: entry } });
             }
 
+            // prettier-ignore
             if (
-                !Array.isArray(entry) &&
-                entryType === 'object' &&
+                !Array.isArray(entry) && entryType === 'object' &&
                 entry.selector &&
-                (!entry.property ||
-                    supportedProperties.indexOf(entry.property) > -1)
+                entry.selector !== 'body' &&
+                entry.selector !== 'html' && (
+                    !entry.property || supportedProperties.indexOf(entry.property) > -1
+                )
             ) {
-                corrections.push({
-                    ...defaultCorrection,
-                    ...entry
-                });
+                corrections.push({ ...defaultCorrection, ...entry });
             }
         }
     });

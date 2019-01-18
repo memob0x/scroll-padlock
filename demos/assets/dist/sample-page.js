@@ -51,51 +51,41 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       left: 0
     },
     html: {
-      width: 'auto',
       height: 'auto'
     },
     body: {
-      width: 'auto',
       height: 'auto',
-      paddingRight: 0,
-      paddingBottom: 0
+      paddingRight: 0
     },
-    scrollbars: {
-      y: 0,
-      x: 0
+    bars: {
+      x: 0,
+      y: 0
     }
   };
 
   var setState = function setState() {
     var vw = window.innerWidth;
     var vh = window.innerHeight;
+    var width = html.clientWidth;
+    var height = html.clientHeight;
 
     var _state = _objectSpread({}, state, {
       scroll: {
         top: html.scrollTop,
         left: html.scrollLeft
+      },
+      bars: {
+        y: vw > width ? vw - width : 0,
+        x: vh > height ? vh - height : 0
       }
     });
 
     if (isSafariIOS) {
-      _state.html = {
-        width: vw + _state.scroll.left,
-        height: vh + _state.scroll.top
-      };
-      _state.body = {
-        width: html.scrollWidth,
-        height: html.scrollHeight
-      };
-    } else {
-      var width = html.clientWidth;
-      var height = html.clientHeight;
-      _state.scrollbars = {
-        y: vw > width ? vw - width : 0,
-        x: vh > height ? vh - height : 0
-      };
-      _state.body.paddingRight = _state.scrollbars.y;
+      _state.html.height = vh + _state.scroll.top;
+      _state.body.height = html.scrollHeight;
     }
 
+    _state.body.paddingRight = _state.bars.y;
     state = _state;
   };
 
@@ -130,7 +120,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
           }));
         }
 
-        if (!Array.isArray(entry) && entryType === 'object' && entry.selector && (!entry.property || supportedProperties.indexOf(entry.property) > -1)) {
+        if (!Array.isArray(entry) && entryType === 'object' && entry.selector && entry.selector !== 'body' && entry.selector !== 'html' && (!entry.property || supportedProperties.indexOf(entry.property) > -1)) {
           corrections.push(_objectSpread({}, defaultCorrection, entry));
         }
       }
@@ -164,7 +154,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     $base.disabled = !status;
 
     if (!$base.sheet.cssRules.length) {
-      $base.sheet.insertRule("\n            html,\n            body {\n                margin: 0".concat(important, ";\n                min-width: auto").concat(important, ";\n                min-height: auto").concat(important, ";\n                max-width: none").concat(important, ";\n                max-height: none").concat(important, ";\n            }\n        "), 0);
+      $base.sheet.insertRule("\n            html,\n            body {\n                margin: 0".concat(important, ";\n                min-width: auto").concat(important, ";\n                min-height: auto").concat(important, ";\n                max-width: none").concat(important, ";\n                max-height: none").concat(important, ";\n                width: auto").concat(important, ";\n            }\n        "), 0);
       $base.sheet.insertRule("\n            html {\n                padding: 0".concat(important, ";\n            }\n        "), 1);
     }
 
@@ -176,8 +166,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       $scrollbar.sheet.deleteRule(0);
     }
 
-    $scrollbar.sheet.insertRule("\n        html {\n            width: ".concat(state.html.width, "px").concat(important, ";\n            height: ").concat(state.html.height, "px").concat(important, ";\n        }\n    "), 0);
-    $scrollbar.sheet.insertRule("\n        body{\n            width: ".concat(state.body.width, "px").concat(important, ";\n            height: ").concat(state.body.height, "px").concat(important, ";\n            padding: 0 ").concat(state.body.paddingRight, "px ").concat(state.body.paddingBottom, "px 0").concat(important, ";\n        }\n    "), 1);
+    $scrollbar.sheet.insertRule("\n        html {\n            height: ".concat(state.html.height, "px").concat(important, ";\n        }\n    "), 0);
+    $scrollbar.sheet.insertRule("\n        body{\n            height: ".concat(state.body.height, "px").concat(important, ";\n            padding: 0 ").concat(state.body.paddingRight, "px 0 0").concat(important, ";\n        }\n    "), 1);
     var $lock = styler('lock');
     $lock.disabled = !status;
 
@@ -205,7 +195,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
     var i = 0;
     corrections.forEach(function (entry) {
-      var gap = state.scrollbars[entry.property.indexOf('right') > -1 ? 'y' : 'x'];
+      var gap = state.bars[entry.property.indexOf('right') > -1 ? 'y' : 'x'];
 
       if (gap > 0) {
         var factor = 1;

@@ -33,6 +33,7 @@ export const updateStyle = () => {
                 min-height: auto${important};
                 max-width: none${important};
                 max-height: none${important};
+                width: auto${important};
             }
         `, 0);
         // prettier-ignore
@@ -52,16 +53,14 @@ export const updateStyle = () => {
     // prettier-ignore
     $scrollbar.sheet.insertRule(`
         html {
-            width: ${state.html.width}px${important};
             height: ${state.html.height}px${important};
         }
     `, 0);
     // prettier-ignore
     $scrollbar.sheet.insertRule(`
         body{
-            width: ${state.body.width}px${important};
             height: ${state.body.height}px${important};
-            padding: 0 ${state.body.paddingRight}px ${state.body.paddingBottom}px 0${important};
+            padding: 0 ${state.body.paddingRight}px 0 0${important};
         }
     `, 1);
 
@@ -115,7 +114,7 @@ export const updateStyle = () => {
     let i = 0;
     corrections.forEach(entry => {
         // prettier-ignore
-        const gap = state.scrollbars[entry.property.indexOf('right') > -1 ? 'y' : 'x'];
+        const gap = state.bars[entry.property.indexOf('right') > -1 ? 'y' : 'x'];
 
         if (gap > 0) {
             let factor = 1;
