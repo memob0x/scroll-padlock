@@ -37,7 +37,8 @@
         "npm": "^6.6.0",
         "postcss-cli": "^6.0.0",
         "pump": "^3.0.0",
-        "requirejs": "^2.3.6"
+        "requirejs": "^2.3.6",
+        "tar": "^4.4.8"
     },
     "dependencies": {}
 }
