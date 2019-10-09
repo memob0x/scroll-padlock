@@ -1,16 +1,3 @@
-import bodyScroll from '../../../../src/body-scroll.mjs';
-import { log } from '../main.js';
-
-bodyScroll.setOptions({
-    corrections: [
-        {
-            selector: '#nav',
-            property: 'right'
-        },
-        '#console'
-    ]
-});
-
 const html = document.documentElement;
 
 document
@@ -33,5 +20,3 @@ document
 
 window.addEventListener('bodyScrollLock', () => log('body scroll locked'));
 window.addEventListener('bodyScrollUnlock', () => log('body scroll unlocked'));
-
-window.bodyScroll = bodyScroll;
