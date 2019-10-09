@@ -52,49 +52,6 @@ window.addEventListener('bodyScrollUnlock', () =>
 );
 ```
 
-## The scrollbar width issue
-
-The `lock` method internally takes care of the infamous unpleasant flickering effect you get when you put `overflow: hidden;` on the body element (causing the scrollbar to disappear, and the body itself to widen), but you may still experience it on some **right-aligned _fixed_ elements** in your page.<br>
-Registering those elements **selectors** in the `correction` property of `setOptions` **argument** _Object_ the will fix that, adding the scrollbar width to their `margin-right` when the `lock` function is called.
-
-```javascript
-window.bodyScroll.setOptions({
-    corrections: ['#header.sticky']
-});
-```
-
-You prefer the `padding-right` property? No problem.
-
-```javascript
-window.bodyScroll.setOptions({
-    corrections: [
-        '#header.sticky',
-        {
-            selector: '.lightbox',
-            property: 'padding-right'
-        }
-    ]
-});
-```
-
-The `right` property is also supported.
-
-```javascript
-window.bodyScroll.setOptions({
-    corrections: [
-        '#header.sticky',
-        {
-            selector: '.lightbox',
-            property: 'padding-right'
-        },
-        {
-            selector: '.bruh',
-            property: 'right'
-        }
-    ]
-});
-```
-
 ## Demo
 
-Have a look at this [demo](https://memob0x.github.io/body-scroll-lock/demos/sample-page.html) to check if this is what you're looking for. 🤞
+Have a look at this [demo](https://memob0x.github.io/body-scroll-lock/demo/) to check if this is what you're looking for. 🤞
