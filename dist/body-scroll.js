@@ -8,12 +8,41 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   'use strict';
 
   var $head = document.head;
-  var $stylerBase = document.createElement('style');
-  var $stylerResizable = document.createElement('style');
+  var $html = document.documentElement;
+  var $body = document.body;
+
+  var createStyle = function createStyle() {
+    var $el = document.createElement("style");
+    $el.type = "text/css";
+    return $el;
+  };
+
+  var $stylerBase = createStyle();
+  var $stylerResizable = createStyle();
   var isLegacyIOS = /iPad|iPhone|iPod/.test(window.navigator.userAgent);
-  var isMultiTouchMacAkaIOS13 = window.navigator.platform === 'MacIntel' && window.navigator.maxTouchPoints > 1;
+  var isMultiTouchMacAkaIOS13 = window.navigator.platform === "MacIntel" && window.navigator.maxTouchPoints > 1;
   var isAppleTouchDevice = isLegacyIOS || isMultiTouchMacAkaIOS13;
-  var IMPORTANT_STATEMENT = '!important';
+
+  var BodyScrollEvent = function () {
+    if (typeof window.CustomEvent === "function") {
+      return window.CustomEvent;
+    }
+
+    function CustomEvent(event, params) {
+      params = params || {
+        bubbles: false,
+        cancelable: false,
+        detail: undefined
+      };
+      var evt = document.createEvent("CustomEvent");
+      evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
+      return evt;
+    }
+
+    CustomEvent.prototype = window.Event.prototype;
+    return CustomEvent;
+  }();
+
   var status = false;
   var scroll = {
     x: 0,
@@ -23,41 +52,27 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   var clientWidth = 0;
 
   var getBaseRules = function getBaseRules() {
-    var output = '';
-    output = ' html,';
-    output += 'body {';
-    output += 'height: auto' + IMPORTANT_STATEMENT + ';';
-    output += 'margin: 0' + IMPORTANT_STATEMENT + ';';
-    output += 'padding: 0 ' + scrollbarWidth + 'px 0 0' + IMPORTANT_STATEMENT + ';';
-    output += '}';
+    var output = "html, body {\n        height: auto!important;\n        margin: 0!important;\n        padding: 0 ".concat(scrollbarWidth, "px 0 0!important;\n    }");
 
     if (isAppleTouchDevice) {
-      output += 'html {';
-      output += 'position: fixed' + IMPORTANT_STATEMENT + ';';
-      output += 'top: ' + -1 * scroll.y + 'px' + IMPORTANT_STATEMENT + ';';
-      output += 'left: ' + -1 * scroll.x + 'px' + IMPORTANT_STATEMENT + ';';
-      output += 'overflow: visible' + IMPORTANT_STATEMENT + ';';
-      output += '}';
+      output += "html {\n            position: fixed!important;\n            top: ".concat(-1 * scroll.y, "px!important;\n            left: ").concat(-1 * scroll.x, "px!important;\n            overflow: visible!important;\n        }");
     } else {
-      output += 'body {';
-      output += 'overflow: hidden' + IMPORTANT_STATEMENT + ';';
-      output += '}';
+      output += "body {\n            overflow: hidden!important;\n        }";
     }
 
     return output;
   };
 
   var getResizableRules = function getResizableRules() {
-    var output = '';
-    output = ' html,';
-    output += 'body {';
-    output += 'width: ' + clientWidth + 'px' + IMPORTANT_STATEMENT + ';';
-    output += '}';
-    return output;
+    return "html, body {\n        width: ".concat(clientWidth, "px!important;\n    }");
   };
 
   var printRules = function printRules($actor, rules) {
-    $actor.innerHTML = rules;
+    if ($actor.styleSheet) {
+      $actor.styleSheet.cssText = rules;
+    } else {
+      $actor.appendChild(document.createTextNode(rules));
+    }
 
     if ($actor.parentNode !== $head) {
       $head.append($actor);
@@ -86,13 +101,13 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       x: window.scrollX,
       y: window.scrollY
     };
-    var _clientWidth = document.documentElement.clientWidth;
-    document.body.style.width = document.body.clientWidth + 'px';
-    document.documentElement.style.overflow = 'hidden';
-    clientWidth = document.documentElement.clientWidth;
+    var _clientWidth = $html.clientWidth;
+    $body.style.width = $body.clientWidth + "px";
+    $html.style.overflow = "hidden";
+    clientWidth = $html.clientWidth;
     scrollbarWidth = clientWidth - _clientWidth;
-    document.body.style.width = '';
-    document.documentElement.style.overflow = '';
+    $body.style.width = "";
+    $html.style.overflow = "";
     printBaseRules();
     printResizableRules();
 
@@ -100,7 +115,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       window.scroll(0, 0);
     }
 
-    window.dispatchEvent(new CustomEvent('bodyScrollLock', {
+    window.dispatchEvent(new BodyScrollEvent("bodyScrollLock", {
       detail: {
         clientWidth: clientWidth,
         scrollbarWidth: scrollbarWidth
@@ -115,14 +130,14 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     }
 
     status = false;
-    $stylerBase.innerHTML = '';
-    $stylerResizable.innerHTML = '';
+    $stylerBase.innerHTML = "";
+    $stylerResizable.innerHTML = "";
 
     if (isAppleTouchDevice) {
       window.scroll(scroll.x, scroll.y);
     }
 
-    window.dispatchEvent(new CustomEvent('bodyScrollUnlock', {
+    window.dispatchEvent(new BodyScrollEvent("bodyScrollUnlock", {
       detail: {
         clientWidth: clientWidth,
         scrollbarWidth: scrollbarWidth
@@ -136,11 +151,11 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       return;
     }
 
-    clientWidth = document.documentElement.clientWidth;
+    clientWidth = $html.clientWidth;
     printResizableRules();
   };
 
-  document.addEventListener('resize', resize);
+  document.addEventListener("resize", resize);
   var bodyScroll = {
     lock: lock,
     unlock: unlock,

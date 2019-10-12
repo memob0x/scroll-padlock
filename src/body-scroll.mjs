@@ -1,6 +1,6 @@
-import { lock, unlock, isLocked, resize } from './body-scroll.core.mjs';
+import { lock, unlock, isLocked, resize } from "./body-scroll.core.mjs";
 
-document.addEventListener('resize', resize);
+document.addEventListener("resize", resize);
 
 export default {
     lock: lock,

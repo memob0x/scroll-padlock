@@ -1,11 +1,12 @@
 import {
     $head,
+    $html,
+    $body,
     $stylerBase,
     $stylerResizable,
-    isAppleTouchDevice
-} from './body-scroll.client.mjs';
-
-const IMPORTANT_STATEMENT = '!important';
+    isAppleTouchDevice,
+    BodyScrollEvent
+} from "./body-scroll.client.mjs";
 
 let status = false;
 let scroll = {
@@ -16,42 +17,40 @@ let scrollbarWidth = 0;
 let clientWidth = 0;
 
 const getBaseRules = () => {
-    let output = '';
-    output = ' html,';
-    output += 'body {';
-    output += 'height: auto' + IMPORTANT_STATEMENT + ';';
-    output += 'margin: 0' + IMPORTANT_STATEMENT + ';';
-    output +=
-        'padding: 0 ' + scrollbarWidth + 'px 0 0' + IMPORTANT_STATEMENT + ';';
-    output += '}';
+    let output = `html, body {
+        height: auto!important;
+        margin: 0!important;
+        padding: 0 ${scrollbarWidth}px 0 0!important;
+    }`;
 
     if (isAppleTouchDevice) {
-        output += 'html {';
-        output += 'position: fixed' + IMPORTANT_STATEMENT + ';';
-        output += 'top: ' + -1 * scroll.y + 'px' + IMPORTANT_STATEMENT + ';';
-        output += 'left: ' + -1 * scroll.x + 'px' + IMPORTANT_STATEMENT + ';';
-        output += 'overflow: visible' + IMPORTANT_STATEMENT + ';';
-        output += '}';
+        output += `html {
+            position: fixed!important;
+            top: ${-1 * scroll.y}px!important;
+            left: ${-1 * scroll.x}px!important;
+            overflow: visible!important;
+        }`;
     } else {
-        output += 'body {';
-        output += 'overflow: hidden' + IMPORTANT_STATEMENT + ';';
-        output += '}';
+        output += `body {
+            overflow: hidden!important;
+        }`;
     }
 
     return output;
 };
 
 const getResizableRules = () => {
-    let output = '';
-    output = ' html,';
-    output += 'body {';
-    output += 'width: ' + clientWidth + 'px' + IMPORTANT_STATEMENT + ';';
-    output += '}';
-    return output;
+    return `html, body {
+        width: ${clientWidth}px!important;
+    }`;
 };
 
 const printRules = ($actor, rules) => {
-    $actor.innerHTML = rules;
+    if ($actor.styleSheet) {
+        $actor.styleSheet.cssText = rules;
+    } else {
+        $actor.appendChild(document.createTextNode(rules));
+    }
 
     if ($actor.parentNode !== $head) {
         $head.append($actor);
@@ -77,16 +76,15 @@ export const lock = () => {
         y: window.scrollY
     };
 
-    const _clientWidth = document.documentElement.clientWidth;
-    document.body.style.width = document.body.clientWidth + 'px';
-    document.documentElement.style.overflow = 'hidden';
-    clientWidth = document.documentElement.clientWidth;
+    const _clientWidth = $html.clientWidth;
+    $body.style.width = $body.clientWidth + "px";
+    $html.style.overflow = "hidden";
+    clientWidth = $html.clientWidth;
     scrollbarWidth = clientWidth - _clientWidth;
-    document.body.style.width = '';
-    document.documentElement.style.overflow = '';
+    $body.style.width = "";
+    $html.style.overflow = "";
 
     printBaseRules();
-
     printResizableRules();
 
     if (isAppleTouchDevice) {
@@ -94,7 +92,7 @@ export const lock = () => {
     }
 
     window.dispatchEvent(
-        new CustomEvent('bodyScrollLock', {
+        new BodyScrollEvent("bodyScrollLock", {
             detail: {
                 clientWidth: clientWidth,
                 scrollbarWidth: scrollbarWidth
@@ -112,15 +110,15 @@ export const unlock = () => {
 
     status = false;
 
-    $stylerBase.innerHTML = '';
-    $stylerResizable.innerHTML = '';
+    $stylerBase.innerHTML = "";
+    $stylerResizable.innerHTML = "";
 
     if (isAppleTouchDevice) {
         window.scroll(scroll.x, scroll.y);
     }
 
     window.dispatchEvent(
-        new CustomEvent('bodyScrollUnlock', {
+        new BodyScrollEvent("bodyScrollUnlock", {
             detail: {
                 clientWidth: clientWidth,
                 scrollbarWidth: scrollbarWidth
@@ -136,7 +134,7 @@ export const resize = () => {
         return;
     }
 
-    clientWidth = document.documentElement.clientWidth;
+    clientWidth = $html.clientWidth;
 
     printResizableRules();
 };
