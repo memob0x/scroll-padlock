@@ -54,12 +54,19 @@ window.addEventListener('bodyScrollUnlock', () =>
 
 ## The scrollbar width issue
 
-Browsers which provide a system scrollbar have always experienced that unpleasant "jump" effect when hiding it, this library doesn't do anything obtrusive to solve this problem, but lets you take care of that in the way you like exposing the exact scrollbar size in the above-mentioned events.
+The lock method internally takes care of the infamous unpleasant flickering effect you get when you put overflow: hidden; on the body element (causing the scrollbar to disappear, and the body itself to widen), but you may still experience it on some right-aligned fixed elements in your page.
+This library doesn't do anything obtrusive to solve this problem for those elements, but lets you take care of them in the way you like exposing the exact scrollbar size in the above-mentioned events.
 
 ```javascript
-window.addEventListener('bodyScrollLock', event =>
-    console.log('Indent right-aligned elements ' + event.detail.scrollbarWith)
-);
+const $aside = document.querySelector('aside#fixed-right');
+
+window.addEventListener('bodyScrollLock', event => {
+    $aside.style.marginRight = event.detail.scrollbarWith + 'px';
+});
+
+window.addEventListener('bodyScrollUnlock', event => {
+    $aside.style.marginRight = '';
+});
 ```
 
 ## Demo
