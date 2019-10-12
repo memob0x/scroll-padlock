@@ -1,2 +1,1 @@
 -   use CSSStyleSheet API
--   JSDoc

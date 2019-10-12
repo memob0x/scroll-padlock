@@ -8,6 +8,7 @@ import {
     BodyScrollEvent
 } from "./body-scroll.client.mjs";
 
+// local vars
 let status = false;
 let scroll = {
     x: 0,
@@ -16,6 +17,10 @@ let scroll = {
 let scrollbarWidth = 0;
 let clientWidth = 0;
 
+/**
+ * Gets the CSS rules that can't be influenced by a window resize
+ * @returns {string} CSS rules
+ */
 const getBaseRules = () => {
     let output = `html, body {
         height: auto!important;
@@ -39,12 +44,21 @@ const getBaseRules = () => {
     return output;
 };
 
+/**
+ * Gets the CSS rules that can be influenced by a window resize
+ * @returns {string} CSS rules
+ */
 const getResizableRules = () => {
     return `html, body {
         width: ${clientWidth}px!important;
     }`;
 };
 
+/**
+ * Sets some CSS rules to a style element
+ * @param {HTMLElement} $actor A style element
+ * @param {string} rules The CSS rules
+ */
 const printRules = ($actor, rules) => {
     if ($actor.styleSheet) {
         $actor.styleSheet.cssText = rules;
@@ -57,13 +71,34 @@ const printRules = ($actor, rules) => {
     }
 };
 
+// shorthand style printers
 const printBaseRules = () => printRules($stylerBase, getBaseRules());
-
 const printResizableRules = () =>
     printRules($stylerResizable, getResizableRules());
 
+/**
+ * Resize handler to refresh the CSS rules when body scroll is locked
+ */
+const resize = () => {
+    if (!status) {
+        return;
+    }
+
+    clientWidth = $html.clientWidth;
+
+    printResizableRules();
+};
+
+/**
+ * Returns whether the body scroll is locked or not
+ * @returns {boolean} The body scroll lock state
+ */
 export const isLocked = () => status;
 
+/**
+ * Locks the body scroll
+ * @returns {boolean} Whether the lock action has been successful of not
+ */
 export const lock = () => {
     if (status) {
         return false;
@@ -71,10 +106,12 @@ export const lock = () => {
 
     status = true;
 
-    scroll = {
-        x: window.scrollX,
-        y: window.scrollY
-    };
+    if (isAppleTouchDevice) {
+        scroll = {
+            x: window.scrollX,
+            y: window.scrollY
+        };
+    }
 
     const _clientWidth = $html.clientWidth;
     $body.style.width = $body.clientWidth + "px";
@@ -100,9 +137,15 @@ export const lock = () => {
         })
     );
 
+    document.addEventListener("resize", resize);
+
     return true;
 };
 
+/**
+ * Unlocks the body scroll
+ * @returns {boolean} Whether the unlock action has been successful of not
+ */
 export const unlock = () => {
     if (!status) {
         return false;
@@ -126,15 +169,7 @@ export const unlock = () => {
         })
     );
 
+    document.removeEventListener("resize", resize);
+
     return true;
-};
-
-export const resize = () => {
-    if (!status) {
-        return;
-    }
-
-    clientWidth = $html.clientWidth;
-
-    printResizableRules();
 };

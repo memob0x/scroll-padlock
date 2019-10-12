@@ -87,6 +87,15 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     return printRules($stylerResizable, getResizableRules());
   };
 
+  var resize = function resize() {
+    if (!status) {
+      return;
+    }
+
+    clientWidth = $html.clientWidth;
+    printResizableRules();
+  };
+
   var isLocked = function isLocked() {
     return status;
   };
@@ -97,10 +106,14 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     }
 
     status = true;
-    scroll = {
-      x: window.scrollX,
-      y: window.scrollY
-    };
+
+    if (isAppleTouchDevice) {
+      scroll = {
+        x: window.scrollX,
+        y: window.scrollY
+      };
+    }
+
     var _clientWidth = $html.clientWidth;
     $body.style.width = $body.clientWidth + "px";
     $html.style.overflow = "hidden";
@@ -121,6 +134,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         scrollbarWidth: scrollbarWidth
       }
     }));
+    document.addEventListener("resize", resize);
     return true;
   };
 
@@ -143,27 +157,17 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         scrollbarWidth: scrollbarWidth
       }
     }));
+    document.removeEventListener("resize", resize);
     return true;
   };
 
-  var resize = function resize() {
-    if (!status) {
-      return;
-    }
-
-    clientWidth = $html.clientWidth;
-    printResizableRules();
-  };
-
-  document.addEventListener("resize", resize);
   var bodyScroll = {
     lock: lock,
     unlock: unlock,
     toggle: function toggle() {
       return !isLocked() ? lock() : unlock();
     },
-    isLocked: isLocked,
-    update: resize
+    isLocked: isLocked
   };
   return bodyScroll;
 });

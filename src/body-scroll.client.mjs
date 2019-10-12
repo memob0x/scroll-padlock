@@ -1,16 +1,18 @@
+// main elements
 export const $head = document.head;
 export const $html = document.documentElement;
 export const $body = document.body;
 
+// stylers
 const createStyle = () => {
     const $el = document.createElement("style");
     $el.type = "text/css";
     return $el;
 };
-
 export const $stylerBase = createStyle();
 export const $stylerResizable = createStyle();
 
+// Apple devices recognition
 const isLegacyIOS = /iPad|iPhone|iPod/.test(window.navigator.userAgent);
 const isMultiTouchMacAkaIOS13 =
     window.navigator.platform === "MacIntel" &&
