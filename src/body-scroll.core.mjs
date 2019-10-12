@@ -95,8 +95,10 @@ export const lock = () => {
 
     window.dispatchEvent(
         new CustomEvent('bodyScrollLock', {
-            clientWidth: clientWidth,
-            scrollbarWidth: scrollbarWidth
+            detail: {
+                clientWidth: clientWidth,
+                scrollbarWidth: scrollbarWidth
+            }
         })
     );
 
@@ -119,8 +121,10 @@ export const unlock = () => {
 
     window.dispatchEvent(
         new CustomEvent('bodyScrollUnlock', {
-            clientWidth: clientWidth,
-            scrollbarWidth: scrollbarWidth
+            detail: {
+                clientWidth: clientWidth,
+                scrollbarWidth: scrollbarWidth
+            }
         })
     );
 

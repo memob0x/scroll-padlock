@@ -101,8 +101,10 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     }
 
     window.dispatchEvent(new CustomEvent('bodyScrollLock', {
-      clientWidth: clientWidth,
-      scrollbarWidth: scrollbarWidth
+      detail: {
+        clientWidth: clientWidth,
+        scrollbarWidth: scrollbarWidth
+      }
     }));
     return true;
   };
@@ -121,8 +123,10 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     }
 
     window.dispatchEvent(new CustomEvent('bodyScrollUnlock', {
-      clientWidth: clientWidth,
-      scrollbarWidth: scrollbarWidth
+      detail: {
+        clientWidth: clientWidth,
+        scrollbarWidth: scrollbarWidth
+      }
     }));
     return true;
   };

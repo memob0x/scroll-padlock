@@ -52,6 +52,16 @@ window.addEventListener('bodyScrollUnlock', () =>
 );
 ```
 
+## The scrollbar width issue
+
+Browsers which provide a system scrollbar have always experienced that unpleasant "jump" effect when hiding it, this library doesn't do anything obtrusive to solve this problem, but lets you take care of that in the way you like exposing the exact scrollbar size in the above-mentioned events.
+
+```javascript
+window.addEventListener('bodyScrollLock', event =>
+    console.log('Indent right-aligned elements ' + event.detail.scrollbarWith)
+);
+```
+
 ## Demo
 
 Have a look at this [demo](https://memob0x.github.io/body-scroll-lock/demo/) to check if this is what you're looking for. 🤞
