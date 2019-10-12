@@ -1,5 +1,16 @@
 {
-    "presets": ["@babel/env"],
-    "plugins": ["@babel/proposal-object-rest-spread", "@babel/plugin-transform-classes"],
+    "presets": [
+        [
+            "@babel/env",
+            {
+                "corejs": "2",
+                "useBuiltIns": "entry"
+            }
+        ]
+    ],
+    "plugins": [
+        "@babel/proposal-object-rest-spread",
+        "@babel/plugin-transform-classes"
+    ],
     "comments": false
 }

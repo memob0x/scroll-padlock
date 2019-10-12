@@ -18,22 +18,46 @@ const sourcemapsOptions = {
 const styles = done =>
     pump(
         [
-            gulp.src('./demo/*.scss'),
+            gulp.src('./demo/src/*.scss'),
 
             sourcemaps.init(sourcemapsOptions),
 
             sass({
-                outputStyle: 'expanded'
+                outputStyle: 'compressed'
             }).on('error', err => console.log(err)),
 
             postcss([autoprefixer()]).on('error', err => console.log(err)),
 
             sourcemaps.write('.'),
 
-            gulp.dest('./demo/')
+            gulp.dest('./demo/dist')
         ],
         done
     );
+
+const scripts = done => {
+    return pump(
+        [
+            gulp.src('./demo/src/*.js'),
+
+            sourcemaps.init(sourcemapsOptions),
+
+            babel().on('error', err => console.log(err)),
+
+            minify({
+                ext: {
+                    min: '.js'
+                },
+                noSource: true
+            }),
+
+            sourcemaps.write('.'),
+
+            gulp.dest('./demo/dist/')
+        ],
+        done
+    );
+};
 
 const library = done => {
     const source = './src/body-scroll.{mjs,js}';
@@ -52,10 +76,7 @@ const library = done => {
                 }
             ).on('error', err => console.log(err)),
 
-            babel({
-                ignore: ['node_modules/', 'dist/'],
-                babelrcRoots: ['../../']
-            }).on('error', err => console.log(err)),
+            babel().on('error', err => console.log(err)),
 
             minify({ ext: { min: '.min.js' } }),
 
@@ -67,4 +88,4 @@ const library = done => {
     );
 };
 
-gulp.task('default', gulp.parallel(library, styles));
+gulp.task('default', gulp.parallel(library, scripts, styles));
