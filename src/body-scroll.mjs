@@ -6,5 +6,6 @@ export default {
     lock: lock,
     unlock: unlock,
     toggle: () => (!isLocked() ? lock() : unlock()),
-    isLocked: isLocked
+    isLocked: isLocked,
+    update: resize
 };

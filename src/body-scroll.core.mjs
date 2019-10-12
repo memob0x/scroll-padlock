@@ -12,7 +12,7 @@ let scroll = {
     x: 0,
     y: 0
 };
-let scrollBarWidth = 0;
+let scrollbarWidth = 0;
 let clientWidth = 0;
 
 const getBaseRules = () => {
@@ -22,7 +22,7 @@ const getBaseRules = () => {
     output += 'height: auto' + IMPORTANT_STATEMENT + ';';
     output += 'margin: 0' + IMPORTANT_STATEMENT + ';';
     output +=
-        'padding: 0 ' + scrollBarWidth + 'px 0 0' + IMPORTANT_STATEMENT + ';';
+        'padding: 0 ' + scrollbarWidth + 'px 0 0' + IMPORTANT_STATEMENT + ';';
     output += '}';
 
     if (isAppleTouchDevice) {
@@ -81,7 +81,7 @@ export const lock = () => {
     document.body.style.width = document.body.clientWidth + 'px';
     document.documentElement.style.overflow = 'hidden';
     clientWidth = document.documentElement.clientWidth;
-    scrollBarWidth = clientWidth - _clientWidth;
+    scrollbarWidth = clientWidth - _clientWidth;
     document.body.style.width = '';
     document.documentElement.style.overflow = '';
 
@@ -92,6 +92,13 @@ export const lock = () => {
     if (isAppleTouchDevice) {
         window.scroll(0, 0);
     }
+
+    window.dispatchEvent(
+        new CustomEvent('bodyScrollLock', {
+            clientWidth: clientWidth,
+            scrollbarWidth: scrollbarWidth
+        })
+    );
 
     return true;
 };
@@ -109,6 +116,13 @@ export const unlock = () => {
     if (isAppleTouchDevice) {
         window.scroll(scroll.x, scroll.y);
     }
+
+    window.dispatchEvent(
+        new CustomEvent('bodyScrollUnlock', {
+            clientWidth: clientWidth,
+            scrollbarWidth: scrollbarWidth
+        })
+    );
 
     return true;
 };
