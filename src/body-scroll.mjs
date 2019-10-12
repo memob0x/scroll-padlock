@@ -1,10 +1,10 @@
-let status = false;
-const lock = () => {}
-const unlock = () => {}
+import { lock, unlock, isLocked, resize } from './body-scroll.core.mjs';
+
+document.addEventListener('resize', resize);
 
 export default {
     lock: lock,
     unlock: unlock,
-    toggle: () => (!status ? lock() : unlock()),
-    isLocked: () => status
+    toggle: () => (!isLocked() ? lock() : unlock()),
+    isLocked: isLocked
 };
