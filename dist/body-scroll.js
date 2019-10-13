@@ -11,15 +11,26 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   var $html = document.documentElement;
   var $body = document.body;
   var $style = document.createElement("style");
-  var isLegacyIOS = /iPad|iPhone|iPod/.test(window.navigator.userAgent);
-  var isMultiTouchMacAkaIOS13 = window.navigator.platform === "MacIntel" && window.navigator.maxTouchPoints > 1;
-  var isAppleTouchDevice = isLegacyIOS || isMultiTouchMacAkaIOS13;
+
+  var isAppleTouchDevice = function isAppleTouchDevice() {
+    var userAgent = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : window.navigator.userAgent;
+    var platform = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : window.navigator.platform;
+    var maxTouchPoints = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : window.navigator.maxTouchPoints;
+    var isLegacyIOS = /iPad|iPhone|iPod/.test(userAgent);
+    var isMultiTouchMacAkaIOS13 = platform === "MacIntel" && maxTouchPoints > 1;
+    return isLegacyIOS || isMultiTouchMacAkaIOS13;
+  };
+
+  var shouldUsePositionFixedTechnique = isAppleTouchDevice();
   var scrollPosition = {
     x: 0,
     y: 0
   };
   var scrollbarWidth = 0;
   var clientWidth = 0;
+  var options = {
+    alwaysUsePositionFixedTechnique: false
+  };
 
   var isStyleElementInHead = function isStyleElementInHead() {
     return $style.parentNode === $head;
@@ -43,7 +54,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   var insertBaseRules = function insertBaseRules() {
     insertIndexedRule("html, body {\n            height: auto!important;\n            margin: 0!important;\n            padding: 0 ".concat(scrollbarWidth, "px 0 0!important;\n        }"), 0);
 
-    if (isAppleTouchDevice) {
+    if (shouldUsePositionFixedTechnique || options.alwaysUsePositionFixedTechnique) {
       insertIndexedRule("html {\n                position: fixed!important;\n                top: ".concat(-1 * scrollPosition.y, "px!important;\n                left: ").concat(-1 * scrollPosition.x, "px!important;\n                overflow: visible!important;\n            }"), 1);
     } else {
       insertIndexedRule("body {\n                overflow: hidden!important;\n            }", 1);
@@ -68,7 +79,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       return false;
     }
 
-    if (isAppleTouchDevice) {
+    if (shouldUsePositionFixedTechnique || options.alwaysUsePositionFixedTechnique) {
       scrollPosition = {
         x: window.scrollX,
         y: window.scrollY
@@ -86,7 +97,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     insertResizableRules();
     $style.disabled = false;
 
-    if (isAppleTouchDevice) {
+    if (shouldUsePositionFixedTechnique || options.alwaysUsePositionFixedTechnique) {
       window.scroll(0, 0);
     }
 
@@ -107,7 +118,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
     $style.disabled = true;
 
-    if (isAppleTouchDevice) {
+    if (shouldUsePositionFixedTechnique || options.alwaysUsePositionFixedTechnique) {
       window.scroll(scrollPosition.x, scrollPosition.y);
     }
 
@@ -121,13 +132,20 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     return true;
   };
 
+  var setOption = function setOption(name, value) {
+    if (name in options && _typeof(value) === _typeof(options[name])) {
+      options[name] = value;
+    }
+  };
+
   var bodyScroll = {
     lock: lock,
     unlock: unlock,
     toggle: function toggle() {
       return !isLocked() ? lock() : unlock();
     },
-    isLocked: isLocked
+    isLocked: isLocked,
+    setOption: setOption
   };
   return bodyScroll;
 });

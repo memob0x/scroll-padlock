@@ -1,12 +1,4 @@
-let lib;
-
-before(() => {
-    lib = window.bodyScroll;
-});
-
-after(() => {
-    lib = null;
-});
+import bodyScroll from "../src/body-scroll.mjs";
 
 describe("On standard browsers", () => {
     it("should print minimalistic css rules on lock", done => {

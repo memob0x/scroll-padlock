@@ -1,3 +1,5 @@
+import bodyScroll from "../src/body-scroll.mjs";
+
 describe("An event", () => {
     it("should be dispatched on lock", done => {
         // TODO:
