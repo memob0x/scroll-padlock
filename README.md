@@ -43,31 +43,35 @@ window.bodyScroll.toggle(); // locks if unlocked, unlocks if locked!
 Get notified when scroll **state changes** listening to `bodyScrollLock` and `bodyScrollUnlock` **events**.
 
 ```javascript
-window.addEventListener('bodyScrollLock', () =>
-    console.log('Body scroll has been locked')
+window.addEventListener("bodyScrollLock", () =>
+    console.log("Body scroll has been locked")
 );
 
-window.addEventListener('bodyScrollUnlock', () =>
-    console.log('Body scroll has been unlocked')
+window.addEventListener("bodyScrollUnlock", () =>
+    console.log("Body scroll has been unlocked")
 );
 ```
 
 ## The scrollbar width issue on right-aligned position elements
 
-The lock method internally takes care of the infamous unpleasant flickering effect you get when you put overflow: hidden; on the body element (causing the scrollbar to disappear, and the body itself to widen), but _you may still experience it on some right-aligned positioned elements_ in your page.
-This library doesn't do anything obtrusive to solve this problem, but offers you a handy way to take care of them in the way you like, exposing the exact scrollbar size in the above-mentioned events.
+The lock method internally takes care of the infamous unpleasant flickering effect you get when you put overflow: hidden; on the body element (causing the scrollbar to disappear, and the body itself to widen), but _you may still experience it on some right-aligned positioned elements_ of your page.
+This library doesn't do anything obtrusive to solve this problem, but offers you a handy way to take care of them, exposing the exact scrollbar size in the above-mentioned events you'll be able to manually adjust their position in the way you prefer.
 
 ```javascript
-const $aside = document.querySelector('aside#fixed-right');
+const $aside = document.querySelector("aside#right-positioned");
 
-window.addEventListener('bodyScrollLock', event => {
-    $aside.style.marginRight = event.detail.scrollbarWith + 'px';
+window.addEventListener("bodyScrollLock", event => {
+    $aside.style.marginRight = event.detail.scrollbarWith + "px";
 });
 
-window.addEventListener('bodyScrollUnlock', event => {
-    $aside.style.marginRight = '';
+window.addEventListener("bodyScrollUnlock", event => {
+    $aside.style.marginRight = "";
 });
 ```
+
+## Support
+
+All [modern browsers](https://teamtreehouse.com/community/what-is-a-modern-browser) have been tested; to support _Internet Explorer 11_ you will need to include a [CustomEvent](https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent/CustomEvent#Polyfill) polyfill.
 
 ## Demo
 
