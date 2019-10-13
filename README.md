@@ -26,7 +26,7 @@ To **unlock** it, call the `unlock` one.
 window.bodyScroll.unlock(); // scroll free, little bird.
 ```
 
-The main aim during the writing of this code was to be as seamless as possible, so, without the use of any css class, inline style or element attribute, the only built-in way to keep track of the current **lock status** is to call the `isLocked` method.
+The main aim during the writing of this code was to be the less obtrusive as possible, so, without the use of any css class, inline style or element attribute, the only built-in way to keep track of the current **lock status** is to call the `isLocked` method.
 
 ```javascript
 window.bodyScroll.isLocked(); // true when locked...
@@ -52,10 +52,10 @@ window.addEventListener('bodyScrollUnlock', () =>
 );
 ```
 
-## The scrollbar width issue
+## The scrollbar width issue on right-aligned position elements
 
-The lock method internally takes care of the infamous unpleasant flickering effect you get when you put overflow: hidden; on the body element (causing the scrollbar to disappear, and the body itself to widen), but you may still experience it on some right-aligned fixed elements in your page.
-This library doesn't do anything obtrusive to solve this problem for those elements, but lets you take care of them in the way you like exposing the exact scrollbar size in the above-mentioned events.
+The lock method internally takes care of the infamous unpleasant flickering effect you get when you put overflow: hidden; on the body element (causing the scrollbar to disappear, and the body itself to widen), but _you may still experience it on some right-aligned positioned elements_ in your page.
+This library doesn't do anything obtrusive to solve this problem, but offers you a handy way to take care of them in the way you like, exposing the exact scrollbar size in the above-mentioned events.
 
 ```javascript
 const $aside = document.querySelector('aside#fixed-right');

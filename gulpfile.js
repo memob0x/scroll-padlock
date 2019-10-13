@@ -1,42 +1,69 @@
-'use strict';
+"use strict";
 
-const gulp = require('gulp');
-const pump = require('pump');
-const rollup = require('gulp-better-rollup');
-const sourcemaps = require('gulp-sourcemaps');
-const babel = require('gulp-babel');
-const sass = require('gulp-sass');
-const postcss = require('gulp-postcss');
-const autoprefixer = require('autoprefixer');
-const minify = require('gulp-minify');
+const gulp = require("gulp");
+const pump = require("pump");
+const rollup = require("gulp-better-rollup");
+const sourcemaps = require("gulp-sourcemaps");
+const babel = require("gulp-babel");
+const sass = require("gulp-sass");
+const postcss = require("gulp-postcss");
+const autoprefixer = require("autoprefixer");
+const minify = require("gulp-minify");
 
 const sourcemapsOptions = {
     loadMaps: false,
     largeFile: false
 };
 
+const LIB = "./";
+const DEMO = "./demo";
+
 const styles = done =>
     pump(
         [
-            gulp.src('./demo/*.scss'),
+            gulp.src(`${DEMO}/src/*.scss`),
 
             sourcemaps.init(sourcemapsOptions),
 
             sass({
-                outputStyle: 'expanded'
-            }).on('error', err => console.log(err)),
+                outputStyle: "compressed"
+            }).on("error", err => console.log(err)),
 
-            postcss([autoprefixer()]).on('error', err => console.log(err)),
+            postcss([autoprefixer()]).on("error", err => console.log(err)),
 
-            sourcemaps.write('.'),
+            sourcemaps.write("."),
 
-            gulp.dest('./demo/')
+            gulp.dest(`${DEMO}/dist`)
         ],
         done
     );
 
+const scripts = done => {
+    return pump(
+        [
+            gulp.src(`${DEMO}/src/*.js`),
+
+            sourcemaps.init(sourcemapsOptions),
+
+            babel().on("error", err => console.log(err)),
+
+            minify({
+                ext: {
+                    min: ".js"
+                },
+                noSource: true
+            }),
+
+            sourcemaps.write("."),
+
+            gulp.dest(`${DEMO}/dist/`)
+        ],
+        done
+    );
+};
+
 const library = done => {
-    const source = './src/body-scroll.{mjs,js}';
+    const source = `${LIB}src/body-scroll.{mjs,js}`;
 
     return pump(
         [
@@ -47,24 +74,21 @@ const library = done => {
             rollup(
                 {},
                 {
-                    format: 'umd',
-                    name: 'bodyScroll'
+                    format: "umd",
+                    name: "bodyScroll"
                 }
-            ).on('error', err => console.log(err)),
+            ).on("error", err => console.log(err)),
 
-            babel({
-                ignore: ['node_modules/', 'dist/'],
-                babelrcRoots: ['../../']
-            }).on('error', err => console.log(err)),
+            babel().on("error", err => console.log(err)),
 
-            minify({ ext: { min: '.min.js' } }),
+            minify({ ext: { min: ".min.js" } }),
 
-            sourcemaps.write('.'),
+            sourcemaps.write("."),
 
-            gulp.dest('./dist/')
+            gulp.dest(`${LIB}dist/`)
         ],
         done
     );
 };
 
-gulp.task('default', gulp.parallel(library, styles));
+gulp.task("default", gulp.parallel(library, scripts, styles));
