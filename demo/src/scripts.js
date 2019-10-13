@@ -5,13 +5,13 @@ const log = (...message) => {
     console.log && console.log(...message);
 
     if (!$console.hasChildNodes()) {
-        $console.append(document.createElement("ol"));
+        $console.appendChild(document.createElement("ol"));
     }
 
     const $ol = $console.querySelector("ol");
     const $li = document.createElement("li");
     $li.innerHTML = message;
-    $ol.append($li);
+    $ol.appendChild($li);
 
     $console.scrollTop = $ol.offsetHeight;
 };

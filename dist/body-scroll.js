@@ -10,105 +10,66 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   var $head = document.head;
   var $html = document.documentElement;
   var $body = document.body;
-
-  var createStyle = function createStyle() {
-    var $el = document.createElement("style");
-    $el.type = "text/css";
-    return $el;
-  };
-
-  var $stylerBase = createStyle();
-  var $stylerResizable = createStyle();
+  var $style = document.createElement("style");
   var isLegacyIOS = /iPad|iPhone|iPod/.test(window.navigator.userAgent);
   var isMultiTouchMacAkaIOS13 = window.navigator.platform === "MacIntel" && window.navigator.maxTouchPoints > 1;
   var isAppleTouchDevice = isLegacyIOS || isMultiTouchMacAkaIOS13;
-
-  var BodyScrollEvent = function () {
-    if (typeof window.CustomEvent === "function") {
-      return window.CustomEvent;
-    }
-
-    function CustomEvent(event, params) {
-      params = params || {
-        bubbles: false,
-        cancelable: false,
-        detail: undefined
-      };
-      var evt = document.createEvent("CustomEvent");
-      evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
-      return evt;
-    }
-
-    CustomEvent.prototype = window.Event.prototype;
-    return CustomEvent;
-  }();
-
-  var status = false;
-  var scroll = {
+  var scrollPosition = {
     x: 0,
     y: 0
   };
   var scrollbarWidth = 0;
   var clientWidth = 0;
 
-  var getBaseRules = function getBaseRules() {
-    var output = "html, body {\n        height: auto!important;\n        margin: 0!important;\n        padding: 0 ".concat(scrollbarWidth, "px 0 0!important;\n    }");
+  var isStyleElementInHead = function isStyleElementInHead() {
+    return $style.parentNode === $head;
+  };
+
+  var insertIndexedRule = function insertIndexedRule() {
+    var rule = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
+    var index = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+
+    if (!isStyleElementInHead()) {
+      $head.appendChild($style);
+    }
+
+    if ($style.sheet.cssRules[index]) {
+      $style.sheet.deleteRule(index);
+    }
+
+    $style.sheet.insertRule(rule, index);
+  };
+
+  var insertBaseRules = function insertBaseRules() {
+    insertIndexedRule("html, body {\n            height: auto!important;\n            margin: 0!important;\n            padding: 0 ".concat(scrollbarWidth, "px 0 0!important;\n        }"), 0);
 
     if (isAppleTouchDevice) {
-      output += "html {\n            position: fixed!important;\n            top: ".concat(-1 * scroll.y, "px!important;\n            left: ").concat(-1 * scroll.x, "px!important;\n            overflow: visible!important;\n        }");
+      insertIndexedRule("html {\n                position: fixed!important;\n                top: ".concat(-1 * scrollPosition.y, "px!important;\n                left: ").concat(-1 * scrollPosition.x, "px!important;\n                overflow: visible!important;\n            }"), 1);
     } else {
-      output += "body {\n            overflow: hidden!important;\n        }";
-    }
-
-    return output;
-  };
-
-  var getResizableRules = function getResizableRules() {
-    return "html, body {\n        width: ".concat(clientWidth, "px!important;\n    }");
-  };
-
-  var printRules = function printRules($actor, rules) {
-    if ($actor.styleSheet) {
-      $actor.styleSheet.cssText = rules;
-    } else {
-      $actor.appendChild(document.createTextNode(rules));
-    }
-
-    if ($actor.parentNode !== $head) {
-      $head.append($actor);
+      insertIndexedRule("body {\n                overflow: hidden!important;\n            }", 1);
     }
   };
 
-  var printBaseRules = function printBaseRules() {
-    return printRules($stylerBase, getBaseRules());
+  var insertResizableRules = function insertResizableRules() {
+    return insertIndexedRule("html, body {\n            width: ".concat(clientWidth, "px!important;\n        }"), 2);
   };
 
-  var printResizableRules = function printResizableRules() {
-    return printRules($stylerResizable, getResizableRules());
-  };
-
-  var resize = function resize() {
-    if (!status) {
-      return;
-    }
-
+  var resizeListener = function resizeListener() {
     clientWidth = $html.clientWidth;
-    printResizableRules();
+    insertResizableRules();
   };
 
   var isLocked = function isLocked() {
-    return status;
+    return isStyleElementInHead() && !$style.disabled;
   };
 
   var lock = function lock() {
-    if (status) {
+    if (isLocked()) {
       return false;
     }
 
-    status = true;
-
     if (isAppleTouchDevice) {
-      scroll = {
+      scrollPosition = {
         x: window.scrollX,
         y: window.scrollY
       };
@@ -121,43 +82,42 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     scrollbarWidth = clientWidth - _clientWidth;
     $body.style.width = "";
     $html.style.overflow = "";
-    printBaseRules();
-    printResizableRules();
+    insertBaseRules();
+    insertResizableRules();
+    $style.disabled = false;
 
     if (isAppleTouchDevice) {
       window.scroll(0, 0);
     }
 
-    window.dispatchEvent(new BodyScrollEvent("bodyScrollLock", {
+    window.dispatchEvent(new CustomEvent("bodyScrollLock", {
       detail: {
         clientWidth: clientWidth,
         scrollbarWidth: scrollbarWidth
       }
     }));
-    document.addEventListener("resize", resize);
+    window.addEventListener("resize", resizeListener);
     return true;
   };
 
   var unlock = function unlock() {
-    if (!status) {
+    if (!isLocked()) {
       return false;
     }
 
-    status = false;
-    $stylerBase.innerHTML = "";
-    $stylerResizable.innerHTML = "";
+    $style.disabled = true;
 
     if (isAppleTouchDevice) {
-      window.scroll(scroll.x, scroll.y);
+      window.scroll(scrollPosition.x, scrollPosition.y);
     }
 
-    window.dispatchEvent(new BodyScrollEvent("bodyScrollUnlock", {
+    window.dispatchEvent(new CustomEvent("bodyScrollUnlock", {
       detail: {
         clientWidth: clientWidth,
         scrollbarWidth: scrollbarWidth
       }
     }));
-    document.removeEventListener("resize", resize);
+    window.removeEventListener("resize", resizeListener);
     return true;
   };
 
