@@ -1,197 +1,169 @@
-html,
-body,
-p,
-ol,
-ul,
-li,
-dl,
-dt,
-dd,
-blockquote,
-figure,
-fieldset,
-legend,
-textarea,
-pre,
-iframe,
-hr,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-    margin: 0;
-    padding: 0;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
-        Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-    font-size: 16px;
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-    font-size: 100%;
-    font-weight: normal;
-}
-
-ul {
-    list-style: none;
-}
-
-button,
-input,
-select,
-textarea {
-    margin: 0;
-}
-
 html {
     box-sizing: border-box;
+    font-family: "Roboto Slab", serif;
+    font-size: 16px;
+    line-height: 27px;
+}
+
+body {
+    @extend .margin;
+}
+
+ul,
+ol,
+li {
+    list-style: none;
+    padding: 0;
+    margin: 0;
 }
 
 * {
-    box-sizing: inherit;
+    &,
     &:before,
     &:after {
         box-sizing: inherit;
     }
 }
 
-img,
-embed,
-iframe,
-object,
-audio,
-video {
-    height: auto;
-    max-width: 100%;
-}
-
-iframe {
-    border: 0;
-}
-
-table {
-    border-collapse: collapse;
-    border-spacing: 0;
-}
-
-td,
-th {
-    padding: 0;
-    text-align: left;
-}
-
-%console {
-    overflow-x: auto;
-    white-space: pre-wrap;
-    background: #000;
-    color: #fff;
-    font-family: Consolas, 'Andale Mono WT', 'Andale Mono', 'Lucida Console',
-        'Lucida Sans Typewriter', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono',
-        'Liberation Mono', 'Nimbus Mono L', Monaco, 'Courier New', Courier,
-        monospace;
-}
-
-pre {
-    @extend %console;
-}
-
-* {
-    box-sizing: border-box;
-}
-
-#console {
-    @extend %console;
-    width: 314px;
-    height: 153px;
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    opacity: 0.75;
-    max-width: 100%;
-
-    ul,
-    ol,
-    li {
-        list-style: none;
-    }
-
-    li {
-        margin: 10px;
-
-        &:before {
-            content: '$: ';
-        }
-    }
-
-    z-index: 5;
-}
-
-body {
-    background-color: #434343;
-
-    html.min-width & {
-        min-width: 1110px;
-    }
-
-    html.custom-scrollbar & {
-        &::-webkit-scrollbar {
-            width: 8px;
-        }
-        &::-webkit-scrollbar-track {
-            background: black;
-        }
-        &::-webkit-scrollbar-thumb {
-            background: grey;
-        }
-    }
-}
-
-#sticky {
-    position: sticky;
-    top: 0;
-    width: 120px;
-    background: red;
-    left: 0;
-    height: 60px;
-}
-
-#nav {
-    position: fixed;
-    top: 0;
-    right: 0;
-    z-index: 6;
-    text-align: right;
-
-    button {
-        appearance: none;
-        background: white;
-        margin: 2px;
-        border: 0 none;
-        outline: none;
-        color: black;
-        border-radius: 0;
-    }
-}
-
-#wrapper {
-    display: flex;
+.head {
+    @extend .flex;
+    @extend .sticky;
+    @extend .between;
     flex-direction: column;
 
-    html.horizontal & {
-        display: block;
-        white-space: nowrap;
+    @media (min-width: 500px) {
+        flex-direction: row;
+        height: 280px;
+    }
 
-        > div {
-            width: 420px;
-            display: inline-block;
-            white-space: normal;
-            vertical-align: top;
+    &__item {
+        @extend .padding;
+
+        @media (min-width: 500px) {
+            width: 50%;
         }
     }
+}
+
+.wrapper {
+    @media (min-width: 620px) {
+        max-width: 100%;
+        width: 620px;
+        margin: 0 auto;
+    }
+
+    @media (min-width: 1100px) {
+        width: 800px;
+    }
+}
+
+.nav {
+    &__list {
+        @extend .flex;
+        @extend .padding;
+        @extend .around;
+        background: red;
+        height: 100%;
+        flex-direction: column;
+    }
+
+    &__button {
+        padding: 11px 16px;
+        background: #636363;
+        border-radius: 0;
+        border: 1px solid #8e8e8e;
+        line-height: 24px;
+        outline: 1px solid #1d1d1d;
+        color: white;
+        text-shadow: 1px 1px 0px black;
+        font-size: inherit;
+        font-family: inherit;
+        cursor: pointer;
+    }
+}
+
+.custom-scrollbar {
+    &::-webkit-scrollbar {
+        width: 8px;
+    }
+    &::-webkit-scrollbar-track {
+        background: black;
+    }
+    &::-webkit-scrollbar-thumb {
+        background: grey;
+    }
+}
+
+.console {
+    @extend .flex;
+    flex-wrap: wrap;
+    font-size: 12px;
+    line-height: 18px;
+    height: 290px;
+    max-height: 100%;
+    white-space: pre-wrap;
+    color: #fff;
+    font-family: Consolas, "Andale Mono WT", "Andale Mono", "Lucida Console",
+        "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono",
+        "Liberation Mono", "Nimbus Mono L", Monaco, "Courier New", Courier,
+        monospace;
+
+    &__list {
+        @extend .flex;
+        flex-direction: column;
+        overflow-x: auto;
+        width: 100%;
+        height: 100%;
+        background: rgba(#000, 0.85);
+
+        &__item {
+            &,
+            &--placeholder {
+                margin: 4px 11px;
+
+                & {
+                    &:before {
+                        content: "$: ";
+                    }
+                }
+            }
+        }
+    }
+
+    &.head__item {
+        @media (max-height: 500px) {
+            height: 180px;
+        }
+    }
+}
+
+.text-justify {
+    text-align: justify;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.flex {
+    display: flex;
+}
+
+.between {
+    justify-content: space-between;
+}
+.around {
+    justify-content: space-around;
+}
+
+.margin {
+    margin: 20px;
+}
+.padding {
+    padding: 20px;
+}
+
+.sticky {
+    position: sticky;
+    top: 0;
 }

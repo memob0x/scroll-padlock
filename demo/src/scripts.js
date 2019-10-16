@@ -1,19 +1,24 @@
-const $html = document.documentElement;
-const $console = document.querySelector("#console");
+const $console = document.querySelector(".console");
 
 const log = (...message) => {
     console.log && console.log(...message);
 
-    if (!$console.hasChildNodes()) {
-        $console.appendChild(document.createElement("ol"));
+    let $ol = $console.querySelector("ol");
+
+    if (!$ol) {
+        $ol = document.createElement("ol");
+        $ol.classList.add("console__list");
+
+        $console.appendChild($ol);
     }
 
-    const $ol = $console.querySelector("ol");
     const $li = document.createElement("li");
+    $li.classList.add("console__list__item");
+
     $li.innerHTML = message;
     $ol.appendChild($li);
 
-    $console.scrollTop = $ol.offsetHeight;
+    $ol.scrollTo(0, $ol.scrollHeight);
 };
 
 document
@@ -24,14 +29,7 @@ document
     .querySelector("button.toggle-custom-scrollbar")
     .addEventListener("click", () => {
         log("toggling custom scrollbars");
-        $html.classList.toggle("custom-scrollbar");
-    });
-
-document
-    .querySelector("button.toggle-horizontal-orientation")
-    .addEventListener("click", () => {
-        log("toggling page orientation");
-        $html.classList.toggle("horizontal");
+        document.body.classList.toggle("custom-scrollbar");
     });
 
 window.addEventListener("bodyScrollLock", () => log("body scroll locked"));

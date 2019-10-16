@@ -3,7 +3,7 @@ import {
     $html,
     $body,
     $style,
-    isAppleTouchDevice
+    shouldUsePositionFixedTechnique
 } from "./body-scroll.client.mjs";
 
 let scrollPosition = {
@@ -12,6 +12,10 @@ let scrollPosition = {
 };
 let scrollbarWidth = 0;
 let clientWidth = 0;
+
+let options = {
+    alwaysUsePositionFixedTechnique: false
+};
 
 /**
  * Checks if the style element is in the tag head or not
@@ -41,17 +45,19 @@ const insertIndexedRule = (rule = "", index = 0) => {
  */
 const insertBaseRules = () => {
     insertIndexedRule(
-        `html, body {
-            height: auto!important;
-            margin: 0!important;
-            padding: 0 ${scrollbarWidth}px 0 0!important;
+        `html {
+            padding-right: ${scrollbarWidth}px!important;
         }`,
         0
     );
 
-    if (isAppleTouchDevice) {
+    if (
+        shouldUsePositionFixedTechnique ||
+        options.alwaysUsePositionFixedTechnique
+    ) {
         insertIndexedRule(
             `html {
+                height: auto!important;
                 position: fixed!important;
                 top: ${-1 * scrollPosition.y}px!important;
                 left: ${-1 * scrollPosition.x}px!important;
@@ -74,7 +80,7 @@ const insertBaseRules = () => {
  */
 const insertResizableRules = () =>
     insertIndexedRule(
-        `html, body {
+        `html {
             width: ${clientWidth}px!important;
         }`,
         2
@@ -104,7 +110,10 @@ export const lock = () => {
         return false;
     }
 
-    if (isAppleTouchDevice) {
+    if (
+        shouldUsePositionFixedTechnique ||
+        options.alwaysUsePositionFixedTechnique
+    ) {
         scrollPosition = {
             x: window.scrollX,
             y: window.scrollY
@@ -124,7 +133,10 @@ export const lock = () => {
 
     $style.disabled = false;
 
-    if (isAppleTouchDevice) {
+    if (
+        shouldUsePositionFixedTechnique ||
+        options.alwaysUsePositionFixedTechnique
+    ) {
         window.scroll(0, 0);
     }
 
@@ -153,7 +165,10 @@ export const unlock = () => {
 
     $style.disabled = true;
 
-    if (isAppleTouchDevice) {
+    if (
+        shouldUsePositionFixedTechnique ||
+        options.alwaysUsePositionFixedTechnique
+    ) {
         window.scroll(scrollPosition.x, scrollPosition.y);
     }
 
@@ -169,4 +184,10 @@ export const unlock = () => {
     window.removeEventListener("resize", resizeListener);
 
     return true;
+};
+
+export const setOption = (name, value) => {
+    if (name in options && typeof value === typeof options[name]) {
+        options[name] = value;
+    }
 };
