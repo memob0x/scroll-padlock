@@ -52,17 +52,17 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   };
 
   var insertBaseRules = function insertBaseRules() {
-    insertIndexedRule("html, body {\n            height: auto!important;\n            margin: 0!important;\n            padding: 0 ".concat(scrollbarWidth, "px 0 0!important;\n        }"), 0);
+    insertIndexedRule("html {\n            padding-right: ".concat(scrollbarWidth, "px!important;\n        }"), 0);
 
     if (shouldUsePositionFixedTechnique || options.alwaysUsePositionFixedTechnique) {
-      insertIndexedRule("html {\n                position: fixed!important;\n                top: ".concat(-1 * scrollPosition.y, "px!important;\n                left: ").concat(-1 * scrollPosition.x, "px!important;\n                overflow: visible!important;\n            }"), 1);
+      insertIndexedRule("html {\n                height: auto!important;\n                position: fixed!important;\n                top: ".concat(-1 * scrollPosition.y, "px!important;\n                left: ").concat(-1 * scrollPosition.x, "px!important;\n                overflow: visible!important;\n            }"), 1);
     } else {
       insertIndexedRule("body {\n                overflow: hidden!important;\n            }", 1);
     }
   };
 
   var insertResizableRules = function insertResizableRules() {
-    return insertIndexedRule("html, body {\n            width: ".concat(clientWidth, "px!important;\n        }"), 2);
+    return insertIndexedRule("html {\n            width: ".concat(clientWidth, "px!important;\n        }"), 2);
   };
 
   var resizeListener = function resizeListener() {

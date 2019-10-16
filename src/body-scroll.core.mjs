@@ -45,10 +45,8 @@ const insertIndexedRule = (rule = "", index = 0) => {
  */
 const insertBaseRules = () => {
     insertIndexedRule(
-        `html, body {
-            height: auto!important;
-            margin: 0!important;
-            padding: 0 ${scrollbarWidth}px 0 0!important;
+        `html {
+            padding-right: ${scrollbarWidth}px!important;
         }`,
         0
     );
@@ -59,6 +57,7 @@ const insertBaseRules = () => {
     ) {
         insertIndexedRule(
             `html {
+                height: auto!important;
                 position: fixed!important;
                 top: ${-1 * scrollPosition.y}px!important;
                 left: ${-1 * scrollPosition.x}px!important;
@@ -81,7 +80,7 @@ const insertBaseRules = () => {
  */
 const insertResizableRules = () =>
     insertIndexedRule(
-        `html, body {
+        `html {
             width: ${clientWidth}px!important;
         }`,
         2
