@@ -1,15 +1,17 @@
 import { $head, $html, $body, $style } from "./body-scroll.client.mjs";
 
-const SCROLL_Y_VAR_NAME = "--body-scroll-scroll-y";
-const SCROLLBAR_WIDTH_VAR_NAME = "--body-scroll-scrollbar-width";
+const CssVars = {
+    SCROLL_Y: "--body-scroll-scroll-y",
+    SCROLLBAR_WIDTH: "--body-scroll-scrollbar-width"
+};
 
 /**
  *
- * @param a
+ * @param state
  */
-const lckr = a => {
-    $body.style.width = !a ? `${$html.clientWidth}px` : "";
-    $html.style.overflow = !a ? "hidden" : "";
+const getClientWidth = locked => {
+    $body.style.width = locked ? `${$html.clientWidth}px` : "";
+    $html.style.overflow = locked ? "hidden" : "";
 
     return $html.clientWidth;
 };
@@ -43,8 +45,9 @@ const insertIndexedRule = (rule = "", index = 0) => {
 export const setCssVars = () => {
     insertIndexedRule(
         `:root {
-            ${SCROLL_Y_VAR_NAME}: ${window.scrollY}px;
-            ${SCROLLBAR_WIDTH_VAR_NAME}: ${lckr(0) - lckr(1)}px;
+            ${CssVars.SCROLL_Y}: ${window.scrollY}px;
+            ${CssVars.SCROLLBAR_WIDTH}: ${getClientWidth(true) -
+            getClientWidth(false)}px;
         }`
     );
 };

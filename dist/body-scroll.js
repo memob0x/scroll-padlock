@@ -11,12 +11,14 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   var $html = document.documentElement;
   var $body = document.body;
   var $style = document.createElement("style");
-  var SCROLL_Y_VAR_NAME = "--body-scroll-scroll-y";
-  var SCROLLBAR_WIDTH_VAR_NAME = "--body-scroll-scrollbar-width";
+  var CssVars = {
+    SCROLL_Y: "--body-scroll-scroll-y",
+    SCROLLBAR_WIDTH: "--body-scroll-scrollbar-width"
+  };
 
-  var lckr = function lckr(a) {
-    $body.style.width = !a ? "".concat($html.clientWidth, "px") : "";
-    $html.style.overflow = !a ? "hidden" : "";
+  var getClientWidth = function getClientWidth(locked) {
+    $body.style.width = locked ? "".concat($html.clientWidth, "px") : "";
+    $html.style.overflow = locked ? "hidden" : "";
     return $html.clientWidth;
   };
 
@@ -40,7 +42,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   };
 
   var setCssVars = function setCssVars() {
-    insertIndexedRule(":root {\n            ".concat(SCROLL_Y_VAR_NAME, ": ").concat(window.scrollY, "px;\n            ").concat(SCROLLBAR_WIDTH_VAR_NAME, ": ").concat(lckr(0) - lckr(1), "px;\n        }"));
+    insertIndexedRule(":root {\n            ".concat(CssVars.SCROLL_Y, ": ").concat(window.scrollY, "px;\n            ").concat(CssVars.SCROLLBAR_WIDTH, ": ").concat(getClientWidth(true) - getClientWidth(false), "px;\n        }"));
   };
 
   var scroll = {
@@ -69,19 +71,24 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     return isStyleElementInHead() && !$style.disabled;
   };
 
+  var resizeHandler = function resizeHandler() {
+    unlock();
+    lock();
+  };
+
   var lock = function lock() {
     saveScrollPosition();
     $style.disabled = false;
     setCssVars();
     $html.classList.add(LOCKED_STATUS_CSS_CLASS);
-    window.addEventListener("resize", setCssVars);
+    window.addEventListener("resize", resizeHandler);
   };
 
   var unlock = function unlock() {
     $html.classList.remove(LOCKED_STATUS_CSS_CLASS);
     restoreScrollPosition();
     $style.disabled = true;
-    window.removeEventListener("resize", setCssVars);
+    window.removeEventListener("resize", resizeHandler);
   };
 
   var bodyScroll = {
