@@ -15,8 +15,7 @@ html {
         position: fixed;
         top: calc(var(--body-scroll-scroll-y) * -1);
         left: 0;
-        padding-right: var(--body-scroll-scrollbar-width);
-        width: 100%;
+        width: calc(100vw - var(--body-scroll-scrollbar-width));
     }
 }
 

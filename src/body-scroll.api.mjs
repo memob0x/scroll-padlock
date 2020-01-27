@@ -1,4 +1,4 @@
-import { $html, $style } from "./body-scroll.client.mjs";
+import { $html, $style, supportsCustomEvents } from "./body-scroll.client.mjs";
 import {
     isStyleElementInHead,
     setCssVars,
@@ -46,7 +46,9 @@ const _lock = () => {
 export const lock = () => {
     _lock();
 
-    window.dispatchEvent(new CustomEvent("bodyScrollLock"));
+    if (supportsCustomEvents) {
+        window.dispatchEvent(new CustomEvent("bodyScrollLock"));
+    }
 
     window.addEventListener("resize", update);
 };
@@ -66,7 +68,9 @@ const _unlock = () => {
 export const unlock = () => {
     _unlock();
 
-    window.dispatchEvent(new CustomEvent("bodyScrollUnlock"));
+    if (supportsCustomEvents) {
+        window.dispatchEvent(new CustomEvent("bodyScrollUnlock"));
+    }
 
     window.removeEventListener("resize", update);
 };

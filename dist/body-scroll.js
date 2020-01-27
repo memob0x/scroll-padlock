@@ -11,6 +11,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   var $html = document.documentElement;
   var $body = document.body;
   var $style = document.createElement("style");
+  var supportsCustomEvents = typeof window.CustomEvent === "function";
   var CssVars = {
     SCROLL_Y: "--body-scroll-scroll-y",
     SCROLLBAR_WIDTH: "--body-scroll-scrollbar-width"
@@ -91,7 +92,10 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   var lock = function lock() {
     _lock();
 
-    window.dispatchEvent(new CustomEvent("bodyScrollLock"));
+    if (supportsCustomEvents) {
+      window.dispatchEvent(new CustomEvent("bodyScrollLock"));
+    }
+
     window.addEventListener("resize", update);
   };
 
@@ -104,7 +108,10 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   var unlock = function unlock() {
     _unlock();
 
-    window.dispatchEvent(new CustomEvent("bodyScrollUnlock"));
+    if (supportsCustomEvents) {
+      window.dispatchEvent(new CustomEvent("bodyScrollUnlock"));
+    }
+
     window.removeEventListener("resize", update);
   };
 

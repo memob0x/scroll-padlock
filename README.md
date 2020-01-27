@@ -21,26 +21,28 @@ html.body-scroll-locked {
     position: fixed;
     top: calc(var(--body-scroll-scroll-y) * -1);
     left: 0;
-    width: 100%;
-    padding-right: var(--body-scroll-scrollbar-width);
+    width: calc(100vw - var(--body-scroll-scrollbar-width));
 }
 ```
 
-Please note that some browser recognition logic can be applied to address iOS more specifically keeping the standard approach for standard browsers:
+Please note that some browser recognition logic can be applied in order to address iOS more specifically, keeping the standard overflow approach for standard browsers:
 
 ```css
-/* standard browsers body lock */
-html.body-scroll-locked:not(.iOS-browser-sniffing-example) body {
-    overflow: hidden;
+/* both: avoids contents jump */
+html.body-scroll-locked {
+    width: calc(100vw - var(--body-scroll-scrollbar-width));
 }
 
-/* iOS body lock */
+/* iOS body lock: applies position fixed hack */
 html.body-scroll-locked.iOS-browser-sniffing-example {
     position: fixed;
     top: calc(var(--body-scroll-scroll-y) * -1);
     left: 0;
-    width: 100%;
-    padding-right: var(--body-scroll-scrollbar-width);
+}
+
+/* standard browsers body lock */
+html.body-scroll-locked:not(.iOS-browser-sniffing-example) body {
+    overflow: hidden;
 }
 ```
 
@@ -88,7 +90,8 @@ window.addEventListener("bodyScrollUnlock", () =>
 
 ## Support
 
-All [modern browsers](https://teamtreehouse.com/community/what-is-a-modern-browser) have been tested; to support _Internet Explorer 11_ you will need to include a [CustomEvent](https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent/CustomEvent#Polyfill) polyfill.
+All [modern browsers](https://teamtreehouse.com/community/what-is-a-modern-browser) have been tested; if you want to listen to the library [events](#events) in _Internet Explorer 11_ you'll need to include a [CustomEvent](https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent/CustomEvent#Polyfill) polyfill.
+A Css Variables polyfill is not mandatory, it depends on how graceful you want to degrade your application on [old browsers](https://caniuse.com/#feat=css-variables)... 🙄
 
 ## Demo
 
