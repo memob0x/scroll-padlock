@@ -62,10 +62,10 @@ To **unlock** it, call the `unlock` one.
 window.bodyScroll.unlock(); // scroll free, little bird.
 ```
 
-The main aim during the writing of this code was to be the less obtrusive as possible, so, without the use of any css class, inline style or element attribute, the only built-in way to keep track of the current **lock status** is to call the `isLocked` method.
+A **isLocked** method can retrieve the actual body scroll lock status.
 
 ```javascript
-window.bodyScroll.isLocked(); // true when locked...
+const status = window.bodyScroll.isLocked(); // true when locked...
 ```
 
 Lazy? Just `toggle` it...
