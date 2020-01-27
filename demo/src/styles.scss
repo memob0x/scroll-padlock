@@ -14,9 +14,9 @@ html {
     &.body-scroll-locked {
         position: fixed;
         top: calc(var(--body-scroll-scroll-y) * -1);
+        left: 0;
         padding-right: var(--body-scroll-scrollbar-width);
         width: 100%;
-        height: auto;
     }
 }
 
