@@ -1,7 +1,7 @@
 # Body Scroll Lock
 
-An **iOS safari compatible** technique to **lock body scroll**.
-This is basically the classic `position: fixed;` on **html element** hack on steroids: it saves the scroll position and reserves a gap for [scrollbar width](#the-scrollbar-width-issue).
+A **CSS variables** based and **iOS safari compatible** technique to **lock body scroll**.
+This library does barely nothing and no assumptions whatsoever under the hood, it just gives you everything you need to lock the body scroll efficiently keeping in mind iOS and the unfamous flickering effect you get when you put overflow: hidden; on the body element (causing the scrollbar to disappear, and the body itself to widen).
 
 ## The Backstory
 
@@ -10,7 +10,41 @@ The cleanest way to overcome this unfortunate situation would be [preventing `to
 Since **this script** is more of a tool to programmatically **generate some CSS overrides rules** put in head element, I always considered this approach the most convenient solution: no event listeners to add/remove; no scrollable inner-elements to keep in mind, no problems. ✌<br>
 An halfway solution would be using the css `touch-action` property, but, again, [**safari doesn't** seem to **support it**](https://bugs.webkit.org/show_bug.cgi?id=133112) any time soon 🙄, so...
 
-## Usage
+## Usage Pt.1: CSS
+
+Two css variables, `--body-scroll-scroll-y` and `--body-scroll-scrollbar-width`, are programmatically set, which contain respectively the window _scroll position_ and the browser _scrollbar width_, along with a `body-scroll-locked` css class to the `html` element.
+
+These interventions alone are enough to ensure a cross-browser body scroll lock as it follows:
+
+```css
+html.body-scroll-locked {
+    position: fixed;
+    top: calc(var(--body-scroll-scroll-y) * -1);
+    left: 0;
+    width: 100%;
+    padding-right: var(--body-scroll-scrollbar-width);
+}
+```
+
+Please note that some browser recognition logic can be applied to address iOS more specifically keeping the standard approach for standard browsers:
+
+```css
+/* standard browsers body lock */
+html.body-scroll-locked:not(.iOS-browser-sniffing-example) body {
+    overflow: hidden;
+}
+
+/* iOS body lock */
+html.body-scroll-locked.iOS-browser-sniffing-example {
+    position: fixed;
+    top: calc(var(--body-scroll-scroll-y) * -1);
+    left: 0;
+    width: 100%;
+    padding-right: var(--body-scroll-scrollbar-width);
+}
+```
+
+## Usage Pt.2: JavaScript
 
 The inclusion of **body-scroll.js** sets a global **bodyScroll** variable, which is basically an `Object` with some `methods` in it.
 
@@ -44,29 +78,12 @@ Get notified when scroll **state changes** listening to `bodyScrollLock` and `bo
 
 ```javascript
 window.addEventListener("bodyScrollLock", () =>
-    console.log("Body scroll has been locked")
+    console.log("The body scroll has been locked by someone, somewhere...")
 );
 
 window.addEventListener("bodyScrollUnlock", () =>
-    console.log("Body scroll has been unlocked")
+    console.log("Body scroll has been unlocked by someone, somewhere...")
 );
-```
-
-## The scrollbar width issue on right-aligned position elements
-
-The lock method internally takes care of the infamous unpleasant flickering effect you get when you put overflow: hidden; on the body element (causing the scrollbar to disappear, and the body itself to widen), but _you may still experience it on some right-aligned positioned elements_ of your page.
-This library doesn't do anything obtrusive to solve this problem, but offers you a handy way to take care of them, exposing the exact scrollbar size in the above-mentioned events you'll be able to manually adjust their position in the way you prefer.
-
-```javascript
-const $aside = document.querySelector("aside#right-positioned");
-
-window.addEventListener("bodyScrollLock", event => {
-    $aside.style.marginRight = event.detail.scrollbarWith + "px";
-});
-
-window.addEventListener("bodyScrollUnlock", event => {
-    $aside.style.marginRight = "";
-});
 ```
 
 ## Support

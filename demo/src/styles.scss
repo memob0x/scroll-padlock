@@ -22,10 +22,6 @@ html {
 
 body {
     @extend .margin;
-
-    .body-scroll-locked & {
-        overflow: hidden;
-    }
 }
 
 ul,
