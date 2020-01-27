@@ -21,19 +21,26 @@ export const isLocked = () => isStyleElementInHead() && !$style.disabled;
  *
  */
 const resizeHandler = () => {
-    unlock();
+    _unlock();
 
-    lock();
+    _lock();
+};
+
+/**
+ *
+ */
+const _lock = () => {
+    saveScrollPosition();
+    $style.disabled = false;
+    setCssVars();
+    $html.classList.add(LOCKED_STATUS_CSS_CLASS);
 };
 
 /**
  *
  */
 export const lock = () => {
-    saveScrollPosition();
-    $style.disabled = false;
-    setCssVars();
-    $html.classList.add(LOCKED_STATUS_CSS_CLASS);
+    _lock();
 
     window.dispatchEvent(new CustomEvent("bodyScrollLock"));
 
@@ -43,10 +50,17 @@ export const lock = () => {
 /**
  *
  */
-export const unlock = () => {
+const _unlock = () => {
     $html.classList.remove(LOCKED_STATUS_CSS_CLASS);
     restoreScrollPosition();
     $style.disabled = true;
+};
+
+/**
+ *
+ */
+export const unlock = () => {
+    _unlock();
 
     window.dispatchEvent(new CustomEvent("bodyScrollUnlock"));
 

@@ -72,23 +72,34 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   };
 
   var resizeHandler = function resizeHandler() {
-    unlock();
-    lock();
+    _unlock();
+
+    _lock();
   };
 
-  var lock = function lock() {
+  var _lock = function _lock() {
     saveScrollPosition();
     $style.disabled = false;
     setCssVars();
     $html.classList.add(LOCKED_STATUS_CSS_CLASS);
+  };
+
+  var lock = function lock() {
+    _lock();
+
     window.dispatchEvent(new CustomEvent("bodyScrollLock"));
     window.addEventListener("resize", resizeHandler);
   };
 
-  var unlock = function unlock() {
+  var _unlock = function _unlock() {
     $html.classList.remove(LOCKED_STATUS_CSS_CLASS);
     restoreScrollPosition();
     $style.disabled = true;
+  };
+
+  var unlock = function unlock() {
+    _unlock();
+
     window.dispatchEvent(new CustomEvent("bodyScrollUnlock"));
     window.removeEventListener("resize", resizeHandler);
   };
