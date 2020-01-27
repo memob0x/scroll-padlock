@@ -25,7 +25,7 @@ html.body-scroll-locked {
 }
 ```
 
-Please note that some (browser recognition logic)[https://gist.github.com/memob0x/0869e759887441b1349fdfe6bf5a188d] can be applied in order to address iOS more specifically, keeping the standard overflow approach for standard browsers:
+Please note that some [browser recognition logic](https://gist.github.com/memob0x/0869e759887441b1349fdfe6bf5a188d) can be applied in order to address iOS more specifically, keeping the standard overflow approach for standard browsers:
 
 ```css
 /* both: avoids contents jump */
