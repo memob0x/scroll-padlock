@@ -1,9 +1,9 @@
-import { lock, unlock, isLocked, setOption } from "./body-scroll.core.mjs";
+import { lock, unlock, isLocked, update } from "./body-scroll.api.mjs";
 
 export default {
     lock: lock,
     unlock: unlock,
-    toggle: () => (!isLocked() ? lock() : unlock()),
     isLocked: isLocked,
-    setOption: setOption
+    toggle: () => (isLocked() ? unlock() : lock()),
+    update: update
 };

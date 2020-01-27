@@ -2,7 +2,7 @@ $screen-small: 620px;
 $screen-big: 1100px;
 $color-white: #ffffff;
 $color-black: #000000;
-$color-grey-light: #e6e6e6;
+$color-grey-light: #dadada99;
 $color-grey-dark: #262626;
 $margin: 20px;
 
@@ -10,6 +10,14 @@ html {
     box-sizing: border-box;
     @extend .serif-custom;
     @extend .text-medium;
+
+    &.body-scroll-locked {
+        position: fixed;
+        top: calc(var(--body-scroll-scroll-y) * -1);
+        left: 0;
+        padding-right: var(--body-scroll-scrollbar-width);
+        width: 100%;
+    }
 }
 
 body {
@@ -79,7 +87,7 @@ button {
         @extend .flex;
         @extend .padding;
         @extend .around;
-        background: $color-grey-light;
+        background: rgba($color-grey-light, 0.6);
         height: 100%;
         flex-direction: column;
     }
