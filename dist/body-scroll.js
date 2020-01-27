@@ -81,6 +81,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     $style.disabled = false;
     setCssVars();
     $html.classList.add(LOCKED_STATUS_CSS_CLASS);
+    window.dispatchEvent(new CustomEvent("bodyScrollLock"));
     window.addEventListener("resize", resizeHandler);
   };
 
@@ -88,6 +89,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     $html.classList.remove(LOCKED_STATUS_CSS_CLASS);
     restoreScrollPosition();
     $style.disabled = true;
+    window.dispatchEvent(new CustomEvent("bodyScrollUnlock"));
     window.removeEventListener("resize", resizeHandler);
   };
 

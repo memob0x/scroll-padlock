@@ -35,6 +35,8 @@ export const lock = () => {
     setCssVars();
     $html.classList.add(LOCKED_STATUS_CSS_CLASS);
 
+    window.dispatchEvent(new CustomEvent("bodyScrollLock"));
+
     window.addEventListener("resize", resizeHandler);
 };
 
@@ -45,6 +47,8 @@ export const unlock = () => {
     $html.classList.remove(LOCKED_STATUS_CSS_CLASS);
     restoreScrollPosition();
     $style.disabled = true;
+
+    window.dispatchEvent(new CustomEvent("bodyScrollUnlock"));
 
     window.removeEventListener("resize", resizeHandler);
 };
