@@ -71,7 +71,11 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     return isStyleElementInHead() && !$style.disabled;
   };
 
-  var resizeHandler = function resizeHandler() {
+  var update = function update() {
+    if (!isLocked()) {
+      return;
+    }
+
     _unlock();
 
     _lock();
@@ -88,7 +92,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     _lock();
 
     window.dispatchEvent(new CustomEvent("bodyScrollLock"));
-    window.addEventListener("resize", resizeHandler);
+    window.addEventListener("resize", update);
   };
 
   var _unlock = function _unlock() {
@@ -101,20 +105,17 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     _unlock();
 
     window.dispatchEvent(new CustomEvent("bodyScrollUnlock"));
-    window.removeEventListener("resize", resizeHandler);
+    window.removeEventListener("resize", update);
   };
 
   var bodyScroll = {
-    setCssVars: setCssVars,
-    getScrollPosition: getScrollPosition,
-    saveScrollPosition: saveScrollPosition,
-    restoreScrollPosition: restoreScrollPosition,
     lock: lock,
     unlock: unlock,
     isLocked: isLocked,
     toggle: function toggle() {
       return isLocked() ? unlock() : lock();
-    }
+    },
+    update: update
   };
   return bodyScroll;
 });

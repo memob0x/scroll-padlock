@@ -20,7 +20,11 @@ export const isLocked = () => isStyleElementInHead() && !$style.disabled;
 /**
  *
  */
-const resizeHandler = () => {
+export const update = () => {
+    if (!isLocked()) {
+        return;
+    }
+
     _unlock();
 
     _lock();
@@ -44,7 +48,7 @@ export const lock = () => {
 
     window.dispatchEvent(new CustomEvent("bodyScrollLock"));
 
-    window.addEventListener("resize", resizeHandler);
+    window.addEventListener("resize", update);
 };
 
 /**
@@ -64,5 +68,5 @@ export const unlock = () => {
 
     window.dispatchEvent(new CustomEvent("bodyScrollUnlock"));
 
-    window.removeEventListener("resize", resizeHandler);
+    window.removeEventListener("resize", update);
 };

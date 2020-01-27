@@ -30,7 +30,27 @@ document
     .addEventListener("click", () => {
         log("toggling custom scrollbars");
         document.body.classList.toggle("custom-scrollbar");
+        bodyScroll.update();
     });
 
 window.addEventListener("bodyScrollLock", () => log("body scroll locked"));
 window.addEventListener("bodyScrollUnlock", () => log("body scroll unlocked"));
+
+// ie11 compliancy
+(function() {
+    if (typeof window.CustomEvent === "function") return false;
+
+    function CustomEvent(event, params) {
+        params = params || { bubbles: false, cancelable: false, detail: null };
+        var evt = document.createEvent("CustomEvent");
+        evt.initCustomEvent(
+            event,
+            params.bubbles,
+            params.cancelable,
+            params.detail
+        );
+        return evt;
+    }
+
+    window.CustomEvent = CustomEvent;
+})();
