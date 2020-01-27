@@ -55,10 +55,6 @@ export const setCssVars = () => {
 /**
  *
  */
-export const clearCssVars = () => {};
-/**
- *
- */
 let scroll = {
     x: 0,
     y: 0
