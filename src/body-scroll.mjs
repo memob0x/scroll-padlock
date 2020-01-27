@@ -1,9 +1,22 @@
-import { lock, unlock, isLocked, setOption } from "./body-scroll.core.mjs";
+import {
+    getScrollPosition,
+    setCssVars,
+    saveScrollPosition,
+    restoreScrollPosition
+} from "./body-scroll.core.mjs";
+
+import { lock, unlock, isLocked } from "./body-scroll.api.mjs";
 
 export default {
+    //
+    setCssVars: setCssVars,
+    getScrollPosition: getScrollPosition,
+    saveScrollPosition: saveScrollPosition,
+    restoreScrollPosition: restoreScrollPosition,
+
+    //
     lock: lock,
     unlock: unlock,
-    toggle: () => (!isLocked() ? lock() : unlock()),
     isLocked: isLocked,
-    setOption: setOption
+    toggle: () => (isLocked() ? unlock() : lock())
 };
