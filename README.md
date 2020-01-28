@@ -98,6 +98,21 @@ window.addEventListener("bodyScrollUnlock", () =>
 );
 ```
 
+## Positioned elements
+
+If you are experiencing issues with positioned elements remember you can overcome them with the same css variable you used to reserve the scrollbar with on body.
+
+```css
+aside {
+    position: fixed;
+    top: 0;
+    width: 240px;
+
+    /* takes care of scrollbar presence */
+    right: var(--body-scroll-scrollbar-width);
+}
+```
+
 ## Support
 
 All [modern browsers](https://teamtreehouse.com/community/what-is-a-modern-browser) have been tested; if you want to listen to the library [events](#events) in _Internet Explorer 11_ you'll need to include a [CustomEvent](https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent/CustomEvent#Polyfill) polyfill.
