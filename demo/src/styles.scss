@@ -6,6 +6,10 @@ $color-grey-light: #dadada99;
 $color-grey-dark: #262626;
 $margin: 20px;
 
+:root {
+    --body-scroll-scrollbar-width: 0px;
+}
+
 html {
     box-sizing: border-box;
     @extend .serif-custom;
@@ -75,6 +79,16 @@ button {
             width: 50%;
         }
     }
+}
+
+.fixed-red-dot {
+    position: fixed;
+    bottom: 0;
+    right: var(--body-scroll-scrollbar-width);
+    width: 60px;
+    height: 60px;
+    border-radius: 100%;
+    background: red;
 }
 
 .wrapper {

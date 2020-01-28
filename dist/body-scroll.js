@@ -10,8 +10,37 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   var $head = document.head;
   var $html = document.documentElement;
   var $body = document.body;
-  var $style = document.createElement("style");
   var supportsCustomEvents = typeof window.CustomEvent === "function";
+
+  var getOrCreateUniqueStyleElement = function getOrCreateUniqueStyleElement(id) {
+    return $head.querySelector("#".concat(id)) || function () {
+      var $style = document.createElement("style");
+      $style.id = id;
+      return $style;
+    }();
+  };
+
+  var isStyleElementInHead = function isStyleElementInHead($style) {
+    return $style.parentNode === $head;
+  };
+
+  var insertIndexedRuleInStyleElement = function insertIndexedRuleInStyleElement($style) {
+    var rule = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "";
+    var index = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+
+    if (!isStyleElementInHead($style)) {
+      $head.appendChild($style);
+    }
+
+    if ($style.sheet.cssRules[index]) {
+      $style.sheet.deleteRule(index);
+    }
+
+    $style.sheet.insertRule(rule, index);
+    return $style;
+  };
+
+  var $locker = getOrCreateUniqueStyleElement("body-scroll-locker");
   var CssVars = {
     SCROLL_Y: "--body-scroll-scroll-y",
     SCROLLBAR_WIDTH: "--body-scroll-scrollbar-width"
@@ -23,28 +52,13 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     return $html.clientWidth;
   };
 
-  var isStyleElementInHead = function isStyleElementInHead() {
-    return $style.parentNode === $head;
+  var setLockerCssVars = function setLockerCssVars() {
+    insertIndexedRuleInStyleElement($locker, ":root {\n            ".concat(CssVars.SCROLL_Y, ": ").concat(window.scrollY, "px!important;\n            ").concat(CssVars.SCROLLBAR_WIDTH, ": ").concat(getClientWidth(true) - getClientWidth(false), "px!important;\n        }"));
   };
 
-  var insertIndexedRule = function insertIndexedRule() {
-    var rule = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
-    var index = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-
-    if (!isStyleElementInHead()) {
-      $head.appendChild($style);
-    }
-
-    if ($style.sheet.cssRules[index]) {
-      $style.sheet.deleteRule(index);
-    }
-
-    $style.sheet.insertRule(rule, index);
-  };
-
-  var setCssVars = function setCssVars() {
-    insertIndexedRule(":root {\n            ".concat(CssVars.SCROLL_Y, ": ").concat(window.scrollY, "px;\n            ").concat(CssVars.SCROLLBAR_WIDTH, ": ").concat(getClientWidth(true) - getClientWidth(false), "px;\n        }"));
-  };
+  if (!!!window.getComputedStyle($html).getPropertyValue(CssVars.SCROLLBAR_WIDTH)) {
+    insertIndexedRuleInStyleElement(getOrCreateUniqueStyleElement("body-scroll-defaults"), ":root {\n            ".concat(CssVars.SCROLLBAR_WIDTH, ": 0;\n        }"));
+  }
 
   var scroll = {
     x: 0,
@@ -52,10 +66,10 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   };
 
   var getScrollPosition = function getScrollPosition() {
-    return {
+    return new Object({
       x: window.scrollX,
       y: window.scrollY
-    };
+    });
   };
 
   var saveScrollPosition = function saveScrollPosition() {
@@ -69,7 +83,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   var LOCKED_STATUS_CSS_CLASS = "body-scroll-locked";
 
   var isLocked = function isLocked() {
-    return isStyleElementInHead() && !$style.disabled && $html.classList.contains(LOCKED_STATUS_CSS_CLASS);
+    return isStyleElementInHead($locker) && !$locker.disabled && $html.classList.contains(LOCKED_STATUS_CSS_CLASS);
   };
 
   var update = function update() {
@@ -84,8 +98,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
   var _lock = function _lock() {
     saveScrollPosition();
-    $style.disabled = false;
-    setCssVars();
+    $locker.disabled = false;
+    setLockerCssVars();
     $html.classList.add(LOCKED_STATUS_CSS_CLASS);
   };
 
@@ -102,7 +116,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   var _unlock = function _unlock() {
     $html.classList.remove(LOCKED_STATUS_CSS_CLASS);
     restoreScrollPosition();
-    $style.disabled = true;
+    $locker.disabled = true;
   };
 
   var unlock = function unlock() {

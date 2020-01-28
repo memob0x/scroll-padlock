@@ -1,1 +1,6 @@
-// TODO: include and test dist/body-scroll.js
+// TODO: include dist/body-scroll.js and test
+// - lock exposure
+// - unlock exposure
+// - isLocked exposure
+// - toggle exposure
+// - update exposure

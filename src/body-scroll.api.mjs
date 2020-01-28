@@ -1,11 +1,14 @@
-import { $html, $style, supportsCustomEvents } from "./body-scroll.client.mjs";
+import { $html, supportsCustomEvents } from "./body-scroll.client.mjs";
+import { $locker, setLockerCssVars } from "./body-scroll.locker.mjs";
+import { isStyleElementInHead } from "./body-scroll.styler.mjs";
 import {
-    isStyleElementInHead,
-    setCssVars,
     saveScrollPosition,
     restoreScrollPosition
-} from "./body-scroll.core.mjs";
+} from "./body-scroll.scroller.mjs";
 
+/**
+ *
+ */
 const LOCKED_STATUS_CSS_CLASS = "body-scroll-locked";
 
 /**
@@ -16,8 +19,8 @@ const LOCKED_STATUS_CSS_CLASS = "body-scroll-locked";
  * @returns {boolean} The body scroll lock state
  */
 export const isLocked = () =>
-    isStyleElementInHead() &&
-    !$style.disabled &&
+    isStyleElementInHead($locker) &&
+    !$locker.disabled &&
     $html.classList.contains(LOCKED_STATUS_CSS_CLASS);
 
 /**
@@ -38,8 +41,8 @@ export const update = () => {
  */
 const _lock = () => {
     saveScrollPosition();
-    $style.disabled = false;
-    setCssVars();
+    $locker.disabled = false;
+    setLockerCssVars();
     $html.classList.add(LOCKED_STATUS_CSS_CLASS);
 };
 
@@ -62,7 +65,7 @@ export const lock = () => {
 const _unlock = () => {
     $html.classList.remove(LOCKED_STATUS_CSS_CLASS);
     restoreScrollPosition();
-    $style.disabled = true;
+    $locker.disabled = true;
 };
 
 /**

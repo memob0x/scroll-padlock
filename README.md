@@ -1,6 +1,6 @@
 # Body Scroll Lock
 
-A **CSS variables** based technique to **lock body scroll** with **iOS safari** "quirkness" and **scrollbar width** in mind.
+A css helper script based on **CSS variables** that lets you **lock the body scroll** with **iOS safari** "quirkness" and **scrollbar width** in mind.
 Please note that this library does barely nothing under the hood, during its use it just writes and updates two global css variables and toggles a css class, this way you'll be able to lock the body scroll with the [css rules you prefer](#usage-pt1-css).
 
 ## The Backstory
@@ -103,10 +103,12 @@ window.addEventListener("bodyScrollUnlock", () =>
 If you are experiencing issues with positioned elements remember you can overcome them with the same css variable you used to reserve the scrollbar with on body.
 
 ```css
+/* a right positioned sidebar */
 aside {
     position: fixed;
     top: 0;
     width: 240px;
+    height: 100%;
 
     /* takes care of scrollbar presence */
     right: var(--body-scroll-scrollbar-width);
@@ -116,7 +118,7 @@ aside {
 ## Support
 
 All [modern browsers](https://teamtreehouse.com/community/what-is-a-modern-browser) have been tested; if you want to listen to the library [events](#events) in _Internet Explorer 11_ you'll need to include a [CustomEvent](https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent/CustomEvent#Polyfill) polyfill.
-A Css Variables polyfill is not mandatory, it depends on how graceful you want to degrade your application on [old browsers](https://caniuse.com/#feat=css-variables)... 🙄
+A css variables polyfill is not mandatory, it depends on how graceful you want to degrade your application on [old browsers](https://caniuse.com/#feat=css-variables)... 🙄
 
 ## Demo
 
