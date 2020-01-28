@@ -100,7 +100,7 @@ window.addEventListener("bodyScrollUnlock", () =>
 
 ## Positioned elements
 
-If you are experiencing issues with positioned elements remember you can overcome them with the same css variable you used to reserve the scrollbar with on body.
+If you are experiencing issues with positioned elements remember you can overcome them with the same css variable you used to reserve the scrollbar with on body...
 
 ```css
 /* a right positioned sidebar */
@@ -112,6 +112,14 @@ aside {
 
     /* takes care of scrollbar presence */
     right: var(--body-scroll-scrollbar-width);
+}
+```
+
+...just remember to include a default value as it follows:
+
+```css
+:root {
+    --body-scroll-scrollbar-width: 0px;
 }
 ```
 
