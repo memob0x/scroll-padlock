@@ -69,7 +69,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   var LOCKED_STATUS_CSS_CLASS = "body-scroll-locked";
 
   var isLocked = function isLocked() {
-    return isStyleElementInHead() && !$style.disabled;
+    return isStyleElementInHead() && !$style.disabled && $html.classList.contains(LOCKED_STATUS_CSS_CLASS);
   };
 
   var update = function update() {

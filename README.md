@@ -1,18 +1,18 @@
 # Body Scroll Lock
 
-A **CSS variables** based and **iOS safari compatible** technique to **lock body scroll**.
-This library does barely nothing and no assumptions whatsoever under the hood, it just gives you everything you need to lock the body scroll efficiently keeping in mind iOS and the unfamous flickering effect you get when you put overflow: hidden; on the body element (causing the scrollbar to disappear, and the body itself to widen).
+A **CSS variables** based technique to **lock body scroll** with **iOS safari** "quirkness" and **scrollbar width** in mind.
+Please note that this library does barely nothing under the hood, during its use it just writes and updates two global css variables and toggles a css class, this way you'll be able to lock the body scroll with the [css rules you prefer](#usage-pt1-css).
 
 ## The Backstory
 
 The **proper way** to lock body scroll has always been putting `overflow: hidden;` **on body element**, but unfortunately this approach **just doesn't work on iOS safari**. 🙅<br>
 The cleanest way to overcome this unfortunate situation would be [preventing `touchmove` events](https://github.com/willmcpo/body-scroll-lock), but you might still have **issues** with some **`viewport` configurations** along with **pinch to zoom** taking place or **iOS navigation bars** covering your elements.<br>
-Since **this script** is more of a tool to programmatically **generate some CSS overrides rules** put in head element, I always considered this approach the most convenient solution: no event listeners to add/remove; no scrollable inner-elements to keep in mind, no problems. ✌<br>
+Since **this script** is more of a tool to programmatically assign some css rules, I always considered this approach the most convenient solution: no event listeners to register/unregister; no scrollable inner-elements to keep in mind, no problems. ✌<br>
 An halfway solution would be using the css `touch-action` property, but, again, [**safari doesn't** seem to **support it**](https://bugs.webkit.org/show_bug.cgi?id=133112) any time soon 🙄, so...
 
 ## Usage Pt.1: CSS
 
-Two css variables, `--body-scroll-scroll-y` and `--body-scroll-scrollbar-width`, are programmatically set, which contain respectively the window _scroll position_ and the browser _scrollbar width_, along with a `body-scroll-locked` css class to the `html` element.
+When [locking](#usage-pt2-javascript), two css variables, `--body-scroll-scroll-y` and `--body-scroll-scrollbar-width`, are programmatically set at `:root` level, making the css aware of the **window scroll position** and the **browser scrollbar width**, while a `body-scroll-locked` css class is assigned to the `html` element.
 
 These interventions alone are enough to ensure a cross-browser body scroll lock as it follows:
 
@@ -28,11 +28,6 @@ html.body-scroll-locked {
 Please note that some [browser recognition logic](https://gist.github.com/memob0x/0869e759887441b1349fdfe6bf5a188d) can be applied in order to address iOS more specifically, keeping the standard overflow approach for standard browsers:
 
 ```css
-/* both: avoids contents jump */
-html.body-scroll-locked {
-    width: calc(100vw - var(--body-scroll-scrollbar-width));
-}
-
 /* iOS body lock: applies position fixed hack */
 html.body-scroll-locked.iOS-browser-sniffing-example {
     position: fixed;
@@ -43,6 +38,11 @@ html.body-scroll-locked.iOS-browser-sniffing-example {
 /* standard browsers body lock */
 html.body-scroll-locked:not(.iOS-browser-sniffing-example) body {
     overflow: hidden;
+}
+
+/* both: avoids contents jump */
+html.body-scroll-locked {
+    width: calc(100vw - var(--body-scroll-scrollbar-width));
 }
 ```
 

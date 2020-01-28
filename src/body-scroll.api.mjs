@@ -15,7 +15,10 @@ const LOCKED_STATUS_CSS_CLASS = "body-scroll-locked";
  * Returns whether the body scroll is locked or not
  * @returns {boolean} The body scroll lock state
  */
-export const isLocked = () => isStyleElementInHead() && !$style.disabled;
+export const isLocked = () =>
+    isStyleElementInHead() &&
+    !$style.disabled &&
+    $html.classList.contains(LOCKED_STATUS_CSS_CLASS);
 
 /**
  *

@@ -55,6 +55,14 @@ button {
     @extend .between;
     flex-direction: column;
 
+    // leave meh alone ie11, i just want to test the lib, damn ... :+)
+    @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        left: 0;
+    }
+
     @media (min-width: $screen-small) {
         flex-direction: row;
         height: 280px;
@@ -98,7 +106,7 @@ button {
 
 .custom-scrollbar {
     &::-webkit-scrollbar {
-        width: 12px;
+        width: 20px;
     }
 
     &::-webkit-scrollbar-track {
