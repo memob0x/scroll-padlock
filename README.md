@@ -18,9 +18,14 @@ These interventions alone are enough to ensure a cross-browser body scroll lock 
 
 ```css
 html.body-scroll-locked {
+    /* position fixed hack, locks iOS too */
     position: fixed;
-    top: calc(var(--body-scroll-scroll-y) * -1);
     left: 0;
+
+    /* avoids scroll to top */
+    top: calc(var(--body-scroll-scroll-y) * -1);
+
+    /* reserves space for scrollbar */
     width: calc(100vw - var(--body-scroll-scrollbar-width));
 }
 ```
@@ -28,20 +33,25 @@ html.body-scroll-locked {
 Please note that some [browser recognition logic](https://gist.github.com/memob0x/0869e759887441b1349fdfe6bf5a188d) can be applied in order to address iOS more specifically, keeping the standard overflow approach for standard browsers:
 
 ```css
-/* iOS body lock: applies position fixed hack */
-html.body-scroll-locked.iOS-browser-sniffing-example {
+/* iOS only */
+html.body-scroll-locked.ios {
+    /* position fixed hack */
     position: fixed;
-    top: calc(var(--body-scroll-scroll-y) * -1);
     left: 0;
+
+    /* avoids scroll to top */
+    top: calc(var(--body-scroll-scroll-y) * -1);
 }
 
-/* standard browsers body lock */
-html.body-scroll-locked:not(.iOS-browser-sniffing-example) body {
+/* standard browsers only */
+html.body-scroll-locked.standard body {
+    /* standard way to lock body scroll */
     overflow: hidden;
 }
 
-/* both: avoids contents jump */
+/* both iOS and standard browsers */
 html.body-scroll-locked {
+    /* reserves space for scrollbar */
     width: calc(100vw - var(--body-scroll-scrollbar-width));
 }
 ```
