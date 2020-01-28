@@ -42,9 +42,7 @@ export const setLockerCssVars = () => {
     );
 };
 
-/**
- *
- */
+/*
 if (
     !!!window.getComputedStyle($html).getPropertyValue(CssVars.SCROLLBAR_WIDTH)
 ) {
@@ -54,4 +52,4 @@ if (
             ${CssVars.SCROLLBAR_WIDTH}: 0;
         }`
     );
-}
+}*/

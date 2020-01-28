@@ -56,10 +56,6 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     insertIndexedRuleInStyleElement($locker, ":root {\n            ".concat(CssVars.SCROLL_Y, ": ").concat(window.scrollY, "px!important;\n            ").concat(CssVars.SCROLLBAR_WIDTH, ": ").concat(getClientWidth(true) - getClientWidth(false), "px!important;\n        }"));
   };
 
-  if (!!!window.getComputedStyle($html).getPropertyValue(CssVars.SCROLLBAR_WIDTH)) {
-    insertIndexedRuleInStyleElement(getOrCreateUniqueStyleElement("body-scroll-defaults"), ":root {\n            ".concat(CssVars.SCROLLBAR_WIDTH, ": 0;\n        }"));
-  }
-
   var scroll = {
     x: 0,
     y: 0
