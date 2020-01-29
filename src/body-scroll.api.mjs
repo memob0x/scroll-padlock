@@ -1,15 +1,85 @@
-import { $html, supportsCustomEvents } from "./body-scroll.client.mjs";
-import { $locker, setLockerCssVars } from "./body-scroll.locker.mjs";
-import { isStyleElementInHead } from "./body-scroll.styler.mjs";
 import {
-    saveScrollPosition,
-    restoreScrollPosition
-} from "./body-scroll.scroller.mjs";
+    NAMESPACE,
+    supportsCustomEvents,
+    $head,
+    $html,
+    $body,
+    $style
+} from "./body-scroll.constants.mjs";
+
+import * as Scroll from "./body-scroll.scroll.mjs";
+
+/**
+ * Checks if the style element is in the tag head or not
+ * @returns {boolean} true if present
+ */
+const _styleExists = () => $style.parentNode === $head;
+
+/**
+ *
+ * @param {boolean} locked
+ * @returns {number}
+ */
+const _getClientWidth = locked => {
+    $body.style.width = locked ? `${$html.clientWidth}px` : "";
+    $html.style.overflow = locked ? "hidden" : "";
+
+    return $html.clientWidth;
+};
+
+/**
+ *
+ * @param {string} eventName
+ */
+const _dispatch = eventName =>
+    supportsCustomEvents
+        ? window.dispatchEvent(new CustomEvent(eventName))
+        : () => {};
 
 /**
  *
  */
-const LOCKED_STATUS_CSS_CLASS = "body-scroll-locked";
+const _lock = () => {
+    Scroll.save();
+    $style.disabled = false;
+
+    const index = 0;
+
+    if (!_styleExists()) {
+        $head.appendChild($style);
+    }
+
+    if ($style.sheet.cssRules[index]) {
+        $style.sheet.deleteRule(index);
+    }
+
+    $style.sheet.insertRule(
+        `:root {
+            --${NAMESPACE}-top-rect: ${window.scrollY * -1}px!important;
+            --${NAMESPACE}-scrollbar-gap: ${_getClientWidth(true) -
+            _getClientWidth(false)}px!important;
+        }`,
+        index
+    );
+
+    $html.classList.add(NAMESPACE);
+};
+
+/**
+ *
+ */
+const _unlock = () => {
+    $html.classList.remove(NAMESPACE);
+
+    Scroll.restore();
+
+    $style.disabled = true;
+};
+
+/**
+ *
+ */
+const _resize = mode => window[`${mode}EventListener`]("resize", update);
 
 /**
  *
@@ -19,9 +89,7 @@ const LOCKED_STATUS_CSS_CLASS = "body-scroll-locked";
  * @returns {boolean} The body scroll lock state
  */
 export const isLocked = () =>
-    isStyleElementInHead($locker) &&
-    !$locker.disabled &&
-    $html.classList.contains(LOCKED_STATUS_CSS_CLASS);
+    _styleExists() && !$style.disabled && $html.classList.contains(NAMESPACE);
 
 /**
  *
@@ -39,33 +107,12 @@ export const update = () => {
 /**
  *
  */
-const _lock = () => {
-    saveScrollPosition();
-    $locker.disabled = false;
-    setLockerCssVars();
-    $html.classList.add(LOCKED_STATUS_CSS_CLASS);
-};
-
-/**
- *
- */
 export const lock = () => {
     _lock();
 
-    if (supportsCustomEvents) {
-        window.dispatchEvent(new CustomEvent("bodyScrollLock"));
-    }
+    _dispatch("bodyscrolllock");
 
-    window.addEventListener("resize", update);
-};
-
-/**
- *
- */
-const _unlock = () => {
-    $html.classList.remove(LOCKED_STATUS_CSS_CLASS);
-    restoreScrollPosition();
-    $locker.disabled = true;
+    _resize("add");
 };
 
 /**
@@ -74,9 +121,7 @@ const _unlock = () => {
 export const unlock = () => {
     _unlock();
 
-    if (supportsCustomEvents) {
-        window.dispatchEvent(new CustomEvent("bodyScrollUnlock"));
-    }
+    _dispatch("bodyscrollunlock");
 
-    window.removeEventListener("resize", update);
+    _resize("remove");
 };

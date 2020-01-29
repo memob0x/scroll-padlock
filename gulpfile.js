@@ -9,21 +9,36 @@ const sass = require("gulp-sass");
 const postcss = require("gulp-postcss");
 const autoprefixer = require("autoprefixer");
 const minify = require("gulp-minify");
-
-const sourcemapsOptions = {
-    loadMaps: false,
-    largeFile: false
-};
+const rename = require("gulp-rename");
 
 const LIB = "./";
 const DEMO = "./demo";
+
+const _sourcemaps = () =>
+    sourcemaps.init({
+        loadMaps: false,
+        largeFile: false
+    });
+
+const _rollup = () =>
+    rollup(
+        {},
+        {
+            format: "umd",
+            name: "bodyScroll"
+        }
+    ).on("error", err => console.log(err));
+
+const _minify = () => minify({ ext: { min: ".min.js" } });
+
+const _babel = () => babel().on("error", err => console.log(err));
 
 const styles = done =>
     pump(
         [
             gulp.src(`${DEMO}/src/*.scss`),
 
-            sourcemaps.init(sourcemapsOptions),
+            _sourcemaps(),
 
             sass({
                 outputStyle: "compressed"
@@ -43,20 +58,42 @@ const scripts = done => {
         [
             gulp.src(`${DEMO}/src/*.js`),
 
-            sourcemaps.init(sourcemapsOptions),
+            _sourcemaps(),
 
-            babel().on("error", err => console.log(err)),
+            _babel(),
 
-            minify({
-                ext: {
-                    min: ".js"
-                },
-                noSource: true
-            }),
+            _minify(),
 
             sourcemaps.write("."),
 
             gulp.dest(`${DEMO}/dist/`)
+        ],
+        done
+    );
+};
+
+const libraryEs5 = done => {
+    const source = `${LIB}src/body-scroll.{mjs,js}`;
+
+    return pump(
+        [
+            gulp.src(source),
+
+            _sourcemaps(),
+
+            _rollup(),
+
+            _babel(),
+
+            rename({
+                extname: ".es5.js"
+            }),
+
+            _minify(),
+
+            sourcemaps.write("."),
+
+            gulp.dest(`${LIB}dist/`)
         ],
         done
     );
@@ -69,19 +106,15 @@ const library = done => {
         [
             gulp.src(source),
 
-            sourcemaps.init(sourcemapsOptions),
+            _sourcemaps(),
 
-            rollup(
-                {},
-                {
-                    format: "umd",
-                    name: "bodyScroll"
-                }
-            ).on("error", err => console.log(err)),
+            _rollup(),
 
-            babel().on("error", err => console.log(err)),
+            rename({
+                extname: ".js"
+            }),
 
-            minify({ ext: { min: ".min.js" } }),
+            _minify(),
 
             sourcemaps.write("."),
 
@@ -91,4 +124,4 @@ const library = done => {
     );
 };
 
-gulp.task("default", gulp.parallel(library, scripts, styles));
+gulp.task("default", gulp.parallel(library, libraryEs5, scripts, styles));

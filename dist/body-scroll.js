@@ -1,139 +1,173 @@
-"use strict";
-
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
 (function (global, factory) {
-  (typeof exports === "undefined" ? "undefined" : _typeof(exports)) === 'object' && typeof module !== 'undefined' ? module.exports = factory() : typeof define === 'function' && define.amd ? define('bodyScroll', factory) : (global = global || self, global.bodyScroll = factory());
-})(void 0, function () {
-  'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+    typeof define === 'function' && define.amd ? define('bodyScroll', factory) :
+    (global = global || self, global.bodyScroll = factory());
+}(this, (function () { 'use strict';
 
-  var $head = document.head;
-  var $html = document.documentElement;
-  var $body = document.body;
-  var supportsCustomEvents = typeof window.CustomEvent === "function";
+    const NAMESPACE = "body-scroll-lock";
 
-  var getOrCreateUniqueStyleElement = function getOrCreateUniqueStyleElement(id) {
-    return $head.querySelector("#".concat(id)) || function () {
-      var $style = document.createElement("style");
-      $style.id = id;
-      return $style;
-    }();
-  };
+    const $head = document.head;
+    const $html = document.documentElement;
+    const $body = document.body;
 
-  var isStyleElementInHead = function isStyleElementInHead($style) {
-    return $style.parentNode === $head;
-  };
+    const $style =
+        $head.querySelector(`#${NAMESPACE}`) ||
+        (() => {
+            const $style = document.createElement("style");
 
-  var insertIndexedRuleInStyleElement = function insertIndexedRuleInStyleElement($style) {
-    var rule = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "";
-    var index = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+            $style.id = NAMESPACE;
 
-    if (!isStyleElementInHead($style)) {
-      $head.appendChild($style);
-    }
+            return $style;
+        })();
 
-    if ($style.sheet.cssRules[index]) {
-      $style.sheet.deleteRule(index);
-    }
+    const supportsCustomEvents = typeof window.CustomEvent === "function";
 
-    $style.sheet.insertRule(rule, index);
-    return $style;
-  };
+    /**
+     *
+     */
+    let _x = 0;
+    let _y = 0;
 
-  var $locker = getOrCreateUniqueStyleElement("body-scroll-locker");
-  var CssVars = {
-    SCROLL_Y: "--body-scroll-scroll-y",
-    SCROLLBAR_WIDTH: "--body-scroll-scrollbar-width"
-  };
+    /**
+     *
+     */
+    const save = () => {
+        _x = window.scrollX;
+        _y = window.scrollY;
+    };
 
-  var getClientWidth = function getClientWidth(locked) {
-    $body.style.width = locked ? "".concat($html.clientWidth, "px") : "";
-    $html.style.overflow = locked ? "hidden" : "";
-    return $html.clientWidth;
-  };
+    /**
+     *
+     */
+    const restore = () => window.scrollTo(_x, _y);
 
-  var setLockerCssVars = function setLockerCssVars() {
-    insertIndexedRuleInStyleElement($locker, ":root {\n            ".concat(CssVars.SCROLL_Y, ": ").concat(window.scrollY, "px!important;\n            ").concat(CssVars.SCROLLBAR_WIDTH, ": ").concat(getClientWidth(true) - getClientWidth(false), "px!important;\n        }"));
-  };
+    /**
+     * Checks if the style element is in the tag head or not
+     * @returns {boolean} true if present
+     */
+    const _styleExists = () => $style.parentNode === $head;
 
-  var scroll = {
-    x: 0,
-    y: 0
-  };
+    /**
+     *
+     * @param {boolean} locked
+     * @returns {number}
+     */
+    const _getClientWidth = locked => {
+        $body.style.width = locked ? `${$html.clientWidth}px` : "";
+        $html.style.overflow = locked ? "hidden" : "";
 
-  var getScrollPosition = function getScrollPosition() {
-    return new Object({
-      x: window.scrollX,
-      y: window.scrollY
+        return $html.clientWidth;
+    };
+
+    /**
+     *
+     * @param {string} eventName
+     */
+    const _dispatch = eventName =>
+        supportsCustomEvents
+            ? window.dispatchEvent(new CustomEvent(eventName))
+            : () => {};
+
+    /**
+     *
+     */
+    const _lock = () => {
+        save();
+        $style.disabled = false;
+
+        const index = 0;
+
+        if (!_styleExists()) {
+            $head.appendChild($style);
+        }
+
+        if ($style.sheet.cssRules[index]) {
+            $style.sheet.deleteRule(index);
+        }
+
+        $style.sheet.insertRule(
+            `:root {
+            --${NAMESPACE}-top-rect: ${window.scrollY * -1}px!important;
+            --${NAMESPACE}-scrollbar-gap: ${_getClientWidth(true) -
+            _getClientWidth(false)}px!important;
+        }`,
+            index
+        );
+
+        $html.classList.add(NAMESPACE);
+    };
+
+    /**
+     *
+     */
+    const _unlock = () => {
+        $html.classList.remove(NAMESPACE);
+
+        restore();
+
+        $style.disabled = true;
+    };
+
+    /**
+     *
+     */
+    const _resize = mode => window[`${mode}EventListener`]("resize", update);
+
+    /**
+     *
+     */
+    /**
+     * Returns whether the body scroll is locked or not
+     * @returns {boolean} The body scroll lock state
+     */
+    const isLocked = () =>
+        _styleExists() && !$style.disabled && $html.classList.contains(NAMESPACE);
+
+    /**
+     *
+     */
+    const update = () => {
+        if (!isLocked()) {
+            return;
+        }
+
+        _unlock();
+
+        _lock();
+    };
+
+    /**
+     *
+     */
+    const lock = () => {
+        _lock();
+
+        _dispatch("bodyscrolllock");
+
+        _resize("add");
+    };
+
+    /**
+     *
+     */
+    const unlock = () => {
+        _unlock();
+
+        _dispatch("bodyscrollunlock");
+
+        _resize("remove");
+    };
+
+    var Api = /*#__PURE__*/Object.freeze({
+        __proto__: null,
+        isLocked: isLocked,
+        update: update,
+        lock: lock,
+        unlock: unlock
     });
-  };
 
-  var saveScrollPosition = function saveScrollPosition() {
-    return scroll = getScrollPosition();
-  };
+    return Api;
 
-  var restoreScrollPosition = function restoreScrollPosition() {
-    return window.scrollTo(scroll.x, scroll.y);
-  };
+})));
 
-  var LOCKED_STATUS_CSS_CLASS = "body-scroll-locked";
-
-  var isLocked = function isLocked() {
-    return isStyleElementInHead($locker) && !$locker.disabled && $html.classList.contains(LOCKED_STATUS_CSS_CLASS);
-  };
-
-  var update = function update() {
-    if (!isLocked()) {
-      return;
-    }
-
-    _unlock();
-
-    _lock();
-  };
-
-  var _lock = function _lock() {
-    saveScrollPosition();
-    $locker.disabled = false;
-    setLockerCssVars();
-    $html.classList.add(LOCKED_STATUS_CSS_CLASS);
-  };
-
-  var lock = function lock() {
-    _lock();
-
-    if (supportsCustomEvents) {
-      window.dispatchEvent(new CustomEvent("bodyScrollLock"));
-    }
-
-    window.addEventListener("resize", update);
-  };
-
-  var _unlock = function _unlock() {
-    $html.classList.remove(LOCKED_STATUS_CSS_CLASS);
-    restoreScrollPosition();
-    $locker.disabled = true;
-  };
-
-  var unlock = function unlock() {
-    _unlock();
-
-    if (supportsCustomEvents) {
-      window.dispatchEvent(new CustomEvent("bodyScrollUnlock"));
-    }
-
-    window.removeEventListener("resize", update);
-  };
-
-  var bodyScroll = {
-    lock: lock,
-    unlock: unlock,
-    isLocked: isLocked,
-    toggle: function toggle() {
-      return isLocked() ? unlock() : lock();
-    },
-    update: update
-  };
-  return bodyScroll;
-});
 //# sourceMappingURL=body-scroll.js.map

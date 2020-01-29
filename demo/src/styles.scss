@@ -7,7 +7,7 @@ $color-grey-dark: #262626;
 $margin: 20px;
 
 :root {
-    --body-scroll-scrollbar-width: 0px;
+    --body-scroll-lock-scrollbar-gap: 0px;
 }
 
 html {
@@ -15,11 +15,11 @@ html {
     @extend .serif-custom;
     @extend .text-medium;
 
-    &.body-scroll-locked {
+    &.body-scroll-lock {
         position: fixed;
-        top: calc(var(--body-scroll-scroll-y) * -1);
-        left: 0;
-        width: calc(100vw - var(--body-scroll-scrollbar-width));
+        width: 100%;
+        top: var(--body-scroll-lock-top-rect);
+        padding-right: var(--body-scroll-lock-scrollbar-gap);
     }
 }
 
@@ -84,7 +84,7 @@ button {
 .fixed-red-dot {
     position: fixed;
     bottom: 0;
-    right: var(--body-scroll-scrollbar-width);
+    right: var(--body-scroll-lock-scrollbar-gap);
     width: 60px;
     height: 60px;
     border-radius: 100%;

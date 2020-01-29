@@ -12,21 +12,21 @@ An halfway solution would be using the css `touch-action` property, but, again, 
 
 ## Usage Pt.1: CSS
 
-When [locking](#usage-pt2-javascript), two css variables, `--body-scroll-scroll-y` and `--body-scroll-scrollbar-width`, are programmatically set at `:root` level, making the css aware of the **window scroll position** and the **browser scrollbar width**, while a `body-scroll-locked` css class is assigned to the `html` element.
+When [locking](#usage-pt2-javascript), two css variables, `--body-scroll-lock-top-rect` and `--body-scroll-lock-scrollbar-gap`, are programmatically set at `:root` level, making the css aware of the **window scroll position** and the **browser scrollbar width**, while a `body-scroll-lock` css class is assigned to the `html` element.
 
 These interventions alone are enough to ensure a cross-browser body scroll lock as it follows:
 
 ```css
-html.body-scroll-locked {
+html.body-scroll-lock {
     /* position fixed hack, locks iOS too */
     position: fixed;
-    left: 0;
+    width: 100%;
 
     /* avoids scroll to top */
-    top: calc(var(--body-scroll-scroll-y) * -1);
+    top: var(--body-scroll-lock-top-rect);
 
     /* reserves space for scrollbar */
-    width: calc(100vw - var(--body-scroll-scrollbar-width));
+    padding-right: var(--body-scroll-lock-scrollbar-gap);
 }
 ```
 
@@ -34,25 +34,25 @@ Please note that some [browser recognition logic](https://gist.github.com/memob0
 
 ```css
 /* iOS only */
-html.body-scroll-locked.ios {
+html.body-scroll-lock.ios {
     /* position fixed hack */
     position: fixed;
-    left: 0;
+    width: 100%;
 
     /* avoids scroll to top */
-    top: calc(var(--body-scroll-scroll-y) * -1);
+    top: var(--body-scroll-lock-top-rect);
 }
 
 /* standard browsers only */
-html.body-scroll-locked.standard body {
+html.body-scroll-lock.standard body {
     /* standard way to lock body scroll */
     overflow: hidden;
 }
 
 /* both iOS and standard browsers */
-html.body-scroll-locked {
+html.body-scroll-lock {
     /* reserves space for scrollbar */
-    width: calc(100vw - var(--body-scroll-scrollbar-width));
+    padding-right: var(--body-scroll-lock-scrollbar-gap);
 }
 ```
 
@@ -78,22 +78,16 @@ A **isLocked** method can retrieve the actual body scroll lock status.
 const status = window.bodyScroll.isLocked(); // true when locked...
 ```
 
-Lazy? Just `toggle` it...
-
-```javascript
-window.bodyScroll.toggle(); // locks if unlocked, unlocks if locked!
-```
-
 ## Events
 
-Get notified when scroll **state changes** listening to `bodyScrollLock` and `bodyScrollUnlock` **events**.
+Get notified when scroll **state changes** listening to `bodyscrolllock` and `bodyscrollunlock` **events**.
 
 ```javascript
-window.addEventListener("bodyScrollLock", () =>
+window.addEventListener("bodyscrolllock", () =>
     console.log("The body scroll has been locked by someone, somewhere...")
 );
 
-window.addEventListener("bodyScrollUnlock", () =>
+window.addEventListener("bodyscrollunlock", () =>
     console.log("Body scroll has been unlocked by someone, somewhere...")
 );
 ```
@@ -111,7 +105,7 @@ aside {
     height: 100%;
 
     /* takes care of scrollbar presence */
-    right: var(--body-scroll-scrollbar-width);
+    right: var(--body-scroll-lock-scrollbar-gap);
 }
 ```
 
@@ -119,7 +113,7 @@ aside {
 
 ```css
 :root {
-    --body-scroll-scrollbar-width: 0px;
+    --body-scroll-lock-scrollbar-gap: 0px;
 }
 ```
 

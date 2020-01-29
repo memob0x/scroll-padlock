@@ -23,7 +23,9 @@ const log = (...message) => {
 
 document
     .querySelector(".toggle-scroll-lock")
-    .addEventListener("click", () => bodyScroll.toggle());
+    .addEventListener("click", () =>
+        !bodyScroll.isLocked() ? bodyScroll.lock() : bodyScroll.unlock()
+    );
 
 document
     .querySelector("button.toggle-custom-scrollbar")
@@ -33,8 +35,8 @@ document
         bodyScroll.update();
     });
 
-window.addEventListener("bodyScrollLock", () => log("body scroll locked"));
-window.addEventListener("bodyScrollUnlock", () => log("body scroll unlocked"));
+window.addEventListener("bodyscrolllock", () => log("body scroll locked"));
+window.addEventListener("bodyscrollunlock", () => log("body scroll unlocked"));
 
 // ie11 compliancy
 (function() {
