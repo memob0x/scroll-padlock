@@ -18,13 +18,12 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     return $style;
   }();
 
-  var supportsCustomEvents = typeof window.CustomEvent === "function";
   var _x = 0;
   var _y = 0;
 
   var save = function save() {
-    _x = window.scrollX;
-    _y = window.scrollY;
+    _x = window.pageXOffset;
+    _y = window.pageYOffset;
   };
 
   var restore = function restore() {
@@ -42,7 +41,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   };
 
   var _dispatch = function _dispatch(eventName) {
-    return supportsCustomEvents ? window.dispatchEvent(new CustomEvent(eventName)) : function () {};
+    return typeof window.CustomEvent === "function" ? window.dispatchEvent(new CustomEvent(eventName)) : function () {};
   };
 
   var _lock = function _lock() {

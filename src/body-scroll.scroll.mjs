@@ -8,8 +8,8 @@ let _y = 0;
  *
  */
 export const save = () => {
-    _x = window.scrollX;
-    _y = window.scrollY;
+    _x = window.pageXOffset;
+    _y = window.pageYOffset;
 };
 
 /**

@@ -1,6 +1,5 @@
 import {
     NAMESPACE,
-    supportsCustomEvents,
     $head,
     $html,
     $body,
@@ -32,7 +31,7 @@ const _getClientWidth = locked => {
  * @param {string} eventName
  */
 const _dispatch = eventName =>
-    supportsCustomEvents
+    typeof window.CustomEvent === "function"
         ? window.dispatchEvent(new CustomEvent(eventName))
         : () => {};
 

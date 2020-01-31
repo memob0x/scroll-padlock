@@ -13,5 +13,3 @@ export const $style =
 
         return $style;
     })();
-
-export const supportsCustomEvents = typeof window.CustomEvent === "function";

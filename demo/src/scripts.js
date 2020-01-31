@@ -18,8 +18,17 @@ const log = (...message) => {
     $li.innerHTML = message;
     $ol.appendChild($li);
 
-    $ol.scrollTo(0, $ol.scrollHeight);
+    $ol.scrollTop = $ol.scrollHeight;
 };
+
+const isLegacyIOS = /iPad|iPhone|iPod/.test(window.navigator.userAgent);
+const isMultiTouchMacAkaIOS13 =
+    window.navigator.platform === "MacIntel" &&
+    window.navigator.maxTouchPoints > 1;
+
+if (isLegacyIOS || isMultiTouchMacAkaIOS13) {
+    document.documentElement.classList.add("ios");
+}
 
 document
     .querySelector(".toggle-scroll-lock")

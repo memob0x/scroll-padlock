@@ -16,10 +16,17 @@ html {
     @extend .text-medium;
 
     &.body-scroll-lock {
+        padding-right: var(--body-scroll-lock-scrollbar-gap);
+    }
+
+    &.body-scroll-lock body {
+        overflow: hidden;
+    }
+
+    &.ios.body-scroll-lock {
         position: fixed;
         width: 100%;
         top: var(--body-scroll-lock-top-rect);
-        padding-right: var(--body-scroll-lock-scrollbar-gap);
     }
 }
 

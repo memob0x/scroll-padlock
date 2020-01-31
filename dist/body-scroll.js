@@ -20,8 +20,6 @@
             return $style;
         })();
 
-    const supportsCustomEvents = typeof window.CustomEvent === "function";
-
     /**
      *
      */
@@ -32,8 +30,8 @@
      *
      */
     const save = () => {
-        _x = window.scrollX;
-        _y = window.scrollY;
+        _x = window.pageXOffset;
+        _y = window.pageYOffset;
     };
 
     /**
@@ -64,7 +62,7 @@
      * @param {string} eventName
      */
     const _dispatch = eventName =>
-        supportsCustomEvents
+        typeof window.CustomEvent === "function"
             ? window.dispatchEvent(new CustomEvent(eventName))
             : () => {};
 
