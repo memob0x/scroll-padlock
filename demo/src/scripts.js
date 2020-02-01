@@ -36,16 +36,14 @@ document
         !bodyScroll.isLocked() ? bodyScroll.lock() : bodyScroll.unlock()
     );
 
-document
-    .querySelector("button.toggle-custom-scrollbar")
-    .addEventListener("click", () => {
-        log("toggling custom scrollbars");
-        document.body.classList.toggle("custom-scrollbar");
-        bodyScroll.update();
-    });
-
 window.addEventListener("bodyscrolllock", () => log("body scroll locked"));
 window.addEventListener("bodyscrollunlock", () => log("body scroll unlocked"));
+
+const toggleCustomScrollbars = () => {
+    document.documentElement.classList.toggle("custom-scrollbars");
+
+    bodyScroll.update();
+};
 
 // ie11 compliancy
 (function() {

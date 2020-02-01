@@ -2,7 +2,7 @@ $screen-small: 620px;
 $screen-big: 1100px;
 $color-white: #ffffff;
 $color-black: #000000;
-$color-grey-light: #dadada99;
+$color-grey-light: #dadada;
 $color-grey-dark: #262626;
 $margin: 20px;
 
@@ -88,14 +88,17 @@ button {
     }
 }
 
-.fixed-red-dot {
+.right-positioned-el {
+    color: $color-black;
     position: fixed;
     bottom: 0;
     right: var(--body-scroll-lock-scrollbar-gap);
-    width: 60px;
-    height: 60px;
-    border-radius: 100%;
-    background: red;
+    margin: 20px;
+    padding: 20px;
+    border-radius: 8px;
+    background: lighten($color-grey-light, 8%);
+    text-shadow: 1px 1px 1px white;
+    box-shadow: 0px 2px 4px $color-black;
 }
 
 .wrapper {
@@ -125,16 +128,19 @@ button {
     }
 }
 
-.custom-scrollbar {
-    &::-webkit-scrollbar {
+.custom-scrollbars {
+    &::-webkit-scrollbar,
+    ::-webkit-scrollbar {
         width: 20px;
     }
 
-    &::-webkit-scrollbar-track {
+    &::-webkit-scrollbar-track,
+    ::-webkit-scrollbar-track {
         background: $color-black;
     }
 
-    &::-webkit-scrollbar-thumb {
+    &::-webkit-scrollbar-thumb,
+    ::-webkit-scrollbar-thumb {
         background: $color-grey-light;
     }
 }
