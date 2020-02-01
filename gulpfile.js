@@ -13,8 +13,11 @@ const rename = require("gulp-rename");
 
 const BASE_DEMO = "./demo/";
 
+const _glob = (ext = "", base = "./") =>
+    `${base}src/+([a-z])?(\-+([a-z]))${ext}`;
+
 const _src = (ext = "", base = "./") => [
-    gulp.src(`${base}src/+([a-z])?(\-+([a-z]))${ext}`),
+    gulp.src(_glob(ext, base)),
 
     sourcemaps.init({
         loadMaps: false,
@@ -96,4 +99,12 @@ const libEs6 = done =>
         done
     );
 
-gulp.task("default", gulp.parallel(libEs6, libEs5, demoJs, demoCss));
+gulp.task("default", gulp.parallel(libEs5, libEs6, demoJs, demoCss));
+
+const watch = () => {
+    gulp.watch(_glob(".mjs"), gulp.parallel(libEs5, libEs6));
+    gulp.watch(_glob(".js", BASE_DEMO), demoJs);
+    gulp.watch(_glob(".scss", BASE_DEMO), demoCss);
+};
+
+gulp.task("watch", gulp.series("default", watch));

@@ -3,6 +3,7 @@
     "version": "0.0.1",
     "scripts": {
         "build": "./node_modules/.bin/gulp -f ./gulpfile.js",
+        "watch": "npm run build -- watch",
         "test": "karma start --single-run --browsers ChromeHeadless karma.conf.js"
     },
     "devDependencies": {
