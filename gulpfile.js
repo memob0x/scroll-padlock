@@ -11,117 +11,89 @@ const autoprefixer = require("autoprefixer");
 const minify = require("gulp-minify");
 const rename = require("gulp-rename");
 
-const LIB = "./";
-const DEMO = "./demo";
+const BASE_DEMO = "./demo/";
 
-const _sourcemaps = () =>
+const _src = (ext = "", base = "./") => [
+    gulp.src(`${base}src/+([a-z])?(\-+([a-z]))${ext}`),
+
     sourcemaps.init({
         loadMaps: false,
         largeFile: false
-    });
+    })
+];
 
-const _rollup = () =>
-    rollup(
-        {},
-        {
-            format: "umd",
-            name: "bodyScroll"
-        }
-    ).on("error", err => console.log(err));
+const _dest = (base = "./") => [
+    sourcemaps.write("."),
 
-const _minify = () => minify({ ext: { min: ".min.js" } });
+    gulp.dest(`${base}dist/`)
+];
 
-const _babel = () => babel().on("error", err => console.log(err));
+const _rollupLibJs = () => rollup({}, { format: "umd", name: "bodyScroll" });
 
-const styles = done =>
+const _minJs = () => minify({ ext: { min: ".min.js" } });
+
+const demoCss = done =>
     pump(
         [
-            gulp.src(`${DEMO}/src/*.scss`),
-
-            _sourcemaps(),
-
-            sass({
-                outputStyle: "compressed"
-            }).on("error", err => console.log(err)),
-
-            postcss([autoprefixer()]).on("error", err => console.log(err)),
-
-            sourcemaps.write("."),
-
-            gulp.dest(`${DEMO}/dist`)
+            //
+            ..._src(".scss", BASE_DEMO),
+            //
+            sass({ outputStyle: "compressed" }),
+            //
+            postcss([autoprefixer()]),
+            //
+            ..._dest(BASE_DEMO)
         ],
         done
     );
 
-const scripts = done => {
-    return pump(
+const demoJs = done =>
+    pump(
         [
-            gulp.src(`${DEMO}/src/*.js`),
-
-            _sourcemaps(),
-
-            _babel(),
-
-            _minify(),
-
-            sourcemaps.write("."),
-
-            gulp.dest(`${DEMO}/dist/`)
+            //
+            ..._src(".js", BASE_DEMO),
+            //
+            babel({ compact: true }),
+            //
+            ..._dest(BASE_DEMO)
         ],
         done
     );
-};
 
-const libraryEs5 = done => {
-    const source = `${LIB}src/body-scroll.{mjs,js}`;
-
-    return pump(
+const libEs5 = done =>
+    pump(
         [
-            gulp.src(source),
-
-            _sourcemaps(),
-
-            _rollup(),
-
-            _babel(),
-
-            rename({
-                extname: ".es5.js"
-            }),
-
-            _minify(),
-
-            sourcemaps.write("."),
-
-            gulp.dest(`${LIB}dist/`)
+            //
+            ..._src(".mjs"),
+            //
+            _rollupLibJs(),
+            //
+            babel(),
+            //
+            rename({ extname: ".es5.js" }),
+            //
+            _minJs(),
+            //
+            ..._dest()
         ],
         done
     );
-};
 
-const library = done => {
-    const source = `${LIB}src/body-scroll.{mjs,js}`;
-
-    return pump(
+const libEs6 = done =>
+    pump(
         [
-            gulp.src(source),
-
-            _sourcemaps(),
-
-            _rollup(),
-
-            rename({
-                extname: ".js"
-            }),
-
-            _minify(),
-
-            sourcemaps.write("."),
-
-            gulp.dest(`${LIB}dist/`)
+            //
+            ..._src(".mjs"),
+            //
+            _rollupLibJs(),
+            //
+            rename({ extname: ".js" }),
+            //
+            _minJs(),
+            //
+            ..._dest()
         ],
         done
     );
-};
 
-gulp.task("default", gulp.parallel(library, libraryEs5, scripts, styles));
+gulp.task("default", gulp.parallel(libEs6, libEs5, demoJs, demoCss));
