@@ -3,7 +3,8 @@ module.exports = function(config) {
         frameworks: ["mocha", "chai"],
         files: [
             { pattern: "./test/**/*.mjs", type: "module" },
-            { pattern: "./src/**/*.mjs", type: "module" }
+            { pattern: "./src/**/*.mjs", type: "module" },
+            { pattern: "./dist/body-scroll.js" }
         ],
         reporters: ["mocha"],
         port: 9876, // karma web server port
