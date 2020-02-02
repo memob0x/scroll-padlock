@@ -1,4 +1,5 @@
 # Body Scroll Lock
+![Node.js CI](https://github.com/memob0x/body-scroll-lock/workflows/Node.js%20CI/badge.svg)
 
 A css helper script based on **CSS variables** that lets you **lock the body scroll** with **iOS safari** "quirkness" and **scrollbar width** in mind.
 Please note that this library does barely nothing under the hood, during its use it just writes and updates two global css variables and toggles a css class, this way you'll be able to lock the body scroll with the [css rules you prefer](#usage-pt1-css).
