@@ -1,3 +1,5 @@
+import "../dist/body-scroll.js";
+
 describe("Public Api surface", () => {
     it("should be defined globally", done => {
         expect("bodyScroll" in window).to.be.true;

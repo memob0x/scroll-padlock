@@ -4,7 +4,7 @@ module.exports = function(config) {
         files: [
             { pattern: "./test/**/*.mjs", type: "module" },
             { pattern: "./src/**/*.mjs", type: "module" },
-            { pattern: "./dist/body-scroll.js" }
+            { pattern: "./dist/body-scroll.js", type: "module" }
         ],
         reporters: ["mocha"],
         port: 9876, // karma web server port
