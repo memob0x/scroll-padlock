@@ -123,7 +123,7 @@ describe("Api provider module", () => {
         done();
     });
 
-    it("resize ...", done => {
+    it("should update css variable accordingly after a resize event", done => {
         window.scrollTo(0, 9999);
 
         Api.lock();
