@@ -20,10 +20,12 @@ const _styleExists = () => $style.parentNode === $head;
  * @returns {number}
  */
 const _getClientWidth = locked => {
-    $body.style.width = locked ? `${$html.clientWidth}px` : "";
+    $body.style.width = locked
+        ? `${$html.getBoundingClientRect().width}px`
+        : "";
     $html.style.overflow = locked ? "hidden" : "";
 
-    return $html.clientWidth;
+    return $html.getBoundingClientRect().width;
 };
 
 /**
