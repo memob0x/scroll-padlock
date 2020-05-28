@@ -36,6 +36,41 @@ document
         !bodyScroll.isLocked() ? bodyScroll.lock() : bodyScroll.unlock()
     );
 
+const search = document.querySelector(".head__search");
+const input = document.querySelector(".head__search__input");
+
+const open = () => {
+    search.classList.remove("head__search");
+    search.classList.add("head__search--in");
+    input.classList.remove("head__search__input");
+    input.classList.add("head__search--in__input");
+
+    bodyScroll.lock();
+
+    input.focus();
+};
+
+const close = () => {
+    search.classList.add("head__search");
+    search.classList.remove("head__search--in");
+    input.classList.add("head__search__input");
+    input.classList.remove("head__search--in__input");
+
+    bodyScroll.unlock();
+
+    document.body.focus();
+};
+
+document.querySelector(".toggle-search-input").addEventListener("click", () => {
+    if (!search.classList.contains("head__search__input--in")) {
+        open();
+    } else {
+        close();
+    }
+});
+
+input.addEventListener("click", close);
+
 window.addEventListener("bodyscrolllock", () => log("body scroll locked"));
 window.addEventListener("bodyscrollunlock", () => log("body scroll unlocked"));
 

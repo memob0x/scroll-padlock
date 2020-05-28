@@ -61,22 +61,69 @@ button {
 }
 
 .head {
-    @extend .flex;
     @extend .sticky;
-    @extend .between;
-    flex-direction: column;
+    @extend .flex;
+    @extend .column;
+    position: relative;
 
-    // leave meh alone ie11, i just want to test the lib, damn ... :+)
-    @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
-        position: fixed;
-        top: 0;
-        width: 100%;
+    $height: 80px;
+
+    %search {
+        transition: transform 0.4s ease;
+        position: absolute;
+        bottom: 100%;
         left: 0;
+        width: 100%;
+
+        padding: $margin;
     }
 
-    @media (min-width: $screen-small) {
-        flex-direction: row;
-        height: 280px;
+    %input {
+        transition: outline 0.4s ease;
+        width: 100%;
+        margin: 0;
+        -webkit-appearance: none;
+        height: $height;
+        border: 1px solid black;
+        padding: 20px;
+    }
+
+    &__search {
+        @extend %search;
+        transform: translateY(0);
+
+        &__input {
+            @extend %input;
+            outline: 9999px rgba(0, 0, 0, 0) solid;
+        }
+
+        &--in {
+            @extend %search;
+            transform: translateY(100%);
+
+            &__input {
+                @extend %input;
+                outline: 9999px rgba(0, 0, 0, 1) solid;
+            }
+        }
+    }
+
+    &__inner {
+        @extend .flex;
+        @extend .between;
+
+        // leave meh alone ie11, i just want to test the lib, damn ... :+)
+        @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            left: 0;
+        }
+
+        @media (min-width: $screen-small) {
+            flex-direction: row;
+            height: 280px;
+        }
     }
 
     &__item {
@@ -123,9 +170,9 @@ button {
         @extend .flex;
         @extend .padding;
         @extend .around;
+        @extend .column;
         background: rgba($color-grey-light, 0.6);
         height: 100%;
-        flex-direction: column;
     }
 
     &__button {
@@ -165,7 +212,7 @@ button {
 
     &__list {
         @extend .flex;
-        flex-direction: column;
+        @extend .column;
         overflow-x: auto;
         width: 100%;
         height: 100%;
@@ -202,6 +249,10 @@ button {
 
 .flex {
     display: flex;
+}
+
+.column {
+    flex-direction: column;
 }
 
 .between {

@@ -1,6 +1,5 @@
 ## v0.2
 
-    -   readme: update
     -   readme: address iOS navbars/iOS keyboard-tray common issues provide explanation
 
 ## v0.3

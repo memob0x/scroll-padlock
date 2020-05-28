@@ -105,17 +105,12 @@ aside {
     top: 0;
     width: 240px;
     height: 100%;
-
-    /* takes care of scrollbar presence */
-    right: var(--body-scroll-lock-vertical-scrollbar-gap);
+    right: 0;
 }
-```
 
-...just remember to include a default value as it follows:
-
-```css
-:root {
-    --body-scroll-lock-vertical-scrollbar-gap: 0px;
+/* the same right positioned sidebar not affected by the scrollbar presence / disappearance */
+html.body-scroll-lock aside {
+    right: var(--body-scroll-lock-vertical-scrollbar-gap);
 }
 ```
 
