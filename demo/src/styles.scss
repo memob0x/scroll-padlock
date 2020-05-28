@@ -7,7 +7,7 @@ $color-grey-dark: #262626;
 $margin: 20px;
 
 :root {
-    --body-scroll-lock-scrollbar-gap: 0px;
+    --body-scroll-lock-vertical-scrollbar-gap: 0px;
 }
 
 html {
@@ -16,7 +16,7 @@ html {
     @extend .text-medium;
 
     &.body-scroll-lock {
-        padding-right: var(--body-scroll-lock-scrollbar-gap);
+        padding-right: var(--body-scroll-lock-vertical-scrollbar-gap);
     }
 
     &.body-scroll-lock body {
@@ -92,13 +92,18 @@ button {
     color: $color-black;
     position: fixed;
     bottom: 0;
-    right: var(--body-scroll-lock-scrollbar-gap);
     margin: 20px;
     padding: 20px;
     border-radius: 8px;
     background: lighten($color-grey-light, 8%);
     text-shadow: 1px 1px 1px white;
     box-shadow: 0px 2px 4px $color-black;
+
+    right: 0;
+
+    .body-scroll-lock & {
+        right: var(--body-scroll-lock-vertical-scrollbar-gap);
+    }
 }
 
 .wrapper {

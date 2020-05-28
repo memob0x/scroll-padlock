@@ -46,7 +46,7 @@ const toggleCustomScrollbars = () => {
 };
 
 // ie11 compliancy
-(function() {
+(function () {
     if (typeof window.CustomEvent === "function") return false;
 
     function CustomEvent(event, params) {

@@ -1,4 +1,5 @@
 # Body Scroll Lock
+
 ![Node.js CI](https://github.com/memob0x/body-scroll-lock/workflows/Node.js%20CI/badge.svg)
 
 A css helper script based on **CSS variables** that lets you **lock the body scroll** with **iOS safari** "quirkness" and **scrollbar width** in mind.
@@ -13,7 +14,7 @@ An halfway solution would be using the css `touch-action` property, but, again, 
 
 ## Usage Pt.1: CSS
 
-When [locking](#usage-pt2-javascript), two css variables, `--body-scroll-lock-top-rect` and `--body-scroll-lock-scrollbar-gap`, are programmatically set at `:root` level, making the css aware of the **window scroll position** and the **browser scrollbar width**, while a `body-scroll-lock` css class is assigned to the `html` element.
+When [locking](#usage-pt2-javascript), two css variables, `--body-scroll-lock-top-rect` and `--body-scroll-lock-vertical-scrollbar-gap`, are programmatically set at `:root` level, making the css aware of the **window scroll position** and the **browser scrollbar width**, while a `body-scroll-lock` css class is assigned to the `html` element.
 
 These interventions alone are enough to ensure a cross-browser body scroll lock as it follows:
 
@@ -27,7 +28,7 @@ html.body-scroll-lock {
     top: var(--body-scroll-lock-top-rect);
 
     /* reserves space for scrollbar */
-    padding-right: var(--body-scroll-lock-scrollbar-gap);
+    padding-right: var(--body-scroll-lock-vertical-scrollbar-gap);
 }
 ```
 
@@ -53,7 +54,7 @@ html.body-scroll-lock.standard body {
 /* both iOS and standard browsers */
 html.body-scroll-lock {
     /* reserves space for scrollbar */
-    padding-right: var(--body-scroll-lock-scrollbar-gap);
+    padding-right: var(--body-scroll-lock-vertical-scrollbar-gap);
 }
 ```
 
@@ -106,7 +107,7 @@ aside {
     height: 100%;
 
     /* takes care of scrollbar presence */
-    right: var(--body-scroll-lock-scrollbar-gap);
+    right: var(--body-scroll-lock-vertical-scrollbar-gap);
 }
 ```
 
@@ -114,7 +115,7 @@ aside {
 
 ```css
 :root {
-    --body-scroll-lock-scrollbar-gap: 0px;
+    --body-scroll-lock-vertical-scrollbar-gap: 0px;
 }
 ```
 
