@@ -25,8 +25,9 @@ const isLegacyIOS = /iPad|iPhone|iPod/.test(window.navigator.userAgent);
 const isMultiTouchMacAkaIOS13 =
     window.navigator.platform === "MacIntel" &&
     window.navigator.maxTouchPoints > 1;
+const isAnyIOS = isLegacyIOS || isMultiTouchMacAkaIOS13;
 
-if (isLegacyIOS || isMultiTouchMacAkaIOS13) {
+if (isAnyIOS) {
     document.documentElement.classList.add("ios");
 }
 
@@ -73,6 +74,11 @@ input.addEventListener("click", close);
 
 window.addEventListener("bodyscrolllock", () => log("body scroll locked"));
 window.addEventListener("bodyscrollunlock", () => log("body scroll unlocked"));
+window.addEventListener("bodyscrollresize", () => {
+    if (isAnyIOS) {
+        window.scrollTo(0, 0);
+    }
+});
 
 const toggleCustomScrollbars = () => {
     document.documentElement.classList.toggle("custom-scrollbars");

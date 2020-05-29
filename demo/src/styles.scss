@@ -111,6 +111,7 @@ button {
     &__inner {
         @extend .flex;
         @extend .between;
+        @extend .column;
 
         // leave meh alone ie11, i just want to test the lib, damn ... :+)
         @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
@@ -120,7 +121,7 @@ button {
             left: 0;
         }
 
-        @media (min-width: $screen-small) {
+        @media (min-width: $screen-small + 1) {
             flex-direction: row;
             height: 280px;
         }
@@ -129,7 +130,7 @@ button {
     &__item {
         @extend .padding;
 
-        @media (min-width: $screen-small) {
+        @media (min-width: $screen-small + 1) {
             width: 50%;
         }
     }
@@ -154,13 +155,13 @@ button {
 }
 
 .wrapper {
-    @media (min-width: $screen-small) {
+    @media (min-width: $screen-small + 1) {
         max-width: 100%;
         width: $screen-small;
         margin: 0 auto;
     }
 
-    @media (min-width: $screen-big) {
+    @media (min-width: $screen-big + 1) {
         width: $screen-big;
     }
 }

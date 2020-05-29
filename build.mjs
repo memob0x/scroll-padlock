@@ -3,6 +3,8 @@ import buildJS from "./build/js.mjs";
 import buildJsBundle from "./build/js.bundle.mjs";
 
 import babel from "@rollup/plugin-babel";
+import autoprefixer from "autoprefixer";
+import cssnano from "cssnano";
 
 // demo files
 // -----------------------------------------------------------------------------------------
@@ -16,12 +18,10 @@ import babel from "@rollup/plugin-babel";
 
         await buildCSS(
             {
-                file: `${root}/src/styles.scss`,
-                outputStyle: "compressed",
-                sourceMap: `${root}/src/styles.scss`,
-                omitSourceMapUrl: true
+                from: `${root}/src/styles.scss`,
+                to: `${root}/dist/styles.css`
             },
-            `${root}/dist`
+            [autoprefixer(), cssnano()]
         )
     ]))("./demo");
 
