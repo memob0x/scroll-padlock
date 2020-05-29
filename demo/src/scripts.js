@@ -25,8 +25,9 @@ const isLegacyIOS = /iPad|iPhone|iPod/.test(window.navigator.userAgent);
 const isMultiTouchMacAkaIOS13 =
     window.navigator.platform === "MacIntel" &&
     window.navigator.maxTouchPoints > 1;
+const isAnyIOS = isLegacyIOS || isMultiTouchMacAkaIOS13;
 
-if (isLegacyIOS || isMultiTouchMacAkaIOS13) {
+if (isAnyIOS) {
     document.documentElement.classList.add("ios");
 }
 
@@ -36,8 +37,48 @@ document
         !bodyScroll.isLocked() ? bodyScroll.lock() : bodyScroll.unlock()
     );
 
+const search = document.querySelector(".head__search");
+const input = document.querySelector(".head__search__input");
+
+const open = () => {
+    search.classList.remove("head__search");
+    search.classList.add("head__search--in");
+    input.classList.remove("head__search__input");
+    input.classList.add("head__search--in__input");
+
+    bodyScroll.lock();
+
+    input.focus();
+};
+
+const close = () => {
+    search.classList.add("head__search");
+    search.classList.remove("head__search--in");
+    input.classList.add("head__search__input");
+    input.classList.remove("head__search--in__input");
+
+    bodyScroll.unlock();
+
+    document.body.focus();
+};
+
+document.querySelector(".toggle-search-input").addEventListener("click", () => {
+    if (!search.classList.contains("head__search__input--in")) {
+        open();
+    } else {
+        close();
+    }
+});
+
+input.addEventListener("click", close);
+
 window.addEventListener("bodyscrolllock", () => log("body scroll locked"));
 window.addEventListener("bodyscrollunlock", () => log("body scroll unlocked"));
+window.addEventListener("bodyscrollresize", () => {
+    if (isAnyIOS) {
+        window.scrollTo(0, 0);
+    }
+});
 
 const toggleCustomScrollbars = () => {
     document.documentElement.classList.toggle("custom-scrollbars");
@@ -46,7 +87,7 @@ const toggleCustomScrollbars = () => {
 };
 
 // ie11 compliancy
-(function() {
+(function () {
     if (typeof window.CustomEvent === "function") return false;
 
     function CustomEvent(event, params) {

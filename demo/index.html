@@ -16,20 +16,36 @@
     <body>
         <div class="wrapper">
             <header class="head">
-                <nav class="head__item nav">
-                    <ul class="nav__list">
-                        <button
-                            class="nav__list__item nav__button toggle-scroll-lock"
-                        >
-                            Toggle Scroll Lock
-                        </button>
-                    </ul>
-                </nav>
+                <div class="head__search">
+                    <input
+                        class="head__search__input"
+                        type="search"
+                        placeholder="Test the iOS keyboard tray..."
+                    />
+                </div>
 
-                <div class="head__item console">
-                    <ol class="console__list">
-                        <li class="console__list__item--placeholder"></li>
-                    </ol>
+                <div class="head__inner">
+                    <nav class="head__item nav">
+                        <ul class="nav__list">
+                            <button
+                                class="nav__list__item nav__button toggle-scroll-lock"
+                            >
+                                Toggle Scroll Lock
+                            </button>
+
+                            <button
+                                class="nav__list__item nav__button toggle-search-input"
+                            >
+                                Toggle Search Input
+                            </button>
+                        </ul>
+                    </nav>
+
+                    <div class="head__item console">
+                        <ol class="console__list">
+                            <li class="console__list__item--placeholder"></li>
+                        </ol>
+                    </div>
                 </div>
             </header>
 
@@ -212,7 +228,7 @@
 
         <div class="right-positioned-el">just a right positioned element</div>
 
-        <script defer src="../dist/body-scroll.es5.min.js"></script>
+        <script defer src="../dist/body-scroll.js"></script>
         <script defer src="./dist/scripts.js"></script>
     </body>
 </html>
