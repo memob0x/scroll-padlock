@@ -15,13 +15,16 @@ const babelPresets = ["@babel/preset-env"];
         await buildJS(`${root}/src/scripts.js`, `${root}/dist`, "js", {
             presets: babelPresets,
             comments: false,
-            compact: true
+            compact: true,
+            sourceMap: true
         }),
 
         await buildCSS(
             {
-                from: `${root}/src/styles.scss`,
-                to: `${root}/dist/styles.css`
+                file: `${root}/src/styles.scss`,
+                outFile: `${root}/dist/styles.css`,
+                sourceMap: true,
+                sourceMapEmbed: true
             },
             [autoprefixer(), cssnano()]
         )

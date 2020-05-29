@@ -120,9 +120,7 @@ html.body-scroll-lock aside {
 
 There are some edge cases in which iOS doesn't play nice: when the page is scrolled the **system bars** become smaller, at that point when the keyboard tray is triggered they become larger again; that can cause visual artifacts as you can see the following gif.
 
-<center>
-    <img width="240" alt="ios bug" src="docs/bug.gif?raw=true">
-</center>
+![ios bug](docs/bug.gif?raw=true)
 
 That's because the element on focus is an input element and iOS forces a scroll to that element (to enhance the accessibility) on an area which would be shortly resized because of the system bars getting bigger. Pretty weird, huh?
 
@@ -138,9 +136,7 @@ window.addEventListener("bodyscrollresize", () => {
 
 As you can see in the following gif, things are finally back in place.
 
-<center>
-    <img width="240" alt="ios bug fix" src="docs/fix.gif?raw=true">
-</center>
+![ios bug](docs/fix.gif?raw=true)
 
 ## Support
 
