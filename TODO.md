@@ -1,7 +1,3 @@
-## v0.2
-
-    -   readme: address iOS navbars/iOS keyboard-tray common issues provide explanation
-
 ## v0.3
 
     -   library: reintroduce "micro-modules" separation
@@ -12,3 +8,7 @@
 ## v0.3.1
 
     -   build: separate min files
+
+## v0.4
+
+    -   possibly enhance APIs to allow more advanced configurations { writeCSSVars, resizeEvent ... }

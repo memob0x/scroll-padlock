@@ -5,7 +5,7 @@
 A css helper script based on **CSS variables** that lets you **lock the body scroll** with **iOS safari** "quirkness" and **scrollbar width** in mind.
 Please note that this library does barely nothing under the hood, during its use it just writes and updates two global css variables and toggles a css class, this way you'll be able to lock the body scroll with the [css rules you prefer](#usage-pt1-css).
 
-## The Backstory
+## TL;TR: The iOS Backstory
 
 The **proper way** to lock body scroll has always been putting `overflow: hidden;` **on body element**, but unfortunately this approach **just doesn't work on iOS safari**. 🙅<br>
 The cleanest way to overcome this unfortunate situation would be [preventing `touchmove` events](https://github.com/willmcpo/body-scroll-lock), but you might still have **issues** with some **`viewport` configurations** along with **pinch to zoom** taking place or **iOS navigation bars** covering your elements.<br>
@@ -60,7 +60,7 @@ html.body-scroll-lock {
 
 ## Usage Pt.2: JavaScript
 
-The inclusion of **body-scroll.js** sets a global **bodyScroll** variable, which is basically an `Object` with some `methods` in it.
+The current distribution boundle (_dist/body-scroll.js_) is in [**umd**](https://github.com/umdjs/umd) format, so it can be consumed in multiple environments, its inclusion in the browser sets a global `bodyScroll` variable. A **public Api interface** is exported as an `object`.
 
 To **lock** the body scroll simply call the `lock` method.
 
@@ -94,6 +94,8 @@ window.addEventListener("bodyscrollunlock", () =>
 );
 ```
 
+There's a further `bodyscrollresize` event dispatched during browser window resize on a lock state which can be useful in some [edge cases](#iOS-Bars).
+
 ## Positioned elements
 
 If you are experiencing issues with positioned elements remember you can overcome them with the same css variable you used to reserve the scrollbar with on body...
@@ -113,6 +115,32 @@ html.body-scroll-lock aside {
     right: var(--body-scroll-lock-vertical-scrollbar-gap);
 }
 ```
+
+## iOS Bars
+
+There are some edge cases in which iOS doesn't play nice: when the page is scrolled the **system bars** become smaller, at that point when the keyboard tray is triggered they become larger again; that can cause visual artifacts as you can see the following gif.
+
+<center>
+    <img width="240" alt="ios bug" src="docs/bug.gif?raw=true">
+</center>
+
+That's because the element on focus is an input element and iOS forces a scroll to that element (to enhance the accessibility) on an area which would be shortly resized because of the system bars getting bigger. Pretty weird, huh?
+
+To overcome this problem you can use `bodyscrollresize` event to programmatically scroll to top that ios-sub-window-thing.
+
+```javascript
+window.addEventListener("bodyscrollresize", () => {
+    if (yourWayToDetect.isIOS()) {
+        window.scrollTo(0, 0);
+    }
+});
+```
+
+As you can see in the following gif, things are finally back in place.
+
+<center>
+    <img width="240" alt="ios bug fix" src="docs/fix.gif?raw=true">
+</center>
 
 ## Support
 

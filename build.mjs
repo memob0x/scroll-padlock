@@ -1,17 +1,19 @@
+import babel from "@rollup/plugin-babel";
+import autoprefixer from "autoprefixer";
+import cssnano from "cssnano";
+
 import buildCSS from "./build/sass.mjs";
 import buildJS from "./build/js.mjs";
 import buildJsBundle from "./build/js.bundle.mjs";
 
-import babel from "@rollup/plugin-babel";
-import autoprefixer from "autoprefixer";
-import cssnano from "cssnano";
+const babelPresets = ["@babel/preset-env"];
 
 // demo files
 // -----------------------------------------------------------------------------------------
 (async (root) =>
     await Promise.all([
         await buildJS(`${root}/src/scripts.js`, `${root}/dist`, "js", {
-            presets: ["@babel/preset-env"],
+            presets: babelPresets,
             comments: false,
             compact: true
         }),
@@ -43,7 +45,7 @@ import cssnano from "cssnano";
                     babel.getBabelOutputPlugin({
                         compact: true,
                         comments: false,
-                        presets: ["@babel/preset-env"],
+                        presets: babelPresets,
                         allowAllFormats: true
                     })
                 ]

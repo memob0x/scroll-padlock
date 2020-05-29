@@ -1,6 +1,3 @@
-import { promises as fs } from "fs";
-import sass from "node-sass";
-import { name } from "./utils.mjs";
 import postscss from "postscss";
 
 export default async (options, plugins) => {
