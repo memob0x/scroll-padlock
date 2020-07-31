@@ -5,6 +5,18 @@
 A css helper script based on **CSS variables** that lets you **lock the body scroll** with **iOS safari** "quirkness" and **scrollbar width** in mind.
 Please note that this library does barely nothing under the hood, during its use it just writes and updates two global css variables and toggles a css class, this way you'll be able to lock the body scroll with the [css rules you prefer](#usage-pt1-css).
 
+## Library Inclusion
+
+This library is entirely written in [standard ECMAScript](https://tc39.es/), this means that you can safely include **src/body-scroll.mjs** in your es6 project as a module.
+
+If older browsers support is needed, a third party module loader is used or there's not a module loading strategy, the following boundles might be preferred:
+
+-   **dist/iife/body-scroll.js**: [immediately invoked function expression](https://developer.mozilla.org/en-US/docs/Glossary/IIFE) syntax. This boundle sets a global variable, thus is indicated for projects which don't use any module loading strategy.
+-   **dist/amd/body-scroll.js**: [asynchronous module definition](https://en.wikipedia.org/wiki/Asynchronous_module_definition) syntax.
+-   **dist/cjs/body-scroll.js**: [CommonJS](https://en.wikipedia.org/wiki/CommonJS) modules syntax.
+-   **dist/es/body-scroll.js**: [ECMAScript modules](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules) syntax.
+-   **dist/system/body-scroll.js**: [SystemJS](https://github.com/systemjs/systemjs) modules syntax.
+
 ## TL;TR: The iOS Backstory
 
 The **proper way** to lock body scroll has always been putting `overflow: hidden;` **on body element**, but unfortunately this approach **just doesn't work on iOS safari**. 🙅<br>

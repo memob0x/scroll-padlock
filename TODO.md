@@ -1,7 +1,6 @@
 ## v0.3
 
-    -   tests: provide more granular unit tests (of "micro-modules" private methods)
-    -   build: provide dist/esm, dist/amd, dist/cjs, dist/system, dist/esm, dist/iife boundles
+    -   tests: a test file for every library module
     -   readme: provide gifs
 
 ## v0.3.1

@@ -18,7 +18,6 @@ import {
 
 // handling browser resize (implicitly includes a possible device orientation change)
 // re applying a consistent lock state when body scroll is locked
-const RESIZE_DEBOUNCE_TIME = 150;
 let id = null;
 const resizeHandler = () => {
     clearTimeout(id);
@@ -37,7 +36,7 @@ const resizeHandler = () => {
 
         // dispatch a "resize during lock" notification
         dispatchMessage("resize");
-    }, RESIZE_DEBOUNCE_TIME);
+    }, 150);
 };
 window.addEventListener("resize", resizeHandler, true);
 

@@ -32,26 +32,34 @@ const babelPresets = ["@babel/preset-env"];
 
 // library
 // -----------------------------------------------------------------------------------------
-(async () =>
-    await buildJsBundle({
-        input: {
-            input: "./src/body-scroll.mjs"
-        },
-        output: [
-            {
-                compact: true,
-                sourcemap: true,
-                format: "umd",
-                name: "bodyScroll",
-                file: "./dist/body-scroll.js",
-                plugins: [
-                    babel.getBabelOutputPlugin({
-                        compact: true,
-                        comments: false,
-                        presets: babelPresets,
-                        allowAllFormats: true
-                    })
-                ]
-            }
-        ]
-    }))();
+(async () => {
+    const boundles = [];
+
+    ["amd", "iife", "system", "es", "cjs"].forEach((type) =>
+        buildJsBundle({
+            input: {
+                input: "./src/body-scroll.mjs"
+            },
+            output: [
+                {
+                    compact: true,
+                    sourcemap: true,
+                    format: type,
+                    name: "bodyScroll",
+                    file: `./dist/${type}/body-scroll.js`,
+                    exports: "auto",
+                    plugins: [
+                        babel.getBabelOutputPlugin({
+                            compact: true,
+                            comments: false,
+                            presets: babelPresets,
+                            allowAllFormats: true
+                        })
+                    ]
+                }
+            ]
+        })
+    );
+
+    await Promise.all(boundles);
+})();
