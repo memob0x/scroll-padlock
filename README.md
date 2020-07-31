@@ -1,13 +1,24 @@
-# Body Scroll Lock
+# bodyScroll.lock
 
 ![Node.js CI](https://github.com/memob0x/body-scroll-lock/workflows/Node.js%20CI/badge.svg)
 
-A css helper script based on **CSS variables** that lets you **lock the body scroll** with **iOS safari** "quirkness" and **scrollbar width** in mind.
-Please note that this library does barely nothing under the hood, during its use it just writes and updates two global css variables and toggles a css class, this way you'll be able to lock the body scroll with the [css rules you prefer](#usage-pt1-css).
+A "CSS helper" script which relies on **CSS variables** in order to programmatically **lock the body scroll** avoiding "body jumps".
 
-## Library Inclusion
+## TL;TR: an overview
 
-This library is entirely written in [standard ECMAScript](https://tc39.es/), this means that you can safely include **src/body-scroll.mjs** in your es6 project as a module.
+🙅 `body { overflow: hidden; }` is the most common way to lock the scroll position on every browsers, unfortunately, unless user's browser has overlay scrollbars, that would cause the body to expand and the contents to jump to the right; to make matters worse that technique just **doesn't work** on **iOS safari**: when set the user can still somehow scroll the page.
+
+🙅 `body { touch-action: none; }` can't help since Safari [doesn't seem to support it](https://bugs.webkit.org/show_bug.cgi?id=133112) anytime soon.
+
+🤷 A lot of libraries propose to solve this preventing `touchmove` events, which might be considered a clean solution; unfortunately some **issues** with some **`viewport` configurations** or **pinch to zoom** might still be encountered, also **iOS navigation bars** might end up covering some layout elements.
+
+🙅 `body { position: fixed; }` can still force iOS to lock the scroll, but when applied the scroll position would eventually jump to the top of the page.
+
+💁 This library sets two global **css variables** and toggles a **css class** in order to allow the developer's CSS-only [preferred approach](#usage-pt1-css).
+
+## Usage, part 1: Library inclusion
+
+This library is entirely written in [standard ECMAScript](https://tc39.es/), this means that you can safely include **src/body-scroll.mjs** module in your es6 project.
 
 If older browsers support is needed, a third party module loader is used or there's not a module loading strategy, the following boundles might be preferred:
 
@@ -17,14 +28,7 @@ If older browsers support is needed, a third party module loader is used or ther
 -   **dist/es/body-scroll.js**: [ECMAScript modules](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules) syntax.
 -   **dist/system/body-scroll.js**: [SystemJS](https://github.com/systemjs/systemjs) modules syntax.
 
-## TL;TR: The iOS Backstory
-
-The **proper way** to lock body scroll has always been putting `overflow: hidden;` **on body element**, but unfortunately this approach **just doesn't work on iOS safari**. 🙅<br>
-The cleanest way to overcome this unfortunate situation would be [preventing `touchmove` events](https://github.com/willmcpo/body-scroll-lock), but you might still have **issues** with some **`viewport` configurations** along with **pinch to zoom** taking place or **iOS navigation bars** covering your elements.<br>
-Since **this script** is more of a tool to programmatically assign some css rules, I always considered this approach the most convenient solution: no event listeners to register/unregister; no scrollable inner-elements to keep in mind, no problems. ✌<br>
-An halfway solution would be using the css `touch-action` property, but, again, [**safari doesn't** seem to **support it**](https://bugs.webkit.org/show_bug.cgi?id=133112) any time soon 🙄, so...
-
-## Usage Pt.1: CSS
+## Usage, part 2: CSS rules
 
 When [locking](#usage-pt2-javascript), two css variables, `--body-scroll-lock-top-rect` and `--body-scroll-lock-vertical-scrollbar-gap`, are programmatically set at `:root` level, making the css aware of the **window scroll position** and the **browser scrollbar width**, while a `body-scroll-lock` css class is assigned to the `html` element.
 
@@ -70,7 +74,7 @@ html.body-scroll-lock {
 }
 ```
 
-## Usage Pt.2: JavaScript
+## Usage, part 3: invoking API methods
 
 The current distribution boundle (_dist/body-scroll.js_) is in [**umd**](https://github.com/umdjs/umd) format, so it can be consumed in multiple environments, its inclusion in the browser sets a global `bodyScroll` variable. A **public Api interface** is exported as an `object`.
 

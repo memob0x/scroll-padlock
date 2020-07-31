@@ -60,11 +60,77 @@ button {
     }
 }
 
+.text-justify {
+    text-align: justify;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.flex {
+    display: flex;
+}
+
+.column {
+    flex-direction: column;
+}
+
+.between {
+    justify-content: space-between;
+}
+.around {
+    justify-content: space-around;
+}
+
+.margin {
+    margin: $margin;
+}
+.padding {
+    padding: $margin;
+}
+
+.text-small {
+    font-size: 12px;
+    line-height: 18px;
+}
+
+.text-medium {
+    font-size: 16px;
+    line-height: 27px;
+}
+
+.sticky {
+    position: sticky;
+    top: 0;
+}
+
+.button {
+    @extend .text-small;
+    @extend .serif-standard;
+    letter-spacing: 1px;
+    padding: 11px 16px;
+    background: $color-grey-dark;
+    border-radius: 0;
+    color: $color-white;
+
+    &:hover {
+        background: $color-black;
+    }
+}
+
+.serif-custom {
+    font-family: "Roboto Slab", serif;
+}
+
+.serif-standard {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
 .head {
     @extend .sticky;
     @extend .flex;
     @extend .column;
-    position: relative;
 
     $height: 80px;
 
@@ -238,71 +304,4 @@ button {
             height: 180px;
         }
     }
-}
-
-.text-justify {
-    text-align: justify;
-}
-
-.text-right {
-    text-align: right;
-}
-
-.flex {
-    display: flex;
-}
-
-.column {
-    flex-direction: column;
-}
-
-.between {
-    justify-content: space-between;
-}
-.around {
-    justify-content: space-around;
-}
-
-.margin {
-    margin: $margin;
-}
-.padding {
-    padding: $margin;
-}
-
-.text-small {
-    font-size: 12px;
-    line-height: 18px;
-}
-
-.text-medium {
-    font-size: 16px;
-    line-height: 27px;
-}
-
-.sticky {
-    position: sticky;
-    top: 0;
-}
-
-.button {
-    @extend .text-small;
-    @extend .serif-standard;
-    letter-spacing: 1px;
-    padding: 11px 16px;
-    background: $color-grey-dark;
-    border-radius: 0;
-    color: $color-white;
-
-    &:hover {
-        background: $color-black;
-    }
-}
-
-.serif-custom {
-    font-family: "Roboto Slab", serif;
-}
-
-.serif-standard {
-    font-family: Arial, Helvetica, sans-serif;
 }
