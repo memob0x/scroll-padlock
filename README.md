@@ -4,6 +4,14 @@
 
 A "CSS helper" script which relies on **CSS variables** in order to programmatically **lock the body scroll** avoiding "body jumps".
 
+🙅 Without bodyScroll:
+
+![without scrollbar gap compensation](docs/without-gap-compensation.gif?raw=true)
+
+💁 With bodyScroll:
+
+![with scrollbar gap compensation](docs/with-gap-compensation.gif?raw=true)
+
 ## TL;TR: an overview
 
 🙅 `body { overflow: hidden; }` is the most common way to lock the scroll position on every browsers, unfortunately, unless user's browser has overlay scrollbars, that would cause the body to expand and the contents to jump to the right; to make matters worse that technique just **doesn't work** on **iOS safari**: when set the user can still somehow scroll the page.
@@ -136,7 +144,7 @@ html.body-scroll-lock aside {
 
 There are some edge cases in which iOS doesn't play nice: when the page is scrolled the **system bars** become smaller, at that point when the keyboard tray is triggered they become larger again; that can cause visual artifacts as you can see the following gif.
 
-![ios bug](docs/bug.gif?raw=true)
+![ios bug](docs/ios-bug.gif?raw=true)
 
 That's because the element on focus is an input element and iOS forces a scroll to that element (to enhance the accessibility) on an area which would be shortly resized because of the system bars getting bigger. Pretty weird, huh?
 
@@ -152,7 +160,7 @@ window.addEventListener("bodyscrollresize", () => {
 
 As you can see in the following gif, things are finally back in place.
 
-![ios bug](docs/fix.gif?raw=true)
+![ios bug](docs/ios-fix.gif?raw=true)
 
 ## Support
 

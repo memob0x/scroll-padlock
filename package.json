@@ -1,10 +1,14 @@
 {
-    "name": "body-scroll-lock",
+    "name": "@memob0x/body-scroll-lock",
     "version": "0.2.0",
     "license": "MIT",
     "repository": {
         "type": "git",
-        "url": "https://github.com/memob0x/body-scroll-lock.git"
+        "url": "ssh://git@github.com:memob0x/body-scroll-lock.git",
+        "directory": "@memob0x/body-scroll-lock"
+    },
+    "publishConfig": {
+        "registry": "https://npm.pkg.github.com/memob0x"
     },
     "scripts": {
         "build": "node ./build.mjs",
