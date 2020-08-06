@@ -14,7 +14,8 @@ A "CSS helper" script which relies on **CSS variables** in order to programmatic
 
 ## TL;TR: an overview
 
-🙅 `body { overflow: hidden; }` is the most common way to lock the scroll position on every browsers, unfortunately, unless user's browser has overlay scrollbars, that would cause the body to expand and the contents to jump to the right; to make matters worse that technique just **doesn't work** on **iOS safari**: when set the user can still somehow scroll the page.
+🙅 `body { overflow: hidden; }` is the most common way to lock the scroll position on every browsers, unfortunately, unless user's browser has overlay scrollbars, that would cause the scrollbar to disappear, the body to expand and the contents to jump to the right;<br>
+to make matters worse that technique just **doesn't work** on **iOS safari**: when set the user can still somehow scroll the page.
 
 🙅 `body { touch-action: none; }` can't help since Safari [doesn't seem to support it](https://bugs.webkit.org/show_bug.cgi?id=133112) anytime soon.
 
