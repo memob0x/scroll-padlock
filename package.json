@@ -16,7 +16,7 @@
         "test": "karma start --single-run --browsers ChromeHeadless karma.conf.js"
     },
     "dependencies": {
-        "@babel/core": "^7.11.0",
+        "@babel/core": "^7.11.1",
         "@babel/preset-env": "^7.11.0",
         "@rollup/plugin-babel": "^5.1.0",
         "autoprefixer": "^9.8.6",
@@ -29,7 +29,7 @@
         "karma-mocha": "^2.0.1",
         "karma-mocha-reporter": "^2.2.5",
         "mjs-mocha": "^3.0.0",
-        "mocha": "8.1.0",
+        "mocha": "8.1.1",
         "node-sass": "^4.14.1",
         "postcss": "^7.0.32",
         "puppeteer": "^5.2.1",
