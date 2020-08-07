@@ -27,6 +27,12 @@ to make matters worse that technique just **doesn't work** on **iOS safari**: wh
 
 ## Usage, part 1: Library inclusion
 
+This library is downloadable via **npm**, which means you can enter the following command directly in your terminal:
+
+```console
+$ npm install @memob0x/body-scroll-lock
+```
+
 This library is entirely written in [standard ECMAScript](https://tc39.es/), this means that you can safely include **src/body-scroll.mjs** module in your es6 project.
 
 If older browsers support is needed, a third party module loader is used or there's not a module loading strategy, the following boundles might be preferred:
@@ -90,19 +96,19 @@ The current distribution boundle (_dist/body-scroll.js_) is in [**umd**](https:/
 To **lock** the body scroll simply call the `lock` method.
 
 ```javascript
-window.bodyScroll.lock(); // freeze!
+bodyScroll.lock(); // freeze!
 ```
 
 To **unlock** it, call the `unlock` one.
 
 ```javascript
-window.bodyScroll.unlock(); // scroll free, little bird.
+bodyScroll.unlock(); // scroll free, little bird.
 ```
 
 A **isLocked** method can retrieve the actual body scroll lock status.
 
 ```javascript
-const status = window.bodyScroll.isLocked(); // true when locked...
+const status = bodyScroll.isLocked(); // true when locked...
 ```
 
 ## Events
