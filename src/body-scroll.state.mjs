@@ -1,5 +1,5 @@
 import {
-    dispatchMessage,
+    dispatchEvent,
     addLockedCssClass,
     removeLockedCssClass
 } from "./body-scroll.client.mjs";
@@ -93,7 +93,7 @@ export const lock = () => {
     }
 
     // dispatch a "lock done" notification
-    dispatchMessage("lock");
+    dispatchEvent("lock");
 };
 
 /**
@@ -108,5 +108,5 @@ export const unlock = () => {
     }
 
     // dispatch an "unlock done" notification
-    dispatchMessage("unlock");
+    dispatchEvent("unlock");
 };

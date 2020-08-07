@@ -47,6 +47,10 @@ export const getVerticalScrollbarGap = () => {
     return scrollbarWidth;
 };
 
+//
+export const cssVarNamePosition = "--body-scroll-lock-top-rect";
+export const cssVarNameGap = "--body-scroll-lock-vertical-scrollbar-gap";
+
 /**
  * Updates css variables to the current state
  * @public
@@ -76,11 +80,9 @@ export const updateCssVariables = () => {
 
     // composes updated css variables rule
     const rule = `:root {
-        --body-scroll-lock-top-rect: ${scrollPosition.top * -1}px;
-        --body-scroll-lock-vertical-scrollbar-gap: ${verticalScrollbarGap}px;
-        --body-scroll-lock-vertical-scrollbar-gap-round: ${Math.round(
-            verticalScrollbarGap
-        )}px;
+        ${cssVarNamePosition}: ${scrollPosition.top * -1}px;
+        ${cssVarNameGap}: ${verticalScrollbarGap}px;
+        ${cssVarNameGap}-round: ${Math.round(verticalScrollbarGap)}px;
     }`;
 
     // sets new rule up

@@ -4,19 +4,24 @@ export const body = document.body;
 export const html = document.documentElement;
 export const styler = document.createElement("style");
 
+//
+export const eventNamePrefix = "bodyscroll";
+
 /**
  * Dispatches the given message name in jQuery.Event
  * @private
  * @param {String} messageName The given message name to be dispatched
  * @returns {void} Nothing
  */
-export const dispatchMessage = (messageName) =>
+export const dispatchEvent = (messageName) =>
     typeof window.CustomEvent === "function"
-        ? window.dispatchEvent(new CustomEvent(`bodyscroll${messageName}`))
+        ? window.dispatchEvent(
+              new CustomEvent(`${eventNamePrefix}${messageName}`)
+          )
         : () => {};
 
 //
-const lockedStateCssClass = "body-scroll-lock";
+export const lockedStateCssClass = "body-scroll-lock";
 
 /**
  * Toggles the locked state css class to html element

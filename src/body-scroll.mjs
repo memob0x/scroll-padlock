@@ -1,4 +1,4 @@
-import { dispatchMessage } from "./body-scroll.client.mjs";
+import { dispatchEvent } from "./body-scroll.client.mjs";
 import {
     lock,
     unlock,
@@ -35,7 +35,7 @@ const resizeHandler = () => {
         doLock();
 
         // dispatch a "resize during lock" notification
-        dispatchMessage("resize");
+        dispatchEvent("resize");
     }, 150);
 };
 window.addEventListener("resize", resizeHandler, true);

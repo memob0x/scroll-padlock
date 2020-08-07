@@ -5,4 +5,5 @@
  * @param {any} value The given value to be checked
  * @returns {Boolean} True if the given value is a number
  */
-export const isNumber = (value) => typeof value === "number" && !isNaN(value);
+export const isNumber = (value) =>
+    typeof value === "number" && !isNaN(value) && isFinite(value);
