@@ -33,16 +33,19 @@ const eventHandler = () => {
     }, debounceTime);
 };
 
+// passive as only option
+const options = true;
+
 /**
  * Attach the resize the handler to a browser resize event listener
  * @returns {void} Nothing
  */
 export const addResizeEventListener = () =>
-    window.addEventListener(eventName, eventHandler, true);
+    window.addEventListener(eventName, eventHandler, options);
 
 /**
  * Detach the resize the handler to a browser resize event listener
  * @returns {void} Nothing
  */
 export const removeResizeEventListener = () =>
-    window.removeEventListener(eventName, eventHandler);
+    window.removeEventListener(eventName, eventHandler, options);

@@ -4,6 +4,8 @@ describe("body-scroll", () => {
     // removing resize handler, just in case, in order not to affect other tests
     after(() => bodyScroll.removeResizeEventListener());
 
+    // TODO: should have resize event listener automatically added at this point
+
     it("should expose all valuable methods in API", () => {
         expect(Object.keys(bodyScroll).length).to.equals(10);
 

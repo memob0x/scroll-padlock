@@ -13,6 +13,7 @@ import {
     removeResizeEventListener
 } from "./body-scroll.resize.mjs";
 
+// handling resize (attacching event listener) on library inclusion
 addResizeEventListener();
 
 // public API

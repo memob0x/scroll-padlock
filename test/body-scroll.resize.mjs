@@ -8,9 +8,11 @@ import {
 
 describe("body-scroll.resize", () => {
     beforeEach(() => addResizeEventListener());
-    beforeEach(() => removeResizeEventListener());
 
-    // TODO: check consisten lock state to be re-applied
+    afterEach(() => removeResizeEventListener());
+
+    // TODO: check consistent lock state to be re-applied
+    // TODO: test addResizeEventListener and removeResizeEventListener to work properly
 
     it("should dispatch a custom resize event only at locked state", (done) => {
         let i = 0;
