@@ -14,22 +14,15 @@ describe("body-scroll.resize", () => {
 
     it("should dispatch a custom resize event only at locked state", (done) => {
         let i = 0;
-        const increase = () => i++;
+
+        window.addEventListener(`${eventNamePrefix}resize`, () => i++);
 
         // should not be dispatched when unlocked
-        window.addEventListener(`${eventNamePrefix}resize`, increase, {
-            once: true
-        });
-
         unlock();
 
         window.dispatchEvent(new CustomEvent("resize"));
 
         // should be dispatched when locked
-        window.addEventListener(`${eventNamePrefix}resize`, increase, {
-            once: true
-        });
-
         lock();
 
         window.dispatchEvent(new CustomEvent("resize"));
