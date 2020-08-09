@@ -1,15 +1,11 @@
-import { preparePlayground, clearPlayground } from "./test.mjs";
 import bodyScroll from "../src/body-scroll.mjs";
 
-// TODO: test resize (maybe through spy?)
-
 describe("body-scroll", () => {
-    beforeEach(() => preparePlayground());
-
-    afterEach(() => clearPlayground());
+    // removing resize handler, just in case, in order not to affect other tests
+    after(() => bodyScroll.removeResizeEventListener());
 
     it("should expose all valuable methods in API", () => {
-        expect(Object.keys(bodyScroll).length).to.equals(8);
+        expect(Object.keys(bodyScroll).length).to.equals(10);
 
         expect(bodyScroll).to.respondTo("lock");
         expect(bodyScroll).to.respondTo("unlock");
@@ -20,5 +16,7 @@ describe("body-scroll", () => {
         expect(bodyScroll).to.respondTo("restoreScrollPosition");
         expect(bodyScroll).to.respondTo("saveScrollPosition");
         expect(bodyScroll).to.respondTo("getSavedScrollPosition");
+        expect(bodyScroll).to.respondTo("addResizeEventListener");
+        expect(bodyScroll).to.respondTo("removeResizeEventListener");
     });
 });

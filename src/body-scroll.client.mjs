@@ -4,7 +4,8 @@ export const body = document.body;
 export const html = document.documentElement;
 export const styler = document.createElement("style");
 
-//
+// all the custom events dispatched by the library will start with this string
+// in order to avoid name clashing
 export const eventNamePrefix = "bodyscroll";
 
 /**
