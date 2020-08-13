@@ -15,7 +15,7 @@ let scrollSaving = null;
  * @returns {Boolean} True if the given value is a valid scroll object
  */
 export const isValidScrollPosition = (value) =>
-    value && isNumber(value?.top) && isNumber(value?.left);
+    typeof value === "object" && isNumber(value?.top) && isNumber(value?.left);
 
 /**
  * Formats a given scroll position object value, if malformed returns null
