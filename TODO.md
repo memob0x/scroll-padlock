@@ -1,15 +1,14 @@
-## v0.3
+## v1.0
 
+    -   build: provide separate .min files
+    -   convert the whole lib to a class to be initialized on elements eg. const bodyPadlock = new ScrollPadlock(el = document.body); bodyPadlock.lock(); bodyPadlock.unlock(); ...
     -   tests: complete unit test (TODO notes across test modules)
-    -   library: complete missing jsdocs
+    -   library: provide missing jsdocs
 
-## v0.4
+## v1.0.1
 
-    -   general: ditch prettier and .prettierrc, adopt eslint (+ npm run lint)
+    -   general: ditch prettier, adopt eslint
     -   general: npm run lint command
-    -   general: npm run test:unit command
-    -   general: npm run test = npm run lint + npm run test:unit
-    -   build: separate min files
     -   demos: enhance top drawer part (closing "x" etc...)
-    -   docs: redo ios-bug.gif, ios-fix.gif when demo are ok
-    -   docs: dedicated gifs for positioned elements
+    -   docs: redo ios-bug.gif, ios-fix.gif once demos are finished
+    -   docs: provide dedicated gifs for positioned elements
