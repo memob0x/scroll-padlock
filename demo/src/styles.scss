@@ -6,10 +6,6 @@ $color-grey-light: #dadada;
 $color-grey-dark: #262626;
 $margin: 20px;
 
-:root {
-    --body-scroll-lock-vertical-scrollbar-gap: 0px;
-}
-
 html {
     box-sizing: border-box;
     @extend .serif-custom;

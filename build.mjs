@@ -7,6 +7,7 @@ import buildJS from "./build/js.mjs";
 import buildJsBundle from "./build/js.bundle.mjs";
 
 const babelPresets = ["@babel/preset-env"];
+const babelPlugins = ["@babel/plugin-proposal-class-properties"];
 
 // demo files
 // -----------------------------------------------------------------------------------------
@@ -14,6 +15,7 @@ const babelPresets = ["@babel/preset-env"];
     await Promise.all([
         await buildJS(`${root}/src/scripts.js`, `${root}/dist`, "js", {
             presets: babelPresets,
+            plugins: babelPlugins,
             comments: false,
             compact: true,
             sourceMap: true
@@ -45,7 +47,7 @@ const babelPresets = ["@babel/preset-env"];
                     compact: true,
                     sourcemap: true,
                     format: type,
-                    name: "bodyScroll",
+                    name: "BodyScroll",
                     file: `./dist/${type}/body-scroll.js`,
                     exports: "auto",
                     plugins: [
@@ -53,6 +55,7 @@ const babelPresets = ["@babel/preset-env"];
                             compact: true,
                             comments: false,
                             presets: babelPresets,
+                            plugins: babelPlugins,
                             allowAllFormats: true
                         })
                     ]

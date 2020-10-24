@@ -1,3 +1,4 @@
+import { html } from "../src/body-scroll.client.mjs";
 import {
     preparePlayground,
     clearPlayground,
@@ -5,13 +6,15 @@ import {
     scrollGapLargerValue,
     scrollGapLargerCssClassName
 } from "./test.mjs";
-import { html } from "../src/body-scroll.client.mjs";
 import { saveScrollPosition } from "../src/body-scroll.scroll.mjs";
 import {
     updateCssVariables,
-    getVerticalScrollbarGap,
-    cssVarNamePosition,
-    cssVarNameGap
+    getScrollbarsGaps,
+    cssVarNamePositionTop,
+    cssVarNameGapVertical,
+    lockedStateCssClass,
+    addLockedCssClass,
+    removeLockedCssClass
 } from "../src/body-scroll.style.mjs";
 
 /**
@@ -19,23 +22,23 @@ import {
  * @param {String} variableName
  * @returns {String}
  */
-const getCssVariableValue = (variableName) =>
-    window.getComputedStyle(html).getPropertyValue(variableName).trim();
+const getCssVariableValue = (element, variableName) =>
+    window.getComputedStyle(element).getPropertyValue(variableName).trim();
 
 describe("body-scroll.style", () => {
     beforeEach(() => preparePlayground());
 
     afterEach(() => clearPlayground());
 
-    it("should write consistent scroll position css variables", (done) => {
+    it("should write consistent scroll position css variables", () => {
         // 0. ensuring scroll top position is 0, variable should be 0px after updateCssVariables call
         let scrollPosition = 0;
         window.scrollTo(0, scrollPosition);
 
-        saveScrollPosition();
-        updateCssVariables();
+        saveScrollPosition(html);
+        updateCssVariables(html);
 
-        expect(getCssVariableValue(cssVarNamePosition)).to.equals(
+        expect(getCssVariableValue(html, cssVarNamePositionTop)).to.equals(
             `${scrollPosition}px`
         );
 
@@ -43,51 +46,53 @@ describe("body-scroll.style", () => {
         scrollPosition = 120;
         window.scrollTo(0, scrollPosition);
 
-        saveScrollPosition();
-        updateCssVariables();
+        saveScrollPosition(html);
+        updateCssVariables(html);
 
-        expect(getCssVariableValue(cssVarNamePosition)).to.equals(
+        expect(getCssVariableValue(html, cssVarNamePositionTop)).to.equals(
             `-${scrollPosition}px`
         );
-
-        done();
     });
 
-    it("should calculate and write consistent scrollbar gap css variables", (done) => {
+    it("should calculate and write consistent scrollbar gap css variables", () => {
         // 0. should calculate and write current scrollbar gap css variable
-        updateCssVariables();
+        updateCssVariables(html);
 
-        expect(getVerticalScrollbarGap()).to.equals(scrollGapDefaultValue);
-        expect(getCssVariableValue(cssVarNameGap)).to.equals(
+        expect(getScrollbarsGaps(html).vertical).to.equals(scrollGapDefaultValue);
+        expect(getCssVariableValue(html, cssVarNameGapVertical)).to.equals(
             `${scrollGapDefaultValue}px`
         );
-
-        // ok
-        done();
     });
 
-    it("should update css variables", (done) => {
+    it("should update css variables", () => {
         // 0. should calculate and write current scrollbar gap css variable
-        updateCssVariables();
+        updateCssVariables(html);
 
-        expect(getVerticalScrollbarGap()).to.equals(scrollGapDefaultValue);
-        expect(getCssVariableValue(cssVarNameGap)).to.equals(
+        expect(getScrollbarsGaps(html).vertical).to.equals(scrollGapDefaultValue);
+        expect(getCssVariableValue(html, cssVarNameGapVertical)).to.equals(
             `${scrollGapDefaultValue}px`
         );
 
         // 1. after a programmatic change to the scrollbar width style, should recalculate and rewrite the css variable accordingly after updateCssVariables call
         html.classList.add(scrollGapLargerCssClassName);
-        updateCssVariables();
+        updateCssVariables(html);
 
-        expect(getCssVariableValue(cssVarNameGap)).to.equals(
+        expect(getCssVariableValue(html, cssVarNameGapVertical)).to.equals(
             `${scrollGapLargerValue}px`
         );
-        expect(getVerticalScrollbarGap()).to.equals(scrollGapLargerValue);
+        expect(getScrollbarsGaps(html).vertical).to.equals(scrollGapLargerValue);
 
         // cleanup
         html.classList.remove(scrollGapLargerCssClassName);
+    });
 
-        // ok
-        done();
+    it("should be able to toggle a css class to element", () => {
+        addLockedCssClass(html);
+
+        expect(html.classList.contains(lockedStateCssClass)).to.be.true;
+
+        removeLockedCssClass(html);
+
+        expect(html.classList.contains(lockedStateCssClass)).to.be.false;
     });
 });

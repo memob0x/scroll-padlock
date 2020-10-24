@@ -1,7 +1,7 @@
 const $console = document.querySelector(".console");
 
 const log = (...message) => {
-    console.log && console.log(...message);
+    console?.log(...message);
 
     let $ol = $console.querySelector("ol");
 
@@ -21,6 +21,8 @@ const log = (...message) => {
     $ol.scrollTop = $ol.scrollHeight;
 };
 
+const html = document.documentElement;
+
 const isLegacyIOS = /iPad|iPhone|iPod/.test(window.navigator.userAgent);
 const isMultiTouchMacAkaIOS13 =
     window.navigator.platform === "MacIntel" &&
@@ -28,13 +30,15 @@ const isMultiTouchMacAkaIOS13 =
 const isAnyIOS = isLegacyIOS || isMultiTouchMacAkaIOS13;
 
 if (isAnyIOS) {
-    document.documentElement.classList.add("ios");
+    html.classList.add("ios");
 }
+
+const bodyScroll = new window.BodyScroll(html);
 
 document
     .querySelector(".toggle-scroll-lock")
     .addEventListener("click", () =>
-        !bodyScroll.isLocked() ? bodyScroll.lock() : bodyScroll.unlock()
+        !bodyScroll.state ? bodyScroll.lock() : bodyScroll.unlock()
     );
 
 const search = document.querySelector(".head__search");
@@ -72,35 +76,38 @@ document.querySelector(".toggle-search-input").addEventListener("click", () => {
 
 input.addEventListener("click", close);
 
-window.addEventListener("bodyscrolllock", () => log("body scroll locked"));
-window.addEventListener("bodyscrollunlock", () => log("body scroll unlocked"));
-window.addEventListener("bodyscrollresize", () => {
+html.addEventListener("bodyscrolllock", () => log("body scroll locked"));
+html.addEventListener("bodyscrollunlock", () => log("body scroll unlocked"));
+html.addEventListener("bodyscrollresize", () => {
     if (isAnyIOS) {
         window.scrollTo(0, 0);
     }
 });
 
 const toggleCustomScrollbars = () => {
-    document.documentElement.classList.toggle("custom-scrollbars");
+    html.classList.toggle("custom-scrollbars");
 
     bodyScroll.update();
 };
 
 // ie11 compliancy
 (function () {
-    if (typeof window.CustomEvent === "function") return false;
+    if (typeof window.CustomEvent === "function") {
+        return false;
+    }
 
-    function CustomEvent(event, params) {
+    window.CustomEvent = function (event, params) {
         params = params || { bubbles: false, cancelable: false, detail: null };
-        var evt = document.createEvent("CustomEvent");
+
+        const evt = document.createEvent("CustomEvent");
+
         evt.initCustomEvent(
             event,
             params.bubbles,
             params.cancelable,
             params.detail
         );
-        return evt;
-    }
 
-    window.CustomEvent = CustomEvent;
+        return evt;
+    };
 })();

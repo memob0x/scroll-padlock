@@ -1,4 +1,5 @@
 import { preparePlayground, clearPlayground } from "./test.mjs";
+import { html } from "../src/body-scroll.client.mjs";
 import {
     saveScrollPosition,
     getSavedScrollPosition,
@@ -13,15 +14,15 @@ describe("body-scroll.scroll", () => {
 
     afterEach(() => clearPlayground());
 
-    it("should save and restore body scroll position", (done) => {
+    it("should save and restore body scroll position", () => {
         // 0. setting a scroll position and saving it
         const scrollPosition = 120;
         window.scrollTo(0, scrollPosition);
 
-        saveScrollPosition();
+        saveScrollPosition(html);
 
         expect(window.pageYOffset).to.equals(scrollPosition);
-        expect(window.pageYOffset).to.equals(getSavedScrollPosition().top);
+        expect(window.pageYOffset).to.equals(getSavedScrollPosition(html).top);
 
         // 1. changing scroll position
         window.scrollTo(0, 9999);
@@ -29,32 +30,26 @@ describe("body-scroll.scroll", () => {
         expect(window.pageYOffset).to.greaterThan(scrollPosition);
 
         // 2. restoring previously saved scroll position
-        restoreScrollPosition();
+        restoreScrollPosition(html);
 
         expect(window.pageYOffset).to.equals(scrollPosition);
-
-        // ok
-        done();
     });
 
-    it("should be able to clear scroll position saving", (done) => {
+    it("should be able to clear scroll position saving", () => {
         // 0. setting a scroll position and saving it
         window.scrollTo(0, 120);
 
-        saveScrollPosition();
+        saveScrollPosition(html);
 
-        expect(window.pageYOffset).to.equals(getSavedScrollPosition().top);
+        expect(window.pageYOffset).to.equals(getSavedScrollPosition(html).top);
 
         // 1. clearing scroll position saving
-        clearSavedScrollPosition();
+        clearSavedScrollPosition(html);
 
-        expect(getSavedScrollPosition()).to.be.null;
-
-        // ok
-        done();
+        expect(getSavedScrollPosition(html)).to.be.null;
     });
 
-    it("should be able to recognize valid or invalid scroll position objects", (done) => {
+    it("should be able to recognize valid or invalid scroll position objects", () => {
         // invalid
         expect(isValidScrollPosition("foo")).to.be.false;
         expect(isValidScrollPosition("")).to.be.false;
@@ -72,12 +67,9 @@ describe("body-scroll.scroll", () => {
 
         // valid
         expect(isValidScrollPosition({ top: 0, left: 0 })).to.be.true;
-
-        // ok
-        done();
     });
 
-    it("should be able to convert invalid scroll position object into null through formatter function", (done) => {
+    it("should be able to convert invalid scroll position object into null through formatter function", () => {
         // invalid
         expect(formatScrollPosition("foo")).to.be.null;
         expect(formatScrollPosition("")).to.be.null;
@@ -98,8 +90,5 @@ describe("body-scroll.scroll", () => {
         expect(
             JSON.stringify(formatScrollPosition(validScrollPosition))
         ).to.equals(JSON.stringify(validScrollPosition));
-
-        // ok
-        done();
     });
 });

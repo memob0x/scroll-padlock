@@ -1,4 +1,4 @@
-import { body, head } from "../src/body-scroll.client.mjs";
+import { head } from "../src/body-scroll.client.mjs";
 
 //
 export const scrollGapDefaultValue = 20;
@@ -23,7 +23,7 @@ export const preparePlayground = () => {
     expander.style.height = "9999px";
 
     head.append(styler);
-    body.append(expander);
+    document.body.append(expander);
 };
 
 /**

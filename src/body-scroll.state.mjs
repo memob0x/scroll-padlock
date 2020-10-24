@@ -1,8 +1,4 @@
-import {
-    dispatchEvent,
-    addLockedCssClass,
-    removeLockedCssClass
-} from "./body-scroll.client.mjs";
+import { dispatchEvent } from "./body-scroll.client.mjs";
 import {
     isValidScrollPosition,
     getSavedScrollPosition,
@@ -10,45 +6,46 @@ import {
     clearSavedScrollPosition,
     restoreScrollPosition
 } from "./body-scroll.scroll.mjs";
-import { updateCssVariables } from "./body-scroll.style.mjs";
+import {
+    updateCssVariables, 
+    addLockedCssClass,
+    removeLockedCssClass
+} from "./body-scroll.style.mjs";
 
 // lock state flag closure, true if is locked
-let lockState = false;
+const lockStates = new WeakMap();
 
 /**
  * Returns the current lock state as a boolean
  * @public
  * @returns {Boolean} True if body scroll is locked, false if not
  */
-export const isLocked = () => lockState;
+export const isLocked = (element) => !!lockStates.get(element);
 
 /**
  * Locks the body scroll, saves current body scroll position (if not already saved) and updates css variables
  * @private
  * @returns {Boolean} True if the lock has been successfully done, false if not
  */
-export const doLock = () => {
+export const doLock = (element) => {
     // don't lock when already locked, lock not done, returns false early
-    if (isLocked()) {
+    if (isLocked(element)) {
         return false;
     }
 
     // sets the lock state to true
-    lockState = true;
+    lockStates.set(element, true);
 
     // saves current scroll position if there's not another saving state
-    if (!isValidScrollPosition(getSavedScrollPosition())) {
-        saveScrollPosition({
-            top: window.pageYOffset,
-            left: window.pageXOffset
-        });
+    if (!isValidScrollPosition(getSavedScrollPosition(element))) {
+        saveScrollPosition(element);
     }
 
-    // calculates and applies :root css variables to grant body scroll lock css techniques
-    updateCssVariables();
+    // calculates and applies css variables to grant scroll lock css techniques
+    updateCssVariables(element);
 
     // applies body scroll lock css techniques
-    addLockedCssClass();
+    addLockedCssClass(element);
 
     // lock done, returns true
     return true;
@@ -59,23 +56,23 @@ export const doLock = () => {
  * @private
  * @returns {Boolean} True if the unlock has been successfully done, false if not
  */
-export const doUnlock = () => {
+export const doUnlock = (element) => {
     // don't unlock when already unlocked, unlock not done, returns false early
-    if (!isLocked()) {
+    if (!isLocked(element)) {
         return false;
     }
 
     // sets the lock state to false
-    lockState = false;
+    lockStates.set(element, false);
 
     // clears body scroll lock css techniques that could prevent scroll restoration
-    removeLockedCssClass();
+    removeLockedCssClass(element);
 
     // restores previously saved scroll position
-    restoreScrollPosition(getSavedScrollPosition());
+    restoreScrollPosition(element, getSavedScrollPosition(element));
 
     // clears the scroll position saving
-    clearSavedScrollPosition();
+    clearSavedScrollPosition(element);
 
     // unlock done, returns true
     return true;
@@ -86,14 +83,14 @@ export const doUnlock = () => {
  * @public
  * @returns {void} Nothing
  */
-export const lock = () => {
+export const lock = (element) => {
     // returns early if lock itself hasn't been successful
-    if (!doLock()) {
+    if (!doLock(element)) {
         return;
     }
 
     // dispatch a "lock done" notification
-    dispatchEvent("lock");
+    dispatchEvent(element, "lock");
 };
 
 /**
@@ -101,12 +98,12 @@ export const lock = () => {
  * @public
  * @returns {void} Nothing
  */
-export const unlock = () => {
+export const unlock = (element) => {
     // returns early if unlock itself hasn't been successful
-    if (!doUnlock()) {
+    if (!doUnlock(element)) {
         return;
     }
 
     // dispatch an "unlock done" notification
-    dispatchEvent("unlock");
+    dispatchEvent(element, "unlock");
 };

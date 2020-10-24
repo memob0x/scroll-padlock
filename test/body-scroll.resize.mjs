@@ -7,9 +7,11 @@ import {
 } from "../src/body-scroll.resize.mjs";
 
 describe("body-scroll.resize", () => {
-    beforeEach(() => addResizeEventListener());
+    const div = document.createElement('div');
 
-    afterEach(() => removeResizeEventListener());
+    beforeEach(() => addResizeEventListener(div));
+
+    afterEach(() => removeResizeEventListener(div));
 
     // TODO: check consistent lock state to be re-applied
     // TODO: test addResizeEventListener and removeResizeEventListener to work properly
@@ -17,17 +19,17 @@ describe("body-scroll.resize", () => {
     it("should dispatch a custom resize event only at locked state", (done) => {
         let i = 0;
 
-        window.addEventListener(`${eventNamePrefix}resize`, () => i++);
+        div.addEventListener(`${eventNamePrefix}resize`, () => i++);
 
         // should not be dispatched when unlocked
-        unlock();
+        unlock(div);
 
-        window.dispatchEvent(new CustomEvent("resize"));
+        div.dispatchEvent(new CustomEvent("resize"));
 
         // should be dispatched when locked
-        lock();
+        lock(div);
 
-        window.dispatchEvent(new CustomEvent("resize"));
+        div.dispatchEvent(new CustomEvent("resize"));
 
         // checking results
         setTimeout(() => {

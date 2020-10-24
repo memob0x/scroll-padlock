@@ -1,7 +1,9 @@
+import { html } from "./body-scroll.client.mjs";
 import { lock, unlock, isLocked } from "./body-scroll.state.mjs";
 import {
     updateCssVariables,
-    getVerticalScrollbarGap
+    getScrollbarsGaps,
+    clearStyle
 } from "./body-scroll.style.mjs";
 import {
     restoreScrollPosition,
@@ -13,21 +15,91 @@ import {
     removeResizeEventListener
 } from "./body-scroll.resize.mjs";
 
-// handling resize (attacching event listener) on library inclusion
-addResizeEventListener();
+export default class {
+    /**
+     * 
+     * @param element 
+     */
+    constructor(element = html){
+        this.#element = element;
 
-// public API
-export default {
-    // main
-    lock: lock,
-    unlock: unlock,
-    isLocked: isLocked,
-    // extras
-    updateCssVariables: updateCssVariables,
-    getVerticalScrollbarGap: getVerticalScrollbarGap,
-    restoreScrollPosition: restoreScrollPosition,
-    saveScrollPosition: saveScrollPosition,
-    getSavedScrollPosition: getSavedScrollPosition,
-    addResizeEventListener: addResizeEventListener,
-    removeResizeEventListener: removeResizeEventListener
+        this.update();
+
+        addResizeEventListener(this.#element);
+    }
+
+    #element;
+
+    /**
+     * 
+     */
+    get state(){
+        return isLocked(this.#element);
+    }
+
+    /**
+     * 
+     */
+    get scroll(){
+        return getSavedScrollPosition(this.#element);
+    }
+
+    /**
+     * 
+     */
+    get scrollbar(){
+        return getScrollbarsGaps(this.#element);
+    }
+    
+    /**
+     * 
+     */
+    destroy(){
+        this.unlock();
+
+        clearStyle(this.#element);
+
+        removeResizeEventListener(this.#element);
+
+        const validElement = !!this.#element;
+
+        this.#element = null;
+        
+        return validElement;
+    }
+
+    /**
+     * 
+     */
+    lock(){
+        return lock(this.#element);
+    }
+
+    /**
+     * 
+     */
+    unlock(){
+        return unlock(this.#element);
+    }
+
+    /**
+     * 
+     */
+    update(){
+        return updateCssVariables(this.#element);
+    }
+
+    /**
+     * 
+     */
+    save(){
+        return saveScrollPosition(this.#element);
+    }
+
+    /**
+     * 
+     */
+    restore(){
+        return restoreScrollPosition(this.#element);
+    }
 };
