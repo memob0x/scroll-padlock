@@ -1,4 +1,5 @@
-import { isNumber } from "./body-scroll.utils.mjs";
+import { isNumber } from "./utils.mjs";
+import { body, html } from "./client.mjs";
 
 // scroll position saving closure
 const scrollSaving = new WeakMap();
@@ -14,7 +15,7 @@ const scrollSaving = new WeakMap();
  * @param {Object} value The given value to be checked
  * @returns {Boolean} True if the given value is a valid scroll object
  */
-export const isValidScrollPosition = (value) =>
+export const isValidScrollPosition = value =>
     typeof value === "object" && isNumber(value?.top) && isNumber(value?.left);
 
 /**
@@ -24,7 +25,7 @@ export const isValidScrollPosition = (value) =>
  * @param {Object} value The given value to be formatted
  * @returns {Object|null} The given value is returned if is a valid scroll position object, otherwise null is returned
  */
-export const formatScrollPosition = (value) =>
+export const formatScrollPosition = value =>
     isValidScrollPosition(value) ? value : null;
 
 /**
@@ -39,7 +40,9 @@ export const restoreScrollPosition = (element, scroll) => {
     scroll = formatScrollPosition(scroll);
 
     if (scroll) {
-        element?.scrollTo(scroll.left, scroll.top);
+        const driver = element === html || element === body ? window : element;
+
+        driver?.scrollTo(scroll.left, scroll.top);
     }
 
     return scroll;
@@ -54,9 +57,11 @@ export const restoreScrollPosition = (element, scroll) => {
  */
 export const saveScrollPosition = (element, scroll) => {
     if (scroll === undefined) {
+        const rects = element?.getBoundingClientRect() ?? {};
+
         scroll = {
-            top: element?.scrollTop ?? 0,
-            left: element?.scrollLeft ?? 0
+            top: ( rects?.top ?? 0 ) * - 1,
+            left: ( rects?.left ?? 0 ) * - 1
         };
     }
 
@@ -73,7 +78,7 @@ export const saveScrollPosition = (element, scroll) => {
  * @param {HTMLElement} element
  * @returns {Object|null} The currently saved scroll position object, null if nothing was saved
  */
-export const getSavedScrollPosition = (element) => scrollSaving.get(element) ?? null;
+export const getSavedScrollPosition = element => scrollSaving.get(element) ?? null;
 
 /**
  * Returns the currently saved scroll position object
@@ -81,4 +86,4 @@ export const getSavedScrollPosition = (element) => scrollSaving.get(element) ?? 
  * @param {HTMLElement} element
  * @returns {Boolean} Whether the scroll saving deletion has been successful or not
  */
-export const clearSavedScrollPosition = (element) => scrollSaving.delete(element);
+export const clearSavedScrollPosition = element => scrollSaving.delete(element);

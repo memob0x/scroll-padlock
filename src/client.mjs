@@ -1,13 +1,14 @@
 // caching involved dom elements
 export const html = document.documentElement;
+export const body = document.body;
 export const head = document.head;
 
 // all the custom events dispatched by the library will start with this string
 // in order to avoid name clashing
-export const eventNamePrefix = "bodyscroll";
+export const eventNamePrefix = "scrollpadlock";
 
 /**
- * Dispatches the given message name in jQuery.Event
+ * 
  * @private
  * @param {HTMLElement} element
  * @param {String} messageName The given message name to be dispatched

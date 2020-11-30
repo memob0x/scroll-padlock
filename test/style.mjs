@@ -1,4 +1,4 @@
-import { html } from "../src/body-scroll.client.mjs";
+import { html } from "../src/client.mjs";
 import {
     preparePlayground,
     clearPlayground,
@@ -6,16 +6,16 @@ import {
     scrollGapLargerValue,
     scrollGapLargerCssClassName
 } from "./test.mjs";
-import { saveScrollPosition } from "../src/body-scroll.scroll.mjs";
+import { saveScrollPosition } from "../src/scroll.mjs";
 import {
     updateCssVariables,
     getScrollbarsGaps,
     cssVarNamePositionTop,
     cssVarNameGapVertical,
-    lockedStateCssClass,
+    cssClassLocked,
     addLockedCssClass,
     removeLockedCssClass
-} from "../src/body-scroll.style.mjs";
+} from "../src/style.mjs";
 
 /**
  *
@@ -89,10 +89,10 @@ describe("body-scroll.style", () => {
     it("should be able to toggle a css class to element", () => {
         addLockedCssClass(html);
 
-        expect(html.classList.contains(lockedStateCssClass)).to.be.true;
+        expect(html.classList.contains(cssClassLocked)).to.be.true;
 
         removeLockedCssClass(html);
 
-        expect(html.classList.contains(lockedStateCssClass)).to.be.false;
+        expect(html.classList.contains(cssClassLocked)).to.be.false;
     });
 });

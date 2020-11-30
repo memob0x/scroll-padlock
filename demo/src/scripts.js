@@ -22,6 +22,7 @@ const log = (...message) => {
 };
 
 const html = document.documentElement;
+const body = document.body;
 
 const isLegacyIOS = /iPad|iPhone|iPod/.test(window.navigator.userAgent);
 const isMultiTouchMacAkaIOS13 =
@@ -33,7 +34,7 @@ if (isAnyIOS) {
     html.classList.add("ios");
 }
 
-const bodyScroll = new window.BodyScroll(html);
+const bodyScroll = new window.ScrollPadlock(body);
 
 document
     .querySelector(".toggle-scroll-lock")
@@ -45,6 +46,8 @@ const search = document.querySelector(".head__search");
 const input = document.querySelector(".head__search__input");
 
 const open = () => {
+    html.classList.add('search');
+
     search.classList.remove("head__search");
     search.classList.add("head__search--in");
     input.classList.remove("head__search__input");
@@ -61,6 +64,8 @@ const close = () => {
     input.classList.add("head__search__input");
     input.classList.remove("head__search--in__input");
 
+    html.classList.remove('search');
+    
     bodyScroll.unlock();
 
     document.body.focus();
@@ -76,16 +81,16 @@ document.querySelector(".toggle-search-input").addEventListener("click", () => {
 
 input.addEventListener("click", close);
 
-html.addEventListener("bodyscrolllock", () => log("body scroll locked"));
-html.addEventListener("bodyscrollunlock", () => log("body scroll unlocked"));
-html.addEventListener("bodyscrollresize", () => {
+body.addEventListener("scrollpadlocklock", () => log("body scroll locked"));
+body.addEventListener("scrollpadlockunlock", () => log("body scroll unlocked"));
+body.addEventListener("scrollpadlockresize", () => {
     if (isAnyIOS) {
         window.scrollTo(0, 0);
     }
 });
 
 const toggleCustomScrollbars = () => {
-    html.classList.toggle("custom-scrollbars");
+    body.classList.toggle("custom-scrollbars");
 
     bodyScroll.update();
 };

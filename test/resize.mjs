@@ -1,10 +1,10 @@
-import { eventNamePrefix } from "../src/body-scroll.client.mjs";
-import { unlock, lock } from "../src/body-scroll.state.mjs";
+import { eventNamePrefix } from "../src/client.mjs";
+import { unlock, lock } from "../src/state.mjs";
 import {
     debounceTime,
     addResizeEventListener,
     removeResizeEventListener
-} from "../src/body-scroll.resize.mjs";
+} from "../src/resize.mjs";
 
 describe("body-scroll.resize", () => {
     const div = document.createElement('div');

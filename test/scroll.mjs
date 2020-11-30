@@ -1,5 +1,5 @@
 import { preparePlayground, clearPlayground } from "./test.mjs";
-import { html } from "../src/body-scroll.client.mjs";
+import { html } from "../src/client.mjs";
 import {
     saveScrollPosition,
     getSavedScrollPosition,
@@ -7,7 +7,7 @@ import {
     isValidScrollPosition,
     formatScrollPosition,
     clearSavedScrollPosition
-} from "../src/body-scroll.scroll.mjs";
+} from "../src/scroll.mjs";
 
 describe("body-scroll.scroll", () => {
     beforeEach(() => preparePlayground());

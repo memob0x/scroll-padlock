@@ -1,5 +1,5 @@
-import { dispatchEvent } from "./body-scroll.client.mjs";
-import { doLock, doUnlock } from "./body-scroll.state.mjs";
+import { dispatchEvent } from "./client.mjs";
+import { doLock, doUnlock } from "./state.mjs";
 
 const eventName = "resize";
 

@@ -1,4 +1,4 @@
-import { head } from "../src/body-scroll.client.mjs";
+import { head } from "../src/client.mjs";
 
 //
 export const scrollGapDefaultValue = 20;

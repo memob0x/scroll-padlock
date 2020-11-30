@@ -1,19 +1,21 @@
-import { html } from "./body-scroll.client.mjs";
-import { lock, unlock, isLocked } from "./body-scroll.state.mjs";
+import { html } from "./client.mjs";
+import { lock, unlock, isLocked } from "./state.mjs";
 import {
     updateCssVariables,
     getScrollbarsGaps,
+    addBaseCssClass,
+    removeBaseCssClass,
     clearStyle
-} from "./body-scroll.style.mjs";
+} from "./style.mjs";
 import {
     restoreScrollPosition,
     saveScrollPosition,
     getSavedScrollPosition
-} from "./body-scroll.scroll.mjs";
+} from "./scroll.mjs";
 import {
     addResizeEventListener,
     removeResizeEventListener
-} from "./body-scroll.resize.mjs";
+} from "./resize.mjs";
 
 export default class {
     /**
@@ -22,6 +24,8 @@ export default class {
      */
     constructor(element = html){
         this.#element = element;
+
+        addBaseCssClass(this.#element);
 
         this.update();
 
@@ -56,6 +60,8 @@ export default class {
      */
     destroy(){
         this.unlock();
+
+        removeBaseCssClass(this.#element);
 
         clearStyle(this.#element);
 

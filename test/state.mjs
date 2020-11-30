@@ -1,7 +1,7 @@
 import { preparePlayground, clearPlayground } from "./test.mjs";
-import { html } from "../src/body-scroll.client.mjs";
-import { lockedStateCssClass } from "../src/body-scroll.style.mjs";
-import { isLocked, lock, unlock } from "../src/body-scroll.state.mjs";
+import { html } from "../src/client.mjs";
+import { cssClassLocked } from "../src/style.mjs";
+import { isLocked, lock, unlock } from "../src/state.mjs";
 
 // TODO: test doLock;
 // TODO: test doUnlock;
@@ -27,11 +27,11 @@ describe("body-scroll.state", () => {
         // 0. programmatically setting locked state, css class should be absent
         lock(html);
 
-        expect(html.classList.contains(lockedStateCssClass)).to.be.true;
+        expect(html.classList.contains(cssClassLocked)).to.be.true;
 
         // 1. programmatically setting locked state, css class should be present
         unlock(html);
 
-        expect(html.classList.contains(lockedStateCssClass)).to.be.false;
+        expect(html.classList.contains(cssClassLocked)).to.be.false;
     });
 });

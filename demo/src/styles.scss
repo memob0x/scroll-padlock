@@ -10,24 +10,17 @@ html {
     box-sizing: border-box;
     @extend .serif-custom;
     @extend .text-medium;
+}
 
-    &.body-scroll-lock {
-        padding-right: var(--body-scroll-lock-vertical-scrollbar-gap);
-    }
-
-    &.body-scroll-lock body {
-        overflow: hidden;
-    }
-
-    &.ios.body-scroll-lock {
-        position: fixed;
-        width: 100%;
-        top: var(--body-scroll-lock-top-rect);
-    }
+html.search body.scroll-padlock--locked,
+html.ios body.scroll-padlock--locked {
+    position: fixed;
+    width: 100%;
+    top: var(--scroll-padlock-top-rect);
 }
 
 body {
-    @extend .margin;
+    margin: 0;
 }
 
 ul,
@@ -36,6 +29,11 @@ li {
     list-style: none;
     padding: 0;
     margin: 0;
+}
+
+.scroll-padlock--locked {
+    overflow: hidden;
+    padding-right: var(--scroll-padlock-vertical-scrollbar-gap);
 }
 
 button {
@@ -211,8 +209,8 @@ button {
 
     right: 0;
 
-    .body-scroll-lock & {
-        right: var(--body-scroll-lock-vertical-scrollbar-gap);
+    .scroll-padlock--locked & {
+        right: var(--scroll-padlock-vertical-scrollbar-gap);
     }
 }
 

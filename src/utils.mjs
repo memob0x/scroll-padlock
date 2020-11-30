@@ -7,3 +7,5 @@
  */
 export const isNumber = (value) =>
     typeof value === "number" && !isNaN(value) && isFinite(value);
+
+export const capitalize = string => string.charAt(0).toUpperCase() + string.slice(1, string.length);

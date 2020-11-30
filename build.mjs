@@ -40,15 +40,15 @@ const babelPlugins = ["@babel/plugin-proposal-class-properties"];
     ["amd", "iife", "system", "es", "cjs"].forEach((type) =>
         buildJsBundle({
             input: {
-                input: "./src/body-scroll.mjs"
+                input: "./src/padlock.mjs"
             },
             output: [
                 {
                     compact: true,
                     sourcemap: true,
                     format: type,
-                    name: "BodyScroll",
-                    file: `./dist/${type}/body-scroll.js`,
+                    name: "ScrollPadlock",
+                    file: `./dist/${type}/scroll-padlock.js`,
                     exports: "auto",
                     plugins: [
                         babel.getBabelOutputPlugin({

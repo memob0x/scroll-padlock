@@ -1,21 +1,26 @@
 import {
     isValidScrollPosition,
     getSavedScrollPosition
-} from "./body-scroll.scroll.mjs";
-import { head } from "./body-scroll.client.mjs";
+} from "./scroll.mjs";
+import { capitalize } from "./utils.mjs";
+import { head } from "./client.mjs";
 
 const getBoundingProp = (element, prop) => element?.getBoundingClientRect()?.[prop] ?? 0;
 
-const getWidth = (element) => getBoundingProp(element, 'width');
+const getScrollProp = (element, prop) => element?.[`scroll${capitalize(prop)}`] ?? 0;
 
-const getHeight = (element) => getBoundingProp(element, 'height');
+const getProp = (element, prop) => Math.min(getScrollProp(element, prop), getBoundingProp(element, prop));
+
+const getWidth = element => getProp(element, 'width');
+
+const getHeight = element => getProp(element, 'height');
 
 /**
  * Gets the current vertical scrollbar width size in px unit
  * @public
  * @returns {Object} The current vertical scrollbar width and the horizontal scrollbar height in px
  */
-export const getScrollbarsGaps = (element) => {
+export const getScrollbarsGaps = element => {
     const styles = element?.style ?? {};
 
     // NOTE: right now this is the safest and more robust way to detect the real document scrollbar size (compatible with iOS pinch to zoom)
@@ -54,18 +59,18 @@ export const getScrollbarsGaps = (element) => {
 const stylers = new WeakMap();
 
 //
-export const cssVarNamePositionTop = "--body-scroll-lock-top-rect";
-export const cssVarNamePositionLeft = "--body-scroll-lock-left-rect";
-export const cssVarNameGapVertical = "--body-scroll-lock-vertical-scrollbar-gap";
-export const cssVarNameGapHorizontal = "--body-scroll-lock-horizontal-scrollbar-gap";
+export const cssVarNamePositionTop = "--scroll-padlock-top-rect";
+export const cssVarNamePositionLeft = "--scroll-padlock-left-rect";
+export const cssVarNameGapVertical = "--scroll-padlock-vertical-scrollbar-gap";
+export const cssVarNameGapHorizontal = "--scroll-padlock-horizontal-scrollbar-gap";
 
-const dataAttrName = 'data-body-scroll-lock';
+const dataAttrName = 'data-scroll-padlock';
 
 /**
  * 
  * @param element 
  */
-export const clearStyle = (element) => {
+export const clearStyle = element => {
     stylers.get(element)?.remove();
 
     stylers.delete(element);
@@ -78,7 +83,7 @@ export const clearStyle = (element) => {
  * @public
  * @returns {void} Nothing
  */
-export const updateCssVariables = (element) => {
+export const updateCssVariables = element => {
     // ensuring style tag reference existance
     if (!stylers.has(element)) {
         stylers.set(element, document.createElement('style'));
@@ -130,20 +135,24 @@ export const updateCssVariables = (element) => {
 };
 
 //
-export const lockedStateCssClass = "body-scroll-lock";
+export const cssClassBase = `scroll-padlock`;
+
+//
+export const cssClassLocked = `${cssClassBase}--locked`;
 
 /**
- * Toggles the locked state css class to html element
+ * Toggles a given css class to a given element
  * @param {HTMLElement} element
+ * @param {String} className
  * @param {Boolean} bool Whether the class should be added ro removed
  * @returns {Boolean} Whether the removal or the
  */
-const toggleLockedCssClass = (element, bool) => {
-    const hadClass = !!element?.classList?.contains(lockedStateCssClass);
+const toggleCssClass = (element, className, bool) => {
+    const hadClass = !!element?.classList?.contains(className);
 
     bool = bool ?? !hadClass;
 
-    element?.classList?.toggle(lockedStateCssClass, bool);
+    element?.classList?.toggle(className, bool);
 
     return (bool && !hadClass) || (!bool && hadClass);
 };
@@ -153,11 +162,25 @@ const toggleLockedCssClass = (element, bool) => {
  * @param {HTMLElement} element
  * @returns {Boolean}
  */
-export const addLockedCssClass = (element) => toggleLockedCssClass(element, true);
+export const addLockedCssClass = (element) => toggleCssClass(element, cssClassLocked, true);
 
 /**
  * 
  * @param {HTMLElement} element
  * @returns {Boolean}
  */
-export const removeLockedCssClass = (element) => toggleLockedCssClass(element, false);
+export const removeLockedCssClass = (element) => toggleCssClass(element, cssClassLocked, false);
+
+/**
+ * 
+ * @param {HTMLElement} element
+ * @returns {Boolean}
+ */
+export const addBaseCssClass = (element) => toggleCssClass(element, cssClassBase, true);
+
+/**
+ * 
+ * @param {HTMLElement} element
+ * @returns {Boolean}
+ */
+export const removeBaseCssClass = (element) => toggleCssClass(element, cssClassBase, false);

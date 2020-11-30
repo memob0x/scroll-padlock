@@ -1,3 +1,4 @@
 node_modules
 *.log
 error_log
+dist

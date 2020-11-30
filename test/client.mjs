@@ -1,7 +1,7 @@
 import {
     dispatchEvent,
     eventNamePrefix
-} from "../src/body-scroll.client.mjs";
+} from "../src/client.mjs";
 
 describe("body-scroll.client", () => {
     it("should be able to dispatch a prefixed event name", (done) => {

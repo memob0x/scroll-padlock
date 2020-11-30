@@ -1,16 +1,16 @@
-import { dispatchEvent } from "./body-scroll.client.mjs";
+import { dispatchEvent } from "./client.mjs";
 import {
     isValidScrollPosition,
     getSavedScrollPosition,
     saveScrollPosition,
     clearSavedScrollPosition,
     restoreScrollPosition
-} from "./body-scroll.scroll.mjs";
+} from "./scroll.mjs";
 import {
     updateCssVariables, 
     addLockedCssClass,
     removeLockedCssClass
-} from "./body-scroll.style.mjs";
+} from "./style.mjs";
 
 // lock state flag closure, true if is locked
 const lockStates = new WeakMap();

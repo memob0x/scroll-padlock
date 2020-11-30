@@ -1,4 +1,4 @@
-import { isNumber } from "../src/body-scroll.utils.mjs";
+import { isNumber } from "../src/utils.mjs";
 
 describe("body-scroll.utils", () => {
     it("should recognize valid numbers", () => {
