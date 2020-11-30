@@ -34,7 +34,7 @@ if (isAnyIOS) {
     html.classList.add("ios");
 }
 
-const bodyScroll = new window.ScrollPadlock(body);
+const bodyScroll = new window.ScrollPadlock();
 
 document
     .querySelector(".toggle-scroll-lock")
@@ -81,19 +81,13 @@ document.querySelector(".toggle-search-input").addEventListener("click", () => {
 
 input.addEventListener("click", close);
 
-body.addEventListener("scrollpadlocklock", () => log("body scroll locked"));
-body.addEventListener("scrollpadlockunlock", () => log("body scroll unlocked"));
-body.addEventListener("scrollpadlockresize", () => {
+html.addEventListener("scrollpadlocklock", () => log("body scroll locked"));
+html.addEventListener("scrollpadlockunlock", () => log("body scroll unlocked"));
+html.addEventListener("scrollpadlockresize", () => {
     if (isAnyIOS) {
         window.scrollTo(0, 0);
     }
 });
-
-const toggleCustomScrollbars = () => {
-    body.classList.toggle("custom-scrollbars");
-
-    bodyScroll.update();
-};
 
 // ie11 compliancy
 (function () {

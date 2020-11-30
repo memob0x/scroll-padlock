@@ -49,6 +49,24 @@ export const restoreScrollPosition = (element, scroll) => {
 };
 
 /**
+ * 
+ * @param element 
+ */
+export const getScrollPosition = element => {
+    if( element === html || element === body ){
+        return {
+            top: window.pageYOffset || body.scrollTop || html.scrollTop || 0,
+            left: window.pageXOffset || body.scrollLeft || html.scrollLeft || 0
+        }
+    }
+
+    return {
+        top: element?.scrollTop ?? 0,
+        left: element?.scrollLeft ?? 0
+    };
+}
+
+/**
  * Saves a given valid scroll position object, if not passed saves the current body scroll position
  * @public
  * @param {HTMLElement} element
@@ -56,16 +74,7 @@ export const restoreScrollPosition = (element, scroll) => {
  * @returns {Object|null} The given value is returned if is a valid scroll position object, otherwise null is returned
  */
 export const saveScrollPosition = (element, scroll) => {
-    if (scroll === undefined) {
-        const rects = element?.getBoundingClientRect() ?? {};
-
-        scroll = {
-            top: ( rects?.top ?? 0 ) * - 1,
-            left: ( rects?.left ?? 0 ) * - 1
-        };
-    }
-
-    scroll = formatScrollPosition(scroll);
+    scroll = formatScrollPosition(scroll ?? getScrollPosition(element));
 
     scrollSaving.set(element, scroll);
 

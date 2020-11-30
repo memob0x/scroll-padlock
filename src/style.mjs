@@ -3,13 +3,13 @@ import {
     getSavedScrollPosition
 } from "./scroll.mjs";
 import { capitalize } from "./utils.mjs";
-import { head } from "./client.mjs";
+import { head, html, body } from "./client.mjs";
 
 const getBoundingProp = (element, prop) => element?.getBoundingClientRect()?.[prop] ?? 0;
 
 const getScrollProp = (element, prop) => element?.[`scroll${capitalize(prop)}`] ?? 0;
 
-const getProp = (element, prop) => Math.min(getScrollProp(element, prop), getBoundingProp(element, prop));
+const getProp = (element, prop) => element === html || element === body ? getBoundingProp(element, prop) : getScrollProp(element, prop);
 
 const getWidth = element => getProp(element, 'width');
 
@@ -35,16 +35,23 @@ export const getScrollbarsGaps = element => {
     // NOTE: right now only getBoundingClientRect grant sub pixel measures, repaint would have been done anyway so...
     const width = getWidth(element);
     const height = getHeight(element);
-
+    
     // sets overflow property to hidden
-    styles.overflow = "hidden";
-
+    styles.overflowY = "hidden";
+    
     // gets the actual scrollbar width comparing the cached element width to the current one with overflow hidden on
     const vertical = getWidth(element) - width;
+
+    //
+    styles.overflowY = "";
+
+    //
+    styles.overflowX = "hidden";
+
     const horizontal = getHeight(element) - height;
 
     // cleans everything up
-    styles.overflow = "";
+    styles.overflowX = "";
 
     // possibly re applies body scroll lock state css strategies
     if (wasLocked) {
@@ -162,25 +169,25 @@ const toggleCssClass = (element, className, bool) => {
  * @param {HTMLElement} element
  * @returns {Boolean}
  */
-export const addLockedCssClass = (element) => toggleCssClass(element, cssClassLocked, true);
+export const addLockedCssClass = element => toggleCssClass(element, cssClassLocked, true);
 
 /**
  * 
  * @param {HTMLElement} element
  * @returns {Boolean}
  */
-export const removeLockedCssClass = (element) => toggleCssClass(element, cssClassLocked, false);
+export const removeLockedCssClass = element => toggleCssClass(element, cssClassLocked, false);
 
 /**
  * 
  * @param {HTMLElement} element
  * @returns {Boolean}
  */
-export const addBaseCssClass = (element) => toggleCssClass(element, cssClassBase, true);
+export const addBaseCssClass = element => toggleCssClass(element, cssClassBase, true);
 
 /**
  * 
  * @param {HTMLElement} element
  * @returns {Boolean}
  */
-export const removeBaseCssClass = (element) => toggleCssClass(element, cssClassBase, false);
+export const removeBaseCssClass = element => toggleCssClass(element, cssClassBase, false);

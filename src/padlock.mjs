@@ -23,6 +23,10 @@ export default class {
      * @param element 
      */
     constructor(element = html){
+        if( !(element instanceof HTMLElement) ){
+            throw new Error('ScrollPadlock element must be an instance of HTMLElement');
+        }
+
         this.#element = element;
 
         addBaseCssClass(this.#element);
