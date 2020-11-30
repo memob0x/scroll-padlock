@@ -12,8 +12,8 @@ html {
     @extend .text-medium;
 }
 
-html.search body.scroll-padlock--locked,
-html.ios body.scroll-padlock--locked {
+html.search.scroll-padlock--locked,
+html.ios.scroll-padlock--locked {
     position: fixed;
     width: 100%;
     top: var(--scroll-padlock-top-rect);
@@ -29,11 +29,6 @@ li {
     list-style: none;
     padding: 0;
     margin: 0;
-}
-
-.scroll-padlock--locked {
-    overflow: hidden;
-    padding-right: var(--scroll-padlock-vertical-scrollbar-gap);
 }
 
 button {
@@ -298,4 +293,10 @@ button {
             height: 180px;
         }
     }
+}
+
+.scroll-padlock--locked {
+    overflow: hidden;
+    padding-right: var(--scroll-padlock-vertical-scrollbar-gap);
+    padding-bottom: var(--scroll-padlock-horizontal-scrollbar-gap);
 }
