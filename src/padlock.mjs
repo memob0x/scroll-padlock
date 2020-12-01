@@ -23,21 +23,26 @@ import {
 
 export default class {
     /**
-     * Creates the ScrollPadlock class
+     * Creates the scroll padlock class instance on a given scrollable element
      * @param {HTMLElement} element The given scrollable element whose scroll needs to be controlled
      * @returns {void} Nothing
      */
     constructor(element = html){
+        // if the given scrollable element is not a valid html element, there's not much to do
         if( !(element instanceof HTMLElement) ){
-            throw new Error('ScrollPadlock element must be an instance of HTMLElement');
+            throw new TypeError('The scrollable element must be a valid html element');
         }
 
+        // stores the scrollable element reference
         this.#element = element;
 
+        // adds a base css class to imprint that the library has been initialized
         addBaseCssClass(this.#element);
 
+        // sets the initial state (css variables, etc...) through update method call
         this.update();
 
+        // attaches resize event listener
         addResizeEventListener(this.#element);
     }
 
@@ -75,18 +80,25 @@ export default class {
      * @returns {Boolean} True if the destruction has been presumably effective
      */
     destroy(){
+        // unlocks a possible locked state
         this.unlock();
 
+        // removes the instance initialization css class
         removeBaseCssClass(this.#element);
 
+        // removes the css variables and stylers
         clearStyle(this.#element);
 
+        // detaches the resize event listener
         removeResizeEventListener(this.#element);
 
+        // caches the element reference availability in order to return it later (acts as a success/error state)
         const validElement = !!this.#element;
 
+        // removes the scrollable element reference
         this.#element = null;
         
+        // if the element was set (true) then the destruction has been successful
         return validElement;
     }
 
