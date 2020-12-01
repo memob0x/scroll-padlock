@@ -1,6 +1,6 @@
 import { isNumber } from "../src/utils.mjs";
 
-describe("body-scroll.utils", () => {
+describe("utils", () => {
     it("should recognize valid numbers", () => {
         expect(isNumber(0)).to.be.true;
         expect(isNumber(+10)).to.be.true;

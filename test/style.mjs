@@ -5,7 +5,7 @@ import {
     scrollGapDefaultValue,
     scrollGapLargerValue,
     scrollGapLargerCssClassName
-} from "./test.mjs";
+} from "./index.mjs";
 import { saveScrollPosition } from "../src/scroll.mjs";
 import {
     updateCssVariables,
@@ -25,7 +25,7 @@ import {
 const getCssVariableValue = (element, variableName) =>
     window.getComputedStyle(element).getPropertyValue(variableName).trim();
 
-describe("body-scroll.style", () => {
+describe("style", () => {
     beforeEach(() => preparePlayground());
 
     afterEach(() => clearPlayground());

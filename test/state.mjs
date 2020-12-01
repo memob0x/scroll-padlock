@@ -1,4 +1,4 @@
-import { preparePlayground, clearPlayground } from "./test.mjs";
+import { preparePlayground, clearPlayground } from "./index.mjs";
 import { html } from "../src/client.mjs";
 import { cssClassLocked } from "../src/style.mjs";
 import { isLocked, lock, unlock } from "../src/state.mjs";
@@ -6,7 +6,7 @@ import { isLocked, lock, unlock } from "../src/state.mjs";
 // TODO: test doLock;
 // TODO: test doUnlock;
 
-describe("body-scroll.state", () => {
+describe("state", () => {
     beforeEach(() => preparePlayground());
 
     afterEach(() => clearPlayground());

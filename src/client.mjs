@@ -8,15 +8,12 @@ export const head = document.head;
 export const eventNamePrefix = "scrollpadlock";
 
 /**
- * 
- * @private
+ * Dispatches a custom event if custom events are supported, otherwise does nothing
  * @param {HTMLElement} element
  * @param {String} messageName The given message name to be dispatched
  * @returns {void} Nothing
  */
 export const dispatchEvent = (element, messageName) =>
     typeof window.CustomEvent === "function"
-        ? element?.dispatchEvent(
-              new CustomEvent(`${eventNamePrefix}${messageName}`)
-          )
+        ? element?.dispatchEvent(new CustomEvent(`${eventNamePrefix}${messageName}`))
         : () => {};

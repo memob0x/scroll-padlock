@@ -1,5 +1,5 @@
 import bodyScroll from "../src/padlock.mjs";
 
-describe("body-scroll", () => {
+describe("padlock", () => {
     // TODO: test main class 
 });

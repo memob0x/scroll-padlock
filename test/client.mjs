@@ -1,10 +1,7 @@
-import {
-    dispatchEvent,
-    eventNamePrefix
-} from "../src/client.mjs";
+import { dispatchEvent, eventNamePrefix } from "../src/client.mjs";
 
-describe("body-scroll.client", () => {
-    it("should be able to dispatch a prefixed event name", (done) => {
+describe("client", () => {
+    it("should be able to dispatch a prefixed event name", done => {
         const eventName = "foobarrrr";
 
         const div = document.createElement('div');
