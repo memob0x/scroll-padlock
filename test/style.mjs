@@ -77,10 +77,10 @@ describe("body-scroll.style", () => {
         html.classList.add(scrollGapLargerCssClassName);
         updateCssVariables(html);
 
+        expect(getScrollbarsGaps(html).vertical).to.equals(scrollGapLargerValue);
         expect(getCssVariableValue(html, cssVarNameGapVertical)).to.equals(
             `${scrollGapLargerValue}px`
         );
-        expect(getScrollbarsGaps(html).vertical).to.equals(scrollGapLargerValue);
 
         // cleanup
         html.classList.remove(scrollGapLargerCssClassName);

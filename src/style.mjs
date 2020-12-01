@@ -35,15 +35,6 @@ export const getScrollbarsGaps = element => {
     // NOTE: right now only getBoundingClientRect grant sub pixel measures, repaint would have been done anyway so...
     const width = getWidth(element);
     const height = getHeight(element);
-    
-    // sets overflow property to hidden
-    styles.overflowY = "hidden";
-    
-    // gets the actual scrollbar width comparing the cached element width to the current one with overflow hidden on
-    const vertical = getWidth(element) - width;
-
-    //
-    styles.overflowY = "";
 
     //
     styles.overflowX = "hidden";
@@ -52,6 +43,15 @@ export const getScrollbarsGaps = element => {
 
     // cleans everything up
     styles.overflowX = "";
+    
+    // sets overflow property to hidden
+    styles.overflow = "hidden";
+    
+    // gets the actual scrollbar width comparing the cached element width to the current one with overflow hidden on
+    const vertical = getWidth(element) - width;
+
+    //
+    styles.overflow = "";
 
     // possibly re applies body scroll lock state css strategies
     if (wasLocked) {
