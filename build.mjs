@@ -37,32 +37,35 @@ const babelPlugins = ["@babel/plugin-proposal-class-properties"];
 (async () => {
     const boundles = [];
 
-    ["amd", "iife", "system", "es", "cjs"].forEach((type) =>
-        buildJsBundle({
-            input: {
-                input: "./src/padlock.mjs"
-            },
-            output: [
-                {
-                    compact: true,
-                    sourcemap: true,
-                    format: type,
-                    name: "ScrollPadlock",
-                    file: `./dist/${type}/scroll-padlock.js`,
-                    exports: "auto",
-                    plugins: [
-                        babel.getBabelOutputPlugin({
-                            compact: true,
-                            comments: false,
-                            presets: babelPresets,
-                            plugins: babelPlugins,
-                            allowAllFormats: true
-                        })
-                    ]
-                }
-            ]
-        })
-    );
+    const bundlify = (type, min) => buildJsBundle({
+        input: {
+            input: "./src/padlock.mjs"
+        },
+        output: [
+            {
+                compact: min,
+                sourcemap: true,
+                format: type,
+                name: "ScrollPadlock",
+                file: `./dist/${type}/scroll-padlock${min ? '.min' : ''}.js`,
+                exports: "auto",
+                plugins: [
+                    babel.getBabelOutputPlugin({
+                        compact: min,
+                        comments: false,
+                        presets: babelPresets,
+                        plugins: babelPlugins,
+                        allowAllFormats: true
+                    })
+                ]
+            }
+        ]
+    });
+
+    ["amd", "iife", "system", "es", "cjs"].forEach((type) => {
+        bundlify(type, false);
+        bundlify(type, true);
+    });
 
     await Promise.all(boundles);
 })();
