@@ -228,6 +228,32 @@
 
         <div class="right-positioned-el">just a right positioned element</div>
 
+        <script>
+            if (!Element.prototype.matches) {
+                Element.prototype.matches = Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector;
+            }
+            
+            (function () {
+                if (typeof window.CustomEvent === "function") {
+                    return false;
+                }
+
+                window.CustomEvent = function (event, params) {
+                    params = params || { bubbles: false, cancelable: false, detail: null };
+
+                    const evt = document.createEvent("CustomEvent");
+
+                    evt.initCustomEvent(
+                        event,
+                        params.bubbles,
+                        params.cancelable,
+                        params.detail
+                    );
+
+                    return evt;
+                };
+            })();
+        </script>
         <script defer src="../dist/iife/scroll-padlock.js"></script>
         <script defer src="./dist/scripts.js"></script>
     </body>

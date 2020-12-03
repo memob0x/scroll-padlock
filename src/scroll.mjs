@@ -25,42 +25,70 @@ export const isValidScrollPosition = value => typeof value === "object" && isNum
 export const formatScrollPosition = value => isValidScrollPosition(value) ? value : null;
 
 /**
+ * Checks whether the given element is a main scrollable element (html or body)
+ * @param {HTMLElement} element The given element to be checked
+ * @returns {Boolean} True if element is a global frame element
+ */
+// TODO: provide unit tests
+const isGlobalScroller = element => element === html || element === body;
+
+/**
+ * Gets a scroller element, returns Window object if a main frame element (html, body) is provided
+ * @param {HTMLElement} element The given html element to be checked
+ * @returns {Window|HTMLElement} The scrollable element, Window is returned if a main element is provided
+ */
+// TODO: provide unit tests
+const getScroller = element => isGlobalScroller(element) ? window : element;
+
+/**
+ * Scrolls a given element or window to a given scroll position
+ * @param {Window|HTMLElement} element The scroller element
+ * @param {Object} scroll The scroll object to scroll to
+ * @returns {Object} The given scroll object
+ */
+// TODO: provide unit tests
+const scrollTo = (element, scroll) => {
+    getScroller(element)?.scrollTo(scroll?.left, scroll?.top);
+
+    return scroll;
+}
+
+/**
  * Restores a given valid scroll position object, if not passed possibly restores a previously saved scroll position object
  * @param {HTMLElement} element
  * @param {Object} [scroll] The given scroll object to be restored
  * @returns {Object|null} The given value is returned if is a valid scroll position object, otherwise null is returned
  */
-export const restoreScrollPosition = (element, scroll) => {
-    scroll = scroll !== undefined ? scroll : getSavedScrollPosition(element);
-    scroll = formatScrollPosition(scroll);
+export const restoreScrollPosition = (element, scroll) => scrollTo(element, formatScrollPosition(scroll ?? getSavedScrollPosition(element)))
 
-    if (scroll) {
-        const driver = element === html || element === body ? window : element;
+/**
+ * Gets browser scroll position
+ * @returns {Object} The browser scroll position as an object ({ top, left })
+ */
+// TODO: provide unit tests
+const getGlobalScrollPosition = () => ({
+    top: window.pageYOffset || body.scrollTop || html.scrollTop || 0,
+    left: window.pageXOffset || body.scrollLeft || html.scrollLeft || 0
+});
 
-        driver?.scrollTo(scroll.left, scroll.top);
-    }
-
-    return scroll;
-};
+/**
+ * Gets a given element scroll position
+ * @param {HTMLElement} element The given element whose scroll position needs to be retrieved
+ * @returns {Object} The given element scroll position as an object ({ top, left })
+ */
+// TODO: provide unit tests
+const getElementScrollPosition = element => ({
+    top: element?.scrollTop ?? 0,
+    left: element?.scrollLeft ?? 0
+});
 
 /**
  * Gets a given element scroll position, does more checks (eg. on window) if html or body element is passed
  * @param {HTMLElement} element The given element whose scroll position needs to be retrieved
  * @returns {Object} The given element scroll position as an object ({ top, left })
  */
-export const getScrollPosition = element => {
-    if( element === html || element === body ){
-        return {
-            top: window.pageYOffset || body.scrollTop || html.scrollTop || 0,
-            left: window.pageXOffset || body.scrollLeft || html.scrollLeft || 0
-        }
-    }
-
-    return {
-        top: element?.scrollTop ?? 0,
-        left: element?.scrollLeft ?? 0
-    };
-}
+// TODO: unit test body | html condition
+export const getScrollPosition = element => isGlobalScroller(element) ? getGlobalScrollPosition() : getElementScrollPosition();
 
 /**
  * Saves a given valid scroll position object, if not passed saves the current body scroll position
@@ -69,11 +97,9 @@ export const getScrollPosition = element => {
  * @returns {Object|null} The given value is returned if is a valid scroll position object, otherwise null is returned
  */
 export const saveScrollPosition = (element, scroll) => {
-    scroll = formatScrollPosition(scroll ?? getScrollPosition(element));
+    scrollSaving.set(element, formatScrollPosition(scroll ?? getScrollPosition(element)));
 
-    scrollSaving.set(element, scroll);
-
-    return scroll;
+    return getSavedScrollPosition(element);
 };
 
 /**

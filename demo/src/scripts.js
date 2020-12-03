@@ -88,25 +88,3 @@ html.addEventListener("scrollpadlockresize", () => {
         window.scrollTo(0, 0);
     }
 });
-
-// ie11 compliancy
-(function () {
-    if (typeof window.CustomEvent === "function") {
-        return false;
-    }
-
-    window.CustomEvent = function (event, params) {
-        params = params || { bubbles: false, cancelable: false, detail: null };
-
-        const evt = document.createEvent("CustomEvent");
-
-        evt.initCustomEvent(
-            event,
-            params.bubbles,
-            params.cancelable,
-            params.detail
-        );
-
-        return evt;
-    };
-})();

@@ -172,7 +172,7 @@ export const updateCssVariables = element => {
 
     // ensuring style tag dom presence, StyleSheet API throws otherwise
     if (!head.contains(styler)) {
-        head.append(styler);
+        head.appendChild(styler);
     }
 
     // ensuring data attr based unique selector

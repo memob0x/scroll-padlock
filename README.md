@@ -2,13 +2,13 @@
 
 ![Node.js CI](https://github.com/memob0x/body-scroll-lock/workflows/Node.js%20CI/badge.svg)
 
-A "CSS helper" script which relies on **CSS variables** in order to programmatically **prevent the ability to scroll** for any scrollable element avoiding "contents jump".
+A small "CSS helper" script (~4K gzipped) which relies on **CSS variables** in order to programmatically **prevent the ability to scroll** for any scrollable element avoiding "contents jump".
 
-🙅 Without ScrollPadlock:
+🙅 Without this library:
 
 ![without scrollbar gap compensation](docs/without-gap-compensation.gif?raw=true)
 
-💁 With ScrollPadlock:
+💁 With this library:
 
 ![with scrollbar gap compensation](docs/with-gap-compensation.gif?raw=true)
 
@@ -107,12 +107,12 @@ html.scroll-padlock--locked {
 }
 ```
 
-## Usage, part 3: instance methods call
+## Usage, part 3: instance methods invocation
 
 First, a padlock **instance** must be created.
 
 ```javascript
-const bodyScroll = new ScrollPadlock(document.documentElement); // NOTE: document.documentElement is the default parameter
+const bodyScroll = new ScrollPadlock(); // NOTE: document.documentElement is the default parameter
 ```
 
 To **lock** the body scroll simply call the `lock` method.
@@ -193,11 +193,11 @@ As you can see in the following gif, things are finally back in place.
 
 ## Support
 
-All [modern browsers](https://teamtreehouse.com/community/what-is-a-modern-browser) have been tested; [WeakMap](https://caniuse.com/mdn-javascript_builtins_weakmap) object is used, so if you plan to support very old browsers (_Internet Explorer 10_ and such...) a polyfill might be mandatory.
-
-If you want to listen to the library [events](#events) in _Internet Explorer 11_ you'll need to include a [CustomEvent](https://caniuse.com/customevent) [polyfill](https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent/CustomEvent#Polyfill) too.
-
-A [css variables](https://caniuse.com/css-variables) polyfill is not mandatory, it depends on how graceful you want to degrade your application on old browser (since most of the old browser support _overflow: hidden;_ declaration)... 🙄
+All [modern browsers](https://teamtreehouse.com/community/what-is-a-modern-browser) have been tested, but here's a list of dependencies that might be needed in order to support older ones:
+* 💥DOM API "[matches](https://developer.mozilla.org/en-US/docs/Web/API/Element/matches#Polyfill)" method ([polyfill](https://developer.mozilla.org/en-US/docs/Web/API/Element/matches#Polyfill))
+* 💥[WeakMap](https://caniuse.com/mdn-javascript_builtins_weakmap)
+* [CustomEvent](https://caniuse.com/customevent) ([polyfill](https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent/CustomEvent#Polyfill)), only if library [events](#events) are being used
+* [CSS variables](https://caniuse.com/css-variables), only for scrollbar gaps compensation (since old browser support _overflow: hidden;_), still the JS API and events can be used to reach a workaround
 
 ## Demo
 

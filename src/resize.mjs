@@ -20,13 +20,16 @@ const eventHandlers = new WeakMap();
  * @returns {void} Nothing
  */
 const createEventHandler = element => {
+    // timeout reference closure
     let timer = null;
     
     return () => {
+        // clears former timeout requests
         clearTimeout(timer);
 
+        // creates a new timeout request
         timer = setTimeout(() => {
-            //
+            // done, clear timeout reference (overkill)
             timer = null;
 
             // toggling body scroll lock
@@ -55,10 +58,13 @@ const options = true;
  * @returns {void} Nothing
  */
 export const addResizeEventListener = element => {
+    // creates a new handler passing the given element
     const eventHandler = createEventHandler(element);
 
+    // stores the newly created handler to the hanlders collection
     eventHandlers.set(element, eventHandler);
 
+    // attaching the newly created handler to a window listener
     window.addEventListener(eventName, eventHandler, options);
 }
 
@@ -68,9 +74,12 @@ export const addResizeEventListener = element => {
  * @returns {void} Nothing
  */
 export const removeResizeEventListener = element => {
+    // caching the given element registered handler
     const eventHandler = eventHandlers.get(element);
 
-    eventHandlers.delete(element);
-
+    // detaching the handler window listener
     window.removeEventListener(eventName, eventHandler, options);
+
+    // removing the handler from the handlers collection
+    eventHandlers.delete(element);
 }
