@@ -6,7 +6,7 @@ describe("client", () => {
 
         const div = document.createElement('div');
 
-        div.addEventListener(`${eventNamePrefix}${eventName}`, () => done());
+        div.addEventListener(`${eventNamePrefix}${eventName}`, () => done(), { once: true });
 
         dispatchEvent(div, eventName);
     });

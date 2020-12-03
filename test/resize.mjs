@@ -1,5 +1,5 @@
 import { eventNamePrefix } from "../src/client.mjs";
-import { unlock, lock } from "../src/state.mjs";
+import { lock, isLocked } from "../src/state.mjs";
 import {
     debounceTime,
     addResizeEventListener,
@@ -7,35 +7,51 @@ import {
 } from "../src/resize.mjs";
 
 describe("resize", () => {
-    const div = document.createElement('div');
+    const eventName = 'resize';
 
-    beforeEach(() => addResizeEventListener(div));
+    const triggerWindowResize = () => window.dispatchEvent(new Event(eventName));
+    
+    it("should dispatch a custom (debounced) resize event only at locked state and only when handler is attached", done => {
+        const div = document.createElement('div');
 
-    afterEach(() => removeResizeEventListener(div));
+        let calls = 0;
 
-    // TODO: check consistent lock state to be re-applied
-    // TODO: test addResizeEventListener and removeResizeEventListener to work properly
+        const handler = () => calls++;
+        
+        div.addEventListener(`${eventNamePrefix}${eventName}`, handler);
 
-    it("should dispatch a custom resize event only at locked state", done => {
-        let i = 0;
+        addResizeEventListener(div);
 
-        div.addEventListener(`${eventNamePrefix}resize`, () => i++);
-
-        // should not be dispatched when unlocked
-        unlock(div);
-
-        div.dispatchEvent(new CustomEvent("resize"));
-
-        // should be dispatched when locked
+        // this is not detected since event is dispatched only when locked...
+        triggerWindowResize();
+        
         lock(div);
 
-        div.dispatchEvent(new CustomEvent("resize"));
+        // this is detected
+        triggerWindowResize();
 
-        // checking results
+        // this is not detected because of debounce
+        triggerWindowResize();
+        
         setTimeout(() => {
-            expect(i).to.equals(1);
+            expect(calls).to.equal(1);
 
-            done();
-        }, debounceTime);
+            // should have stayed locked
+            expect(isLocked(div)).to.be.true;
+
+            removeResizeEventListener(div);
+
+            // this should not be detected since event listener has been detached
+            triggerWindowResize();
+        
+            setTimeout(() => {
+                expect(calls).to.equal(1);
+        
+                // test cleanup
+                div.removeEventListener(`${eventNamePrefix}${eventName}`, handler);
+
+                done();
+            }, debounceTime)
+        }, debounceTime)
     });
 });
