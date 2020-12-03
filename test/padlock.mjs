@@ -1,6 +1,6 @@
 import Padlock from "../src/padlock.mjs";
 
-// TODO: test all methods
+// TODO: test all class instance methods
 
 describe("padlock", () => {
     it('should be able to be initialized on valid elements only', () => {
@@ -17,5 +17,17 @@ describe("padlock", () => {
         global.destroy();
 
         expect(global.element).to.equals(null);
+    });
+    
+    it('should initialize instance on documentElement if no element argument is passed to constructor', () => {
+        const div = document.createElement('div');
+        
+        const instance = new Padlock(div);
+        
+        expect(() => new Padlock(div)).to.throw();
+
+        instance.destroy();
+        
+        expect(() => new Padlock(div)).to.not.throw();
     });
 });

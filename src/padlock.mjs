@@ -22,6 +22,10 @@ import {
     removeResizeEventListener
 } from "./resize.mjs";
 
+// instances collection closure
+// a weakmap is used in order to keep every instance associated with the scrollable element itself
+const instances = new WeakMap();
+
 export default class {
     /**
      * Creates the scroll padlock class instance on a given scrollable element
@@ -36,6 +40,14 @@ export default class {
 
         // stores the scrollable element reference
         this.#element = element;
+
+        // if an instance has already been initialized on this very element, there could be conflicts in events handling
+        if( instances.has(this.element) ){
+            throw new Error('An instance has already been initialized on the given element');
+        }
+
+        // adds this instance to the instances collection
+        instances.set(this.element, this);
 
         // adds a base css class to imprint that the library has been initialized
         addBaseCssClass(this.element);
@@ -109,6 +121,9 @@ export default class {
 
         // detaches the resize event listener
         removeResizeEventListener(this.element);
+        
+        // removing the instance from the instances collection
+        instances.delete(this.element);
 
         // caches the element reference availability in order to return it later (acts as a success/error state)
         const validElement = !!this.element;
