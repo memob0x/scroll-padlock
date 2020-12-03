@@ -181,7 +181,7 @@ To overcome this problem you can use `scrollpadlockresize` event to programmatic
 
 ```javascript
 window.addEventListener("scrollpadlockresize", () => {
-    if (someRecognizer.isIOS()) {
+    if (someWayToDetectAppleIOS()) {
         window.scrollTo(0, 0);
     }
 });
@@ -197,7 +197,7 @@ All [modern browsers](https://teamtreehouse.com/community/what-is-a-modern-brows
 * 💥DOM API "[matches](https://developer.mozilla.org/en-US/docs/Web/API/Element/matches#Polyfill)" method ([polyfill](https://developer.mozilla.org/en-US/docs/Web/API/Element/matches#Polyfill))
 * 💥[WeakMap](https://caniuse.com/mdn-javascript_builtins_weakmap)
 * [CustomEvent](https://caniuse.com/customevent) ([polyfill](https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent/CustomEvent#Polyfill)), only if library [events](#events) are being used
-* [CSS variables](https://caniuse.com/css-variables), only for scrollbar gaps compensation (since old browser support _overflow: hidden;_), still the JS API and events can be used to reach a workaround
+* [CSS variables](https://caniuse.com/css-variables), only for scrollbar gaps compensation (since old browsers support _overflow: hidden;_), still the JS API and events can be used to reach a workaround
 
 ## Demo
 
