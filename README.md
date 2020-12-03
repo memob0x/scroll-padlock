@@ -197,7 +197,7 @@ All [modern browsers](https://teamtreehouse.com/community/what-is-a-modern-brows
 
 If you want to listen to the library [events](#events) in _Internet Explorer 11_ you'll need to include a [CustomEvent](https://caniuse.com/customevent) [polyfill](https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent/CustomEvent#Polyfill) too.
 
-A css variables polyfill is not mandatory, it depends on how graceful you want to degrade your application on [old browsers](https://caniuse.com/css-variables)... 🙄
+A [css variables](https://caniuse.com/css-variables) polyfill is not mandatory, it depends on how graceful you want to degrade your application on old browser (since most of the old browser support _overflow: hidden;_ declaration)... 🙄
 
 ## Demo
 
