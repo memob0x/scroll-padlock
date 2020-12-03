@@ -25,7 +25,7 @@ to make things worse that technique just **doesn't work** on **iOS safari**: whe
 
 💁 This library sets some **css variables** and **css classes** in order to allow the developer to choose their preferred [CSS-only approach](#usage-pt1-css), while the class instance exposes a quite granular API in order to implement some JS strategies too.
 
-## Usage, part 1: Library inclusion
+## Usage, part 1: inclusion
 
 This library is downloadable via **npm**, which means you can enter the following command directly in your terminal:
 
@@ -43,7 +43,7 @@ If older browsers support is needed, if a third party module loader is used or i
 -   **dist/es/scroll-padlock.js**: [ECMAScript modules](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules) syntax.
 -   **dist/system/scroll-padlock.js**: [SystemJS](https://github.com/systemjs/systemjs) modules syntax.
 
-## Usage, part 2: preparing CSS rules
+## Usage, part 2: CSS rules
 
 When [locking](#usage-pt2-javascript), some css variables are programmatically set at the given element level  (provided to class constructor), making the css aware of its **scroll position** and its **scrollbar width**, while some css classes toggled to that very element reflect the instance state.
 
@@ -107,7 +107,7 @@ html.scroll-padlock--locked {
 }
 ```
 
-## Usage, part 3: creating a padlock instance
+## Usage, part 3: instance methods call
 
 First, a padlock **instance** must be created.
 
