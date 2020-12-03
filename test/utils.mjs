@@ -1,4 +1,4 @@
-import { isNumber } from "../src/utils.mjs";
+import { isNumber, capitalizeWord } from "../src/utils.mjs";
 
 describe("utils", () => {
     it("should recognize valid numbers", () => {
@@ -20,5 +20,21 @@ describe("utils", () => {
         expect(isNumber(true)).to.be.false;
         expect(isNumber(Infinity)).to.be.false;
         expect(isNumber(undefined)).to.be.false;
+    });
+
+    it('should capitalize a given word', () => {
+        // not trimmed word is not supported
+        expect(capitalizeWord(' asd')).to.equals(' asd');
+
+        expect(capitalizeWord('asd')).to.equals('Asd');
+
+        // multiple words are not supported
+        expect(capitalizeWord('asd asd')).to.equals('Asd asd');
+
+        // non-string arguments are not supported
+        expect(() => capitalizeWord(0)).to.throw();
+        expect(() => capitalizeWord(null)).to.throw();
+        expect(() => capitalizeWord(undefined)).to.throw();
+        expect(() => capitalizeWord([])).to.throw();
     });
 });

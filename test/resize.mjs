@@ -1,16 +1,18 @@
 import { eventNamePrefix } from "../src/client.mjs";
+
 import { lock, isLocked } from "../src/state.mjs";
+
 import {
     debounceTime,
     addResizeEventListener,
     removeResizeEventListener
 } from "../src/resize.mjs";
 
-describe("resize", () => {
-    const eventName = 'resize';
+const eventName = 'resize';
 
-    const triggerWindowResize = () => window.dispatchEvent(new Event(eventName));
-    
+const triggerWindowResize = () => window.dispatchEvent(new Event(eventName));
+
+describe("resize", () => {
     it("should dispatch a custom (debounced) resize event only at locked state and only when handler is attached", done => {
         const div = document.createElement('div');
 

@@ -1,6 +1,9 @@
 import { preparePlayground, clearPlayground } from "./index.mjs";
+
 import { html } from "../src/client.mjs";
+
 import {
+    getScrollPosition,
     saveScrollPosition,
     getSavedScrollPosition,
     restoreScrollPosition,
@@ -9,15 +12,19 @@ import {
     clearSavedScrollPosition
 } from "../src/scroll.mjs";
 
+// TODO: move tests target from html to a custom div
+
 describe("scroll", () => {
     beforeEach(() => preparePlayground());
 
     afterEach(() => clearPlayground());
 
-    it("should save and restore body scroll position", () => {
+    it("should retrieve, save and restore body scroll position", () => {
         // 0. setting a scroll position and saving it
         const scrollPosition = 120;
         window.scrollTo(0, scrollPosition);
+        
+        expect(window.pageYOffset).to.equals(getScrollPosition(html).top);
 
         saveScrollPosition(html);
 
@@ -33,6 +40,8 @@ describe("scroll", () => {
         restoreScrollPosition(html);
 
         expect(window.pageYOffset).to.equals(scrollPosition);
+        
+        expect(window.pageYOffset).to.equals(getScrollPosition(html).top);
     });
 
     it("should be able to clear scroll position saving", () => {

@@ -1,4 +1,5 @@
 import { html } from "../src/client.mjs";
+
 import {
     preparePlayground,
     clearPlayground,
@@ -6,7 +7,9 @@ import {
     scrollGapLargerValue,
     scrollGapLargerCssClassName
 } from "./index.mjs";
+
 import { saveScrollPosition } from "../src/scroll.mjs";
+
 import {
     updateCssVariables,
     getScrollbarsGaps,
@@ -17,13 +20,7 @@ import {
     removeLockedCssClass
 } from "../src/style.mjs";
 
-/**
- *
- * @param {String} variableName
- * @returns {String}
- */
-const getCssVariableValue = (element, variableName) =>
-    window.getComputedStyle(element).getPropertyValue(variableName).trim();
+const getCssVariableValue = (element, variableName) => window.getComputedStyle(element).getPropertyValue(variableName).trim();
 
 describe("style", () => {
     beforeEach(() => preparePlayground());
@@ -38,9 +35,7 @@ describe("style", () => {
         saveScrollPosition(html);
         updateCssVariables(html);
 
-        expect(getCssVariableValue(html, cssVarNamePositionTop)).to.equals(
-            `${scrollPosition}px`
-        );
+        expect(getCssVariableValue(html, cssVarNamePositionTop)).to.equals(`${scrollPosition}px`);
 
         // 1. changing scroll position, variable should reflect the new value after updateCssVariables call
         scrollPosition = 120;
@@ -49,9 +44,7 @@ describe("style", () => {
         saveScrollPosition(html);
         updateCssVariables(html);
 
-        expect(getCssVariableValue(html, cssVarNamePositionTop)).to.equals(
-            `-${scrollPosition}px`
-        );
+        expect(getCssVariableValue(html, cssVarNamePositionTop)).to.equals(`-${scrollPosition}px`);
     });
 
     it("should calculate and write consistent scrollbar gap css variables", () => {
@@ -59,9 +52,7 @@ describe("style", () => {
         updateCssVariables(html);
 
         expect(getScrollbarsGaps(html).vertical).to.equals(scrollGapDefaultValue);
-        expect(getCssVariableValue(html, cssVarNameGapVertical)).to.equals(
-            `${scrollGapDefaultValue}px`
-        );
+        expect(getCssVariableValue(html, cssVarNameGapVertical)).to.equals(`${scrollGapDefaultValue}px`);
     });
 
     it("should update css variables", () => {
@@ -69,18 +60,14 @@ describe("style", () => {
         updateCssVariables(html);
 
         expect(getScrollbarsGaps(html).vertical).to.equals(scrollGapDefaultValue);
-        expect(getCssVariableValue(html, cssVarNameGapVertical)).to.equals(
-            `${scrollGapDefaultValue}px`
-        );
+        expect(getCssVariableValue(html, cssVarNameGapVertical)).to.equals(`${scrollGapDefaultValue}px`);
 
         // 1. after a programmatic change to the scrollbar width style, should recalculate and rewrite the css variable accordingly after updateCssVariables call
         html.classList.add(scrollGapLargerCssClassName);
         updateCssVariables(html);
 
         expect(getScrollbarsGaps(html).vertical).to.equals(scrollGapLargerValue);
-        expect(getCssVariableValue(html, cssVarNameGapVertical)).to.equals(
-            `${scrollGapLargerValue}px`
-        );
+        expect(getCssVariableValue(html, cssVarNameGapVertical)).to.equals(`${scrollGapLargerValue}px`);
 
         // cleanup
         html.classList.remove(scrollGapLargerCssClassName);
