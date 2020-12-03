@@ -35,7 +35,7 @@ const babelPlugins = ["@babel/plugin-proposal-class-properties"];
 // library
 // -----------------------------------------------------------------------------------------
 (async () => {
-    const boundles = [];
+    const bundles = [];
 
     const bundlify = (type, min) => buildJsBundle({
         input: {
@@ -62,10 +62,13 @@ const babelPlugins = ["@babel/plugin-proposal-class-properties"];
         ]
     });
 
-    ["amd", "iife", "system", "es", "cjs"].forEach((type) => {
-        bundlify(type, false);
-        bundlify(type, true);
+    ["amd", "iife", "system", "es", "cjs"].forEach(type => {
+        // non-minified version
+        bundles.push(bundlify(type, false));
+
+        // minified version
+        bundles.push(bundlify(type, true));
     });
 
-    await Promise.all(boundles);
+    await Promise.all(bundles);
 })();

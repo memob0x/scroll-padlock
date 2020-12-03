@@ -35,9 +35,9 @@ $ npm install @memob0x/body-scroll-lock
 
 This library is entirely written in [standard ECMAScript](https://tc39.es/), this means that you can safely include **src/padlock.mjs** module in your es6 project without affecting your final bundle size.
 
-If older browsers support is needed, if a third party module loader is used or if there's no module loading strategy implemented, the following boundles might be preferred:
+If older browsers support is needed, if a third party module loader is used or if there's no module loading strategy implemented, the following bundles might be preferred:
 
--   **dist/iife/scroll-padlock.js**: [immediately invoked function expression](https://developer.mozilla.org/en-US/docs/Glossary/IIFE) syntax. This boundle sets a global variable, thus is indicated for projects which don't use any module loading strategy.
+-   **dist/iife/scroll-padlock.js**: [immediately invoked function expression](https://developer.mozilla.org/en-US/docs/Glossary/IIFE) syntax. This bundle sets a global variable, thus is indicated for projects which don't use any module loading strategy.
 -   **dist/amd/scroll-padlock.js**: [asynchronous module definition](https://en.wikipedia.org/wiki/Asynchronous_module_definition) syntax.
 -   **dist/cjs/scroll-padlock.js**: [CommonJS](https://en.wikipedia.org/wiki/CommonJS) modules syntax.
 -   **dist/es/scroll-padlock.js**: [ECMAScript modules](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules) syntax.
