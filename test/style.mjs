@@ -1,5 +1,3 @@
-import { html } from "../src/client.mjs";
-
 import {
     preparePlayground,
     clearPlayground,
@@ -7,6 +5,8 @@ import {
     scrollGapLargerValue,
     scrollGapLargerCssClassName
 } from "./index.mjs";
+
+import { html } from "../src/client.mjs";
 
 import { saveScrollPosition } from "../src/scroll.mjs";
 
@@ -17,10 +17,18 @@ import {
     cssVarNameGapVertical,
     cssClassLocked,
     addLockedCssClass,
-    removeLockedCssClass
+    removeLockedCssClass,
+    cssClassBase,
+    getStyler,
+    clearStyle,
+    toggleCssClass,
+    addBaseCssClass,
+    removeBaseCssClass
 } from "../src/style.mjs";
 
 const getCssVariableValue = (element, variableName) => window.getComputedStyle(element).getPropertyValue(variableName).trim();
+
+// TODO: move tests target from html to a custom div
 
 describe("style", () => {
     beforeEach(() => preparePlayground());
@@ -33,7 +41,7 @@ describe("style", () => {
         window.scrollTo(0, scrollPosition);
 
         saveScrollPosition(html);
-        updateCssVariables(html);
+        const styler = updateCssVariables(html);
 
         expect(getCssVariableValue(html, cssVarNamePositionTop)).to.equals(`${scrollPosition}px`);
 
@@ -44,7 +52,15 @@ describe("style", () => {
         saveScrollPosition(html);
         updateCssVariables(html);
 
+        expect(getStyler(html)).to.equals(styler);
+
         expect(getCssVariableValue(html, cssVarNamePositionTop)).to.equals(`-${scrollPosition}px`);
+        expect(document.head.contains(styler)).to.be.true;
+
+        expect(clearStyle(html)).to.equals(styler);
+        
+        expect(document.head.contains(styler)).to.be.false;
+        expect(getStyler(html)).to.equals(null);
     });
 
     it("should calculate and write consistent scrollbar gap css variables", () => {
@@ -73,13 +89,46 @@ describe("style", () => {
         html.classList.remove(scrollGapLargerCssClassName);
     });
 
-    it("should be able to toggle a css class to element", () => {
-        addLockedCssClass(html);
+    it('should be able to toggle a given css class to a given element', () => {
+        const div = document.createElement('div');
+        const className = 'foo';
 
-        expect(html.classList.contains(cssClassLocked)).to.be.true;
+        expect(toggleCssClass(div, className)).to.be.true;
+        expect(div.classList.contains(className)).to.be.true;
 
-        removeLockedCssClass(html);
+        expect(toggleCssClass(div, className)).to.be.true;
+        expect(div.classList.contains(className)).to.be.false;
 
-        expect(html.classList.contains(cssClassLocked)).to.be.false;
+        expect(toggleCssClass(div, className, false)).to.be.false;
+        
+        expect(toggleCssClass(div, className, true)).to.be.true;
+        expect(toggleCssClass(div, className, true)).to.be.false;
+        
+        expect(toggleCssClass(div, className, false)).to.be.true;
+        expect(toggleCssClass(div, className, false)).to.be.false;
+    });
+
+    it("should be able to set or remove the library locked css class to the given element", () => {
+        const div = document.createElement('div');
+
+        addLockedCssClass(div);
+
+        expect(div.classList.contains(cssClassLocked)).to.be.true;
+
+        removeLockedCssClass(div);
+
+        expect(div.classList.contains(cssClassLocked)).to.be.false;
+    });
+
+    it("should be able to set or remove the library base css class to the given element", () => {
+        const div = document.createElement('div');
+
+        addBaseCssClass(div);
+
+        expect(div.classList.contains(cssClassBase)).to.be.true;
+
+        removeBaseCssClass(div);
+
+        expect(div.classList.contains(cssClassBase)).to.be.false;
     });
 });

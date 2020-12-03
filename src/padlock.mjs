@@ -7,7 +7,8 @@ import {
     getScrollbarsGaps,
     addBaseCssClass,
     removeBaseCssClass,
-    clearStyle
+    clearStyle,
+    getStyler
 } from "./style.mjs";
 
 import {
@@ -82,6 +83,15 @@ export default class {
     get scrollbar(){
         return getScrollbarsGaps(this.element);
     }
+
+    /**
+     * Gets the given scrollable element (associated) styler
+     * @param {HTMLElement} element The given scrollable element whose styler needs to be deleted
+     * @returns {HTMLStyleElement|null} Styler element, null if not inserted to head
+     */
+    get styler(){
+        return getStyler(this.element);
+    }
     
     /**
      * Effectively destroy the instance, detaching event listeners, removing styles, etc...
@@ -128,7 +138,7 @@ export default class {
 
     /**
      * Updates css variables to the current state
-     * @returns {void} Nothing
+     * @returns {HTMLStyleElement} Styler element
      */
     update(){
         return updateCssVariables(this.element);

@@ -1,7 +1,7 @@
 ## v1.0
     [✓] library: class based system (initializable to any scrollable element)
     [✓] library: provide missing jsdocs
-    [ ] tests: complete unit test (TODO notes across test modules)
+    [✓] tests: complete unit tests (TODO notes across test modules)
     [ ] build: provide separate .min files
     [ ] docs: README.md specs update (also remember to add WeakMap to the required polyfills)
     [ ] demo: make it standalone using node_modules and such (now it's location-dependant), use Vue and its router in order to supply multiple examples
@@ -12,5 +12,7 @@
     [ ] general: ditch prettier, adopt eslint
     [ ] general: npm run lint command
     [ ] demos: enhance top drawer part (closing "x" etc...)
+    [ ] tests: enhance "padlock" module tests (provide class instance methods tests)
+    [ ] tests: move all tests targets from html to a custom div
     [ ] docs: redo ios-bug.gif, ios-fix.gif once demos are finished
     [ ] docs: provide dedicated gifs for positioned elements

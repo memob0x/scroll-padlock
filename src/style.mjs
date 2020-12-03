@@ -69,6 +69,7 @@ const getProp = (element, prop) => element === html || element === body ? getBou
  * @param {HTMLElement} element The given element whose width needs to be retrieved
  * @returns {Number} The given element scroll-width
  */
+// TODO: provide unit test
 const getWidth = element => getProp(element, 'width');
 
 /**
@@ -76,6 +77,7 @@ const getWidth = element => getProp(element, 'width');
  * @param {HTMLElement} element The given element whose height needs to be retrieved
  * @returns {Number} The given element scroll-height
  */
+// TODO: provide unit test
 const getHeight = element => getProp(element, 'height');
 
 /**
@@ -83,8 +85,8 @@ const getHeight = element => getProp(element, 'height');
  * @param {HTMLElement} element The given element whose scrollbar gaps need to be retrieved
  * @returns {Object} The current vertical scrollbar width and the horizontal scrollbar height in px
  */
-// NOTE: right now this is the safest and more robust way to detect the real document scrollbar size (compatible with iOS pinch to zoom)
-// bodyscroll is gonna change overflow property anyway, so we keep this not 100% clean approach for now
+// NOTE: right now this is the safest and more robust way to detect the scrollbar size (which is also compatible with iOS pinch to zoom)
+// overflow property is going to change anyway, so this not-100%-clean approach (debatably) is kept for now
 export const getScrollbarsGaps = element => {
     const styles = element?.style ?? {};
 
@@ -131,22 +133,33 @@ export const getScrollbarsGaps = element => {
 };
 
 /**
+ * Gets the given scrollable element (associated) styler
+ * @param {HTMLElement} element The given scrollable element whose styler needs to be deleted
+ * @returns {HTMLStyleElement|null} Styler element, null if not inserted to head
+ */
+export const getStyler = element => stylers.get(element) ?? null;
+
+/**
  * Deletes a given scrollable element (associated) styler
  * @param {HTMLElement} element The given scrollable element whose styler needs to be deleted
- * @returns {void} Nothing
+ * @returns {HTMLStyleElement|null} Styler element, null if not inserted to head
  */
 export const clearStyle = element => {
-    stylers.get(element)?.remove();
+    const styler = getStyler(element);
+
+    styler?.remove();
 
     stylers.delete(element);
 
     element.removeAttribute(dataAttrName);
+
+    return styler;
 };
 
 /**
  * Updates a given element css variables to the current state
  * @param {HTMLElement} element The given element whose css variables need to be updated
- * @returns {void} Nothing
+ * @returns {HTMLStyleElement} Styler element
  */
 export const updateCssVariables = element => {
     // ensuring style tag reference existance
@@ -155,7 +168,7 @@ export const updateCssVariables = element => {
     }
 
     // getting style tag reference
-    const styler = stylers.get(element);
+    const styler = getStyler(element);
 
     // ensuring style tag dom presence, StyleSheet API throws otherwise
     if (!head.contains(styler)) {
@@ -195,6 +208,8 @@ export const updateCssVariables = element => {
 
     // sets new rule up
     styler.sheet.insertRule(rule, index);
+
+    return styler;
 };
 
 /**
@@ -204,7 +219,7 @@ export const updateCssVariables = element => {
  * @param {Boolean} bool Whether the class should be added ro removed
  * @returns {Boolean} Whether the toggle (or the force removal, or the force add) has been successful
  */
-const toggleCssClass = (element, className, bool) => {
+export const toggleCssClass = (element, className, bool) => {
     const hadClass = !!element?.classList?.contains(className);
 
     bool = bool ?? !hadClass;
