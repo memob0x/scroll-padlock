@@ -37,13 +37,13 @@ export default class {
         this.#element = element;
 
         // adds a base css class to imprint that the library has been initialized
-        addBaseCssClass(this.#element);
+        addBaseCssClass(this.element);
 
         // sets the initial state (css variables, etc...) through update method call
         this.update();
 
         // attaches resize event listener
-        addResizeEventListener(this.#element);
+        addResizeEventListener(this.element);
     }
 
     /**
@@ -52,11 +52,19 @@ export default class {
     #element;
 
     /**
+     * Returns the scrollable element reference
+     * @returns {HTMLElement} The scrollable element reference
+     */
+    get element(){
+        return this.#element;
+    }
+
+    /**
      * Returns the current lock state as a boolean
      * @returns {Boolean} True if body scroll is locked, false if not
      */
     get state(){
-        return isLocked(this.#element);
+        return isLocked(this.element);
     }
 
     /**
@@ -64,7 +72,7 @@ export default class {
      * @returns {Object|null} The currently saved scroll position object, null if nothing was saved
      */
     get scroll(){
-        return getSavedScrollPosition(this.#element);
+        return getSavedScrollPosition(this.element);
     }
 
     /**
@@ -72,7 +80,7 @@ export default class {
      * @returns {Object} The current vertical scrollbar width and the horizontal scrollbar height in px
      */
     get scrollbar(){
-        return getScrollbarsGaps(this.#element);
+        return getScrollbarsGaps(this.element);
     }
     
     /**
@@ -84,16 +92,16 @@ export default class {
         this.unlock();
 
         // removes the instance initialization css class
-        removeBaseCssClass(this.#element);
+        removeBaseCssClass(this.element);
 
         // removes the css variables and stylers
-        clearStyle(this.#element);
+        clearStyle(this.element);
 
         // detaches the resize event listener
-        removeResizeEventListener(this.#element);
+        removeResizeEventListener(this.element);
 
         // caches the element reference availability in order to return it later (acts as a success/error state)
-        const validElement = !!this.#element;
+        const validElement = !!this.element;
 
         // removes the scrollable element reference
         this.#element = null;
@@ -107,7 +115,7 @@ export default class {
      * @returns {Boolean} True if the lock has been successfully done, false if not
      */
     lock(){
-        return lock(this.#element);
+        return lock(this.element);
     }
 
     /**
@@ -115,7 +123,7 @@ export default class {
      * @returns {Boolean} True if the unlock has been successfully done, false if not
      */
     unlock(){
-        return unlock(this.#element);
+        return unlock(this.element);
     }
 
     /**
@@ -123,7 +131,7 @@ export default class {
      * @returns {void} Nothing
      */
     update(){
-        return updateCssVariables(this.#element);
+        return updateCssVariables(this.element);
     }
 
     /**
@@ -131,7 +139,7 @@ export default class {
      * @returns {Object|null} The given value is returned if is a valid scroll position object, otherwise null is returned
      */
     save(){
-        return saveScrollPosition(this.#element);
+        return saveScrollPosition(this.element);
     }
 
     /**
@@ -139,6 +147,6 @@ export default class {
      * @returns {Object|null} The given value is returned if is a valid scroll position object, otherwise null is returned
      */
     restore(){
-        return restoreScrollPosition(this.#element);
+        return restoreScrollPosition(this.element);
     }
 };

@@ -8,9 +8,9 @@ const eventName = "resize";
 // the events debounce time in milliseconds
 export const debounceTime = 150;
 
-// events debounce timers closure
-// a weakmap is used in order to keep every timer associated with the scrollable element itself
-const handlers = new WeakMap();
+// events handlers closure
+// a weakmap is used in order to keep every handler associated with the scrollable element itself
+const eventHandlers = new WeakMap();
 
 /**
  * Handles (debounced) browser resize (implicity includes a possible device orientation change),
@@ -55,11 +55,11 @@ const options = true;
  * @returns {void} Nothing
  */
 export const addResizeEventListener = element => {
-    const handler = createEventHandler(element);
+    const eventHandler = createEventHandler(element);
 
-    handlers.set(element, handler);
+    eventHandlers.set(element, eventHandler);
 
-    window.addEventListener(eventName, handler, options);
+    window.addEventListener(eventName, eventHandler, options);
 }
 
 /**
@@ -68,9 +68,9 @@ export const addResizeEventListener = element => {
  * @returns {void} Nothing
  */
 export const removeResizeEventListener = element => {
-    const handler = handlers.get(element);
+    const eventHandler = eventHandlers.get(element);
 
-    handlers.delete(element);
+    eventHandlers.delete(element);
 
-    window.removeEventListener(eventName, handler, options);
+    window.removeEventListener(eventName, eventHandler, options);
 }
