@@ -1,13 +1,16 @@
 import { rollup } from "rollup";
 
-export default async (options) => {
+export default async options => {
     console.log(`${options.input.input}: start`);
 
-    const result = await rollup(options.input);
+    const result = await rollup({
+        ...options.input,
+        plugins: options.plugins
+    });
 
     options.output = Array.isArray(options.output) ? options.output : [options.output];
 
-    await Promise.all(options.output.map((output) => result.write(output)));
+    await Promise.all(options.output.map(output => result.write(output)));
 
     console.log(`${options.input.input}: end`);
 };
