@@ -1,26 +1,36 @@
 <template>
     <div class="app">
-        <app-console class="app__console custom-scrollbars" />
+        <app-console class="app__console custom-scrollbars" ref="console" />
         
         <main class="app__body">
             <header class="app__header">
                 <button>
-                    open layer
+                    open search layer
                 </button>
 
                 <button @click.prevent="toggleBodyScroll">
-                    toggle scroll
+                    toggle body scroll
                 </button>
             </header>
 
             <app-sample-text v-for="index in 3" :key="index" />
 
-            <app-scroller />
+            <app-scroller
+                class="app__scroller-sample"
+
+                @scroller-unlocked="logToConsole('scroller component unlocked')"
+                
+                @scroller-locked="logToConsole('scroller component locked')"
+            >
+                <app-sample-text class="app__scroller-sample__text" />
+            </app-scroller>
             
             <app-sample-text v-for="index in 17" :key="index" />
         </main>
 
-        <app-sample-text class="app__floating-sample" />
+        <div class="app__floating-sample">
+            <app-sample-text class="app__floating-sample__text" />
+        </div>
 
         <app-search class="app__search" />
     </div>    
@@ -57,11 +67,17 @@
 
         methods: {
             toggleBodyScroll(){
-                if( this.bodyScroll.state ){
-                    return this.bodyScroll.unlock();
-                }
+                const state = this.bodyScroll.state;
 
-                return this.bodyScroll.lock();
+                const result = this.bodyScroll[state ? 'unlock' : 'lock']();
+
+                this.logToConsole(`body scroll ${state ? 'unlocked' : 'locked'}`);
+
+                return result;
+            },
+
+            logToConsole(message){
+                this.$refs.console.log(message);
             }
         },
 
@@ -90,6 +106,9 @@
         &__header {
             position: sticky;
             top: 0;
+            background: white;
+            padding: 20px 0;
+            z-index: 1;
         }
 
         &__body {
@@ -100,6 +119,7 @@
         }
 
         &__console {
+            z-index: 2;
             position: fixed;
             margin: 10px;
             right: 0;
@@ -109,6 +129,42 @@
 
             html.scroll-padlock--locked & {
                 right: var(--scroll-padlock-vertical-scrollbar-gap);
+            }
+        }
+
+        &__floating-sample {
+            z-index: 2;
+            position: fixed;
+            margin: 10px;
+            right: 0;
+            width: 320px;
+            height: 42px;
+            bottom: 0;
+            background: white;
+            display: flex;
+            align-items: center;
+            box-shadow: 0px 0px 12px -1px black;
+            padding: 14px;
+
+            html.scroll-padlock--locked & {
+                right: var(--scroll-padlock-vertical-scrollbar-gap);
+            }
+
+            &__text {
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+            }
+        }
+
+        &__scroller-sample {
+            margin: 20px 10px;
+            width: 320px;
+            max-width: 100%;
+            height: 160px;
+
+            &__text {
+                width: 450px;
             }
         }
     }

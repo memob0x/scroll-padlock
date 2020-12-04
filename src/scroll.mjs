@@ -88,7 +88,7 @@ const getElementScrollPosition = element => ({
  * @returns {Object} The given element scroll position as an object ({ top, left })
  */
 // TODO: unit test body | html condition
-export const getScrollPosition = element => isGlobalScroller(element) ? getGlobalScrollPosition() : getElementScrollPosition();
+export const getScrollPosition = element => isGlobalScroller(element) ? getGlobalScrollPosition() : getElementScrollPosition(element);
 
 /**
  * Saves a given valid scroll position object, if not passed saves the current body scroll position
