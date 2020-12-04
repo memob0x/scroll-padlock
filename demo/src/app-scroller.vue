@@ -1,17 +1,14 @@
 <template>
-    <div class="console">
+    <div class="scroller">
         asd
     </div>    
 </template>
 
 <script>
     export default {
-        name: 'console'
+        name: 'app-scroller'
     };
 </script>
 
 <style lang="scss" scoped>
-    .console {
-        background: black;
-    }
 </style>

@@ -1,0 +1,13 @@
+.custom-scrollbars {
+    &::-webkit-scrollbar {
+        width: 20px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: black;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: grey;
+    }
+}

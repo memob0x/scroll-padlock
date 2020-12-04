@@ -95,7 +95,7 @@ html.scroll-padlock--locked.ios {
 }
 
 /* standard browsers only */
-html.scroll-padlock--locked.standard body {
+html.scroll-padlock--locked.not-ios body {
     /* standard way to lock body scroll */
     overflow: hidden;
 }
@@ -103,7 +103,7 @@ html.scroll-padlock--locked.standard body {
 /* both iOS and standard browsers */
 html.scroll-padlock--locked {
     /* reserves space for scrollbar */
-    padding-right: var(--scroll-padlock--locked-vertical-scrollbar-gap);
+    padding-right: var(--scroll-padlock-vertical-scrollbar-gap);
 }
 ```
 
