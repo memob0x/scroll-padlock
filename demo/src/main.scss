@@ -1,0 +1,9 @@
+@import '../../node_modules/reset-css/sass/_reset.scss';
+
+* {
+    box-sizing: border-box;
+}
+
+@import './custom-scrollbars.scss';
+
+@import './body-scroll.scss';

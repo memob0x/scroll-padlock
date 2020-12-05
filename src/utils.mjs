@@ -1,3 +1,5 @@
+import { html, body } from "./client.mjs";
+
 /**
  * Checks whether a given value is a valid number or not
  * @param {any} value The given value to be checked
@@ -6,9 +8,9 @@
 export const isNumber = value => typeof value === "number" && !isNaN(value) && isFinite(value);
 
 /**
- * Transform the first character to uppercase
- * Intentionally simple, doesn't check for leading empty character nor multiple words etc
- * @param {String} string The given word to be capitalized
- * @returns {String} The given word, capitalized
+ * Checks whether the given element is a main scrollable element (html or body)
+ * @param {HTMLElement} element The given element to be checked
+ * @returns {Boolean} True if element is a global frame element
  */
-export const capitalizeWord = string => string.charAt(0).toUpperCase() + string.slice(1, string.length);
+// TODO: provide unit tests
+export const isGlobalScroller = element => element === html || element === body;

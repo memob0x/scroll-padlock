@@ -95,7 +95,7 @@ html.scroll-padlock--locked.ios {
 }
 
 /* standard browsers only */
-html.scroll-padlock--locked.standard body {
+html.scroll-padlock--locked.not-ios body {
     /* standard way to lock body scroll */
     overflow: hidden;
 }
@@ -103,7 +103,7 @@ html.scroll-padlock--locked.standard body {
 /* both iOS and standard browsers */
 html.scroll-padlock--locked {
     /* reserves space for scrollbar */
-    padding-right: var(--scroll-padlock--locked-vertical-scrollbar-gap);
+    padding-right: var(--scroll-padlock-vertical-scrollbar-gap);
 }
 ```
 
@@ -180,7 +180,7 @@ That's because the element on focus is an input element and iOS forces a scroll 
 To overcome this problem you can use `scrollpadlockresize` event to programmatically scroll to top that ios-sub-window-thing.
 
 ```javascript
-window.addEventListener("scrollpadlockresize", () => {
+document.documentElement.addEventListener("scrollpadlockresize", () => {
     if (someWayToDetectAppleIOS()) {
         window.scrollTo(0, 0);
     }

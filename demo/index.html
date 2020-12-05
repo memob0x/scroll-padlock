@@ -1,238 +1,26 @@
 <!DOCTYPE html>
-<html class="custom-scrollbars">
+<html class="custom-scrollbars not-ios">
     <head>
         <meta charset="UTF-8" />
         <title>Body Scroll Lock Demo</title>
+        
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-        <link
-            href="https://fonts.googleapis.com/css?family=Roboto+Slab&display=swap"
-            rel="stylesheet"
-        />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto+Slab&display=swap" />
 
-        <link rel="stylesheet" type="text/css" href="./dist/styles.css" />
+        <link rel="stylesheet" type="text/css" href="./dist/main.css" />
     </head>
 
     <body>
-        <div class="wrapper">
-            <header class="head">
-                <div class="head__search">
-                    <input
-                        class="head__search__input"
-                        type="search"
-                        placeholder="Test the iOS keyboard tray..."
-                    />
-                </div>
-
-                <div class="head__inner">
-                    <nav class="head__item nav">
-                        <ul class="nav__list">
-                            <button
-                                class="nav__list__item nav__button toggle-scroll-lock"
-                            >
-                                Toggle Scroll Lock
-                            </button>
-
-                            <button
-                                class="nav__list__item nav__button toggle-search-input"
-                            >
-                                Toggle Search Input
-                            </button>
-                        </ul>
-                    </nav>
-
-                    <div class="head__item console">
-                        <ol class="console__list">
-                            <li class="console__list__item--placeholder"></li>
-                        </ol>
-                    </div>
-                </div>
-            </header>
-
-            <p class="text-justify">
-                Lorem ipsum dolor sit amet, regione laoreet ne usu. In oblique
-                nonumes iracundia sit, propriae ponderum iudicabit sed in. Eu
-                solum viderer quo. Ad per mutat accusamus, vix vocibus indoctum
-                no. In porro aperiri perfecto pro, eum vulputate definiebas
-                assueverit te. His doctus labores ea. Discere ornatus vel ne.
-                Posse facilis assentior et sit, duo inciderint intellegebat in.
-                Solet soleat ei qui, ad his quot dictas saperet. Ei duo veri
-                imperdiet. Cu eum facete audire, brute singulis vulputate eos
-                te, sea at hinc habemus. Quod latine invenire id mei. Te prima
-                detraxit sit, an civibus percipit scriptorem nec, eos fabellas
-                vulputate te. Vide propriae consequat sed cu, maluisset
-                definitiones qui at. Postea suscipit cu per, amet dico brute has
-                no, iusto semper minimum pro id. Mel ullum persius et. Habeo
-                insolens at ius. Vix ei ullum assum efficiantur, no solet iudico
-                cum. Et porro eleifend qui, te nostrum convenire has. In duo
-                decore regione suscipit. Ut esse modus duo. Homero accusata eu
-                mei, est in unum postea tibique. An vis inani intellegebat
-                necessitatibus, eu nominavi expetenda mei. Fabulas feugait his
-                no, in velit oportere constituto vim. Ad eam aliquip deserunt
-                praesent, enim mazim convenire per ex, vim cu nihil sapientem.
-                Probo interesset dissentiunt ne pro, ad rebum epicurei
-                intellegat pri. Lorem nullam id nam. Ex illum nusquam tacimates
-                per, id ius quando regione nonumes.
-            </p>
-            <p class="text-justify">
-                Lorem ipsum dolor sit amet, regione laoreet ne usu. In oblique
-                nonumes iracundia sit, propriae ponderum iudicabit sed in. Eu
-                solum viderer quo. Ad per mutat accusamus, vix vocibus indoctum
-                no. In porro aperiri perfecto pro, eum vulputate definiebas
-                assueverit te. His doctus labores ea. Discere ornatus vel ne.
-                Posse facilis assentior et sit, duo inciderint intellegebat in.
-                Solet soleat ei qui, ad his quot dictas saperet. Ei duo veri
-                imperdiet. Cu eum facete audire, brute singulis vulputate eos
-                te, sea at hinc habemus. Quod latine invenire id mei. Te prima
-                detraxit sit, an civibus percipit scriptorem nec, eos fabellas
-                vulputate te. Vide propriae consequat sed cu, maluisset
-                definitiones qui at. Postea suscipit cu per, amet dico brute has
-                no, iusto semper minimum pro id. Mel ullum persius et. Habeo
-                insolens at ius. Vix ei ullum assum efficiantur, no solet iudico
-                cum. Et porro eleifend qui, te nostrum convenire has. In duo
-                decore regione suscipit. Ut esse modus duo. Homero accusata eu
-                mei, est in unum postea tibique. An vis inani intellegebat
-                necessitatibus, eu nominavi expetenda mei. Fabulas feugait his
-                no, in velit oportere constituto vim. Ad eam aliquip deserunt
-                praesent, enim mazim convenire per ex, vim cu nihil sapientem.
-                Probo interesset dissentiunt ne pro, ad rebum epicurei
-                intellegat pri. Lorem nullam id nam. Ex illum nusquam tacimates
-                per, id ius quando regione nonumes.
-            </p>
-            <p class="text-right">
-                Lorem ipsum dolor sit amet, regione laoreet ne usu. In oblique
-                nonumes iracundia sit, propriae ponderum iudicabit sed in. Eu
-                solum viderer quo. Ad per mutat accusamus, vix vocibus indoctum
-                no. In porro aperiri perfecto pro, eum vulputate definiebas
-                assueverit te. His doctus labores ea. Discere ornatus vel ne.
-                Posse facilis assentior et sit, duo inciderint intellegebat in.
-                Solet soleat ei qui, ad his quot dictas saperet. Ei duo veri
-                imperdiet. Cu eum facete audire, brute singulis vulputate eos
-                te, sea at hinc habemus. Quod latine invenire id mei. Te prima
-                detraxit sit, an civibus percipit scriptorem nec, eos fabellas
-                vulputate te. Vide propriae consequat sed cu, maluisset
-                definitiones qui at. Postea suscipit cu per, amet dico brute has
-                no, iusto semper minimum pro id. Mel ullum persius et. Habeo
-                insolens at ius. Vix ei ullum assum efficiantur, no solet iudico
-                cum. Et porro eleifend qui, te nostrum convenire has. In duo
-                decore regione suscipit. Ut esse modus duo. Homero accusata eu
-                mei, est in unum postea tibique. An vis inani intellegebat
-                necessitatibus, eu nominavi expetenda mei. Fabulas feugait his
-                no, in velit oportere constituto vim. Ad eam aliquip deserunt
-                praesent, enim mazim convenire per ex, vim cu nihil sapientem.
-                Probo interesset dissentiunt ne pro, ad rebum epicurei
-                intellegat pri. Lorem nullam id nam. Ex illum nusquam tacimates
-                per, id ius quando regione nonumes.
-            </p>
-            <p class="text-justify">
-                Lorem ipsum dolor sit amet, regione laoreet ne usu. In oblique
-                nonumes iracundia sit, propriae ponderum iudicabit sed in. Eu
-                solum viderer quo. Ad per mutat accusamus, vix vocibus indoctum
-                no. In porro aperiri perfecto pro, eum vulputate definiebas
-                assueverit te. His doctus labores ea. Discere ornatus vel ne.
-                Posse facilis assentior et sit, duo inciderint intellegebat in.
-                Solet soleat ei qui, ad his quot dictas saperet. Ei duo veri
-                imperdiet. Cu eum facete audire, brute singulis vulputate eos
-                te, sea at hinc habemus. Quod latine invenire id mei. Te prima
-                detraxit sit, an civibus percipit scriptorem nec, eos fabellas
-                vulputate te. Vide propriae consequat sed cu, maluisset
-                definitiones qui at. Postea suscipit cu per, amet dico brute has
-                no, iusto semper minimum pro id. Mel ullum persius et. Habeo
-                insolens at ius. Vix ei ullum assum efficiantur, no solet iudico
-                cum. Et porro eleifend qui, te nostrum convenire has. In duo
-                decore regione suscipit. Ut esse modus duo. Homero accusata eu
-                mei, est in unum postea tibique. An vis inani intellegebat
-                necessitatibus, eu nominavi expetenda mei. Fabulas feugait his
-                no, in velit oportere constituto vim. Ad eam aliquip deserunt
-                praesent, enim mazim convenire per ex, vim cu nihil sapientem.
-                Probo interesset dissentiunt ne pro, ad rebum epicurei
-                intellegat pri. Lorem nullam id nam. Ex illum nusquam tacimates
-                per, id ius quando regione nonumes.
-            </p>
-            <p class="text-justify">
-                Lorem ipsum dolor sit amet, regione laoreet ne usu. In oblique
-                nonumes iracundia sit, propriae ponderum iudicabit sed in. Eu
-                solum viderer quo. Ad per mutat accusamus, vix vocibus indoctum
-                no. In porro aperiri perfecto pro, eum vulputate definiebas
-                assueverit te. His doctus labores ea. Discere ornatus vel ne.
-                Posse facilis assentior et sit, duo inciderint intellegebat in.
-                Solet soleat ei qui, ad his quot dictas saperet. Ei duo veri
-                imperdiet. Cu eum facete audire, brute singulis vulputate eos
-                te, sea at hinc habemus. Quod latine invenire id mei. Te prima
-                detraxit sit, an civibus percipit scriptorem nec, eos fabellas
-                vulputate te. Vide propriae consequat sed cu, maluisset
-                definitiones qui at. Postea suscipit cu per, amet dico brute has
-                no, iusto semper minimum pro id. Mel ullum persius et. Habeo
-                insolens at ius. Vix ei ullum assum efficiantur, no solet iudico
-                cum. Et porro eleifend qui, te nostrum convenire has. In duo
-                decore regione suscipit. Ut esse modus duo. Homero accusata eu
-                mei, est in unum postea tibique. An vis inani intellegebat
-                necessitatibus, eu nominavi expetenda mei. Fabulas feugait his
-                no, in velit oportere constituto vim. Ad eam aliquip deserunt
-                praesent, enim mazim convenire per ex, vim cu nihil sapientem.
-                Probo interesset dissentiunt ne pro, ad rebum epicurei
-                intellegat pri. Lorem nullam id nam. Ex illum nusquam tacimates
-                per, id ius quando regione nonumes.
-            </p>
-            <p>
-                Lorem ipsum dolor sit amet, regione laoreet ne usu. In oblique
-                nonumes iracundia sit, propriae ponderum iudicabit sed in. Eu
-                solum viderer quo. Ad per mutat accusamus, vix vocibus indoctum
-                no. In porro aperiri perfecto pro, eum vulputate definiebas
-                assueverit te. His doctus labores ea. Discere ornatus vel ne.
-                Posse facilis assentior et sit, duo inciderint intellegebat in.
-                Solet soleat ei qui, ad his quot dictas saperet. Ei duo veri
-                imperdiet. Cu eum facete audire, brute singulis vulputate eos
-                te, sea at hinc habemus. Quod latine invenire id mei. Te prima
-                detraxit sit, an civibus percipit scriptorem nec, eos fabellas
-                vulputate te. Vide propriae consequat sed cu, maluisset
-                definitiones qui at. Postea suscipit cu per, amet dico brute has
-                no, iusto semper minimum pro id. Mel ullum persius et. Habeo
-                insolens at ius. Vix ei ullum assum efficiantur, no solet iudico
-                cum. Et porro eleifend qui, te nostrum convenire has. In duo
-                decore regione suscipit. Ut esse modus duo. Homero accusata eu
-                mei, est in unum postea tibique. An vis inani intellegebat
-                necessitatibus, eu nominavi expetenda mei. Fabulas feugait his
-                no, in velit oportere constituto vim. Ad eam aliquip deserunt
-                praesent, enim mazim convenire per ex, vim cu nihil sapientem.
-                Probo interesset dissentiunt ne pro, ad rebum epicurei
-                intellegat pri. Lorem nullam id nam. Ex illum nusquam tacimates
-                per, id ius quando regione nonumes.
-            </p>
-            <p class="text-justify">
-                Lorem ipsum dolor sit amet, regione laoreet ne usu. In oblique
-                nonumes iracundia sit, propriae ponderum iudicabit sed in. Eu
-                solum viderer quo. Ad per mutat accusamus, vix vocibus indoctum
-                no. In porro aperiri perfecto pro, eum vulputate definiebas
-                assueverit te. His doctus labores ea. Discere ornatus vel ne.
-                Posse facilis assentior et sit, duo inciderint intellegebat in.
-                Solet soleat ei qui, ad his quot dictas saperet. Ei duo veri
-                imperdiet. Cu eum facete audire, brute singulis vulputate eos
-                te, sea at hinc habemus. Quod latine invenire id mei. Te prima
-                detraxit sit, an civibus percipit scriptorem nec, eos fabellas
-                vulputate te. Vide propriae consequat sed cu, maluisset
-                definitiones qui at. Postea suscipit cu per, amet dico brute has
-                no, iusto semper minimum pro id. Mel ullum persius et. Habeo
-                insolens at ius. Vix ei ullum assum efficiantur, no solet iudico
-                cum. Et porro eleifend qui, te nostrum convenire has. In duo
-                decore regione suscipit. Ut esse modus duo. Homero accusata eu
-                mei, est in unum postea tibique. An vis inani intellegebat
-                necessitatibus, eu nominavi expetenda mei. Fabulas feugait his
-                no, in velit oportere constituto vim. Ad eam aliquip deserunt
-                praesent, enim mazim convenire per ex, vim cu nihil sapientem.
-                Probo interesset dissentiunt ne pro, ad rebum epicurei
-                intellegat pri. Lorem nullam id nam. Ex illum nusquam tacimates
-                per, id ius quando regione nonumes.
-            </p>
-        </div>
-
-        <div class="right-positioned-el">just a right positioned element</div>
+        <div id="app"></div>
 
         <script>
+            // old browsers "matches" method support
             if (!Element.prototype.matches) {
                 Element.prototype.matches = Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector;
             }
             
+            // old browsers custom events support
             (function () {
                 if (typeof window.CustomEvent === "function") {
                     return false;
@@ -254,7 +42,7 @@
                 };
             })();
         </script>
-        <script defer src="../dist/iife/scroll-padlock.js"></script>
-        <script defer src="./dist/scripts.js"></script>
+
+        <script src="./dist/main.js"></script>
     </body>
 </html>

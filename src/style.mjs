@@ -1,6 +1,6 @@
 import { head, html, body } from "./client.mjs";
 
-import { capitalizeWord } from "./utils.mjs";
+import { isGlobalScroller } from "./utils.mjs";
 
 import { isValidScrollPosition, getSavedScrollPosition } from "./scroll.mjs";
 
@@ -49,28 +49,12 @@ const stylers = new WeakMap();
 const getBoundingClientRectProp = (element, prop) => element?.getBoundingClientRect()?.[prop] ?? 0;
 
 /**
- * Gets the value for a given scroll-property-value (scrollWidth, scrollHeight) of a given element
- * @param {HTMLElement} element The given elemetn
- * @param {String} prop The given property name
- * @returns {Number} THe property value
- */
-const getScrollProp = (element, prop) => element?.[`scroll${capitalizeWord(prop)}`] ?? 0;
-
-/**
- * Gets the value for a given property name of a given element
- * @param {HTMLElement} element The given element
- * @param {String} prop The given property name
- * @returns {Number} THe property value
- */
-const getProp = (element, prop) => element === html || element === body ? getBoundingClientRectProp(element, prop) : getScrollProp(element, prop);
-
-/**
  * Gets a given element width (without scrollbar)
  * @param {HTMLElement} element The given element whose width needs to be retrieved
  * @returns {Number} The given element scroll-width
  */
 // TODO: provide unit test
-const getWidth = element => getProp(element, 'width');
+const getGlobalScrollerWidth = element => getBoundingClientRectProp(element, 'width');
 
 /**
  * Gets a given element height (without scrollbar)
@@ -78,28 +62,19 @@ const getWidth = element => getProp(element, 'width');
  * @returns {Number} The given element scroll-height
  */
 // TODO: provide unit test
-const getHeight = element => getProp(element, 'height');
+const getGlobalScrollerHeight = element => getBoundingClientRectProp(element, 'height');
 
 /**
- * Gets a given element current vertical scrollbar width size in px unit
- * @param {HTMLElement} element The given element whose scrollbar gaps need to be retrieved
- * @returns {Object} The current vertical scrollbar width and the horizontal scrollbar height in px
+ * 
+ * @param element 
  */
-// NOTE: right now this is the safest and more robust way to detect the scrollbar size (which is also compatible with iOS pinch to zoom)
-// overflow property is going to change anyway, so this not-100%-clean approach (debatably) is kept for now
-export const getScrollbarsGaps = element => {
+const getGlobalScrollerGaps = element => {
     const styles = element?.style ?? {};
-
-    // clears all overflow-related inline styles (just in case...)
-    styles.overflow = styles.overflowX = styles.overflowY = cssOverflowUnset;
-
-    // clears possible body scroll lock state css strategies
-    const wasLocked = removeLockedCssClass(element);
 
     // caches current element sizes
     // NOTE: right now only getBoundingClientRect grant sub pixel measures, repaint would have been done anyway so...
-    const width = getWidth(element);
-    const height = getHeight(element);
+    const width = getGlobalScrollerWidth(element);
+    const height = getGlobalScrollerHeight(element);
 
     // horizontal scrollbar
 
@@ -107,7 +82,7 @@ export const getScrollbarsGaps = element => {
     styles.overflowX = cssOverflowHidden;
 
     // gets horizontal scrollbar gap size (height with possible scrollbar - height without scrollbar)
-    const horizontal = getHeight(element) - height;
+    const horizontal = getGlobalScrollerHeight(element) - height;
 
     // clears horizontal scrollbar (previously set) hiding property value
     styles.overflowX = cssOverflowUnset;
@@ -118,10 +93,36 @@ export const getScrollbarsGaps = element => {
     styles.overflow = cssOverflowHidden;
     
     // gets vertical scrollbar gap size (width with possible scrollbar - width without scrollbar)
-    const vertical = getWidth(element) - width;
+    const vertical = getGlobalScrollerWidth(element) - width;
 
     // clears vertical scrollbar (previously set) hiding property value
     styles.overflow = cssOverflowUnset;
+
+    return { vertical, horizontal };
+}
+
+/**
+ * 
+ * @param element 
+ */
+const getElementScrollerGaps = element => ({
+    horizontal: element.offsetHeight - element.clientHeight,
+    vertical: element.offsetWidth - element.clientWidth
+})
+
+/**
+ * Gets a given element current vertical scrollbar width size in px unit
+ * @param {HTMLElement} element The given element whose scrollbar gaps need to be retrieved
+ * @returns {Object} The current vertical scrollbar width and the horizontal scrollbar height in px
+ */
+// NOTE: right now this is the safest and more robust way to detect the scrollbar size (which is also compatible with iOS pinch to zoom)
+// overflow property is going to change anyway, so this not-100%-clean approach (debatably) is kept for now
+export const getScrollbarsGaps = element => {
+    // clears possible body scroll lock state css strategies
+    const wasLocked = removeLockedCssClass(element);
+
+    //
+    const gaps = isGlobalScroller(element) ? getGlobalScrollerGaps(element) : getElementScrollerGaps(element);
 
     // possibly re applies body scroll lock state css strategies
     if (wasLocked) {
@@ -129,7 +130,7 @@ export const getScrollbarsGaps = element => {
     }
 
     // returns the vertical and horizontal scrollbar gaps as an object
-    return { vertical, horizontal };
+    return gaps;
 };
 
 /**
