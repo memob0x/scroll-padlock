@@ -159,9 +159,9 @@
 
         &__scroller-sample {
             margin: 20px 10px;
-            width: 320px;
+            width: 360px;
             max-width: 100%;
-            height: 160px;
+            height: 180px;
 
             &__text {
                 width: 450px;

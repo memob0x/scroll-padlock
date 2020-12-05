@@ -1,13 +1,28 @@
 <template>
     <div class="scroller">
-        <header class="scroller__header">
-            <button @click.prevent="toggleScroll">
-                toggle scroll
-            </button>
-        </header>
+        <div
+            ref="scrollable"
 
-        <div class="scroller__contents">
-            <slot />
+            class="scroller__scrollable"
+
+            :class="{
+                'scroll-padlock--locked': scrollPadlockState, // TODO: use custom css class + remove css class from library
+                'custom-scrollbars': customScrollbars
+            }"
+        >
+            <header class="scroller__header">
+                <button @click.prevent="toggleScroll">
+                    toggle scroll lock
+                </button>
+
+                <button @click.prevent="toggleCustomScrollbars">
+                    toggle custom scrollbars
+                </button>
+            </header>
+
+            <div class="scroller__contents">
+                <slot />
+            </div>
         </div>
     </div>    
 </template>
@@ -19,7 +34,9 @@
         name: 'app-scroller',
 
         data: vm => ({
-            scrollPadlock: null
+            scrollPadlock: null,
+            customScrollbars: false,
+            scrollPadlockState: false
         }),
 
         methods: {
@@ -28,14 +45,20 @@
 
                 const result = this.scrollPadlock[state ? 'unlock' : 'lock']();
 
+                this.scrollPadlockState = !state;
+
                 this.$emit(`scroller-${state ? 'unlocked' : 'locked'}`);
 
                 return result;
+            },
+
+            toggleCustomScrollbars(){
+                return this.customScrollbars = !this.customScrollbars;
             }
         },
 
         mounted(){
-            this.scrollPadlock = new ScrollPadlock(this.$el);
+            this.scrollPadlock = new ScrollPadlock(this.$refs.scrollable);
         },
 
         destroyed(){
@@ -48,14 +71,16 @@
     .scroller {
         border: 2px solid black;
 
-        overflow: auto;
-        max-width: 100%;
-        max-height: 100%;
+        &__scrollable {
+            overflow: auto;
+            max-width: 100%;
+            max-height: 100%;
 
-        &.scroll-padlock--locked {
-            overflow: hidden;
-            padding-right: var(--scroll-padlock-vertical-scrollbar-gap);
-            padding-bottom: var(--scroll-padlock-horizontal-scrollbar-gap);
+            &.scroll-padlock--locked {
+                overflow: hidden;
+                max-width: calc(100% - var(--scroll-padlock-vertical-scrollbar-gap));
+                padding-bottom: var(--scroll-padlock-horizontal-scrollbar-gap);
+            }
         }
 
         &__header {

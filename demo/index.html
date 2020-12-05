@@ -14,6 +14,35 @@
     <body>
         <div id="app"></div>
 
+        <script>
+            // old browsers "matches" method support
+            if (!Element.prototype.matches) {
+                Element.prototype.matches = Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector;
+            }
+            
+            // old browsers custom events support
+            (function () {
+                if (typeof window.CustomEvent === "function") {
+                    return false;
+                }
+
+                window.CustomEvent = function (event, params) {
+                    params = params || { bubbles: false, cancelable: false, detail: null };
+
+                    const evt = document.createEvent("CustomEvent");
+
+                    evt.initCustomEvent(
+                        event,
+                        params.bubbles,
+                        params.cancelable,
+                        params.detail
+                    );
+
+                    return evt;
+                };
+            })();
+        </script>
+
         <script src="./dist/main.js"></script>
     </body>
 </html>

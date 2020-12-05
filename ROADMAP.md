@@ -7,7 +7,7 @@
 * [ - ] demo: make it standalone using node_modules and such (now it's location-dependant), use Vue and its router in order to supply multiple examples
 
 ## v1.1
-* [ - ] library: optional CSS classes
+* [ - ] library: optional CSS classes / remove CSS classes and make properties more reactive + provide more events
 * [ - ] general: ditch prettier, adopt eslint
 * [ - ] general: npm run lint command
 * [ - ] demos: enhance top drawer part (closing "x" etc...)

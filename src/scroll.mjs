@@ -1,6 +1,6 @@
-import { isNumber } from "./utils.mjs";
+import { html, body } from "./client.mjs";
 
-import { body, html } from "./client.mjs";
+import { isNumber, isGlobalScroller } from "./utils.mjs";
 
 // scroll position savings closure
 // a weakmap is used in order to keep every scroll object associated with the scrollable element itself
@@ -23,14 +23,6 @@ export const isValidScrollPosition = value => typeof value === "object" && isNum
  * @returns {Object|null} The given value is returned if is a valid scroll position object, otherwise null is returned
  */
 export const formatScrollPosition = value => isValidScrollPosition(value) ? value : null;
-
-/**
- * Checks whether the given element is a main scrollable element (html or body)
- * @param {HTMLElement} element The given element to be checked
- * @returns {Boolean} True if element is a global frame element
- */
-// TODO: provide unit tests
-const isGlobalScroller = element => element === html || element === body;
 
 /**
  * Gets a scroller element, returns Window object if a main frame element (html, body) is provided
