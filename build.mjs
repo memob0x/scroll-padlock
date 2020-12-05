@@ -1,6 +1,4 @@
-import autoprefixer from "autoprefixer";
-import cssnano from "cssnano";
-
+import { rollup } from "rollup";
 import rollupBabel from "@rollup/plugin-babel";
 import rollupGzip from 'rollup-plugin-gzip';
 import rollupNodeResolve from '@rollup/plugin-node-resolve';
@@ -9,10 +7,23 @@ import rollupVue from 'rollup-plugin-vue2';
 import rollupCommonJs from '@rollup/plugin-commonjs';
 import rollupScss from 'rollup-plugin-scss'
 
-import buildBundle from "./build/bundle.mjs";
-
 const babelPresets = ["@babel/preset-env"];
 const babelPlugins = ["@babel/plugin-proposal-class-properties"];
+
+const buildBundle = async options => {
+    console.log(`${options.input.input}: start`);
+
+    const result = await rollup({
+        ...options.input,
+        plugins: options.plugins
+    });
+
+    options.output = Array.isArray(options.output) ? options.output : [options.output];
+
+    await Promise.all(options.output.map(output => result.write(output)));
+
+    console.log(`${options.input.input}: end`);
+};
 
 // demo files
 // -----------------------------------------------------------------------------------------
