@@ -65,8 +65,9 @@ const getGlobalScrollerWidth = element => getBoundingClientRectProp(element, 'wi
 const getGlobalScrollerHeight = element => getBoundingClientRectProp(element, 'height');
 
 /**
- * 
- * @param element 
+ * Gets the global scrollable element (body or html) current vertical scrollbar width size in px unit
+ * @param {HTMLElement} element The given global scrollable element (body or html) whose scrollbar gaps need to be retrieved
+ * @returns {Object} The current vertical scrollbar width and the horizontal scrollbar height in px
  */
 const getGlobalScrollerGaps = element => {
     const styles = element?.style ?? {};
@@ -99,16 +100,17 @@ const getGlobalScrollerGaps = element => {
     styles.overflow = cssOverflowUnset;
 
     return { vertical, horizontal };
-}
+};
 
 /**
- * 
- * @param element 
+ * Gets a given element current vertical scrollbar width size in px unit
+ * @param {HTMLElement} element The given element whose scrollbar gaps need to be retrieved
+ * @returns {Object} The current vertical scrollbar width and the horizontal scrollbar height in px
  */
 const getElementScrollerGaps = element => ({
     horizontal: element.offsetHeight - element.clientHeight,
     vertical: element.offsetWidth - element.clientWidth
-})
+});
 
 /**
  * Gets a given element current vertical scrollbar width size in px unit
@@ -121,16 +123,16 @@ export const getScrollbarsGaps = element => {
     // clears possible body scroll lock state css strategies
     const wasLocked = removeLockedCssClass(element);
 
-    //
-    const gaps = isGlobalScroller(element) ? getGlobalScrollerGaps(element) : getElementScrollerGaps(element);
+    // gets the scrollbar gaps (the horizontal and vertical scrollbar-width property value)
+    const scrollbarGaps = isGlobalScroller(element) ? getGlobalScrollerGaps(element) : getElementScrollerGaps(element);
 
     // possibly re applies body scroll lock state css strategies
     if (wasLocked) {
         addLockedCssClass(element);
     }
 
-    // returns the vertical and horizontal scrollbar gaps as an object
-    return gaps;
+    // returns the vertical and horizontal scrollbar gaps as an object ({ vertical, horizontal })
+    return scrollbarGaps;
 };
 
 /**
