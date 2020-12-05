@@ -180,7 +180,7 @@ That's because the element on focus is an input element and iOS forces a scroll 
 To overcome this problem you can use `scrollpadlockresize` event to programmatically scroll to top that ios-sub-window-thing.
 
 ```javascript
-window.addEventListener("scrollpadlockresize", () => {
+document.documentElement.addEventListener("scrollpadlockresize", () => {
     if (someWayToDetectAppleIOS()) {
         window.scrollTo(0, 0);
     }

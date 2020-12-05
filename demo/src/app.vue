@@ -4,7 +4,7 @@
         
         <main class="app__body">
             <header class="app__header">
-                <button>
+                <button @click.prevent="toggleSearchLayer">
                     open search layer
                 </button>
 
@@ -32,11 +32,25 @@
             <app-sample-text class="app__floating-sample__text" />
         </div>
 
-        <app-search class="app__search" />
+        <app-search
+            ref="search"
+
+            class="app__search"
+
+            :class="{
+                'app__search--open': searchLayer
+            }"
+        >
+            <button @click.prevent="toggleSearchLayer">
+                close search layer
+            </button>
+        </app-search>
     </div>    
 </template>
 
 <script>
+    import Vue from 'vue';
+
     import appConsole from './app-console.vue';
     import appScroller from './app-scroller.vue';
     import appSampleText from './app-sample-text.vue';
@@ -52,6 +66,10 @@
             appSearch,
             appConsole
         },
+
+        data: () => ({
+            searchLayer: false
+        }),
 
         computed: {
             bodyScroll: vm => vm.$parent.bodyScroll,
@@ -78,6 +96,26 @@
 
             logToConsole(message){
                 this.$refs.console.log(message);
+            },
+
+            toggleSearchLayer(){
+                const state = !this.searchLayer;
+
+                const focusTarget = state ? this.$refs.search : document.body;
+                
+                this.searchLayer = state;
+
+                this.toggleBodyScroll();
+                
+                Vue.nextTick(() => focusTarget.focus());
+
+                return state;
+            },
+
+            resizeHandler(){                
+                if (this.isAnyIOS) {
+                    window.scrollTo(0, 0);
+                }
             }
         },
 
@@ -89,6 +127,12 @@
                 
                 cl.add('ios');
             }
+
+            document.documentElement.addEventListener("scrollpadlockresize", this.resizeHandler, false);
+        },
+
+        destroyed(){
+            document.documentElement.removeEventListener("scrollpadlockresize", this.resizeHandler, false);
         }
     };
 </script>
@@ -165,6 +209,26 @@
 
             &__text {
                 width: 450px;
+            }
+        }
+
+        &__search {
+            position: fixed;
+            left: 0;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            background: black;
+
+            opacity: 0;
+            visibility: hidden;
+
+            &--open {
+                opacity: 1;
+                visibility: visible;
             }
         }
     }
