@@ -60,9 +60,7 @@ const buildBundle = async options => {
                         presets: babelPresets,
                         plugins: babelPlugins,
                         allowAllFormats: true
-                    }),
-                    
-                    rollupGzip()
+                    })
                 ]
             }
         ]
