@@ -99,13 +99,15 @@
             },
 
             toggleSearchLayer(){
+                this.bodyScroll[this.searchLayer ? 'unlock' : 'lock']();
+
                 const state = !this.searchLayer;
 
                 const focusTarget = state ? this.$refs.search : document.body;
                 
                 this.searchLayer = state;
 
-                this.toggleBodyScroll();
+                this.logToConsole(`search layer ${!state ? 'closed' : 'open'}`);
                 
                 Vue.nextTick(() => focusTarget.focus());
 
