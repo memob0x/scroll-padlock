@@ -133,6 +133,14 @@ A **state** method can retrieve the actual body scroll lock status.
 const status = bodyScroll.state(); // true when locked...
 ```
 
+## Constructor Parameter
+
+A padlock instance can be created on every scrollable element.
+
+```javascript
+const elementScroll = new ScrollPadlock(document.getElementById('scroller'));
+```
+
 ## Events
 
 Get notified when scroll **state changes** listening to `scrollpadlocklock` and `scrollpadlockunlock` **events**.
@@ -151,7 +159,7 @@ There's a further `scrollpadlockresize` event dispatched during browser window r
 
 ## Positioned elements
 
-If you are experiencing issues with positioned elements remember you can overcome them with the same css variable you used to reserve the scrollbar with on body...
+If you are experiencing issues with positioned elements remember you can overcome them with the same css variable you used to reserve the scrollbar width on body...
 
 ```css
 /* a right positioned sidebar */
