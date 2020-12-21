@@ -6,11 +6,11 @@ A small "CSS helper" script (~4K gzipped) which relies on **CSS variables** in o
 
 🙅 Without this library:
 
-![without scrollbar gap compensation](https://github.com/[username]/[reponame]/blob/[branch]/docs/without-gap-compensation.gif?raw=true)
+![without scrollbar gap compensation](https://github.com/memob0x/scroll-padlock/blob/master/docs/without-gap-compensation.gif?raw=true)
 
 💁 With this library:
 
-![with scrollbar gap compensation](https://github.com/[username]/[reponame]/blob/[branch]/docs/with-gap-compensation.gif?raw=true)
+![with scrollbar gap compensation](https://github.com/memob0x/scroll-padlock/blob/master/docs/with-gap-compensation.gif?raw=true)
 
 ## TL;TR: a body scroll overview
 
@@ -181,7 +181,7 @@ html.scroll-padlock--locked aside {
 
 There are some edge cases in which iOS doesn't play nice: when the page is scrolled the **system bars** become smaller, at that point when the keyboard tray is triggered they become larger again; that can cause visual artifacts as you can see the following gif.
 
-![ios bug](https://github.com/[username]/[reponame]/blob/[branch]/docs/ios-bug.gif?raw=true)
+![ios bug](https://github.com/memob0x/scroll-padlock/blob/master/docs/ios-bug.gif?raw=true)
 
 That's because the element on focus is an input element and iOS forces a scroll to that element (to enhance the accessibility) on an area which would be shortly resized because of the system bars getting bigger. Pretty weird, huh?
 
@@ -197,7 +197,7 @@ document.documentElement.addEventListener("scrollpadlockresize", () => {
 
 As you can see in the following gif, things are finally back in place.
 
-![ios bug](https://github.com/[username]/[reponame]/blob/[branch]/docs/ios-fix.gif?raw=true)
+![ios bug](https://github.com/memob0x/scroll-padlock/blob/master/docs/ios-fix.gif?raw=true)
 
 ## Support
 
@@ -205,7 +205,7 @@ All [modern browsers](https://teamtreehouse.com/community/what-is-a-modern-brows
 * 💥 DOM API "[matches](https://developer.mozilla.org/en-US/docs/Web/API/Element/matches#Polyfill)" method ([polyfill](https://developer.mozilla.org/en-US/docs/Web/API/Element/matches#Polyfill))
 * 💥 [WeakMap](https://caniuse.com/mdn-javascript_builtins_weakmap)
 * [CustomEvent](https://caniuse.com/customevent) ([polyfill](https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent/CustomEvent#Polyfill)), only if library [events](#events) are being used
-* [CSS variables](https://caniuse.com/css-variables), only for scrollbar gaps compensation (since old browsers support _overflow: hidden;_), still the JS API and events can be used to reach a workaround
+* [CSS variables](https://caniuse.com/css-variables), only for scrollbar gaps compensation (since old browsers support _overflow: hidden_), still the JS API and events can be used to reach a workaround
 
 ## Demo
 
