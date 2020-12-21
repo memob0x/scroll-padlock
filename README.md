@@ -1,16 +1,16 @@
 # ScrollPadlock
 
-![Node.js CI](https://github.com/memob0x/body-scroll-lock/workflows/Node.js%20CI/badge.svg)
+![Node.js CI](https://github.com/memob0x/scroll-padlock/workflows/Node.js%20CI/badge.svg)
 
 A small "CSS helper" script (~4K gzipped) which relies on **CSS variables** in order to programmatically **prevent the ability to scroll** for any scrollable element avoiding "contents jump".
 
 🙅 Without this library:
 
-![without scrollbar gap compensation](docs/without-gap-compensation.gif?raw=true)
+![without scrollbar gap compensation](https://github.com/[username]/[reponame]/blob/[branch]/docs/without-gap-compensation.gif?raw=true)
 
 💁 With this library:
 
-![with scrollbar gap compensation](docs/with-gap-compensation.gif?raw=true)
+![with scrollbar gap compensation](https://github.com/[username]/[reponame]/blob/[branch]/docs/with-gap-compensation.gif?raw=true)
 
 ## TL;TR: a body scroll overview
 
@@ -30,7 +30,7 @@ to make things worse that technique just **doesn't work** on **iOS safari**: whe
 This library is downloadable via **npm**, which means you can enter the following command directly in your terminal:
 
 ```console
-$ npm install @memob0x/body-scroll-lock
+$ npm install scroll-padlock
 ```
 
 This library is entirely written in [standard ECMAScript](https://tc39.es/), this means that you can safely include **src/padlock.mjs** module in your es6 project without affecting your final bundle size.
@@ -181,7 +181,7 @@ html.scroll-padlock--locked aside {
 
 There are some edge cases in which iOS doesn't play nice: when the page is scrolled the **system bars** become smaller, at that point when the keyboard tray is triggered they become larger again; that can cause visual artifacts as you can see the following gif.
 
-![ios bug](docs/ios-bug.gif?raw=true)
+![ios bug](https://github.com/[username]/[reponame]/blob/[branch]/docs/ios-bug.gif?raw=true)
 
 That's because the element on focus is an input element and iOS forces a scroll to that element (to enhance the accessibility) on an area which would be shortly resized because of the system bars getting bigger. Pretty weird, huh?
 
@@ -197,16 +197,16 @@ document.documentElement.addEventListener("scrollpadlockresize", () => {
 
 As you can see in the following gif, things are finally back in place.
 
-![ios bug](docs/ios-fix.gif?raw=true)
+![ios bug](https://github.com/[username]/[reponame]/blob/[branch]/docs/ios-fix.gif?raw=true)
 
 ## Support
 
 All [modern browsers](https://teamtreehouse.com/community/what-is-a-modern-browser) have been tested, but here's a list of dependencies that might be needed in order to support older ones:
-* 💥DOM API "[matches](https://developer.mozilla.org/en-US/docs/Web/API/Element/matches#Polyfill)" method ([polyfill](https://developer.mozilla.org/en-US/docs/Web/API/Element/matches#Polyfill))
-* 💥[WeakMap](https://caniuse.com/mdn-javascript_builtins_weakmap)
+* 💥 DOM API "[matches](https://developer.mozilla.org/en-US/docs/Web/API/Element/matches#Polyfill)" method ([polyfill](https://developer.mozilla.org/en-US/docs/Web/API/Element/matches#Polyfill))
+* 💥 [WeakMap](https://caniuse.com/mdn-javascript_builtins_weakmap)
 * [CustomEvent](https://caniuse.com/customevent) ([polyfill](https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent/CustomEvent#Polyfill)), only if library [events](#events) are being used
 * [CSS variables](https://caniuse.com/css-variables), only for scrollbar gaps compensation (since old browsers support _overflow: hidden;_), still the JS API and events can be used to reach a workaround
 
 ## Demo
 
-Have a look at this [demo](https://memob0x.github.io/body-scroll-lock/demo/) to check if this is what you're looking for. 🤞
+Have a look at this [demo](https://memob0x.github.io/scroll-padlock/demo/) to check if this is what you're looking for. 🤞
