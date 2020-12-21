@@ -1,12 +1,5 @@
-## v1.0
-* [✓] library: class based system (initializable to any scrollable element)
-* [✓] library: provide missing jsdocs
-* [✓] tests: complete unit tests (TODO notes across test modules)
-* [✓] build: provide separate .min files
-* [✓] docs: README.md specs update (also remember to add WeakMap to the required polyfills)
-* [ - ] demo: make it standalone using node_modules and such (now it's location-dependant), use Vue and its router in order to supply multiple examples
+# next minor
 
-## v1.1
 * [ - ] library: optional CSS classes / remove CSS classes and make properties more reactive + provide more events
 * [ - ] general: ditch prettier, adopt eslint
 * [ - ] general: npm run lint command

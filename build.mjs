@@ -100,7 +100,7 @@ const buildBundle = async options => {
         ]
     });
 
-    ["amd", "iife", "system", "es", "cjs"].forEach(type => {
+    ["amd", "iife", "system", "es", "cjs", "umd"].forEach(type => {
         // non-minified version
         bundles.push(bundlify(type, false));
 

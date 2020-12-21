@@ -1,6 +1,6 @@
 # ScrollPadlock
 
-![Node.js CI](https://github.com/memob0x/body-scroll-lock/workflows/Node.js%20CI/badge.svg)
+![Node.js CI](https://github.com/memob0x/scroll-padlock/workflows/Node.js%20CI/badge.svg)
 
 A small "CSS helper" script (~4K gzipped) which relies on **CSS variables** in order to programmatically **prevent the ability to scroll** for any scrollable element avoiding "contents jump".
 
@@ -30,7 +30,7 @@ to make things worse that technique just **doesn't work** on **iOS safari**: whe
 This library is downloadable via **npm**, which means you can enter the following command directly in your terminal:
 
 ```console
-$ npm install @memob0x/body-scroll-lock
+$ npm install scroll-padlock
 ```
 
 This library is entirely written in [standard ECMAScript](https://tc39.es/), this means that you can safely include **src/padlock.mjs** module in your es6 project without affecting your final bundle size.
@@ -209,4 +209,4 @@ All [modern browsers](https://teamtreehouse.com/community/what-is-a-modern-brows
 
 ## Demo
 
-Have a look at this [demo](https://memob0x.github.io/body-scroll-lock/demo/) to check if this is what you're looking for. 🤞
+Have a look at this [demo](https://memob0x.github.io/scroll-padlock/demo/) to check if this is what you're looking for. 🤞

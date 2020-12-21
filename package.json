@@ -1,15 +1,12 @@
 {
-    "name": "@memob0x/body-scroll-lock",
-    "version": "1.0.0",
+    "name": "scroll-padlock",
+    "author": "Daniele Fioroni",
+    "description": "Locks elements scroll handling scrollbar gaps and iOS Safari with CSS variables",
+    "main": "dist/umd/scroll-padlock.min.js",
+    "module": "dist/es/scroll-padlock.js",
+    "version": "1.1.0",
     "license": "MIT",
-    "repository": {
-        "type": "git",
-        "url": "ssh://git@github.com:memob0x/body-scroll-lock.git",
-        "directory": "@memob0x/body-scroll-lock"
-    },
-    "publishConfig": {
-        "registry": "https://npm.pkg.github.com/memob0x"
-    },
+    "repository": "https://github.com/memob0x/scroll-padlock.git",
     "scripts": {
         "build": "node ./build.mjs",
         "start": "node ./start.mjs",
