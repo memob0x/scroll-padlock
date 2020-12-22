@@ -26,7 +26,7 @@ import {
 // a weakmap is used in order to keep every instance associated with the scrollable element itself
 const instances = new WeakMap();
 
-export default class {
+export default class ScrollPadlock {
     /**
      * Creates the scroll padlock class instance on a given scrollable element
      * @param {HTMLElement} element The given scrollable element whose scroll needs to be controlled
