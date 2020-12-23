@@ -5,7 +5,7 @@ import rollupNodeResolve from '@rollup/plugin-node-resolve';
 import rollupReplace from 'rollup-plugin-replace';
 import rollupVue from 'rollup-plugin-vue2';
 import rollupCommonJs from '@rollup/plugin-commonjs';
-import rollupScss from 'rollup-plugin-scss'
+import rollupPostCss from 'rollup-plugin-postcss';
 
 const babelPresets = ["@babel/preset-env"];
 const babelPlugins = ["@babel/plugin-proposal-class-properties"];
@@ -36,9 +36,13 @@ const buildBundle = async options => {
         plugins: [
             rollupNodeResolve(),
 
-            rollupScss(),
+            rollupVue({
+                preprocessStyles: true
+            }),
 
-            rollupVue({ css: false }),
+            rollupPostCss({
+                sourceMap: true
+            }),
 
             rollupCommonJs(),
 
