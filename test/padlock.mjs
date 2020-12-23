@@ -1,6 +1,6 @@
 import Padlock from "../src/padlock.mjs";
 
-// TODO: test all class instance methods
+// TODO: test all class instance methods, setters, getters etc...
 
 describe("padlock", () => {
     it('should be able to be initialized on valid elements only', () => {

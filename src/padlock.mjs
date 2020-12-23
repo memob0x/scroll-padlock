@@ -14,7 +14,8 @@ import {
 import {
     restoreScrollPosition,
     saveScrollPosition,
-    getSavedScrollPosition
+    getSavedScrollPosition,
+    getScrollPosition
 } from "./scroll.mjs";
 
 import {
@@ -29,7 +30,7 @@ const instances = new WeakMap();
 export default class ScrollPadlock {
     /**
      * Creates the scroll padlock class instance on a given scrollable element
-     * @param {HTMLElement} element The given scrollable element whose scroll needs to be controlled
+     * @param {HTMLElement} [element=document.document.Element] The given scrollable element whose scroll needs to be controlled
      * @returns {void} Nothing
      */
     constructor(element = html){
@@ -74,18 +75,46 @@ export default class ScrollPadlock {
 
     /**
      * Returns the current lock state as a boolean
-     * @returns {Boolean} True if body scroll is locked, false if not
+     * @returns {Boolean} True if element scroll is locked, false if element scroll is not locked
      */
     get state(){
         return isLocked(this.element);
     }
 
     /**
-     * Returns the currently saved scroll position object
-     * @returns {Object|null} The currently saved scroll position object, null if nothing was saved
+     * Sets the given state
+     * @param {Boolean} True if element scroll is going to be locked, false if it is going to be set free
+     */
+    set state(state){
+        if( state ){
+            lock(this.element);
+
+            return;
+        }
+
+        unlock(this.element);
+    }
+
+    /**
+     * Returns the current scroll position, if on a locked state it returns the currently saved scroll position object
+     * @returns {Object} The current scroll position object or the scroll position previously saved if on a locked state
      */
     get scroll(){
-        return getSavedScrollPosition(this.element);
+        return this.state ? getSavedScrollPosition(this.element) : getScrollPosition(this.element);
+    }
+
+    /**
+     * Sets a new scroll position, if on a locked state it saves that given scroll position for a future scroll restoration
+     * @param {Object} position The scroll position to be set or saved if on a locked state
+     */
+    set scroll(position){
+        if( this.state ){
+            saveScrollPosition(this.element, position);
+
+            return;
+        }
+        
+        restoreScrollPosition(this.element, position);
     }
 
     /**
@@ -111,7 +140,7 @@ export default class ScrollPadlock {
      */
     destroy(){
         // unlocks a possible locked state
-        this.unlock();
+        this.state = false;
 
         // removes the instance initialization css class
         removeBaseCssClass(this.element);
@@ -136,7 +165,8 @@ export default class ScrollPadlock {
     }
 
     /**
-     * Locks the body scroll
+     * Locks the element scroll
+     * @deprecated since version 1.2, will be removed shortly, use "state" setter instead
      * @returns {Boolean} True if the lock has been successfully done, false if not
      */
     lock(){
@@ -144,7 +174,8 @@ export default class ScrollPadlock {
     }
 
     /**
-     * Unlocks the body scroll
+     * Unlocks the element scroll
+     * @deprecated since version 1.2, will be removed shortly, use "state" setter instead
      * @returns {Boolean} True if the unlock has been successfully done, false if not
      */
     unlock(){
@@ -157,21 +188,5 @@ export default class ScrollPadlock {
      */
     update(){
         return updateCssVariables(this.element);
-    }
-
-    /**
-     * Saves a given valid scroll position object, if not passed saves the current body scroll position
-     * @returns {Object|null} The given value is returned if is a valid scroll position object, otherwise null is returned
-     */
-    save(){
-        return saveScrollPosition(this.element);
-    }
-
-    /**
-     * Restores a given valid scroll position object, if not passed possibly restores a previously saved scroll position object
-     * @returns {Object|null} The given value is returned if is a valid scroll position object, otherwise null is returned
-     */
-    restore(){
-        return restoreScrollPosition(this.element);
     }
 };

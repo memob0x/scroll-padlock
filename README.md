@@ -1,8 +1,10 @@
 # ScrollPadlock
 
 ![Node.js CI](https://github.com/memob0x/scroll-padlock/workflows/Node.js%20CI/badge.svg)
+[![scroll-padlock (latest)](https://img.shields.io/npm/v/scroll-padlock/latest.svg)](https://www.npmjs.com/package/scroll-padlock)
+[![scroll-padlock (downloads)](https://img.shields.io/npm/dy/scroll-padlock.svg)](https://www.npmjs.com/package/scroll-padlock)
 
-A small "CSS helper" script (~4K gzipped) which relies on **CSS variables** in order to programmatically **prevent the ability to scroll** for any scrollable element avoiding "contents jump".
+A small script (~4K gzipped) which allows developers to implement their own way (preferably through CSS) to **lock html elements scroll** avoiding "contents jump".
 
 🙅 Without this library:
 
@@ -27,15 +29,13 @@ to make things worse that technique just **doesn't work** on **iOS safari**: whe
 
 ## Usage, part 1: inclusion
 
-This library is downloadable via **npm**, which means you can enter the following command directly in your terminal:
+This library is downloadable via **npm**:
 
 ```console
 $ npm install scroll-padlock
 ```
 
-This library is entirely written in [standard ECMAScript](https://tc39.es/), this means that you can safely include **src/padlock.mjs** module in your es6 project without affecting your final bundle size.
-
-If older browsers support is needed, if a third party module loader is used or if there's no module loading strategy implemented, the following bundles might be preferred:
+The source code is entirely written in [standard ECMAScript](https://tc39.es/), the **src/padlock.mjs** module can be safely imported in an es6 project; otherwise the following transpiled bundles are available:
 
 -   **dist/iife/scroll-padlock.js**: [immediately invoked function expression](https://developer.mozilla.org/en-US/docs/Glossary/IIFE) syntax. This bundle sets a global variable, thus is indicated for projects which don't use any module loading strategy.
 -   **dist/amd/scroll-padlock.js**: [asynchronous module definition](https://en.wikipedia.org/wiki/Asynchronous_module_definition) syntax.
@@ -45,29 +45,21 @@ If older browsers support is needed, if a third party module loader is used or i
 
 ## Usage, part 2: CSS rules
 
-When [locking](#usage-pt2-javascript), some css variables are programmatically set at the given element level  (provided to class constructor), making the css aware of its **scroll position** and its **scrollbar width**, while some css classes toggled to that very element reflect the instance state.
+As an instance is created, some CSS variables are programmatically set at the given element level (the element provided to the constructor as a parameter), making CSS "aware" of its **scroll position** and its **scrollbar width**, while some CSS classes are toggled to that same element in order to reflect its instance state.
+
+### The CSS variables:
+* `--scroll-padlock-top-rect`: the scroll distance from top.
+* `--scroll-padlock-left-rect`: the scroll distance from left.
+* `--scroll-padlock-vertical-scrollbar-gap`: the vertical scrollbar width.
+* `--scroll-padlock-horizontal-scrollbar-gap`: the horizontal scrollbar width.
+
+### The CSS classes:
+* `scroll-padlock`: the class instance has been initialized and attached to the given element.
+* `scroll-padlock--locked`: the instance state is **locked**.
+
+The following ruleset alone is enough to ensure a cross-browser body scroll lock:
 
 ```css
-/* scroll distance from top */
---scroll-padlock-top-rect: 1234px;
-
-/* scroll distance from left */
---scroll-padlock-left-rect: 1234px;
-
-/* the vertical scrollbar size */
---scroll-padlock-vertical-scrollbar-gap: 15px;
-
-/* the horizontal scrollbar size */
---scroll-padlock-horizontal-scrollbar-gap: 15px;
-```
-
-These interventions alone are enough to ensure a cross-browser body scroll lock as it follows:
-
-```css
-html.scroll-padlock {
-    /* library initialized... */
-}
-
 html.scroll-padlock--locked {
     /* position fixed hack, locks iOS too */
     position: fixed;
@@ -86,72 +78,105 @@ Please note that some [browser recognition logic](https://gist.github.com/memob0
 ```css
 /* iOS only */
 html.scroll-padlock--locked.ios {
-    /* position fixed hack */
+    /* iOS fixed position hack */
     position: fixed;
     width: 100%;
 
-    /* avoids scroll to top */
+    /* Avoids scroll to top */
     top: var(--scroll-padlock-top-rect);
 }
 
-/* standard browsers only */
+/* Standard browsers only */
+html.scroll-padlock--locked.not-ios,
 html.scroll-padlock--locked.not-ios body {
-    /* standard way to lock body scroll */
+    /* Standard way to lock scroll */
     overflow: hidden;
 }
 
-/* both iOS and standard browsers */
-html.scroll-padlock--locked {
-    /* reserves space for scrollbar */
+html.scroll-padlock--locked.not-ios body {
+    /* Reserves space for scrollbar (iOS has overlay scrollbars, this rule would have no effect there)*/
     padding-right: var(--scroll-padlock-vertical-scrollbar-gap);
 }
 ```
 
-## Usage, part 3: instance methods invocation
+## Usage, part 3: class instance
 
-First, a padlock **instance** must be created.
+A padlock **instance** must be created first.
 
 ```javascript
-const bodyScroll = new ScrollPadlock(); // NOTE: document.documentElement is the default parameter
+// The element which scroll needs to be controlled
+// NOTE: document.documentElement is the default parameter
+const target = document.documentElement;
+
+// Creates the instance
+const instance = new ScrollPadlock(target);
 ```
 
-To **lock** the body scroll simply call the `lock` method.
+To **lock** or **unlock** an instance simply use the property `state` accessor as a _setter_.
 
 ```javascript
-bodyScroll.lock(); // freeze!
+// Locks the scroll
+instance.state = true;
+
+// Unlocks the scroll
+instance.state = false;
 ```
 
-To **unlock** it, call the `unlock` one.
+Used as a _getter_, the property `state` gets the current instance state.
 
 ```javascript
-bodyScroll.unlock(); // scroll free, little bird.
+// Gets the current state: true when locked, false when unlocked
+const isLocked = instance.state;
 ```
 
-A **state** method can retrieve the actual body scroll lock status.
+Both accessors combined would make an instance state **toggler**...
 
 ```javascript
-const status = bodyScroll.state(); // true when locked...
+// Toggles the instance state
+instance.state = !instance.state;
 ```
 
-## Constructor Parameter
-
-A padlock instance can be created on every scrollable element.
+The `destroy` method is particularly important when using **reactive frameworks** (such as React, Vue, Angular, etc...) which components lifecycle combined with external libraries might generate memory leaks: **call this method when the components in which scroll-padlock is used get unmounted**.
 
 ```javascript
-const elementScroll = new ScrollPadlock(document.getElementById('scroller'));
+// Detaches instances events, removes styles, etc...
+instance.destroy();
+```
+
+Some **other methods or accessors** can be useful when custom DOM-manipulation logic takes place.
+
+```javascript
+// Updates current instance computed styles (CSS variables, etc...)
+instance.update();
+
+// Gets the the current scroll position
+const { top, left } = instance.scroll;
+
+// Sets a new scroll position;
+// if the instance state is locked, the given position is saved for a future restoration
+instance.scroll = { top, left };
+
+// Gets the current scrollbars width
+const { vertical, horizontal } = instance.scrollbar;
+
+// Gets the instance element;
+// the same element provided to the class constructor (document.documentElement is the default one)
+const target = instance.element;
 ```
 
 ## Events
 
-Get notified when scroll **state changes** listening to `scrollpadlocklock` and `scrollpadlockunlock` **events**.
+Get notified whenever the instance **state changes** by listening to `scrollpadlocklock` and `scrollpadlockunlock` **events**.
 
 ```javascript
-document.documentElement.addEventListener("scrollpadlocklock", () =>
-    console.log("The body scroll has been locked by someone, somewhere...")
+// Listens to any lock events
+target.addEventListener("scrollpadlocklock", () =>
+    console.log("The body scroll has been locked.")
 );
 
-document.documentElement.addEventListener("scrollpadlockunlock", () =>
-    console.log("Body scroll has been unlocked by someone, somewhere...")
+// Linstens to any unlock events
+target.addEventListener("scrollpadlockunlock", () =>
+    console.log("Body scroll has been unlocked.")
 );
 ```
 
@@ -159,43 +184,47 @@ There's a further `scrollpadlockresize` event dispatched during browser window r
 
 ## Positioned elements
 
-If you are experiencing issues with positioned elements remember you can overcome them with the same css variable you used to reserve the scrollbar width on body...
+If positioned elements "jumps" during an instance state change, the same CSS variables that are used to reserve the scrollbar width can be used to overcome this problem as well.
 
 ```css
-/* a right positioned sidebar */
-aside {
-    position: fixed;
+/* Sidebar container */
+.scrollable-sidebar-container {
+    position: relative;
+}
+
+/* A right-positioned sidebar */
+.scrollable-sidebar-container .sidebar {
+    position: absolute;
     top: 0;
     width: 240px;
     height: 100%;
     right: 0;
 }
 
-/* the same right positioned sidebar not affected by the scrollbar presence / disappearance */
-html.scroll-padlock--locked aside {
+/* The same right-positioned sidebar, not affected by its own container scrollbars disappearance */
+.scrollable-sidebar-container.scroll-padlock--locked .sidebar {
     right: var(--scroll-padlock-vertical-scrollbar-gap);
 }
 ```
 
 ## iOS Bars
 
-There are some edge cases in which iOS doesn't play nice: when the page is scrolled the **system bars** become smaller, at that point when the keyboard tray is triggered they become larger again; that can cause visual artifacts as you can see the following gif.
+There are some edge cases in which iOS doesn't play nice: when the page is scrolled the **system bars** become smaller, at that point when the keyboard tray is triggered they become larger again; that can cause the following visual artifacts.
 
 ![ios bug](https://github.com/memob0x/scroll-padlock/blob/master/docs/ios-bug.gif?raw=true)
 
 That's because the element on focus is an input element and iOS forces a scroll to that element (to enhance the accessibility) on an area which would be shortly resized because of the system bars getting bigger. Pretty weird, huh?
 
-To overcome this problem you can use `scrollpadlockresize` event to programmatically scroll to top that ios-sub-window-thing.
+To overcome this problem the event `scrollpadlockresize` event can be used to programmatically scroll to top that ios-sub-window-thing.
 
 ```javascript
-document.documentElement.addEventListener("scrollpadlockresize", () => {
-    if (someWayToDetectAppleIOS()) {
+target.addEventListener("scrollpadlockresize", () => {
+    if ( someWayToDetectAppleIOS() ) {
         window.scrollTo(0, 0);
     }
 });
 ```
-
-As you can see in the following gif, things are finally back in place.
+The problem should be solved at this point.
 
 ![ios bug](https://github.com/memob0x/scroll-padlock/blob/master/docs/ios-fix.gif?raw=true)
 
@@ -207,6 +236,6 @@ All [modern browsers](https://teamtreehouse.com/community/what-is-a-modern-brows
 * [CustomEvent](https://caniuse.com/customevent) ([polyfill](https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent/CustomEvent#Polyfill)), only if library [events](#events) are being used
 * [CSS variables](https://caniuse.com/css-variables), only for scrollbar gaps compensation (since old browsers support _overflow: hidden_), still the JS API and events can be used to reach a workaround
 
-## Demo
+## Try it out!
 
-Have a look at this [demo](https://memob0x.github.io/scroll-padlock/demo/) to check if this is what you're looking for. 🤞
+[Here](https://memob0x.github.io/scroll-padlock/demo/)'s a demo page.

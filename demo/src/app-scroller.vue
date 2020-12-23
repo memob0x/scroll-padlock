@@ -28,6 +28,7 @@
 </template>
 
 <script>
+    import Vue from 'vue';
     import ScrollPadlock from '../../src/padlock.mjs';
 
     export default {
@@ -39,17 +40,21 @@
             scrollPadlockState: false
         }),
 
+        watch: {
+            customScrollbars(){
+                Vue.nextTick(() => this.scrollPadlock.update());
+            }
+        },
+
         methods: {
             toggleScroll(){
                 const state = this.scrollPadlock.state;
 
-                const result = this.scrollPadlock[state ? 'unlock' : 'lock']();
-
-                this.scrollPadlockState = !state;
+                this.scrollPadlock.state = this.scrollPadlockState = !state;
 
                 this.$emit(`scroller-${state ? 'unlocked' : 'locked'}`);
 
-                return result;
+                return state;
             },
 
             toggleCustomScrollbars(){
