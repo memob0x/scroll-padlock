@@ -1,4 +1,5 @@
 import {
+    html,
     head,
     body,
     
@@ -28,7 +29,9 @@ import {
     clearStyle,
     toggleCssClass,
     addBaseCssClass,
-    removeBaseCssClass
+    removeBaseCssClass,
+    getGlobalScrollerWidth,
+    getGlobalScrollerHeight
 } from "../src/style.mjs";
 
 describe("style", () => {
@@ -141,4 +144,31 @@ describe("style", () => {
 
         expect(scroller.classList.contains(cssClassBase)).to.be.false;
     });
+
+    it('should be able to retrieve elements or body width and height', () => {
+        const div = document.createElement('div');
+
+        const size = 100;
+
+        div.style.width = div.style.height = `${size}px`;
+
+        body.append(div);
+
+        expect(getGlobalScrollerWidth(div)).to.equals(size);
+        expect(getGlobalScrollerHeight(div)).to.equals(size);
+
+        div.style.transform = 'scale(1.1)';
+
+        expect(getGlobalScrollerWidth(div)).to.be.greaterThan(size);
+        expect(getGlobalScrollerHeight(div)).to.be.greaterThan(size);
+
+        div.remove();
+
+        html.style.height = '100%';
+
+        expect(Math.round(getGlobalScrollerWidth(html))).to.equals(Math.round(window.innerWidth));
+        expect(Math.round(getGlobalScrollerHeight(html))).to.equals(Math.round(window.innerHeight));
+
+        html.style.height = '';
+    })
 });

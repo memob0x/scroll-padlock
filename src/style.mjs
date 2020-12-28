@@ -53,16 +53,14 @@ const getBoundingClientRectProp = (element, prop) => element?.getBoundingClientR
  * @param {HTMLElement} element The given element whose width needs to be retrieved
  * @returns {Number} The given element scroll-width
  */
-// TODO: provide unit test
-const getGlobalScrollerWidth = element => getBoundingClientRectProp(element, 'width');
+export const getGlobalScrollerWidth = element => getBoundingClientRectProp(element, 'width');
 
 /**
  * Gets a given element height (without scrollbar)
  * @param {HTMLElement} element The given element whose height needs to be retrieved
  * @returns {Number} The given element scroll-height
  */
-// TODO: provide unit test
-const getGlobalScrollerHeight = element => getBoundingClientRectProp(element, 'height');
+export const getGlobalScrollerHeight = element => getBoundingClientRectProp(element, 'height');
 
 /**
  * Gets the global scrollable element (body or html) current vertical scrollbar width size in px unit

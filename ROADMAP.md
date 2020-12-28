@@ -1,7 +1,8 @@
 # 1.2.0
-* [ - ] library: "lock" and "unlock" methods to property accessors
-* [ - ] library: "save" + "restore" methods to "scroll" property accessors
-* [ - ] tests: enhance "padlock" module tests (provide all missing class instance methods and accessors tests)
+
+* [ ✓ ] library: "lock" and "unlock" methods to property accessors
+* [ ✓ ] library: "save" + "restore" methods to "scroll" property accessors
+* [ ✓ ] tests: enhance "padlock" module tests (provide all missing class instance methods and accessors tests)
 
 # 1.3.0
 
