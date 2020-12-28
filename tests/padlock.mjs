@@ -15,9 +15,9 @@ import {
 
 import { cssVarNameGapVertical } from '../src/style.mjs';
 
-import Padlock from "../src/padlock.mjs";
+import Padlock from '../src/padlock.mjs';
 
-describe("padlock", () => {
+describe('padlock', () => {
     let scroller;
 
     before(() => setCSSRules());

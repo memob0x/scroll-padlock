@@ -5,7 +5,7 @@ export const head = document.head;
 
 // all the custom events dispatched by the library will start with this string
 // in order to avoid name clashing
-export const eventNamePrefix = "scrollpadlock";
+export const eventNamePrefix = 'scrollpadlock';
 
 /**
  * Dispatches a custom event if custom events are supported, otherwise does nothing
@@ -14,6 +14,6 @@ export const eventNamePrefix = "scrollpadlock";
  * @returns {void} Nothing
  */
 export const dispatchEvent = (element, messageName) =>
-    typeof window.CustomEvent === "function"
+    typeof window.CustomEvent === 'function'
         ? element?.dispatchEvent(new CustomEvent(`${eventNamePrefix}${messageName}`))
         : () => {};

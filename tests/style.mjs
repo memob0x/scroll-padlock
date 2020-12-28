@@ -14,7 +14,7 @@ import {
     SCROLL_GAP_CSS_CLASS_NAME_LARGER
 } from './_test-utils.mjs';
 
-import { saveScrollPosition } from "../src/scroll.mjs";
+import { saveScrollPosition } from '../src/scroll.mjs';
 
 import {
     updateCssVariables,
@@ -32,9 +32,9 @@ import {
     removeBaseCssClass,
     getGlobalScrollerWidth,
     getGlobalScrollerHeight
-} from "../src/style.mjs";
+} from '../src/style.mjs';
 
-describe("style", () => {
+describe('style', () => {
     let scroller;
 
     before(() => setCSSRules());
@@ -53,7 +53,7 @@ describe("style", () => {
         scroller = null;
     });
 
-    it("should write consistent scroll position css variables", () => {
+    it('should write consistent scroll position css variables', () => {
         // 0. ensuring scroll top position is 0, variable should be 0px after updateCssVariables call
         let scrollPosition = 0;
         scroller.scrollTo(0, scrollPosition);
@@ -81,7 +81,7 @@ describe("style", () => {
         expect(getStyler(scroller)).to.equals(null);
     });
 
-    it("should calculate and write consistent scrollbar gap css variables", () => {
+    it('should calculate and write consistent scrollbar gap css variables', () => {
         // 0. should calculate and write current scrollbar gap css variable
         updateCssVariables(scroller);
 
@@ -89,7 +89,7 @@ describe("style", () => {
         expect(getCSSVariableValue(scroller, cssVarNameGapVertical)).to.equals(`${SCROLL_GAP_VALUE_DEFAULT}px`);
     });
 
-    it("should update css variables", () => {
+    it('should update css variables', () => {
         // 0. should calculate and write current scrollbar gap css variable
         updateCssVariables(scroller);
 
@@ -125,7 +125,7 @@ describe("style", () => {
         expect(toggleCssClass(scroller, className, false)).to.be.false;
     });
 
-    it("should be able to set or remove the library locked css class to the given element", () => {
+    it('should be able to set or remove the library locked css class to the given element', () => {
         addLockedCssClass(scroller);
 
         expect(scroller.classList.contains(cssClassLocked)).to.be.true;
@@ -135,7 +135,7 @@ describe("style", () => {
         expect(scroller.classList.contains(cssClassLocked)).to.be.false;
     });
 
-    it("should be able to set or remove the library base css class to the given element", () => {
+    it('should be able to set or remove the library base css class to the given element', () => {
         addBaseCssClass(scroller);
 
         expect(scroller.classList.contains(cssClassBase)).to.be.true;
@@ -170,5 +170,5 @@ describe("style", () => {
         expect(Math.round(getGlobalScrollerHeight(html))).to.equals(Math.round(window.innerHeight));
 
         html.style.height = '';
-    })
+    });
 });

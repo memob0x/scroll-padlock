@@ -23,9 +23,9 @@ import {
     getElementScrollPosition,
     scrollTo,
     getScroller
-} from "../src/scroll.mjs";
+} from '../src/scroll.mjs';
 
-describe("scroll", () => {
+describe('scroll', () => {
     let scroller;
 
     before(() => setCSSRules());
@@ -44,7 +44,7 @@ describe("scroll", () => {
         scroller = null;
     });
     
-    it("should retrieve, save and restore element scroll position", () => {
+    it('should retrieve, save and restore element scroll position', () => {
         // 0. setting a scroll position and saving it
         const scrollPosition = 120;
         scroller.scrollTo(0, scrollPosition);
@@ -69,7 +69,7 @@ describe("scroll", () => {
         expect(scroller.scrollTop).to.equals(getScrollPosition(scroller).top);
     });
     
-    it("should retrieve, save and restore body scroll position", () => {
+    it('should retrieve, save and restore body scroll position', () => {
         const expander = getScrollExpanderElement();
 
         body.append(expander);
@@ -100,7 +100,7 @@ describe("scroll", () => {
         expander.remove();
     });
 
-    it("should be able to clear scroll position saving", () => {
+    it('should be able to clear scroll position saving', () => {
         // 0. setting a scroll position and saving it
         scroller.scrollTo(0, 120);
 
@@ -114,10 +114,10 @@ describe("scroll", () => {
         expect(getSavedScrollPosition(scroller)).to.be.null;
     });
 
-    it("should be able to recognize valid or invalid scroll position objects", () => {
+    it('should be able to recognize valid or invalid scroll position objects', () => {
         // invalid
-        expect(isValidScrollPosition("foo")).to.be.false;
-        expect(isValidScrollPosition("")).to.be.false;
+        expect(isValidScrollPosition('foo')).to.be.false;
+        expect(isValidScrollPosition('')).to.be.false;
         expect(isValidScrollPosition({})).to.be.false;
         expect(isValidScrollPosition(NaN)).to.be.false;
         expect(isValidScrollPosition(null)).to.be.false;
@@ -133,10 +133,10 @@ describe("scroll", () => {
         expect(isValidScrollPosition({ top: 0, left: 0 })).to.be.true;
     });
 
-    it("should be able to convert invalid scroll position object into null through formatter function", () => {
+    it('should be able to convert invalid scroll position object into null through formatter function', () => {
         // invalid
-        expect(formatScrollPosition("foo")).to.be.null;
-        expect(formatScrollPosition("")).to.be.null;
+        expect(formatScrollPosition('foo')).to.be.null;
+        expect(formatScrollPosition('')).to.be.null;
         expect(formatScrollPosition({})).to.be.null;
         expect(formatScrollPosition(NaN)).to.be.null;
         expect(formatScrollPosition(null)).to.be.null;

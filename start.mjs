@@ -1,9 +1,9 @@
-import connect from "connect";
-import serveStatic from "serve-static";
-import path from "path";
+import connect from 'connect';
+import serveStatic from 'serve-static';
+import path from 'path';
 
 const PORT = 9999;
-const PATH = "./demo";
+const PATH = './demo';
 
 connect()
     .use(serveStatic(PATH))

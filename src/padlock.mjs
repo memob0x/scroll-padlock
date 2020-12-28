@@ -1,6 +1,6 @@
-import { html } from "./client.mjs";
+import { html } from './client.mjs';
 
-import { lock, unlock, isLocked } from "./state.mjs";
+import { lock, unlock, isLocked } from './state.mjs';
 
 import {
     updateCssVariables,
@@ -9,19 +9,19 @@ import {
     removeBaseCssClass,
     clearStyle,
     getStyler
-} from "./style.mjs";
+} from './style.mjs';
 
 import {
     restoreScrollPosition,
     saveScrollPosition,
     getSavedScrollPosition,
     getScrollPosition
-} from "./scroll.mjs";
+} from './scroll.mjs';
 
 import {
     addResizeEventListener,
     removeResizeEventListener
-} from "./resize.mjs";
+} from './resize.mjs';
 
 // instances collection closure
 // a weakmap is used in order to keep every instance associated with the scrollable element itself
@@ -171,4 +171,4 @@ export default class ScrollPadlock {
     update(){
         return updateCssVariables(this.element);
     }
-};
+}

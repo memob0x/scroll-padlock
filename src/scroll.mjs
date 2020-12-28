@@ -1,6 +1,6 @@
-import { html, body } from "./client.mjs";
+import { html, body } from './client.mjs';
 
-import { isNumber, isGlobalScroller } from "./utils.mjs";
+import { isNumber, isGlobalScroller } from './utils.mjs';
 
 // scroll position savings closure
 // a weakmap is used in order to keep every scroll object associated with the scrollable element itself
@@ -15,7 +15,7 @@ const scrollSaving = new WeakMap();
  * @param {Object} value The given value to be checked
  * @returns {Boolean} True if the given value is a valid scroll object
  */
-export const isValidScrollPosition = value => typeof value === "object" && isNumber(value?.top) && isNumber(value?.left);
+export const isValidScrollPosition = value => typeof value === 'object' && isNumber(value?.top) && isNumber(value?.left);
 
 /**
  * Formats a given scroll position object value, if malformed returns null
@@ -41,7 +41,7 @@ export const scrollTo = (element, scroll) => {
     getScroller(element)?.scrollTo(scroll?.left, scroll?.top);
 
     return scroll;
-}
+};
 
 /**
  * Restores a given valid scroll position object, if not passed possibly restores a previously saved scroll position object
@@ -49,7 +49,7 @@ export const scrollTo = (element, scroll) => {
  * @param {Object} [scroll] The given scroll object to be restored
  * @returns {Object|null} The given value is returned if is a valid scroll position object, otherwise null is returned
  */
-export const restoreScrollPosition = (element, scroll) => scrollTo(element, formatScrollPosition(scroll ?? getSavedScrollPosition(element)))
+export const restoreScrollPosition = (element, scroll) => scrollTo(element, formatScrollPosition(scroll ?? getSavedScrollPosition(element)));
 
 /**
  * Gets browser scroll position

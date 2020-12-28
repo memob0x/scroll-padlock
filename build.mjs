@@ -1,5 +1,5 @@
-import { rollup } from "rollup";
-import rollupBabel from "@rollup/plugin-babel";
+import { rollup } from 'rollup';
+import rollupBabel from '@rollup/plugin-babel';
 import rollupGzip from 'rollup-plugin-gzip';
 import rollupNodeResolve from '@rollup/plugin-node-resolve';
 import rollupReplace from 'rollup-plugin-replace';
@@ -7,8 +7,8 @@ import rollupVue from 'rollup-plugin-vue2';
 import rollupCommonJs from '@rollup/plugin-commonjs';
 import rollupPostCss from 'rollup-plugin-postcss';
 
-const babelPresets = ["@babel/preset-env"];
-const babelPlugins = ["@babel/plugin-proposal-class-properties"];
+const babelPresets = ['@babel/preset-env'];
+const babelPlugins = ['@babel/plugin-proposal-class-properties'];
 
 const buildBundle = async options => {
     console.log(`${options.input.input}: start`);
@@ -47,7 +47,7 @@ const buildBundle = async options => {
             rollupCommonJs(),
 
             rollupReplace({
-              'process.env.NODE_ENV': JSON.stringify('production')
+                'process.env.NODE_ENV': JSON.stringify('production')
             })
         ],
         
@@ -69,7 +69,7 @@ const buildBundle = async options => {
             }
         ]
     })
-]))("./demo");
+]))('./demo');
 
 // library
 // -----------------------------------------------------------------------------------------
@@ -86,9 +86,9 @@ const buildBundle = async options => {
                 compact: min,
                 sourcemap: true,
                 format: type,
-                name: "ScrollPadlock",
+                name: 'ScrollPadlock',
                 file: `${root}dist/${type}/scroll-padlock${ min ? '.min' : '' }.js`,
-                exports: "auto",
+                exports: 'auto',
                 plugins: [
                     rollupBabel.getBabelOutputPlugin({
                         compact: min,
@@ -104,7 +104,7 @@ const buildBundle = async options => {
         ]
     });
 
-    ["amd", "iife", "system", "es", "cjs", "umd"].forEach(type => {
+    ['amd', 'iife', 'system', 'es', 'cjs', 'umd'].forEach(type => {
         // non-minified version
         bundles.push(bundlify(type, false));
 

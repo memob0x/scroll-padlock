@@ -1,9 +1,9 @@
-import { dispatchEvent } from "./client.mjs";
+import { dispatchEvent } from './client.mjs';
 
-import { doLock, doUnlock } from "./state.mjs";
+import { doLock, doUnlock } from './state.mjs';
 
 // the event name supplied to event listeners
-const eventName = "resize";
+const eventName = 'resize';
 
 // the events debounce time in milliseconds
 export const debounceTime = 150;
@@ -47,7 +47,7 @@ const createEventHandler = element => {
             // dispatch a "resize during lock" notification
             dispatchEvent(element, eventName);
         }, debounceTime);
-    }
+    };
 };
 
 // "passive" as event listeners only option
@@ -67,7 +67,7 @@ export const addResizeEventListener = element => {
 
     // attaching the newly created handler to a window listener
     window.addEventListener(eventName, eventHandler, options);
-}
+};
 
 /**
  * Detach a previously attached window resize listener for a given element
@@ -83,4 +83,4 @@ export const removeResizeEventListener = element => {
 
     // removing the handler from the handlers collection
     eventHandlers.delete(element);
-}
+};

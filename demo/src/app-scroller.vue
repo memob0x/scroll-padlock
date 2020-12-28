@@ -34,7 +34,7 @@
     export default {
         name: 'app-scroller',
 
-        data: vm => ({
+        data: () => ({
             scrollPadlock: null,
             customScrollbars: false,
             scrollPadlockState: false

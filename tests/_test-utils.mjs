@@ -6,13 +6,13 @@ export const body = document.body;
 // Test values constants
 export const SCROLL_GAP_VALUE_DEFAULT = 25;
 export const SCROLL_GAP_VALUE_LARGER = 65;
-export const SCROLL_GAP_CSS_CLASS_NAME_LARGER = "scrollbar-wider";
+export const SCROLL_GAP_CSS_CLASS_NAME_LARGER = 'scrollbar-wider';
 export const DUMMY_SCROLLER_TAG_NAME = 'div';
 export const DUMMY_SCROLLER_CLASS_NAME = 'dummy-scroller';
 export const DUMMY_SCROLLER_EXPANDER_CLASS_NAME = 'dummy-scroller__expander';
 
 // Scrollbars styler closure
-const styler = document.createElement("style");
+const styler = document.createElement('style');
 
 // All test environment CSS rules
 const cssRules = [
@@ -35,7 +35,7 @@ const cssRules = [
         width: 9999px;
         height: 9999px;
     }`
-]
+];
 
 /**
  * Sets the test playground up
@@ -81,7 +81,7 @@ export const getScrollExpanderElement = () => {
     expander.classList.add(DUMMY_SCROLLER_EXPANDER_CLASS_NAME);
 
     return expander;
-}
+};
 
 /**
  * Creates a dummy scrollable element
@@ -95,4 +95,4 @@ export const getScrollableElement = () => {
     scroller.append(getScrollExpanderElement());
 
     return scroller;
-}
+};

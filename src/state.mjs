@@ -1,4 +1,4 @@
-import { dispatchEvent } from "./client.mjs";
+import { dispatchEvent } from './client.mjs';
 
 import {
     isValidScrollPosition,
@@ -6,13 +6,13 @@ import {
     saveScrollPosition,
     clearSavedScrollPosition,
     restoreScrollPosition
-} from "./scroll.mjs";
+} from './scroll.mjs';
 
 import {
     updateCssVariables, 
     addLockedCssClass,
     removeLockedCssClass
-} from "./style.mjs";
+} from './style.mjs';
 
 // lock state flags closure
 // a weakmap is used in order to keep every flag associated with the scrollable element itself
@@ -94,7 +94,7 @@ export const lock = element => {
     }
 
     // dispatch a "lock done" notification
-    dispatchEvent(element, "lock");
+    dispatchEvent(element, 'lock');
 
     return true;
 };
@@ -111,7 +111,7 @@ export const unlock = element => {
     }
 
     // dispatch an "unlock done" notification
-    dispatchEvent(element, "unlock");
+    dispatchEvent(element, 'unlock');
 
     return true;
 };

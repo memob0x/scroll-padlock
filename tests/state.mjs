@@ -7,13 +7,13 @@ import {
     getScrollableElement
 } from './_test-utils.mjs';
 
-import { eventNamePrefix } from "../src/client.mjs";
+import { eventNamePrefix } from '../src/client.mjs';
 
-import { cssClassLocked } from "../src/style.mjs";
+import { cssClassLocked } from '../src/style.mjs';
 
-import { isLocked, doLock, doUnlock, lock, unlock } from "../src/state.mjs";
+import { isLocked, doLock, doUnlock, lock, unlock } from '../src/state.mjs';
 
-describe("state", () => {
+describe('state', () => {
     let scroller;
 
     before(() => setCSSRules());

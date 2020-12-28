@@ -1,8 +1,8 @@
-import { head, html, body } from "./client.mjs";
+import { head } from './client.mjs';
 
-import { isGlobalScroller } from "./utils.mjs";
+import { isGlobalScroller } from './utils.mjs';
 
-import { isValidScrollPosition, getSavedScrollPosition } from "./scroll.mjs";
+import { isValidScrollPosition, getSavedScrollPosition } from './scroll.mjs';
 
 // dom naming part (prefix, suffix etc...)
 const domBaseName = 'scroll-padlock';

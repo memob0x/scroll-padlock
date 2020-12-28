@@ -63,8 +63,7 @@
             appConsole,
             appSampleText,
             appScroller,
-            appSearch,
-            appConsole
+            appSearch
         },
 
         data: () => ({
@@ -78,7 +77,7 @@
 
             isLegacyIOS: vm => /iPad|iPhone|iPod/.test(vm.navigator.userAgent),
 
-            isMultiTouchMacAkaIOS13: vm => vm.navigator.platform === "MacIntel" && vm.navigator.maxTouchPoints > 1,
+            isMultiTouchMacAkaIOS13: vm => vm.navigator.platform === 'MacIntel' && vm.navigator.maxTouchPoints > 1,
 
             isAnyIOS: vm => vm.isLegacyIOS || vm.isMultiTouchMacAkaIOS13
         },
@@ -125,16 +124,16 @@
             const cl = document.documentElement.classList;
 
             if( this.isAnyIOS ){
-                cl.remove("not-ios");
+                cl.remove('not-ios');
                 
                 cl.add('ios');
             }
 
-            document.documentElement.addEventListener("scrollpadlockresize", this.resizeHandler, false);
+            document.documentElement.addEventListener('scrollpadlockresize', this.resizeHandler, false);
         },
 
         destroyed(){
-            document.documentElement.removeEventListener("scrollpadlockresize", this.resizeHandler, false);
+            document.documentElement.removeEventListener('scrollpadlockresize', this.resizeHandler, false);
         }
     };
 </script>
