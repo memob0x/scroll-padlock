@@ -12,5 +12,4 @@ export const isNumber = value => typeof value === "number" && !isNaN(value) && i
  * @param {HTMLElement} element The given element to be checked
  * @returns {Boolean} True if element is a global frame element
  */
-// TODO: provide unit tests
 export const isGlobalScroller = element => element === html || element === body;

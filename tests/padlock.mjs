@@ -5,7 +5,9 @@ import Padlock from "../src/padlock.mjs";
 describe("padlock", () => {
     it('should be able to be initialized on valid elements only', () => {
         expect(new Padlock(document.createElement('div'))).to.be.an.instanceOf(Padlock);
+
         expect(() => new Padlock(window)).to.throw();
+        
         expect(() => new Padlock(null)).to.throw();
     });
     

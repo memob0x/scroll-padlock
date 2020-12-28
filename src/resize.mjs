@@ -35,7 +35,8 @@ const createEventHandler = element => {
             // toggling body scroll lock
 
             // gets rid of possible body scroll locked state
-            // avoids useless computations when scroll is not locked
+            // avoids useless computations (exits early)
+            // when scroll was not locked
             if (!doUnlock(element)) {
                 return;
             }

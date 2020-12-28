@@ -1,4 +1,6 @@
-import { isNumber } from "../src/utils.mjs";
+import { html, body } from './_test-utils.mjs';
+
+import { isNumber, isGlobalScroller } from "../src/utils.mjs";
 
 describe("utils", () => {
     it("should recognize valid numbers", () => {
@@ -20,5 +22,19 @@ describe("utils", () => {
         expect(isNumber(true)).to.be.false;
         expect(isNumber(Infinity)).to.be.false;
         expect(isNumber(undefined)).to.be.false;
+    });
+
+    it("should recognize global scroller", () => {
+        expect(isGlobalScroller(0)).to.be.false;
+        expect(isGlobalScroller('1')).to.be.false;
+        expect(isGlobalScroller(window)).to.be.false;
+        expect(isGlobalScroller(document)).to.be.false;
+        expect(isGlobalScroller(document.createElement('div'))).to.be.false;
+
+        expect(isGlobalScroller(document.createElement('body'))).to.be.false;
+        expect(isGlobalScroller(document.createElement('html'))).to.be.false;
+        
+        expect(isGlobalScroller(html)).to.be.true;
+        expect(isGlobalScroller(body)).to.be.true;
     });
 });

@@ -165,24 +165,6 @@ export default class ScrollPadlock {
     }
 
     /**
-     * Locks the element scroll
-     * @deprecated since version 1.2, will be removed shortly, use "state" setter instead
-     * @returns {Boolean} True if the lock has been successfully done, false if not
-     */
-    lock(){
-        return lock(this.element);
-    }
-
-    /**
-     * Unlocks the element scroll
-     * @deprecated since version 1.2, will be removed shortly, use "state" setter instead
-     * @returns {Boolean} True if the unlock has been successfully done, false if not
-     */
-    unlock(){
-        return unlock(this.element);
-    }
-
-    /**
      * Updates css variables to the current state
      * @returns {HTMLStyleElement} Styler element
      */
