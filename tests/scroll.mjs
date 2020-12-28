@@ -17,7 +17,12 @@ import {
     restoreScrollPosition,
     isValidScrollPosition,
     formatScrollPosition,
-    clearSavedScrollPosition
+    clearSavedScrollPosition,
+
+    getGlobalScrollPosition,
+    getElementScrollPosition,
+    scrollTo,
+    getScroller
 } from "../src/scroll.mjs";
 
 describe("scroll", () => {
@@ -146,5 +151,105 @@ describe("scroll", () => {
         // valid
         const validScrollPosition = { top: 0, left: 0 };
         expect(JSON.stringify(formatScrollPosition(validScrollPosition))).to.equals(JSON.stringify(validScrollPosition));
+    });
+
+    it('should be able to get global scroll position', () => {
+        const expander = getScrollExpanderElement();
+
+        body.append(expander);
+
+        window.scrollTo(0, 0);
+
+        expect(getGlobalScrollPosition().top).to.equals(window.pageYOffset);
+        expect(getGlobalScrollPosition().left).to.equals(window.pageXOffset);
+        expect(getGlobalScrollPosition().top).to.equals(0);
+        expect(getGlobalScrollPosition().left).to.equals(0);
+
+        const position = {
+            top: 1234,
+            left: 4567
+        };
+
+        window.scrollTo(position.left, position.top);
+        
+        expect(getGlobalScrollPosition().top).to.equals(window.pageYOffset);
+        expect(getGlobalScrollPosition().left).to.equals(window.pageXOffset);
+        expect(getGlobalScrollPosition().top).to.equals(position.top);
+        expect(getGlobalScrollPosition().left).to.equals(position.left);
+
+        expect(JSON.stringify(getScrollPosition(html))).to.equals(JSON.stringify(getGlobalScrollPosition()));
+        expect(JSON.stringify(getScrollPosition(body))).to.equals(JSON.stringify(getGlobalScrollPosition()));
+        expect(JSON.stringify(getScrollPosition(scroller))).to.not.equals(JSON.stringify(getGlobalScrollPosition()));
+
+        expander.remove();
+    });
+
+    it('should be able to get an element scroll position', () => {
+        scroller.scrollTo(0, 0);
+
+        expect(getElementScrollPosition().top).to.equals(scroller.scrollTop);
+        expect(getElementScrollPosition().left).to.equals(scroller.scrollLeft);
+        expect(getElementScrollPosition().top).to.equals(0);
+        expect(getElementScrollPosition().left).to.equals(0);
+
+        const position = {
+            top: 1234,
+            left: 4567
+        };
+
+        scroller.scrollTo(position.left, position.top);
+        
+        expect(getElementScrollPosition(scroller).top).to.equals(scroller.scrollTop);
+        expect(getElementScrollPosition(scroller).left).to.equals(scroller.scrollLeft);
+        expect(getElementScrollPosition(scroller).top).to.equals(position.top);
+        expect(getElementScrollPosition(scroller).left).to.equals(position.left);
+
+        expect(JSON.stringify(getScrollPosition(html))).to.not.equals(JSON.stringify(getElementScrollPosition(scroller)));
+        expect(JSON.stringify(getScrollPosition(body))).to.not.equals(JSON.stringify(getElementScrollPosition(scroller)));
+        expect(JSON.stringify(getScrollPosition(scroller))).to.equals(JSON.stringify(getElementScrollPosition(scroller)));
+    });
+
+    it('should be able to scroll elements', () => {
+        expect(scroller.scrollTop).to.equals(0);
+        expect(scroller.scrollLeft).to.equals(0);
+
+        const position = {
+            top: 1234,
+            left: 4567
+        };
+
+        scrollTo(scroller, position);
+
+        expect(scroller.scrollTop).to.equals(position.top);
+        expect(scroller.scrollLeft).to.equals(position.left);
+    });
+    
+    it('should be able to scroll body', () => {
+        const expander = getScrollExpanderElement();
+
+        body.append(expander);
+
+        expect(window.pageYOffset).to.equals(0);
+        expect(window.pageXOffset).to.equals(0);
+
+        const position = {
+            top: 1234,
+            left: 4567
+        };
+
+        scrollTo(body, position);
+
+        expect(window.pageYOffset).to.equals(position.top);
+        expect(window.pageXOffset).to.equals(position.left);
+
+        expander.remove();
+    });
+
+    it('should be able to retrieve the element which can perform "scrollTo"', () => {
+        expect(getScroller(html)).to.equals(window);
+        expect(getScroller(body)).to.equals(window);
+
+        const div = document.createElement('div');
+        expect(getScroller(div)).to.equals(div);
     });
 });

@@ -9,9 +9,9 @@ const scrollSaving = new WeakMap();
 /**
  * Checks whether a given value is a valid scroll object or not
  * @example
- * isValidScrollPosition({top:0, left:100}); // true
+ * isValidScrollPosition({ top:0, left:100 }); // true
  * isValidScrollPosition(null); // false
- * isValidScrollPosition({top:"foo", left:NaN}); // false
+ * isValidScrollPosition({ top:"foo", left:NaN }); // false
  * @param {Object} value The given value to be checked
  * @returns {Boolean} True if the given value is a valid scroll object
  */
@@ -29,8 +29,7 @@ export const formatScrollPosition = value => isValidScrollPosition(value) ? valu
  * @param {HTMLElement} element The given html element to be checked
  * @returns {Window|HTMLElement} The scrollable element, Window is returned if a main element is provided
  */
-// TODO: provide unit tests
-const getScroller = element => isGlobalScroller(element) ? window : element;
+export const getScroller = element => isGlobalScroller(element) ? window : element;
 
 /**
  * Scrolls a given element or window to a given scroll position
@@ -38,8 +37,7 @@ const getScroller = element => isGlobalScroller(element) ? window : element;
  * @param {Object} scroll The scroll object to scroll to
  * @returns {Object} The given scroll object
  */
-// TODO: provide unit tests
-const scrollTo = (element, scroll) => {
+export const scrollTo = (element, scroll) => {
     getScroller(element)?.scrollTo(scroll?.left, scroll?.top);
 
     return scroll;
@@ -57,8 +55,7 @@ export const restoreScrollPosition = (element, scroll) => scrollTo(element, form
  * Gets browser scroll position
  * @returns {Object} The browser scroll position as an object ({ top, left })
  */
-// TODO: provide unit tests
-const getGlobalScrollPosition = () => ({
+export const getGlobalScrollPosition = () => ({
     top: window.pageYOffset || body.scrollTop || html.scrollTop || 0,
     left: window.pageXOffset || body.scrollLeft || html.scrollLeft || 0
 });
@@ -68,8 +65,7 @@ const getGlobalScrollPosition = () => ({
  * @param {HTMLElement} element The given element whose scroll position needs to be retrieved
  * @returns {Object} The given element scroll position as an object ({ top, left })
  */
-// TODO: provide unit tests
-const getElementScrollPosition = element => ({
+export const getElementScrollPosition = element => ({
     top: element?.scrollTop ?? 0,
     left: element?.scrollLeft ?? 0
 });
@@ -79,7 +75,6 @@ const getElementScrollPosition = element => ({
  * @param {HTMLElement} element The given element whose scroll position needs to be retrieved
  * @returns {Object} The given element scroll position as an object ({ top, left })
  */
-// TODO: provide unit tests (body | html condition)
 export const getScrollPosition = element => isGlobalScroller(element) ? getGlobalScrollPosition() : getElementScrollPosition(element);
 
 /**
