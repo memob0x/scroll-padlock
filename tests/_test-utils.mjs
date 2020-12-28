@@ -1,9 +1,9 @@
-// Test env variables
+// Test env elements
 export const html = document.documentElement;
 export const head = document.head;
 export const body = document.body;
 
-// Test constants
+// Test values constants
 export const SCROLL_GAP_VALUE_DEFAULT = 25;
 export const SCROLL_GAP_VALUE_LARGER = 65;
 export const SCROLL_GAP_CSS_CLASS_NAME_LARGER = "scrollbar-wider";
@@ -26,11 +26,13 @@ const cssRules = [
     }`,
     `
     ${DUMMY_SCROLLER_TAG_NAME}.${DUMMY_SCROLLER_CLASS_NAME} {
+        max-width: 100px;
         max-height: 100px;
         overflow: auto;
     }`,
     `
     ${DUMMY_SCROLLER_TAG_NAME}.${DUMMY_SCROLLER_EXPANDER_CLASS_NAME} {
+        width: 9999px;
         height: 9999px;
     }`
 ]
@@ -63,8 +65,8 @@ export const removeCSSRules = () => styler.remove();
 
 /**
  * Gets a given element given css variable value
- * @param element The given element
- * @param variableName The given css variable name
+ * @param {HTMLElement} element The given element
+ * @param {String} variableName The given css variable name
  * @returns {String} The given css variable value set to the given element
  */
 export const getCSSVariableValue = (element, variableName) => window.getComputedStyle(element).getPropertyValue(variableName).trim();

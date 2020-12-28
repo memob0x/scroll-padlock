@@ -4,7 +4,7 @@
 [![scroll-padlock (latest)](https://img.shields.io/npm/v/scroll-padlock/latest.svg)](https://www.npmjs.com/package/scroll-padlock)
 [![scroll-padlock (downloads)](https://img.shields.io/npm/dy/scroll-padlock.svg)](https://www.npmjs.com/package/scroll-padlock)
 
-A small script (~4K gzipped) which allows developers to implement their own way (preferably through CSS) to **lock html elements scroll** avoiding "contents jump".
+A small script (~4K gzipped) which allows developers to implement their own way to **lock html elements scroll** avoiding "contents jump", preferably through CSS.
 
 🙅 Without this library:
 
@@ -195,9 +195,6 @@ If positioned elements "jumps" during an instance state change, the same CSS var
 /* A right-positioned sidebar */
 .scrollable-sidebar-container .sidebar {
     position: absolute;
-    top: 0;
-    width: 240px;
-    height: 100%;
     right: 0;
 }
 

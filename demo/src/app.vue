@@ -87,11 +87,11 @@
             toggleBodyScroll(){
                 const state = this.bodyScroll.state;
 
-                const result = this.bodyScroll[state ? 'unlock' : 'lock']();
+                this.bodyScroll.state = !state;
 
                 this.logToConsole(`body scroll ${state ? 'unlocked' : 'locked'}`);
 
-                return result;
+                return state;
             },
 
             logToConsole(message){
@@ -99,9 +99,9 @@
             },
 
             toggleSearchLayer(){
-                this.bodyScroll[this.searchLayer ? 'unlock' : 'lock']();
-
                 const state = !this.searchLayer;
+
+                this.bodyScroll.state = state;
 
                 const focusTarget = state ? this.$refs.search : document.body;
                 

@@ -79,7 +79,7 @@ const getElementScrollPosition = element => ({
  * @param {HTMLElement} element The given element whose scroll position needs to be retrieved
  * @returns {Object} The given element scroll position as an object ({ top, left })
  */
-// TODO: unit test body | html condition
+// TODO: provide unit tests (body | html condition)
 export const getScrollPosition = element => isGlobalScroller(element) ? getGlobalScrollPosition() : getElementScrollPosition(element);
 
 /**
