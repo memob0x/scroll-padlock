@@ -18,11 +18,6 @@ import {
     getScrollPosition
 } from './scroll.mjs';
 
-import {
-    addResizeEventListener,
-    removeResizeEventListener
-} from './resize.mjs';
-
 // instances collection closure
 // a weakmap is used in order to keep every instance associated with the scrollable element itself
 const instances = new WeakMap();
@@ -55,9 +50,6 @@ export default class ScrollPadlock {
 
         // sets the initial state (css variables, etc...) through update method call
         this.update();
-
-        // attaches resize event listener
-        addResizeEventListener(this.element);
     }
 
     /**
@@ -147,9 +139,6 @@ export default class ScrollPadlock {
 
         // removes the css variables and stylers
         clearStyle(this.element);
-
-        // detaches the resize event listener
-        removeResizeEventListener(this.element);
         
         // removing the instance from the instances collection
         instances.delete(this.element);
