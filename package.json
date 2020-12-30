@@ -4,7 +4,7 @@
     "description": "Locks elements scroll handling scrollbar gaps and iOS Safari with CSS variables",
     "main": "dist/umd/scroll-padlock.min.js",
     "module": "dist/es/scroll-padlock.js",
-    "version": "1.2.0",
+    "version": "2.0.0",
     "license": "MIT",
     "repository": "https://github.com/memob0x/scroll-padlock.git",
     "keywords": [
@@ -36,7 +36,6 @@
     ],
     "scripts": {
         "build": "node ./build.mjs",
-        "start": "node ./start.mjs",
         "lint": "./node_modules/.bin/eslint --ext .js --ext .mjs --ext .vue . --fix",
         "test": "karma start --single-run --browsers ChromeHeadless karma.conf.js"
     },
@@ -45,11 +44,8 @@
         "@babel/plugin-proposal-class-properties": "^7.12.1",
         "@babel/preset-env": "^7.12.1",
         "@rollup/plugin-babel": "^5.2.1",
-        "@rollup/plugin-commonjs": "^17.0.0",
-        "@rollup/plugin-node-resolve": "^11.0.0",
         "babel-eslint": "^10.1.0",
         "chai": "4.2.0",
-        "connect": "^3.7.0",
         "eslint": "^7.16.0",
         "eslint-plugin-vue": "^7.4.0",
         "karma": "^5.2.3",
@@ -59,17 +55,9 @@
         "karma-mocha-reporter": "^2.2.5",
         "mjs-mocha": "^3.0.0",
         "mocha": "8.2.0",
-        "node-sass": "^5.0.0",
-        "postcss": "^8.2.1",
         "puppeteer": "^5.3.1",
-        "reset-css": "^5.0.1",
         "rollup": "^2.32.1",
-        "rollup-plugin-gzip": "^2.5.0",
-        "rollup-plugin-postcss": "^4.0.0",
-        "rollup-plugin-replace": "^2.2.0",
-        "rollup-plugin-vue2": "^0.8.1",
-        "serve-static": "^1.14.1",
-        "vue": "^2.6.12"
+        "rollup-plugin-gzip": "^2.5.0"
     },
     "dependencies": {}
 }

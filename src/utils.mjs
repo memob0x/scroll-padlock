@@ -1,15 +1,35 @@
-import { html, body } from './client.mjs';
+/**
+ * 
+ * @param fn 
+ * @param delay 
+ */
+export const throttle = (fn, delay) => {
+    let timeout = false;
+
+    return (...rest) => {
+        if ( timeout ) {
+            return;
+        }
+
+        timeout = true;
+
+        fn.apply(window, rest);
+
+        setTimeout(() => (timeout = false), delay);
+    };
+};
 
 /**
- * Checks whether a given value is a valid number or not
- * @param {any} value The given value to be checked
- * @returns {Boolean} True if the given value is a number
+ * 
+ * @param fn 
+ * @param interval 
  */
-export const isNumber = value => typeof value === 'number' && !isNaN(value) && isFinite(value);
+export const debounce = (fn, interval) => {
+    let timeout;
 
-/**
- * Checks whether the given element is a main scrollable element (html or body)
- * @param {HTMLElement} element The given element to be checked
- * @returns {Boolean} True if element is a global frame element
- */
-export const isGlobalScroller = element => element === html || element === body;
+    return (...rest) => {
+        clearTimeout(timeout);
+        
+        timeout = setTimeout(() => fn.apply(window, rest), interval);
+    };
+};

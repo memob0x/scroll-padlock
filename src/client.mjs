@@ -1,19 +1,24 @@
-// caching involved dom elements
-export const html = document.documentElement;
-export const body = document.body;
-export const head = document.head;
+//
+export const doc = document;
+export const html = doc.documentElement;
+export const body = doc.body;
+export const head = doc.head;
 
-// all the custom events dispatched by the library will start with this string
-// in order to avoid name clashing
-export const eventNamePrefix = 'scroll-padlock';
+//
+export const EVENT_NAME_SCROLL = 'scroll';
+export const EVENT_NAME_RESIZE = 'resize';
 
 /**
- * Dispatches a custom event if custom events are supported, otherwise does nothing
- * @param {HTMLElement} element
- * @param {String} messageName The given message name to be dispatched
- * @returns {void} Nothing
+ * 
  */
-export const dispatchEvent = (element, messageName) =>
-    typeof window.CustomEvent === 'function'
-        ? element?.dispatchEvent(new CustomEvent(`${eventNamePrefix}-${messageName}`))
-        : () => {};
+export const addListener = () => {};
+
+/**
+ * 
+ */
+export const removeListener = () => {};
+
+/**
+ * 
+ */
+export const getClassNameObserver = () => {};
