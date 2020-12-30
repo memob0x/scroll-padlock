@@ -24,13 +24,5 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-
-        &__input {
-            padding: 20px;
-            font-size: 16px;
-            background: white;
-            border: 0 none;
-            outline: none;
-        }
     }
 </style>

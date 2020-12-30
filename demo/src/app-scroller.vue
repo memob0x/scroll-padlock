@@ -10,7 +10,7 @@
                 'custom-scrollbars': customScrollbars
             }"
         >
-            <header class="scroller__header">
+            <app-header class="scroller__header">
                 <button @click.prevent="toggleScroll">
                     toggle scroll lock
                 </button>
@@ -18,7 +18,7 @@
                 <button @click.prevent="toggleCustomScrollbars">
                     toggle custom scrollbars
                 </button>
-            </header>
+            </app-header>
 
             <div class="scroller__contents">
                 <slot />
@@ -29,10 +29,17 @@
 
 <script>
     import Vue from 'vue';
+
     import ScrollPadlock from '../../src/padlock.mjs';
+
+    import appHeader from './app-header.vue';
 
     export default {
         name: 'app-scroller',
+
+        components: {
+            appHeader
+        },
 
         data: () => ({
             scrollPadlock: null,
@@ -86,14 +93,6 @@
                 max-width: calc(100% - var(--scroll-padlock-vertical-scrollbar-gap));
                 padding-bottom: var(--scroll-padlock-horizontal-scrollbar-gap);
             }
-        }
-
-        &__header {
-            position: sticky;
-            top: 0;
-            left: 0;
-            padding: 10px;
-            background: white;
         }
     }
 </style>
