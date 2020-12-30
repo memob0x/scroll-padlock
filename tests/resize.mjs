@@ -20,39 +20,42 @@ describe('resize', () => {
 
         const handler = () => calls++;
         
-        div.addEventListener(`${eventNamePrefix}${eventName}`, handler);
+        div.addEventListener(`${eventNamePrefix}-${eventName}`, handler);
 
         addResizeEventListener(div);
 
-        // this is not detected since event is dispatched only when locked...
-        triggerWindowResize();
-        
-        lock(div);
-
-        // this is detected
-        triggerWindowResize();
-
-        // this is not detected because of debounce
+        // this is not detected since event is dispatched only when locked, 0
         triggerWindowResize();
         
         setTimeout(() => {
-            expect(calls).to.equal(1);
+            expect(calls).to.equal(0);
+            
+            lock(div);
 
-            // should have stayed locked
-            expect(isLocked(div)).to.be.true;
-
-            removeResizeEventListener(div);
-
-            // this should not be detected since event listener has been detached
-            triggerWindowResize();
-        
+            // this is detected once, because of debounce, 1
+            for( let i = 0, j = 20; i < j; i++){
+                triggerWindowResize();
+            }
+            
             setTimeout(() => {
                 expect(calls).to.equal(1);
-        
-                // test cleanup
-                div.removeEventListener(`${eventNamePrefix}${eventName}`, handler);
 
-                done();
+                // should have stayed locked
+                expect(isLocked(div)).to.be.true;
+
+                removeResizeEventListener(div);
+
+                // this should not be detected since event listener has been detached, 1
+                triggerWindowResize();
+            
+                setTimeout(() => {
+                    expect(calls).to.equal(1);
+            
+                    // test cleanup
+                    div.removeEventListener(`${eventNamePrefix}-${eventName}`, handler);
+
+                    done();
+                }, debounceTime);
             }, debounceTime);
         }, debounceTime);
     });

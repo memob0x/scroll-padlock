@@ -75,8 +75,8 @@ describe('state', () => {
 
         const handler = () => calls++;
         
-        scroller.addEventListener(`${eventNamePrefix}lock`, handler);
-        scroller.addEventListener(`${eventNamePrefix}unlock`, handler);
+        scroller.addEventListener(`${eventNamePrefix}-lock`, handler);
+        scroller.addEventListener(`${eventNamePrefix}-unlock`, handler);
 
         expect(isLocked(scroller)).to.be.false;
         expect(unlock(scroller)).to.be.false;
@@ -90,8 +90,8 @@ describe('state', () => {
         expect(lock(scroller)).to.be.true; // 3
         expect(unlock(scroller)).to.be.true; // 4
         
-        scroller.removeEventListener(`${eventNamePrefix}lock`, handler);
-        scroller.removeEventListener(`${eventNamePrefix}unlock`, handler);
+        scroller.removeEventListener(`${eventNamePrefix}-lock`, handler);
+        scroller.removeEventListener(`${eventNamePrefix}-unlock`, handler);
 
         expect(calls).to.equals(4);
     });

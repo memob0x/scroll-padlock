@@ -94,7 +94,8 @@ html.scroll-padlock--locked.not-ios body {
 }
 
 html.scroll-padlock--locked.not-ios body {
-    /* Reserves space for scrollbar (iOS has overlay scrollbars, this rule would have no effect there)*/
+    /* Reserves space for scrollbar */
+    /* (iOS has overlay scrollbars, this rule would have no effect there) */
     padding-right: var(--scroll-padlock-vertical-scrollbar-gap);
 }
 ```
@@ -153,34 +154,36 @@ instance.update();
 const { top, left } = instance.scroll;
 
 // Sets a new scroll position;
-// if the instance state is locked, the given position is saved for a future restoration
+// if the instance state is locked,
+// the given position is saved for a future restoration
 instance.scroll = { top, left };
 
 // Gets the current scrollbars width
 const { vertical, horizontal } = instance.scrollbar;
 
 // Gets the instance element;
-// the same element provided to the class constructor (document.documentElement is the default one)
+// the same element provided to the class constructor
+// (document.documentElement is the default one)
 const target = instance.element;
 ```
 
 ## Events
 
-Get notified whenever the instance **state changes** by listening to `scrollpadlocklock` and `scrollpadlockunlock` **events**.
+Get notified whenever the instance **state changes** by listening to `scroll-padlock-lock` and `scroll-padlock-unlock` **events**.
 
 ```javascript
 // Listens to any lock events
-target.addEventListener("scrollpadlocklock", () =>
+target.addEventListener("scroll-padlock-lock", () =>
     console.log("The body scroll has been locked.")
 );
 
 // Linstens to any unlock events
-target.addEventListener("scrollpadlockunlock", () =>
+target.addEventListener("scroll-padlock-unlock", () =>
     console.log("Body scroll has been unlocked.")
 );
 ```
 
-There's a further `scrollpadlockresize` event dispatched during browser window resize on a lock state which can be useful in some [edge cases](#iOS-Bars).
+There's a further `scroll-padlock-resize` event dispatched on browser window resize padlock styles update, which can be useful in some [edge cases](#iOS-Bars-and-Keyboard-Tray).
 
 ## Positioned elements
 
@@ -198,25 +201,34 @@ If positioned elements "jumps" during an instance state change, the same CSS var
     right: 0;
 }
 
-/* The same right-positioned sidebar, not affected by its own container scrollbars disappearance */
+/* The same right-positioned sidebar, */
+/* not affected by its own container scrollbars disappearance */
 .scrollable-sidebar-container.scroll-padlock--locked .sidebar {
     right: var(--scroll-padlock-vertical-scrollbar-gap);
 }
 ```
 
-## iOS Bars
+## iOS Bars and Keyboard Tray
 
-There are some edge cases in which iOS doesn't play nice: when the page is scrolled the **system bars** become smaller, at that point when the keyboard tray is triggered they become larger again; that can cause the following visual artifacts.
+There might still be an iOS edge case when locking body scroll with _position: fixed_ technique. 
+
+When the page is scrolled the **system bars** become smaller; at that point, when focusing an input element programmatically, the keyboard tray is triggered and the bars become larger again; that, probably when some animations are taking place, can cause the following visual artifacts.
 
 ![ios bug](https://github.com/memob0x/scroll-padlock/blob/master/docs/ios-bug.gif?raw=true)
 
-That's because the element on focus is an input element and iOS forces a scroll to that element (to enhance the accessibility) on an area which would be shortly resized because of the system bars getting bigger. Pretty weird, huh?
+iOS forces a scroll to the focused element (still out of canvas) in an already "locked" area (limited by the OS itself) which would be also shortly resized because of the system bars getting bigger.
 
-To overcome this problem the event `scrollpadlockresize` event can be used to programmatically scroll to top that ios-sub-window-thing.
+To overcome this problem the native `resize` event can be used to programmatically scroll to top that ios-keyboard-sub-window-thing.
 
 ```javascript
-target.addEventListener("scrollpadlockresize", () => {
-    if ( someWayToDetectAppleIOS() ) {
+const isIOS = someWayToDetectAppleIOS();
+
+// addressing the "ios-keyboard-sub-window-thing offset" bug:
+// body scroll lock along with a programmatic focus
+// on an a form field make the keyboard tray to show
+// and that triggers, along with the visual artifact itself, a "resize" event
+target.addEventListener("scroll-padlock-resize", () => {
+    if ( isIOS ) {
         window.scrollTo(0, 0);
     }
 });
@@ -228,11 +240,14 @@ The problem should be solved at this point.
 ## Support
 
 All [modern browsers](https://teamtreehouse.com/community/what-is-a-modern-browser) have been tested, but here's a list of dependencies that might be needed in order to support older ones:
-* 💥 DOM API "[matches](https://developer.mozilla.org/en-US/docs/Web/API/Element/matches#Polyfill)" method ([polyfill](https://developer.mozilla.org/en-US/docs/Web/API/Element/matches#Polyfill))
+* 💥 DOM API "[matches](https://developer.mozilla.org/en-US/docs/Web/API/Element/matches#Polyfill)" method ([Polyfill](https://developer.mozilla.org/en-US/docs/Web/API/Element/matches#Polyfill))
 * 💥 [WeakMap](https://caniuse.com/mdn-javascript_builtins_weakmap)
-* [CustomEvent](https://caniuse.com/customevent) ([polyfill](https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent/CustomEvent#Polyfill)), only if library [events](#events) are being used
-* [CSS variables](https://caniuse.com/css-variables), only for scrollbar gaps compensation (since old browsers support _overflow: hidden_), still the JS API and events can be used to reach a workaround
+* [CustomEvent](https://caniuse.com/customevent) ([Polyfill](https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent/CustomEvent#Polyfill))
+* [CSS variables](https://caniuse.com/css-variables): only for scrollbar gaps compensation (since old browsers support _overflow: hidden_); the JS API and events can be also used to reach a workaround.
 
 ## Try it out!
+Here's some example projects with the most used reactive frameworks:
 
-[Here](https://memob0x.github.io/scroll-padlock/demo/)'s a demo page.
+* Angular ([Preview](#) - [Browse](#))
+* React ([Preview](#) - [Browse](#))
+* Vue ([Preview](#) - [Browse](#))

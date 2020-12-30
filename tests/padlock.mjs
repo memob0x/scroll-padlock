@@ -13,6 +13,8 @@ import {
     getScrollableElement
 } from './_test-utils.mjs';
 
+import { eventNamePrefix } from '../src/client.mjs';
+
 import { cssVarNameGapVertical } from '../src/style.mjs';
 
 import Padlock from '../src/padlock.mjs';
@@ -125,16 +127,16 @@ describe('padlock', () => {
     });
 
     it('should be able to access the padlock state and change it through accessors', () => {
-        const element = document.createElement('div');
+        const div = document.createElement('div');
 
-        const instance = new Padlock(element);
+        const instance = new Padlock(div);
         
         let calls = 0;
 
         const handler = () => calls++;
 
-        element.addEventListener('scrollpadlocklock', handler);
-        element.addEventListener('scrollpadlockunlock', handler);
+        div.addEventListener(`${eventNamePrefix}-lock`, handler, { once: true });
+        div.addEventListener(`${eventNamePrefix}-unlock`, handler, { once: true });
 
         expect(instance.state).to.be.false;
 
