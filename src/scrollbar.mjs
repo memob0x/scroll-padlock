@@ -8,21 +8,12 @@ export const DEFAULT_SCROLLBAR = { horizontal: 0, vertical: 0 };
  */
 export const getScrollbarsGaps = (element, scroller) => {
     //
-    const { clientWidth, clientHeight } = element;
+    const { clientWidth, clientHeight, offsetWidth, offsetHeight } = element ?? {};
+    const { innerWidth, innerHeight } = scroller ?? {};
 
     //
-    let horizontal = scroller?.innerHeight - clientHeight;
-    let vertical = scroller?.innerWidth - clientWidth;
-
-    //
-    if( isNaN(horizontal) || isNaN(vertical) ){
-        horizontal = element?.offsetHeight - clientHeight;
-        vertical = element?.offsetWidth - clientWidth;
-    }
-
-    //
-    horizontal = horizontal ?? 0;
-    vertical = vertical ?? 0;
+    const horizontal = (innerHeight ?? offsetHeight) - clientHeight;
+    const vertical = (innerWidth ?? offsetWidth) - clientWidth;
 
     //
     return { horizontal, vertical };

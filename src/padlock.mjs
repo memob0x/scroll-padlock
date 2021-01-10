@@ -70,7 +70,7 @@ export default class ScrollPadlock {
     /**
      * The scrollable element target
      */
-    #element = body;
+    #element = html;
 
     /**
      * The actual scroll element target (when targeting body or html, window is the listener target etc...)
