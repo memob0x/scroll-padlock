@@ -1,13 +1,14 @@
 /**
  * 
- * @param fn 
- * @param delay 
+ * @param {Function} fn 
+ * @param {Number} delay 
+ * @returns {Function} 
  */
 export const throttle = (fn, delay) => {
     let timeout = false;
 
     return (...rest) => {
-        if ( timeout ) {
+        if (timeout) {
             return;
         }
 
@@ -21,15 +22,16 @@ export const throttle = (fn, delay) => {
 
 /**
  * 
- * @param fn 
- * @param interval 
+ * @param {Function} fn 
+ * @param {Number} interval 
+ * @returns {Function} 
  */
 export const debounce = (fn, interval) => {
     let timeout;
 
     return (...rest) => {
         clearTimeout(timeout);
-        
+
         timeout = setTimeout(() => fn.apply(window, rest), interval);
     };
 };

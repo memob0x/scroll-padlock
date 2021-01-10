@@ -10,15 +10,20 @@ export const EVENT_NAME_RESIZE = 'resize';
 
 /**
  * 
+ * @param {Window|HTMLElement} element 
+ * @param {String} eventName 
+ * @param {Function} listener 
+ * @param {Object|Boolean} options 
+ * @returns {void} Nothing
  */
-export const addListener = () => {};
+export const addListener = (element, eventName, listener, options = true) => element.addEventListener(eventName, listener, options);
 
 /**
  * 
+ * @param {Window|HTMLElement} element 
+ * @param {String} eventName 
+ * @param {Function} listener 
+ * @param {Object|Boolean} options 
+ * @returns {void} Nothing
  */
-export const removeListener = () => {};
-
-/**
- * 
- */
-export const getClassNameObserver = () => {};
+export const removeListener = (element, eventName, listener, options = true) => element.removeEventListener(eventName, listener, options);
