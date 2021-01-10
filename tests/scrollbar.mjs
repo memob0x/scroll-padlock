@@ -1,4 +1,4 @@
-import { DEFAULT_SCROLLBAR, getScrollbarsGaps } from '../src/scrollbar.mjs';
+import { getScrollbarsGaps } from '../src/scrollbar.mjs';
 
 describe('scrollbar', () => {
     const doc = document;
@@ -28,7 +28,7 @@ describe('scrollbar', () => {
 
         styles.overflow = 'hidden';
 
-        expect(JSON.stringify(getScrollbarsGaps(div, div))).to.be.equals(JSON.stringify(DEFAULT_SCROLLBAR));
+        expect(JSON.stringify(getScrollbarsGaps(div, div))).to.be.equals(JSON.stringify({ horizontal: 0, vertical: 0 }));
 
         styles.overflow = 'scroll';
 
@@ -42,7 +42,7 @@ describe('scrollbar', () => {
         
         styles.overflow = 'hidden';
         
-        expect(JSON.stringify(getScrollbarsGaps(html, window))).to.be.equals(JSON.stringify(DEFAULT_SCROLLBAR));
+        expect(JSON.stringify(getScrollbarsGaps(html, window))).to.be.equals(JSON.stringify({ horizontal: 0, vertical: 0 }));
         
         styles.overflow = 'scroll';
         

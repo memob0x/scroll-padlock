@@ -1,8 +1,8 @@
 import { EVENT_NAME_SCROLL, EVENT_NAME_RESIZE, doc, html, body, addListener, removeListener } from './client.mjs';
 
-import { DEFAULT_SCROLL_POSITION, getScrollPosition, scrollTo } from './scroll.mjs';
+import { getScrollPosition, scrollTo } from './scroll.mjs';
 
-import { DEFAULT_SCROLLBAR, getScrollbarsGaps } from './scrollbar.mjs';
+import { getScrollbarsGaps } from './scrollbar.mjs';
 
 import { setStyles, unsetStyles } from './style.mjs';
 
@@ -85,12 +85,12 @@ export default class ScrollPadlock {
     /**
      * The scroll position
      */
-    #scroll = DEFAULT_SCROLL_POSITION;
+    #scroll = { top: 0, left: 0 };
 
     /**
      * The scrollbars size
      */
-    #scrollbar = DEFAULT_SCROLLBAR;
+    #scrollbar = { vertical: 0, horizontal: 0 };
 
     /**
      * The styler, css variables holder

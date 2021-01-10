@@ -1,4 +1,4 @@
-import { DEFAULT_SCROLL_POSITION, getScrollPosition, scrollTo } from '../src/scroll.mjs';
+import { getScrollPosition, scrollTo } from '../src/scroll.mjs';
 
 describe('scroll', () => {
     const doc = document;
@@ -30,7 +30,7 @@ describe('scroll', () => {
 
         body.append(div);
 
-        expect(JSON.stringify(getScrollPosition(div))).to.equals(JSON.stringify(DEFAULT_SCROLL_POSITION));
+        expect(JSON.stringify(getScrollPosition(div))).to.equals(JSON.stringify({ top: 0, left: 0 }));
 
         const newPosition = { top: 123, left: 345 };
 
@@ -44,7 +44,7 @@ describe('scroll', () => {
     it('should be able to get the page scroll position', () => {
         body.append(expander);
 
-        expect(JSON.stringify(getScrollPosition(window))).to.equals(JSON.stringify(DEFAULT_SCROLL_POSITION));
+        expect(JSON.stringify(getScrollPosition(window))).to.equals(JSON.stringify({ top: 0, left: 0 }));
 
         const newPosition = { top: 123, left: 345 };
 

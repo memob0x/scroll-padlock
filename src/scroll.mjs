@@ -1,6 +1,3 @@
-//
-export const DEFAULT_SCROLL_POSITION = { top: 0, left: 0 };
-
 /**
  * Gets a given element or browser scroll position
  * @param {Window|HTMLElement} element The given element whose scroll position needs to be retrieved

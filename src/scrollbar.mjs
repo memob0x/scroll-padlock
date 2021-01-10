@@ -1,5 +1,3 @@
-export const DEFAULT_SCROLLBAR = { horizontal: 0, vertical: 0 };
-
 /**
  * Gets a given element current vertical scrollbar width size in px unit
  * @param {HTMLElement} element The given element whose scrollbar gaps need to be retrieved

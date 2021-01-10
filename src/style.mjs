@@ -1,24 +1,27 @@
 import { head } from './client.mjs';
 
 // dom naming part (prefix, suffix etc...)
-const domBaseName = 'scroll-padlock';
-
-// css variables suffixes
-const cssVarRoundedSuffix = 'round';
-const cssVarRectSuffix = 'rect';
-const cssVarScrollbarSuffix = 'scrollbar-gap';
-
-// css variables names
-export const cssVarNamePositionTop = `--${domBaseName}-top-${cssVarRectSuffix}`;
-export const cssVarNamePositionLeft = `--${domBaseName}-left-${cssVarRectSuffix}`;
-export const cssVarNameGapVertical = `--${domBaseName}-vertical-${cssVarScrollbarSuffix}`;
-export const cssVarNameGapHorizontal = `--${domBaseName}-horizontal-${cssVarScrollbarSuffix}`;
-
-// css variables value unit of measurement
-const cssVarUnitValue = 'px';
+const DOM_BASE_NAME = 'scroll-padlock';
 
 // data attribute name
-const dataAttrName = `data-${domBaseName}`;
+export const DATA_ATTR_NAME = `data-${DOM_BASE_NAME}`;
+
+// css variables suffixes
+const CSS_VAR_RECT_SUFFIX = 'scroll';
+
+// css variables names
+export const CSS_VAR_NAME_POSITION_TOP = `--${DOM_BASE_NAME}-${CSS_VAR_RECT_SUFFIX}-top`;
+export const CSS_VAR_NAME_POSITION_LEFT = `--${DOM_BASE_NAME}-${CSS_VAR_RECT_SUFFIX}-left`;
+
+const CSS_VAR_SCROLLBAR_SUFFIX = 'scrollbar-gap';
+
+export const CSS_VAR_NAME_GAP_VERTICAL = `--${DOM_BASE_NAME}-${CSS_VAR_SCROLLBAR_SUFFIX}-vertical`;
+export const CSS_VAR_NAME_GAP_HORIZONTAL = `--${DOM_BASE_NAME}-${CSS_VAR_SCROLLBAR_SUFFIX}-horizontal`;
+
+const CSS_VAR_ROUNDED_SUFFIX = 'round';
+
+// css variables value unit of measurement
+const CSS_VAR_UNIT_VALUE = 'px';
 
 /**
  * Updates a given element css variables to the current state
@@ -35,8 +38,8 @@ export const setStyles = (element, styler, scroll, scrollbar) => {
     }
 
     // ensuring data attr based unique selector
-    if (!element?.matches(`[${dataAttrName}]`)) {
-        element?.setAttribute(dataAttrName, Date.now());
+    if (!element?.matches(`[${DATA_ATTR_NAME}]`)) {
+        element?.setAttribute(DATA_ATTR_NAME, Date.now());
     }
 
     // only rule
@@ -51,14 +54,18 @@ export const setStyles = (element, styler, scroll, scrollbar) => {
     }
 
     // composes updated css variables rule
-    const rule = `[${dataAttrName}="${element?.getAttribute(dataAttrName)}"] {
-        ${cssVarNamePositionTop}: ${scroll.top * -1}${cssVarUnitValue};
-        ${cssVarNamePositionLeft}: ${scroll.left * -1}${cssVarUnitValue};
-        ${cssVarNameGapVertical}: ${scrollbar.vertical}${cssVarUnitValue};
-        ${cssVarNameGapHorizontal}: ${scrollbar.horizontal}${cssVarUnitValue};
+    const rule = `[${DATA_ATTR_NAME}="${element?.getAttribute(DATA_ATTR_NAME)}"] {
+        ${CSS_VAR_NAME_POSITION_TOP}: ${scroll.top}${CSS_VAR_UNIT_VALUE};
+        ${CSS_VAR_NAME_POSITION_LEFT}: ${scroll.left}${CSS_VAR_UNIT_VALUE};
         
-        ${cssVarNameGapVertical}-${cssVarRoundedSuffix}: ${Math.round(scrollbar.vertical)}${cssVarUnitValue};
-        ${cssVarNameGapHorizontal}-${cssVarRoundedSuffix}: ${Math.round(scrollbar.horizontal)}${cssVarUnitValue};
+        ${CSS_VAR_NAME_POSITION_TOP}-${CSS_VAR_ROUNDED_SUFFIX}: ${Math.round(scroll.top)}${CSS_VAR_UNIT_VALUE};
+        ${CSS_VAR_NAME_POSITION_LEFT}-${CSS_VAR_ROUNDED_SUFFIX}: ${Math.round(scroll.left)}${CSS_VAR_UNIT_VALUE};
+
+        ${CSS_VAR_NAME_GAP_VERTICAL}: ${scrollbar.vertical}${CSS_VAR_UNIT_VALUE};
+        ${CSS_VAR_NAME_GAP_HORIZONTAL}: ${scrollbar.horizontal}${CSS_VAR_UNIT_VALUE};
+        
+        ${CSS_VAR_NAME_GAP_VERTICAL}-${CSS_VAR_ROUNDED_SUFFIX}: ${Math.round(scrollbar.vertical)}${CSS_VAR_UNIT_VALUE};
+        ${CSS_VAR_NAME_GAP_HORIZONTAL}-${CSS_VAR_ROUNDED_SUFFIX}: ${Math.round(scrollbar.horizontal)}${CSS_VAR_UNIT_VALUE};
     }`;
 
     // sets new rule up
@@ -76,7 +83,7 @@ export const setStyles = (element, styler, scroll, scrollbar) => {
 export const unsetStyles = (element, styler) => {
     styler?.remove();
 
-    element?.removeAttribute(dataAttrName);
+    element?.removeAttribute(DATA_ATTR_NAME);
 
     return styler;
 };
