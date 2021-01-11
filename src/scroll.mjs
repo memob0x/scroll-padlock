@@ -17,9 +17,9 @@ export const getScrollPosition = element => ({
  * @returns {Object} The given scroll object
  */
 export const scrollTo = (element, scroll) => {
-    //
+    // Scrolls element to coordinates, native API
     element?.scrollTo(scroll?.left, scroll?.top);
 
-    //
+    // Returns the given scroll coordinates
     return scroll;
 };

@@ -8,16 +8,17 @@ import { setStyles, unsetStyles } from './style.mjs';
 
 import { debounce } from './utils.mjs';
 
-// defaults
+// Default class members values
 const DEFAULT_ELEMENT = html;
+const DEFAULT_TARGET = body;
 const DEFAULT_SCROLLER = window;
 const DEFAULT_CLASSNAME = 'scroll-padlock-locked';
 
-// settings
+// Static settings
 const RESIZE_DEBOUNCE_INTERVAL_MS = 250;
 const SCROLL_DEBOUNCE_INTERVAL_MS = 125;
 
-// instances collection closure
+// Instances collection closure,
 // a weakmap is used in order to keep every instance associated with the scrollable element itself
 const instances = new WeakMap();
 
@@ -28,61 +29,92 @@ export default class ScrollPadlock {
      * @param {String} [className] The given scrollable element whose scroll needs to be controlled
      */
     constructor(element = DEFAULT_ELEMENT, className = DEFAULT_CLASSNAME) {
-        //
+        // Window as element argument support
         const elementIsWindow = element === window;
 
-        //
+        // Scrollable html elements support
         const elementIsHtmlElement = element instanceof HTMLElement;
 
-        // if the given scrollable element is not a valid html element, there's not much to do
+        // If the given scrollable element is not supported (valid html element or page)
+        // there's nothing to do, but throwing an exception
         if (!elementIsWindow && !elementIsHtmlElement) {
             throw new TypeError('The scrollable element must be a valid html element');
         }
 
         //
-        const elementIsGlobal = elementIsWindow || element === html || element === body;
-
-        //
-        if( !elementIsGlobal ){
-            this.#element = this.#scroller = element;
+        if( elementIsHtmlElement ){
+            this.#target = element;
         }
 
-        //
+        // Global page (window, html or body as element argument)
+        const elementIsGlobal = elementIsWindow || element === html || element === body;
+
+        // Custom scrollable element case:
+        // if the given element is not global (page scroll)
+        // then replace "element" and "scroller" private members with that element
+        if( !elementIsGlobal ){
+            this.#container = this.#target = this.#scroller = element;
+        }
+
+        // If an instance has already been initialized on this very element, there could be conflicts in events handling etc,
+        // throws an exception in this case
+        if (instances.has(this.#container)) {
+            throw new Error('An instance has already been initialized on the given element');
+        }
+
+        // Instance is not registered ad this point,
+        // so this one is added to the instances collection
+        instances.set(this.#container, this);
+
+        // Lock state css class validity check, must be a string and a valid one
         const classNameIsValid = typeof className === 'string' && !!className.length;
 
-        // no class name, nothing to do
+        // No class name, nothing to do, but throwing an exception
         if (!classNameIsValid) {
             throw new TypeError('Invalid locked-state className provided');
         }
 
-        // stores the scrollable element reference
+        // Stores the class name as a private member
         this.#className = className;
 
-        // if an instance has already been initialized on this very element, there could be conflicts in events handling
-        if (instances.has(this.element)) {
-            throw new Error('An instance has already been initialized on the given element');
-        }
+        //
+        this.#classList = this.#target.classList;
 
-        // adds this instance to the instances collection
-        instances.set(this.element, this);
+        //
+        this.#setStateValue();
 
-        // sets the initial state (css variables, etc...) through update method call
+        // Firing the public update method to initialize everything
+        // computes scroll position, scrollbars sizes and writes css variables
         this.update();
 
-        // attaches resize event listener
+        //
+        this.#observeCssClass();
+
+        // Attaches resize event listener
         addListener(window, EVENT_NAME_RESIZE, this.#resizeHandler);
 
-        // attaches scroll event listener
-        addListener(this.scroller, EVENT_NAME_SCROLL, this.#scrollHandler);
+        // Attaches scroll event listener
+        addListener(this.#scroller, EVENT_NAME_SCROLL, this.#scrollHandler);
     }
 
     /**
-     * The scrollable element target
+     * The lock state element target, usually the scrollable element
      */
-    #element = DEFAULT_ELEMENT;
+    #container = DEFAULT_ELEMENT;
 
     /**
-     * The actual scroll element target (when targeting body or html, window is the listener target etc...)
+     * 
+     */
+    #target = DEFAULT_TARGET;
+
+    /**
+     * 
+     */
+    #classList = null;
+
+    /**
+     * The actual scroll element target, the element that can perform and listen to scroll event
+     * Usually coincides with "element", but when "element" is document.documentElement, "scroller" is window
      */
     #scroller = DEFAULT_SCROLLER;
 
@@ -92,9 +124,69 @@ export default class ScrollPadlock {
     #className = DEFAULT_CLASSNAME;
 
     /**
+     * 
+     */
+    #state = false;
+
+    /**
      * The scroll position
      */
-    #scroll = { top: 0, left: 0 };
+    #scrollCurrent = { top: 0, left: 0 };
+
+    /**
+     * 
+     */
+    #scrollSaving = { top: 0, left: 0 };
+
+    /**
+     * Returns the current scroll position, if on a locked state it returns the currently saved scroll position object
+     * @returns {Object} The current scroll position object or the scroll position previously saved if on a locked state
+     */
+    get scroll() {
+        return this.#state ? this.#scrollSaving : this.#scrollCurrent;
+    }
+
+    /**
+     * Sets a new scroll position, if on a locked state it saves that given scroll position for a future scroll restoration
+     * @param {Object} position The scroll position to be set or saved if on a locked state
+     */
+    set scroll(position) {
+        if( this.#state ){
+            this.#scrollSaving = position;
+            
+            return;
+        }
+
+        scrollTo(this.#scroller, position);
+    }
+
+    /**
+     * 
+     */
+    #observer = new MutationObserver(() => {
+        //
+        const oldState = this.#state;
+        
+        //
+        this.#setStateValue();
+
+        // No state change, exiting early
+        if( this.#state === oldState ){
+            return;
+        }
+
+        // State changed to true
+        if( this.#state ){
+            this.#scrollSaving = { ...this.#scrollCurrent };
+
+            return;
+        }
+
+        // State changed to false
+
+        //
+        this.scroll = this.#scrollSaving;
+    });
 
     /**
      * The scrollbars size
@@ -107,101 +199,94 @@ export default class ScrollPadlock {
     #styler = doc.createElement('style');
 
     /**
-     * 
+     * Window resize event handler
      */
     #resizeHandler = debounce(() => {
-        //
+        // Refresh scroll position
         this.#setScrollbarValue();
 
-        //
+        // Rewrites css variables
         this.#updateStyles();
     }, RESIZE_DEBOUNCE_INTERVAL_MS);
 
     /**
-     * 
+     * Element scroll event handler
      */
     #scrollHandler = debounce(() => {
-        //
+        // Refresh scrollbars size
         this.#setScrollValue();
 
-        //
+        // Rewrites css variables
         this.#updateStyles();
     }, SCROLL_DEBOUNCE_INTERVAL_MS);
 
     /**
      * 
      */
+    #setStateValue = () => (this.#state = this.#classList.contains(this.#className));
+
+    /**
+     * Fires a given function at a unlocked scroll state
+     * @param {Function} action The given function to be fired at unlocked scroll state
+     * @returns {any} Anything the given function returns is returned
+     */
     #performUnlockedAction = action => {
-        //
-        const { classList } = this.element;
+        // Caches the scroll lock state (true if css class is set, thus on a locked state)
+        const wasLocked = this.#state;
 
-        //
-        const wasLocked = classList.contains(this.className);
+        // 
+        this.#unobserveCssClass();
 
-        //
-        classList.remove(this.className);
+        // Removes the css class temporarly
+        this.#classList.remove(this.#className);
 
-        //
-        action();
+        // Fires the given function and caches the return value
+        const result = action();
 
-        //
+        // Relocks the css class if was set before
         if (wasLocked) {
-            classList.add(this.className);
+            this.#classList.add(this.#className);
         }
+        
+        //
+        this.#observeCssClass();
+
+        // Returns what the given function returns
+        return result;
     };
 
     /**
-     * 
+     * Refresh the scrollbars size at a (temporarly) unlocked state
+     * @returns {Object} The current vertical scrollbar width and the horizontal scrollbar height in px
      */
-    #setScrollbarValue = () => this.#performUnlockedAction(() => (this.#scrollbar = getScrollbarsGaps(this.element, this.scroller)));
+    #setScrollbarValue = () => this.#performUnlockedAction(() => (this.#scrollbar = getScrollbarsGaps(this.#container, this.#scroller)));
+
+    /**
+     * Refresh the scroll position at a (temporarly) unlocked state
+     * @returns {Object} The current scroll position object
+     */
+    #setScrollValue = () => this.#performUnlockedAction(() => (this.#scrollCurrent = getScrollPosition(this.#scroller)));
+
+    /**
+     * Rewrites the css variables with current data
+     * @returns {HTMLStyleElement} Styler element
+     */
+    #updateStyles = () => setStyles(this.#container, this.#styler, this.scroll, this.scrollbar);
 
     /**
      * 
      */
-    #setScrollValue = () => this.#performUnlockedAction(() => (this.#scroll = getScrollPosition(this.scroller)));
+    #observeCssClass = () => this.#observer.observe(this.#target, {
+        attributes: true, 
+        attributeFilter: ['class'],
+        childList: false, 
+        characterData: false
+    });
 
     /**
      * 
      */
-    #updateStyles = () => setStyles(this.element, this.styler, this.scroll, this.scrollbar);
-
-    /**
-     * Returns the scrollable element reference
-     * @returns {HTMLElement} The scrollable element reference
-     */
-    get element() {
-        return this.#element;
-    }
-
-    /**
-     * 
-     */
-    get scroller(){
-        return this.#scroller;
-    }
-
-    /**
-     * 
-     */
-    get className() {
-        return this.#className;
-    }
-
-    /**
-     * Returns the current scroll position, if on a locked state it returns the currently saved scroll position object
-     * @returns {Object} The current scroll position object or the scroll position previously saved if on a locked state
-     */
-    get scroll() {
-        return this.#scroll;
-    }
-
-    /**
-     * Sets a new scroll position, if on a locked state it saves that given scroll position for a future scroll restoration
-     * @param {Object} position The scroll position to be set or saved if on a locked state
-     */
-    set scroll(position) {
-        this.#performUnlockedAction(() => scrollTo(this.scroller, position));
-    }
+    #unobserveCssClass = () => this.#observer.disconnect();
 
     /**
      * Gets the current vertical scrollbar width size in px unit
@@ -212,49 +297,44 @@ export default class ScrollPadlock {
     }
 
     /**
-     * Gets the given scrollable element (associated) styler
-     * @returns {HTMLStyleElement} Styler element
-     */
-    get styler() {
-        return this.#styler;
-    }
-
-    /**
      * Effectively destroy the instance, detaching event listeners, removing styles, etc...
      * @returns {void} Nothing
      */
     destroy() {
-        // removes the css variables, styler, styler selector...
-        unsetStyles(this.element, this.styler);
+        //
+        this.#unobserveCssClass();
 
-        // detaches the scroll event listener
-        removeListener(this.scroller, EVENT_NAME_SCROLL, this.#scrollHandler);
+        // Removes the css variables, styler, styler selector...
+        unsetStyles(this.#container, this.#styler);
 
-        // detaches the resize event listener
+        // Detaches the scroll event listener
+        removeListener(this.#scroller, EVENT_NAME_SCROLL, this.#scrollHandler);
+
+        // Detaches the resize event listener
         removeListener(window, EVENT_NAME_RESIZE, this.#resizeHandler);
 
-        // removing the instance from the instances collection
-        instances.delete(this.element);
+        // Removes  the instance from the instances collection
+        instances.delete(this.#container);
 
-        // removes the scrollable element reference
-        this.#element = null;
+        // Removes the element reference
+        this.#container = null;
 
-        //
+        // Removes the scroller reference
         this.#scroller = null;
     }
 
     /**
-     * Updates css variables to the current state
+     * Re-evaluates dimensions and such, updates css variables to the current state...
      * @returns {void} Nothing
      */
     update() {
-        //
+        // Refresh scroll position
         this.#setScrollValue();
 
-        //
+        // Refresh scrollbars size
         this.#setScrollbarValue();
 
-        //
+        // Rewrites css variables
         this.#updateStyles();
     }
 }

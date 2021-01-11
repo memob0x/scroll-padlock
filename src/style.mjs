@@ -26,11 +26,11 @@ const CSS_VAR_ROUNDED_SUFFIX = 'round';
 const CSS_VAR_UNIT_VALUE = 'px';
 
 /**
- * Updates a given element css variables to the current state
+ * Updates a given element css variables to a given styler element ensuring its presence in head
  * @param {HTMLElement} element The given element whose css variables need to be updated
- * @param {HTMLStyleElement} styler
- * @param {Object} scroll
- * @param {Object} scrollbar
+ * @param {HTMLStyleElement} styler The styler element where the css variables are written
+ * @param {Object} scroll The scroll position to be set in css variables
+ * @param {Object} scrollbar The scrollbars size to be set in css variables
  * @returns {HTMLStyleElement} Styler element
  */
 export const setStyles = (element, styler, scroll, scrollbar) => {
@@ -82,6 +82,7 @@ export const setStyles = (element, styler, scroll, scrollbar) => {
 /**
  * Deletes a given scrollable element (associated) styler
  * @param {HTMLElement} element The given scrollable element whose styler needs to be deleted
+ * @param {HTMLStyleElement} styler The styler element to be removed from head
  * @returns {HTMLStyleElement} Styler element
  */
 export const unsetStyles = (element, styler) => {

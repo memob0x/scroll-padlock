@@ -1,7 +1,7 @@
 /**
  * Gets a given element current vertical scrollbar width size in px unit
  * @param {HTMLElement} element The given element whose scrollbar gaps need to be retrieved
- * @param {Window|HTMLElement} scroller
+ * @param {Window|HTMLElement} scroller The elements that properly scrolls (it's the window object that scrolls the document, otherwise this coincides with the first parameter)
  * @returns {Object} The current vertical scrollbar width and the horizontal scrollbar height in px
  */
 export const getScrollbarsGaps = (element, scroller) => {

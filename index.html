@@ -1,49 +1,119 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <title>scroll padlock playground</title>
+<html class="background">
 
-        <style>
-            .scroller::before {
-                content: '';
-                display: block;
-                height: 6000px;
-                width: 6000px;
-            }
+<head>
+    <title>scroll padlock playground</title>
 
-            div.scroller {
-                overflow: auto;
-            }
+    <style>
+        * {
+            box-sizing: border-box;
+        }
 
-            .overlay {
-                position: fixed;
-                width: 120px;
-                height: 120px;
-                max-width: 100%;
-                max-height: 100%;
-            }
+        body {
+            margin: 0;
+        }
 
-            #test-0 {
-                right: 0;
-                top: 0;
-            }
+        .background {
+            background: rgb(255, 255, 255);
+            background: linear-gradient(126deg, rgba(255, 255, 255, 1) 0%, rgba(75, 36, 182, 1) 100%);
+        }
 
-            #test-1 {
-                right: 0;
-                top: 120px;
-            }
-        </style>
-    </head>
-    
-    <body class="scroller">
-        <div class="scroller overlay" id="test-0"></div>
+        .scroller {
+            overflow: auto;
+            position: relative;
+        }
 
-        <div class="scroller overlay" id="test-1"></div>
-    
-        <script src="dist/iife/scroll-padlock.js"></script>
+        div.scroller {
+            max-width: 100%;
+            max-height: 100%;
+        }
 
-        <script>
-            [...document.querySelectorAll('.scroller')].forEach(el => void new ScrollPadlock(el))
-        </script>
-    </body>
+        div.scroller--locked {
+            overflow: hidden;
+            max-height: calc(100% - var(--scroll-padlock-scrollbar-gap-horizontal));
+            max-width: calc(100% - var(--scroll-padlock-scrollbar-gap-vertical));
+        }
+
+        body.scroller--locked {
+            position: fixed;
+            top: calc(var(--scroll-padlock-scroll-top) * -1);
+            left: calc(var(--scroll-padlock-scroll-left) * -1);
+            padding-bottom: var(--scroll-padlock-scrollbar-gap-horizontal);
+            padding-right: var(--scroll-padlock-scrollbar-gap-vertical);
+        }
+
+        .scroller-locker {
+            position: sticky;
+            top: 0;
+            left: 0;
+        }
+
+        .text {
+            display: inline-block;
+            word-break: break-all;
+            line-height: 1;
+            text-transform: uppercase;
+            text-align: center;
+            font-size: 620px;
+            font-weight: bold;
+            width: 1em;
+        }
+
+        .overlay {
+            position: fixed;
+            width: 40vw;
+            height: 36vh;
+            right: 0;
+        }
+
+        .scroller--locked .overlay {
+            right: var(--scroll-padlock-scrollbar-gap-vertical);
+        }
+
+        #test-0 {
+            top: 0;
+        }
+
+        #test-1 {
+            top: 36vh;
+        }
+    </style>
+</head>
+
+<body class="scroller">
+    <button class="scroller-locker" style="position: fixed;">toggle scroller</button>
+
+    <span class="text" style="white-space: nowrap">lorem ipsum</span>
+
+    <span class="text">lorem ipsum</span>
+
+    <div class="overlay" id="test-0">
+        <div class="scroller background">
+            <button class="scroller-locker">toggle scroller</button>
+
+            <span class="text">lorem ipsum</span>
+        </div>
+    </div>
+
+    <div class="overlay" id="test-1">
+        <div class="scroller background">
+            <button class="scroller-locker">toggle scroller</button>
+
+            <span class="text">lorem ipsum</span>
+        </div>
+    </div>
+
+    <script src="dist/iife/scroll-padlock.js"></script>
+
+    <script>
+        const className = 'scroller--locked';
+
+        [...document.querySelectorAll('.scroller')].forEach(scroller => {
+            void new ScrollPadlock(scroller, className);
+
+            [...scroller.children].filter(children => children.matches('.scroller-locker'))?.[0]?.addEventListener('click', () => scroller.classList.toggle(className));
+        })
+    </script>
+</body>
+
 </html>
