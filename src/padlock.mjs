@@ -6,7 +6,16 @@ import { getScrollbarsGaps } from './scrollbar.mjs';
 
 import { setStyles, unsetStyles } from './style.mjs';
 
-import { debounce, throttle } from './utils.mjs';
+import { debounce } from './utils.mjs';
+
+// defaults
+const DEFAULT_ELEMENT = html;
+const DEFAULT_SCROLLER = window;
+const DEFAULT_CLASSNAME = 'scroll-padlock-locked';
+
+// settings
+const RESIZE_DEBOUNCE_INTERVAL_MS = 250;
+const SCROLL_DEBOUNCE_INTERVAL_MS = 125;
 
 // instances collection closure
 // a weakmap is used in order to keep every instance associated with the scrollable element itself
@@ -18,7 +27,7 @@ export default class ScrollPadlock {
      * @param {Window|HTMLElement} [element] The given scrollable element whose scroll needs to be controlled
      * @param {String} [className] The given scrollable element whose scroll needs to be controlled
      */
-    constructor(element = this.element, className = this.className) {
+    constructor(element = DEFAULT_ELEMENT, className = DEFAULT_CLASSNAME) {
         //
         const elementIsWindow = element === window;
 
@@ -70,17 +79,17 @@ export default class ScrollPadlock {
     /**
      * The scrollable element target
      */
-    #element = html;
+    #element = DEFAULT_ELEMENT;
 
     /**
      * The actual scroll element target (when targeting body or html, window is the listener target etc...)
      */
-    #scroller = window;
+    #scroller = DEFAULT_SCROLLER;
 
     /**
      * The lock state class name
      */
-    #className = 'scroll-padlock-locked';
+    #className = DEFAULT_CLASSNAME;
 
     /**
      * The scroll position
@@ -106,18 +115,18 @@ export default class ScrollPadlock {
 
         //
         this.#updateStyles();
-    });
+    }, RESIZE_DEBOUNCE_INTERVAL_MS);
 
     /**
      * 
      */
-    #scrollHandler = throttle(() => {
+    #scrollHandler = debounce(() => {
         //
         this.#setScrollValue();
 
         //
         this.#updateStyles();
-    });
+    }, SCROLL_DEBOUNCE_INTERVAL_MS);
 
     /**
      * 
@@ -127,7 +136,7 @@ export default class ScrollPadlock {
         const { classList } = this.element;
 
         //
-        const wasLocked = classList.contains(classList, this.className);
+        const wasLocked = classList.contains(this.className);
 
         //
         classList.remove(this.className);

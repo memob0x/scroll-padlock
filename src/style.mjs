@@ -1,15 +1,17 @@
 import { head } from './client.mjs';
 
-// dom naming part (prefix, suffix etc...)
+import { getElementParentsLength, getElementIndex } from './utils.mjs';
+
+// DOM naming part (prefix, suffix etc...)
 const DOM_BASE_NAME = 'scroll-padlock';
 
-// data attribute name
+// Data attribute name
 export const DATA_ATTR_NAME = `data-${DOM_BASE_NAME}`;
 
-// css variables suffixes
+// CSS variables suffixes
 const CSS_VAR_RECT_SUFFIX = 'scroll';
 
-// css variables names
+// CSS variables names
 export const CSS_VAR_NAME_POSITION_TOP = `--${DOM_BASE_NAME}-${CSS_VAR_RECT_SUFFIX}-top`;
 export const CSS_VAR_NAME_POSITION_LEFT = `--${DOM_BASE_NAME}-${CSS_VAR_RECT_SUFFIX}-left`;
 
@@ -20,7 +22,7 @@ export const CSS_VAR_NAME_GAP_HORIZONTAL = `--${DOM_BASE_NAME}-${CSS_VAR_SCROLLB
 
 const CSS_VAR_ROUNDED_SUFFIX = 'round';
 
-// css variables value unit of measurement
+// CSS variables value unit of measurement
 const CSS_VAR_UNIT_VALUE = 'px';
 
 /**
@@ -32,28 +34,30 @@ const CSS_VAR_UNIT_VALUE = 'px';
  * @returns {HTMLStyleElement} Styler element
  */
 export const setStyles = (element, styler, scroll, scrollbar) => {
-    // ensuring style tag dom presence, StyleSheet API throws otherwise
+    // Ensures style tag dom presence, StyleSheet API throws otherwise
     if (!head.contains(styler)) {
         head.appendChild(styler);
     }
 
-    // ensuring data attr based unique selector
+    // Assigns a unique "data attribute"
+    // (unique because it's formed by the length of parents and the element index in DOM tree)
     if (!element?.matches(`[${DATA_ATTR_NAME}]`)) {
-        element?.setAttribute(DATA_ATTR_NAME, Date.now());
+        element?.setAttribute(DATA_ATTR_NAME, `${getElementParentsLength(element)}-${getElementIndex(element)}`);
     }
 
-    // only rule
+    // Only-rule index
     const index = 0;
 
-    //
+    // CSSStyleSheet instance reference
     const sheet = styler?.sheet ?? {};
 
-    // clean up past rules
+    // Cleans up former CSS rule
     if (sheet?.cssRules?.[index]) {
         sheet?.deleteRule(index);
     }
 
-    // composes updated css variables rule
+    // Composes updated css variables rule
+    // (addressing a formerly set data attr selector)
     const rule = `[${DATA_ATTR_NAME}="${element?.getAttribute(DATA_ATTR_NAME)}"] {
         ${CSS_VAR_NAME_POSITION_TOP}: ${scroll.top}${CSS_VAR_UNIT_VALUE};
         ${CSS_VAR_NAME_POSITION_LEFT}: ${scroll.left}${CSS_VAR_UNIT_VALUE};
@@ -68,10 +72,10 @@ export const setStyles = (element, styler, scroll, scrollbar) => {
         ${CSS_VAR_NAME_GAP_HORIZONTAL}-${CSS_VAR_ROUNDED_SUFFIX}: ${Math.round(scrollbar.horizontal)}${CSS_VAR_UNIT_VALUE};
     }`;
 
-    // sets new rule up
+    // Sets new rule up
     sheet?.insertRule(rule, index);
 
-    //
+    // Returns the given styler element itself
     return styler;
 };
 
@@ -81,9 +85,12 @@ export const setStyles = (element, styler, scroll, scrollbar) => {
  * @returns {HTMLStyleElement} Styler element
  */
 export const unsetStyles = (element, styler) => {
+    // Removes the styler element from head
     styler?.remove();
 
+    // Removes the data attr unique selector
     element?.removeAttribute(DATA_ATTR_NAME);
 
+    // Returns the given styler element itself
     return styler;
 };

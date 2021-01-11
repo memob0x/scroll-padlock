@@ -4,8 +4,10 @@
  * @returns {Object} The given element scroll position as an object ({ top, left })
  */
 export const getScrollPosition = element => ({
-    top: element?.pageYOffset ?? element?.scrollTop ?? 0,
-    left: element?.pageXOffset ?? element?.scrollLeft ?? 0
+    // NOTE: assuming it's page case by checking scrollY|scrollX and pageYOffset|pageXOffset properties first (available for window only)
+    // and then checking scrollTop|scrollLeft (available for html elements only)
+    top: element?.scrollY ?? element?.pageYOffset ?? element?.scrollTop ?? 0,
+    left: element?.scrollX ?? element?.pageXOffset ?? element?.scrollLeft ?? 0
 });
 
 /**
