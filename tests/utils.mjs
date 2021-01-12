@@ -1,4 +1,4 @@
-import { debounce, getElementParentsLength, getElementIndex } from '../src/utils.mjs';
+import { debounce, getElementParentsLength, getElementIndex, joinHyphen } from '../src/utils.mjs';
 
 describe('utils', () => {
     const debounceIntervalMs = 500;
@@ -80,4 +80,6 @@ describe('utils', () => {
         div2.remove();
         div3.remove();
     });
+
+    it('should be able to join string fragments with hyphens', () => expect(joinHyphen('foo', 'barr', 1234)).to.equals('foo-barr-1234'));
 });

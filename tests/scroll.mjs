@@ -1,9 +1,9 @@
-import { getScrollPosition, scrollTo } from '../src/scroll.mjs';
+import { SCROLL_TOP, SCROLL_LEFT, getScrollPosition } from '../src/scroll.mjs';
 
 describe('scroll', () => {
     const doc = document;
-    const body = doc.body;
-    
+    const { body } = doc;
+
     const createDummy = () => doc.createElement('div');
 
     let expander;
@@ -30,13 +30,13 @@ describe('scroll', () => {
 
         body.append(div);
 
-        expect(JSON.stringify(getScrollPosition(div))).to.equals(JSON.stringify({ top: 0, left: 0 }));
+        expect(getScrollPosition(div)).to.deep.equals({ [SCROLL_TOP]: 0, [SCROLL_LEFT]: 0 });
 
-        const newPosition = { top: 123, left: 345 };
+        const newPosition = { [SCROLL_TOP]: 123, [SCROLL_LEFT]: 345 };
 
-        scrollTo(div, newPosition);
-    
-        expect(JSON.stringify(getScrollPosition(div))).to.equals(JSON.stringify(newPosition));
+        div.scrollTo(newPosition[SCROLL_LEFT], newPosition[SCROLL_TOP]);
+
+        expect(getScrollPosition(div)).to.deep.equals(newPosition);
 
         div.remove();
     });
@@ -44,12 +44,12 @@ describe('scroll', () => {
     it('should be able to get the page scroll position', () => {
         body.append(expander);
 
-        expect(JSON.stringify(getScrollPosition(window))).to.equals(JSON.stringify({ top: 0, left: 0 }));
+        expect(getScrollPosition(window)).to.deep.equals({ [SCROLL_TOP]: 0, [SCROLL_LEFT]: 0 });
 
-        const newPosition = { top: 123, left: 345 };
+        const newPosition = { [SCROLL_TOP]: 123, [SCROLL_LEFT]: 345 };
 
-        scrollTo(window, newPosition);
-    
-        expect(JSON.stringify(getScrollPosition(window))).to.equals(JSON.stringify(newPosition));
+        window.scrollTo(newPosition[SCROLL_LEFT], newPosition[SCROLL_TOP]);
+
+        expect(getScrollPosition(window)).to.deep.equals(newPosition);
     });
 });

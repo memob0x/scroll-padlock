@@ -1,8 +1,9 @@
 // All involved client elements references
 export const doc = document;
-export const html = doc.documentElement;
-export const body = doc.body;
-export const head = doc.head;
+export const { documentElement, body, head } = doc;
+
+// DOM naming part (prefix, suffix etc...)
+export const DOM_BASE_NAME = 'scroll-padlock';
 
 // Common global event names
 export const EVENT_NAME_SCROLL = 'scroll';

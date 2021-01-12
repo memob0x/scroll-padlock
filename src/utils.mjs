@@ -55,3 +55,10 @@ export const getElementIndex = element => {
 
     return count;
 };
+
+/**
+ * 
+ * @param {String[]} args 
+ * @returns {String}
+ */
+export const joinHyphen = (...args) => args.join('-');

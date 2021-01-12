@@ -5,6 +5,28 @@
     <title>scroll padlock playground</title>
 
     <style>
+        ::-webkit-scrollbar {
+            width: 5px;
+            height: 10px;
+        }
+
+        ::-webkit-scrollbar-button {
+            width: 0px;
+            height: 0px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #e1e1e1;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #666666;
+        }
+
+        ::-webkit-scrollbar-corner {
+            background: transparent;
+        }
+
         * {
             box-sizing: border-box;
         }
@@ -30,16 +52,18 @@
 
         div.scroller--locked {
             overflow: hidden;
-            max-height: calc(100% - var(--scroll-padlock-scrollbar-gap-horizontal));
-            max-width: calc(100% - var(--scroll-padlock-scrollbar-gap-vertical));
+            max-height: calc(100% - var(--scroll-padlock-scrollbar-height));
+            max-width: calc(100% - var(--scroll-padlock-scrollbar-width));
         }
 
         body.scroller--locked {
             position: fixed;
             top: calc(var(--scroll-padlock-scroll-top) * -1);
             left: calc(var(--scroll-padlock-scroll-left) * -1);
-            padding-bottom: var(--scroll-padlock-scrollbar-gap-horizontal);
-            padding-right: var(--scroll-padlock-scrollbar-gap-vertical);
+            /* padding-bottom: var(--scroll-padlock-scrollbar-height);
+            padding-right: var(--scroll-padlock-scrollbar-width); */
+            width: var(--scroll-padlock-inner-width); 
+            height: var(--scroll-padlock-scroll-height);
         }
 
         .scroller-locker {
@@ -67,7 +91,7 @@
         }
 
         .scroller--locked .overlay {
-            right: var(--scroll-padlock-scrollbar-gap-vertical);
+            right: var(--scroll-padlock-scrollbar-width);
         }
 
         #test-0 {
