@@ -17,7 +17,7 @@ describe('dimensions', () => {
 
         body.append(div);
 
-        const dimensions = getDimensions(div);
+        const dimensions = getDimensions(div, div);
         
         expect(dimensions[DIMENSIONS_WIDTH_OUTER]).to.equals(div.offsetWidth);
         expect(dimensions[DIMENSIONS_HEIGHT_OUTER]).to.equals(div.offsetHeight);

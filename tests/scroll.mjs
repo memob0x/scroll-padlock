@@ -1,4 +1,4 @@
-import { SCROLL_TOP, SCROLL_LEFT, getScrollPosition } from '../src/scroll.mjs';
+import { SCROLL_TOP, SCROLL_LEFT, getScroll } from '../src/scroll.mjs';
 
 describe('scroll', () => {
     const doc = document;
@@ -30,13 +30,13 @@ describe('scroll', () => {
 
         body.append(div);
 
-        expect(getScrollPosition(div)).to.deep.equals({ [SCROLL_TOP]: 0, [SCROLL_LEFT]: 0 });
+        expect(getScroll(div)).to.deep.equals({ [SCROLL_TOP]: 0, [SCROLL_LEFT]: 0 });
 
         const newPosition = { [SCROLL_TOP]: 123, [SCROLL_LEFT]: 345 };
 
         div.scrollTo(newPosition[SCROLL_LEFT], newPosition[SCROLL_TOP]);
 
-        expect(getScrollPosition(div)).to.deep.equals(newPosition);
+        expect(getScroll(div)).to.deep.equals(newPosition);
 
         div.remove();
     });
@@ -44,12 +44,12 @@ describe('scroll', () => {
     it('should be able to get the page scroll position', () => {
         body.append(expander);
 
-        expect(getScrollPosition(window)).to.deep.equals({ [SCROLL_TOP]: 0, [SCROLL_LEFT]: 0 });
+        expect(getScroll(window)).to.deep.equals({ [SCROLL_TOP]: 0, [SCROLL_LEFT]: 0 });
 
         const newPosition = { [SCROLL_TOP]: 123, [SCROLL_LEFT]: 345 };
 
         window.scrollTo(newPosition[SCROLL_LEFT], newPosition[SCROLL_TOP]);
 
-        expect(getScrollPosition(window)).to.deep.equals(newPosition);
+        expect(getScroll(window)).to.deep.equals(newPosition);
     });
 });

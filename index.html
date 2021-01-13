@@ -40,12 +40,9 @@
             background: linear-gradient(126deg, rgba(255, 255, 255, 1) 0%, rgba(75, 36, 182, 1) 100%);
         }
 
-        .scroller {
-            overflow: auto;
-            position: relative;
-        }
-
         div.scroller {
+            position: relative;
+            overflow: auto;
             max-width: 100%;
             max-height: 100%;
         }
@@ -56,13 +53,14 @@
             max-width: calc(100% - var(--scroll-padlock-scrollbar-width));
         }
 
+        html.scroller--locked,
         body.scroller--locked {
             position: fixed;
             top: calc(var(--scroll-padlock-scroll-top) * -1);
             left: calc(var(--scroll-padlock-scroll-left) * -1);
-            /* padding-bottom: var(--scroll-padlock-scrollbar-height);
-            padding-right: var(--scroll-padlock-scrollbar-width); */
-            width: var(--scroll-padlock-inner-width); 
+            padding-bottom: var(--scroll-padlock-scrollbar-height);
+            padding-right: var(--scroll-padlock-scrollbar-width);
+            width: var(--scroll-padlock-inner-width);
             height: var(--scroll-padlock-scroll-height);
         }
 
@@ -105,7 +103,7 @@
 </head>
 
 <body class="scroller">
-    <button class="scroller-locker" style="position: fixed;">toggle scroller</button>
+    <button class="scroller-locker" style="position: fixed; left: 0;">toggle scroller on body</button>
 
     <span class="text" style="white-space: nowrap">lorem ipsum</span>
 
@@ -130,12 +128,15 @@
     <script src="dist/iife/scroll-padlock.js"></script>
 
     <script>
+        const { documentElement, body } = document;
         const className = 'scroller--locked';
 
         [...document.querySelectorAll('.scroller')].forEach(scroller => {
             void new ScrollPadlock(scroller, className);
 
-            [...scroller.children].filter(children => children.matches('.scroller-locker'))?.[0]?.addEventListener('click', () => scroller.classList.toggle(className));
+            const buttons = [...scroller.children].filter(children => children.matches('.scroller-locker'));
+
+            buttons?.[0]?.addEventListener('click', () => scroller.classList.toggle(className));
         })
     </script>
 </body>

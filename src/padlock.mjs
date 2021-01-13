@@ -2,11 +2,11 @@ import { DOM_BASE_NAME, EVENT_NAME_SCROLL, EVENT_NAME_RESIZE, doc, documentEleme
 
 import { debounce } from './utils.mjs';
 
-import { SCROLL_TOP, SCROLL_LEFT, getScrollPosition } from './scroll.mjs';
+import { SCROLL_TOP, SCROLL_LEFT, getScroll } from './scroll.mjs';
 
 import { getDimensions } from './dimensions.mjs';
 
-import { getScrollbarsGaps } from './scrollbars.mjs';
+import { getScrollbars } from './scrollbars.mjs';
 
 import { setStyles, unsetStyles } from './style.mjs';
 
@@ -40,7 +40,7 @@ export default class ScrollPadlock {
         // If the given scrollable element is not supported (valid html element or page)
         // there's nothing to do, but throwing an exception
         if (!elementIsWindow && !elementIsHtmlElement) {
-            throw new TypeError('The scrollable element must be a valid html element');
+            throw new TypeError('Invalid element provided to constructor');
         }
 
         //
@@ -58,18 +58,15 @@ export default class ScrollPadlock {
             this.#element = this.#target = this.#scroller = element;
         }
 
-        //
-        this.#instanceWeakMapKey = [this.#element, this.#scroller];
-
         // If an instance has already been initialized on this very element, there could be conflicts in events handling etc,
         // throws an exception in this case
-        if (instances.has(this.#instanceWeakMapKey)) {
-            throw new Error('An instance has already been initialized on the given element');
+        if (instances.has(this.#element)) {
+            throw new Error(`An instance has already been initialized on ${elementIsGlobal ? 'page scroll' : 'the given element'}`);
         }
 
         // Instance is not registered ad this point,
         // so this one is added to the instances collection
-        instances.set(this.#instanceWeakMapKey, this);
+        instances.set(this.#element, this);
 
         //
         this.#classList = this.#target.classList;
@@ -79,7 +76,7 @@ export default class ScrollPadlock {
 
         // No class name, nothing to do, but throwing an exception
         if (!classNameIsValid) {
-            throw new TypeError('Invalid locked-state className provided');
+            throw new TypeError('Invalid CSS class name provided to constructor');
         }
 
         // Stores the class name as a private member
@@ -98,11 +95,6 @@ export default class ScrollPadlock {
         // Attaches scroll event listener
         addListener(this.#scroller, EVENT_NAME_SCROLL, this.#scrollHandler);
     }
-
-    /**
-     * 
-     */
-    #instanceWeakMapKey;
 
     /**
      * The lock state element target, usually the scrollable element
@@ -307,13 +299,13 @@ export default class ScrollPadlock {
      * Refresh the scrollbars size at a (temporarly) unlocked state
      * @returns {Object} The current vertical scrollbar width and the horizontal scrollbar height in px
      */
-    #updateScrollbar = () => (this.#scrollbar = getScrollbarsGaps(this.#dimensions));
+    #updateScrollbar = () => (this.#scrollbar = getScrollbars(this.#dimensions));
 
     /**
      * Refresh the scroll position at a (temporarly) unlocked state
      * @returns {Object} The current scroll position object
      */
-    #updateScroll = () => (this.#scrollCurrent = getScrollPosition(this.#scroller));
+    #updateScroll = () => (this.#scrollCurrent = getScroll(this.#scroller));
 
     /**
      * Rewrites the css variables with current data
@@ -356,7 +348,7 @@ export default class ScrollPadlock {
         removeListener(window, EVENT_NAME_RESIZE, this.#resizeHandler);
 
         // Removes the instance from the instances collection
-        instances.delete(this.#instanceWeakMapKey);
+        instances.delete(this.#element);
 
         // Removes the element reference
         this.#element = null;

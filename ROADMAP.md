@@ -5,7 +5,7 @@
 * [ -- ] tests: provide unit tests for new specs
 * [ -- ] demos: add codesandbox.io examples for vue, react and angular
 * [ ok ] demos: remove in-repository demo
-* [ -- ] docs: provide README.md for new specs
+* [ ok ] docs: provide README.md for new specs
 * [ -- ] docs: redo ios-bug.gif, ios-fix.gif
 * [ -- ] docs: provide positioned-element.gif
 * [ -- ] build: more aggressive minifier (uglify?)

@@ -25,17 +25,12 @@ export const DATA_ATTR_NAME = joinHyphen('data', DOM_BASE_NAME);
 
 // CSS variables names
 const CSS_VAR_PREFIX = '--';
-
 const CSS_VAR_SCROLL_PREFIX = 'scroll';
-
 export const CSS_VAR_NAME_POSITION_TOP = CSS_VAR_PREFIX + joinHyphen(DOM_BASE_NAME, CSS_VAR_SCROLL_PREFIX, SCROLL_TOP);
 export const CSS_VAR_NAME_POSITION_LEFT = CSS_VAR_PREFIX + joinHyphen(DOM_BASE_NAME, CSS_VAR_SCROLL_PREFIX, SCROLL_LEFT);
-
 const CSS_VAR_SCROLLBAR_PREFIX = 'scrollbar';
-
 export const CSS_VAR_NAME_GAP_VERTICAL = CSS_VAR_PREFIX + joinHyphen(DOM_BASE_NAME, CSS_VAR_SCROLLBAR_PREFIX, SCROLLBAR_WIDTH);
 export const CSS_VAR_NAME_GAP_HORIZONTAL = CSS_VAR_PREFIX + joinHyphen(DOM_BASE_NAME, CSS_VAR_SCROLLBAR_PREFIX, SCROLLBAR_HEIGHT);
-
 export const CSS_VAR_NAME_WIDTH_OUTER = CSS_VAR_PREFIX + joinHyphen(DOM_BASE_NAME, DIMENSIONS_OUTER, DIMENSIONS_WIDTH);
 export const CSS_VAR_NAME_HEIGHT_OUTER = CSS_VAR_PREFIX + joinHyphen(DOM_BASE_NAME, DIMENSIONS_OUTER, DIMENSIONS_HEIGHT);
 export const CSS_VAR_NAME_WIDTH_INNER = CSS_VAR_PREFIX + joinHyphen(DOM_BASE_NAME, DIMENSIONS_INNER, DIMENSIONS_WIDTH);
@@ -45,6 +40,9 @@ export const CSS_VAR_NAME_HEIGHT_SCROLL = CSS_VAR_PREFIX + joinHyphen(DOM_BASE_N
 
 // CSS variables value unit of measurement
 const CSS_VAR_UNIT_VALUE = 'px';
+
+// Only-rule index
+const CSS_STYLE_SHEET_ONLY_RULE_INDEX = 0;
 
 /**
  * Updates a given element css variables to a given styler element ensuring its presence in head
@@ -60,25 +58,22 @@ export const setStyles = (element, styler, dimensions, scroll, scrollbar) => {
     if (!head.contains(styler)) {
         head.appendChild(styler);
     }
+    
+    // Element must have a dynamic attribute to be used as a unique css selector
+    const dataAttrValue = element.getAttribute(DATA_ATTR_NAME) ?? joinHyphen(getElementParentsLength(element), getElementIndex(element));
 
-    // Assigns a unique "data attribute"
-    // (unique because it's formed by the length of parents and the element index in DOM tree)
-    if (!element?.matches(`[${DATA_ATTR_NAME}]`)) {
-        element?.setAttribute(DATA_ATTR_NAME, joinHyphen(getElementParentsLength(element), getElementIndex(element)));
-    }
-
-    // Only-rule index
-    const index = 0;
+    // Assigns that selector (a "data attribute")
+    element.setAttribute(DATA_ATTR_NAME, dataAttrValue);
 
     // CSSStyleSheet instance reference
-    const sheet = styler?.sheet ?? {};
+    const { sheet } = styler;
 
     // Cleans up former CSS rule
-    if (sheet?.cssRules?.[index]) {
-        sheet?.deleteRule(index);
+    if (sheet.cssRules[CSS_STYLE_SHEET_ONLY_RULE_INDEX]) {
+        sheet.deleteRule(CSS_STYLE_SHEET_ONLY_RULE_INDEX);
     }
 
-    //
+    // the css variables names and values as an object
     const rulesData = {
         [CSS_VAR_NAME_POSITION_TOP]: scroll[SCROLL_TOP],
         [CSS_VAR_NAME_POSITION_LEFT]: scroll[SCROLL_LEFT],
@@ -96,26 +91,20 @@ export const setStyles = (element, styler, dimensions, scroll, scrollbar) => {
         [CSS_VAR_NAME_GAP_HORIZONTAL]: scrollbar[SCROLLBAR_HEIGHT]
     };
 
-    //
+    // Enumerates the rules data object key (the css variables names)
     const rulesDataKeys = Object.keys(rulesData);
-
-    //
-    let rules = '';
-
-    //
-    for (let i = 0, j = rulesDataKeys.length; i < j; i++) {
-        const key = rulesDataKeys[i];
-        const value = rulesData[key];
-
-        rules += `${key}: ${value}${CSS_VAR_UNIT_VALUE};`;
-    }
 
     // Composes updated css variables rule
     // (addressing a formerly set data attr selector)
-    const rule = `[${DATA_ATTR_NAME}="${element?.getAttribute(DATA_ATTR_NAME)}"] { ${rules} }`;
+    let rules = '';
+    for (let i = 0, j = rulesDataKeys.length; i < j; i++) {
+        const key = rulesDataKeys[i];
+
+        rules += `${key}: ${rulesData[key]}${CSS_VAR_UNIT_VALUE};`;
+    }
 
     // Sets new rule up
-    sheet?.insertRule(rule, index);
+    sheet.insertRule(`[${DATA_ATTR_NAME}="${dataAttrValue}"] { ${rules} }`, CSS_STYLE_SHEET_ONLY_RULE_INDEX);
 
     // Returns the given styler element itself
     return styler;
@@ -129,10 +118,10 @@ export const setStyles = (element, styler, dimensions, scroll, scrollbar) => {
  */
 export const unsetStyles = (element, styler) => {
     // Removes the styler element from head
-    styler?.remove();
+    styler.remove();
 
     // Removes the data attr unique selector
-    element?.removeAttribute(DATA_ATTR_NAME);
+    element.removeAttribute(DATA_ATTR_NAME);
 
     // Returns the given styler element itself
     return styler;

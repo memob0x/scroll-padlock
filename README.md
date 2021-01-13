@@ -4,7 +4,7 @@
 [![scroll-padlock (latest)](https://img.shields.io/npm/v/scroll-padlock/latest.svg)](https://www.npmjs.com/package/scroll-padlock)
 [![scroll-padlock (downloads)](https://img.shields.io/npm/dy/scroll-padlock.svg)](https://www.npmjs.com/package/scroll-padlock)
 
-A small script (~4K gzipped) which allows developers to implement their own way to **lock html elements scroll** avoiding "contents jump", preferably through CSS.
+A small script (~4K gzipped) aimed to encourage __**CSS-first** html elements scroll lock__ avoiding "contents jump".
 
 🙅 Without this library:
 
@@ -14,20 +14,7 @@ A small script (~4K gzipped) which allows developers to implement their own way 
 
 ![with scrollbar gap compensation](https://github.com/memob0x/scroll-padlock/blob/master/docs/with-gap-compensation.gif?raw=true)
 
-## TL;TR: a body scroll overview
-
-🙅 `body { overflow: hidden; }` is the most common way to lock the scroll position on every browsers, unfortunately, unless user's browser has overlay scrollbars, that would cause the scrollbar to disappear, the body to expand and the contents to jump to the right;<br>
-to make things worse that technique just **doesn't work** on **iOS safari**: when set the user can still somehow scroll the page.
-
-🙅 `body { touch-action: none; }` can't help since Safari [doesn't seem to support it](https://bugs.webkit.org/show_bug.cgi?id=133112) anytime soon.
-
-🤷 Some libraries propose to solve this preventing `touchmove` events, which might work out very well in many cases; unfortunately some **issues** with some **`viewport` configurations** or **pinch to zoom** might still be encountered, also **iOS navigation bars** might end up covering some layout elements.
-
-🙅 `body { position: fixed; }` alone can force iOS to lock the scroll, but when applied the scroll position would eventually jump to the top of the page.
-
-💁 This library sets some **css variables** and **css classes** in order to allow the developer to choose their preferred [CSS-only approach](#usage-pt1-css), while the class instance exposes a quite granular API in order to implement some JS strategies too.
-
-## Usage, part 1: inclusion
+## Inclusion
 
 This library is downloadable via **npm**:
 
@@ -35,112 +22,92 @@ This library is downloadable via **npm**:
 $ npm install scroll-padlock
 ```
 
-The source code is entirely written in [standard ECMAScript](https://tc39.es/), the **src/padlock.mjs** module can be safely imported in an es6 project; otherwise the following transpiled bundles are available:
+The source code is entirely written in [standard ECMAScript](https://tc39.es/), but the final distribution includes transpiled [umd](https://github.com/umdjs/umd), [iife](https://developer.mozilla.org/en-US/docs/Glossary/IIFE), [amd](https://en.wikipedia.org/wiki/Asynchronous_module_definition), [cjs](https://en.wikipedia.org/wiki/CommonJS), [esm](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules) and [SystemJS](https://github.com/systemjs/systemjs) bundles.
 
--   **dist/iife/scroll-padlock.js**: [immediately invoked function expression](https://developer.mozilla.org/en-US/docs/Glossary/IIFE) syntax. This bundle sets a global variable, thus is indicated for projects which don't use any module loading strategy.
--   **dist/amd/scroll-padlock.js**: [asynchronous module definition](https://en.wikipedia.org/wiki/Asynchronous_module_definition) syntax.
--   **dist/cjs/scroll-padlock.js**: [CommonJS](https://en.wikipedia.org/wiki/CommonJS) modules syntax.
--   **dist/es/scroll-padlock.js**: [ECMAScript modules](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules) syntax.
--   **dist/system/scroll-padlock.js**: [SystemJS](https://github.com/systemjs/systemjs) modules syntax.
+## Usage
 
-## Usage, part 2: CSS rules
+To set and update the CSS variables the library **observes [CSS class mutations](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver)** and **listens to [window resize](https://developer.mozilla.org/en-US/docs/Web/API/Window/resize_event) and [scroll](https://developer.mozilla.org/en-US/docs/Web/API/Element/scroll_event) events**; thus **creating an instance** is the only thing that has to be done.
 
-As an instance is created, some CSS variables are programmatically set at the given element level (the element provided to the constructor as a parameter), making CSS "aware" of its **scroll position** and its **scrollbar width**, while some CSS classes are toggled to that same element in order to reflect its instance state.
+```javascript
+// The class that would lock the page scroll
+const SCROLL_LOCKED_CSS_CLASS_NAME = 'your-locked-class';
 
-### The CSS variables:
-* `--scroll-padlock-top-rect`: the scroll distance from top.
-* `--scroll-padlock-left-rect`: the scroll distance from left.
-* `--scroll-padlock-vertical-scrollbar-gap`: the vertical scrollbar width.
-* `--scroll-padlock-horizontal-scrollbar-gap`: the horizontal scrollbar width.
+// The element which scroll needs to be controlled
+const { documentElement } = document;
 
-### The CSS classes:
-* `scroll-padlock`: the class instance has been initialized and attached to the given element.
-* `scroll-padlock--locked`: the instance state is **locked**.
+// Creates the instance...
+const instance = new ScrollPadlock(documentElement, SCROLL_LOCKED_CSS_CLASS_NAME);
 
-The following ruleset alone is enough to ensure a cross-browser body scroll lock:
+// ...at this point every given class change is observed and window resize or scroll events are listened.
+
+const { classList } = documentElement;
+
+// Locks the body scroll
+classList.add(SCROLL_LOCKED_CSS_CLASS_NAME);
+```
+
+As an instance is created, some CSS variables are set at the given element level (the element provided to the constructor as a parameter), making CSS "aware" of the following values.
+
+* `--scroll-padlock-scroll-top`: the number of pixels that the target is scrolled vertically.
+* `--scroll-padlock-scroll-left`: the number of pixels that the target is scrolled horizontally.
+* `--scroll-padlock-scrollbar-width`: the target's vertical scrollbar size.
+* `--scroll-padlock-scrollbar-height`: the target's horizontal scrollbar size.
+* `--scroll-padlock-outer-width`: the target's width including the scrollbar size.
+* `--scroll-padlock-outer-height`: the target's height including the scrollbar size.
+* `--scroll-padlock-inner-width`: the target's width without the scrollbar size.
+* `--scroll-padlock-inner-height`: the target's height without the scrollbar size.
+* `--scroll-padlock-scroll-width`: the target's content width.
+* `--scroll-padlock-scroll-height`: the target's content height.
+
+The following ruleset alone is enough to ensure a cross-browser body scroll lock for a standard vertical-scroll page:
 
 ```css
-html.scroll-padlock--locked {
-    /* position fixed hack, locks iOS too */
+html.your-locked-class {
+    /* Position-fixed hack, locks iOS too */
     position: fixed;
     width: 100%;
 
-    /* avoids scroll to top */
-    top: var(--scroll-padlock-top-rect);
+    /* Avoids scroll to top */
+    top: calc(var(--scroll-padlock-scroll-top) * -1);
 
-    /* reserves space for scrollbar */
-    padding-right: var(--scroll-padlock-vertical-scrollbar-gap);
+    /* Reserves space for scrollbar */
+    padding-right: var(--scroll-padlock-scrollbar-width);
 }
 ```
 
-Please note that some [browser recognition logic](https://gist.github.com/memob0x/0869e759887441b1349fdfe6bf5a188d) can be applied in order to address iOS more specifically, keeping the standard overflow approach for standard browsers:
+Please note that some [browser recognition logic](https://gist.github.com/memob0x/0869e759887441b1349fdfe6bf5a188d) can be applied in order to address iOS more specifically, keeping the standard overflow approach for the browsers that respects it:
 
 ```css
 /* iOS only */
-html.scroll-padlock--locked.ios {
+html.your-locked-class.ios {
     /* iOS fixed position hack */
     position: fixed;
     width: 100%;
 
     /* Avoids scroll to top */
-    top: var(--scroll-padlock-top-rect);
+    top: calc(var(--scroll-padlock-scroll-top) * -1);
 }
 
 /* Standard browsers only */
-html.scroll-padlock--locked.not-ios,
-html.scroll-padlock--locked.not-ios body {
+html.your-locked-class.not-ios,
+html.your-locked-class.not-ios body {
     /* Standard way to lock scroll */
     overflow: hidden;
 }
 
-html.scroll-padlock--locked.not-ios body {
+html.your-locked-class.not-ios body {
     /* Reserves space for scrollbar */
-    /* (iOS has overlay scrollbars, this rule would have no effect there) */
-    padding-right: var(--scroll-padlock-vertical-scrollbar-gap);
+    /* (iOS has overlay scrollbars, this rule would have no effect there anyway) */
+    padding-right: var(--scroll-padlock-scrollbar-width);
 }
 ```
 
-## Usage, part 3: class instance
+## API
 
-A padlock **instance** must be created first.
-
-```javascript
-// The element which scroll needs to be controlled
-// NOTE: document.documentElement is the default parameter
-const target = document.documentElement;
-
-// Creates the instance
-const instance = new ScrollPadlock(target);
-```
-
-To **lock** or **unlock** an instance simply use the property `state` accessor as a _setter_.
+The `destroy` method is particularly important when using **reactive frameworks** (such as React, Vue, Angular, etc...) which components lifecycle might generate memory leaks: **call `destroy` method when the components in which scroll-padlock is used get unmounted**.
 
 ```javascript
-// Locks the scroll
-instance.state = true;
-
-// Unlocks the scroll
-instance.state = false;
-```
-
-Used as a _getter_, the property `state` gets the current instance state.
-
-```javascript
-// Gets the current state: true when locked, false when unlocked
-const isLocked = instance.state;
-```
-
-Both accessors combined would make an instance state **toggler**...
-
-```javascript
-// Toggles the instance state
-instance.state = !instance.state;
-```
-
-The `destroy` method is particularly important when using **reactive frameworks** (such as React, Vue, Angular, etc...) which components lifecycle combined with external libraries might generate memory leaks: **call this method when the components in which scroll-padlock is used get unmounted**.
-
-```javascript
-// Detaches instances events, removes styles, etc...
+// Detaches instance events, removes styles, etc...
 instance.destroy();
 ```
 
@@ -155,56 +122,52 @@ const { top, left } = instance.scroll;
 
 // Sets a new scroll position;
 // if the instance state is locked,
-// the given position is saved for a future restoration
+// the given position is saved for a future restoration;
+// otherwise the instance element is directly scrolled to the given position
 instance.scroll = { top, left };
 
-// Gets the current scrollbars width
-const { vertical, horizontal } = instance.scrollbar;
+// Gets the current vertical and horizontal scrollbars size
+const { width, height } = instance.scrollbar;
 
-// Gets the instance element;
-// the same element provided to the class constructor
-// (document.documentElement is the default one)
-const target = instance.element;
+// Gets the current instance element dimensions
+const {
+    outerWidth,
+    outerHeight,
+    innerWidth,
+    innerHeight,
+    scrollWidth,
+    scrollHeight
+} = instanse.dimensions;
 ```
 
-## Events
+## TL;TR: a body scroll overview
 
-Get notified whenever the instance **state changes** by listening to `scroll-padlock-lock` and `scroll-padlock-unlock` **events**.
+🙅 `body { overflow: hidden; }` is the most common way to lock the scroll position on every browsers, unfortunately, unless user's browser has overlay scrollbars, that would cause the scrollbar to disappear, the body to expand and the contents to jump to the right;
+to make things worse that technique just **doesn't work** on **iOS safari**: when set the user can still somehow scroll the page.
 
-```javascript
-// Listens to any lock events
-target.addEventListener("scroll-padlock-lock", () =>
-    console.log("The body scroll has been locked.")
-);
+🙅 `body { touch-action: none; }` can't help since Safari [doesn't seem to support it](https://bugs.webkit.org/show_bug.cgi?id=133112) anytime soon.
 
-// Linstens to any unlock events
-target.addEventListener("scroll-padlock-unlock", () =>
-    console.log("Body scroll has been unlocked.")
-);
-```
+🤷 Some libraries propose to solve this preventing `touchmove` events, which might work out very well in many cases; unfortunately some **issues** with some **`viewport` configurations** or **pinch to zoom** might still be encountered, also **iOS navigation bars** might end up covering some layout elements.
 
-There's a further `scroll-padlock-resize` event dispatched on browser window resize padlock styles update, which can be useful in some [edge cases](#iOS-Bars-and-Keyboard-Tray).
+🙅 `body { position: fixed; }` alone can force iOS to lock the scroll, but when applied the scroll position would eventually jump to the top of the page.
 
-## Positioned elements
+💁 This library sets some **css variables** and **css classes** in order to allow the developer to choose their preferred [CSS-only approach](#usage-pt1-css), while the class instance exposes a quite granular API in order to implement some JS strategies too.
 
-If positioned elements "jumps" during an instance state change, the same CSS variables that are used to reserve the scrollbar width can be used to overcome this problem as well.
+## Positioned Elements
+
+If positioned elements "jumps" on a parent lock state change, the same CSS variables that are used to reserve the scrollbar width can be used to overcome this problem as well.
 
 ```css
-/* Sidebar container */
-.scrollable-sidebar-container {
-    position: relative;
-}
-
-/* A right-positioned sidebar */
-.scrollable-sidebar-container .sidebar {
-    position: absolute;
+/* A right-positioned child */
+.positioned-element {
+    position: fixed;
     right: 0;
 }
 
-/* The same right-positioned sidebar, */
+/* The same right-positioned element, */
 /* not affected by its own container scrollbars disappearance */
-.scrollable-sidebar-container.scroll-padlock--locked .sidebar {
-    right: var(--scroll-padlock-vertical-scrollbar-gap);
+.your-locked-class .positioned-element {
+    right: var(--scroll-padlock-scrollbar-width);
 }
 ```
 
@@ -218,17 +181,18 @@ When the page is scrolled the **system bars** become smaller; at that point, whe
 
 iOS forces a scroll to the focused element (still out of canvas) in an already "locked" area (limited by the OS itself) which would be also shortly resized because of the system bars getting bigger.
 
-To overcome this problem the native `resize` event can be used to programmatically scroll to top that ios-keyboard-sub-window-thing.
+To overcome this problem the native `resize` event can be listened to programmatically scroll to top that ios-keyboard-sub-window-thing.
 
 ```javascript
 const isIOS = someWayToDetectAppleIOS();
 
-// addressing the "ios-keyboard-sub-window-thing offset" bug:
+// Addressing the "ios-keyboard-sub-window-thing offset" bug:
 // body scroll lock along with a programmatic focus
 // on an a form field make the keyboard tray to show
 // and that triggers, along with the visual artifact itself, a "resize" event
-target.addEventListener("scroll-padlock-resize", () => {
-    if ( isIOS ) {
+window.addEventListener("resize", () => {
+    if (isIOS && classList.contains(SCROLL_LOCKED_CSS_CLASS_NAME)) {
+        // "Re-aligns" the iOS keyboard sub-window
         window.scrollTo(0, 0);
     }
 });
@@ -239,15 +203,14 @@ The problem should be solved at this point.
 
 ## Support
 
-All [modern browsers](https://teamtreehouse.com/community/what-is-a-modern-browser) have been tested, but here's a list of dependencies that might be needed in order to support older ones:
-* 💥 DOM API "[matches](https://developer.mozilla.org/en-US/docs/Web/API/Element/matches#Polyfill)" method ([Polyfill](https://developer.mozilla.org/en-US/docs/Web/API/Element/matches#Polyfill))
-* 💥 [WeakMap](https://caniuse.com/mdn-javascript_builtins_weakmap)
-* [CustomEvent](https://caniuse.com/customevent) ([Polyfill](https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent/CustomEvent#Polyfill))
-* [CSS variables](https://caniuse.com/css-variables): only for scrollbar gaps compensation (since old browsers support _overflow: hidden_); the JS API and events can be also used to reach a workaround.
+All [modern browsers](https://teamtreehouse.com/community/what-is-a-modern-browser) have been tested.
+
+The library doesn't provide a fallback for those browsers which don't support [CSS variables](https://caniuse.com/css-variables) (mainly Internet Explorer 11); since these browsers tipically support _overflow: hidden_, the [JS API](#API) can be used to implement the scrollbars-gaps compensation normally achievable through CSS by standard browsers (a graceful degradation approach is highly suggested though).
 
 ## Try it out!
-Here's some example projects with the most used reactive frameworks:
+Here's some example projects for the most common setups:
 
+* Vanilla ([Preview](#) - [Browse](#))
 * Angular ([Preview](#) - [Browse](#))
 * React ([Preview](#) - [Browse](#))
 * Vue ([Preview](#) - [Browse](#))

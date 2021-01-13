@@ -1,4 +1,4 @@
-import { SCROLLBAR_WIDTH, SCROLLBAR_HEIGHT, getScrollbarsGaps } from '../src/scrollbars.mjs';
+import { SCROLLBAR_WIDTH, SCROLLBAR_HEIGHT, getScrollbars } from '../src/scrollbars.mjs';
 
 import { getDimensions } from '../src/dimensions.mjs';
 
@@ -29,11 +29,11 @@ describe('scrollbars', () => {
 
         style.overflow = 'hidden';
 
-        expect(getScrollbarsGaps(getDimensions(div, div))).to.be.deep.equals({ [SCROLLBAR_HEIGHT]: 0, [SCROLLBAR_WIDTH]: 0 });
+        expect(getScrollbars(getDimensions(div, div))).to.be.deep.equals({ [SCROLLBAR_HEIGHT]: 0, [SCROLLBAR_WIDTH]: 0 });
 
         style.overflow = 'scroll';
 
-        expect(getScrollbarsGaps(getDimensions(div, div))).to.be.deep.equals({ [SCROLLBAR_HEIGHT]: SCROLLBAR_SIZE, [SCROLLBAR_WIDTH]: SCROLLBAR_SIZE });
+        expect(getScrollbars(getDimensions(div, div))).to.be.deep.equals({ [SCROLLBAR_HEIGHT]: SCROLLBAR_SIZE, [SCROLLBAR_WIDTH]: SCROLLBAR_SIZE });
         
         div.remove();
     });
@@ -43,11 +43,11 @@ describe('scrollbars', () => {
         
         style.overflow = 'hidden';
         
-        expect(getScrollbarsGaps(getDimensions(documentElement, window))).to.be.deep.equals({ [SCROLLBAR_HEIGHT]: 0, [SCROLLBAR_WIDTH]: 0 });
+        expect(getScrollbars(getDimensions(documentElement, window))).to.be.deep.equals({ [SCROLLBAR_HEIGHT]: 0, [SCROLLBAR_WIDTH]: 0 });
         
         style.overflow = 'scroll';
         
-        expect(getScrollbarsGaps(getDimensions(documentElement, window))).to.be.deep.equals({ [SCROLLBAR_HEIGHT]: SCROLLBAR_SIZE, [SCROLLBAR_WIDTH]: SCROLLBAR_SIZE });
+        expect(getScrollbars(getDimensions(documentElement, window))).to.be.deep.equals({ [SCROLLBAR_HEIGHT]: SCROLLBAR_SIZE, [SCROLLBAR_WIDTH]: SCROLLBAR_SIZE });
 
         style.overflow = '';
     });
