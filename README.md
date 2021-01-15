@@ -17,10 +17,10 @@ A small script (~4K gzipped) aimed to encourage a **CSS-first** approach when **
 ## Try it out!
 Here's some example projects for the most common setups:
 
-* Vanilla ([Preview](#) - [Browse](#))
-* Angular ([Preview](#) - [Browse](#))
-* React ([Preview](#) - [Browse](#))
-* Vue ([Preview](#) - [Browse](#))
+* Vanilla ([Preview](https://rgzrb.csb.app/) - [Browse](https://codesandbox.io/s/scroll-padlock-vanilla-rgzrb))
+* Angular ([Preview](https://xuudg.csb.app/) - [Browse](https://codesandbox.io/s/scroll-padlock-angular-xuudg))
+* React ([Preview](https://vouoz.csb.app/) - [Browse](https://codesandbox.io/s/scroll-padlock-react-vouoz))
+* Vue ([Preview](https://6ewti.csb.app/) - [Browse](https://codesandbox.io/s/scroll-padlock-vue-6ewti))
 
 ## Inclusion
 
