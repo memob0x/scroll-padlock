@@ -1,12 +1,19 @@
-import { DOM_BASE_NAME, EVENT_NAME_SCROLL, EVENT_NAME_RESIZE, doc, documentElement, body, addListener, removeListener } from './client.mjs';
+import {
+    DOM_BASE_NAME,
+    EVENT_NAME_SCROLL,
+    EVENT_NAME_RESIZE,
+    doc,
+    documentElement,
+    body,
+    addListener,
+    removeListener
+} from './client.mjs';
 
 import { debounce } from './utils.mjs';
 
 import { SCROLL_TOP, SCROLL_LEFT, getScroll } from './scroll.mjs';
 
-import { getDimensions } from './dimensions.mjs';
-
-import { getScrollbars } from './scrollbars.mjs';
+import { getLayout } from './layout.mjs';
 
 import { setStyles, unsetStyles } from './style.mjs';
 
@@ -43,7 +50,7 @@ export default class ScrollPadlock {
             throw new TypeError('Invalid element provided to constructor');
         }
 
-        //
+        // If the given element is a valid html element, then its reference is set to an instance member
         if (elementIsHtmlElement) {
             this.#target = element;
         }
@@ -68,7 +75,7 @@ export default class ScrollPadlock {
         // so this one is added to the instances collection
         instances.set(this.#element, this);
 
-        //
+        // Stores the given element class list reference
         this.#classList = this.#target.classList;
 
         // Lock state css class validity check, must be a string and a valid one
@@ -82,11 +89,11 @@ export default class ScrollPadlock {
         // Stores the class name as a private member
         this.#cssClassName = cssClassName;
 
-        // Firing the public update method to initialize everything
+        // Fires the public update method to initialize everything;
         // computes scroll position, scrollbars sizes and writes css variables
         this.update();
 
-        //
+        // Observes the given element CSS class list for given CSS class name changes
         this.#observeCssClass();
 
         // Attaches resize event listener
@@ -102,38 +109,38 @@ export default class ScrollPadlock {
     #element = DEFAULT_ELEMENT;
 
     /**
-     * 
+     * The original given element (the one provided to the class constructor)
      */
     #target = DEFAULT_TARGET;
 
     /**
-     * The actual scroll element target, the element that can perform and listen to scroll event
+     * The actual scrollable element (the element that can perform and listen to scroll event)
      * Usually coincides with "element", but when "element" is document.documentElement, "scroller" is window
      */
     #scroller = DEFAULT_SCROLLER;
 
     /**
-     * 
+     * The original given element CSS class list
      */
     #classList;
 
     /**
-     * The lock state class name
+     * The lock state CSS class name
      */
     #cssClassName = DEFAULT_CSS_CLASS_NAME;
 
     /**
-     * 
+     * The scroll lock state
      */
     #state;
 
     /**
-     * The scroll position
+     * The current scroll position
      */
     #scrollCurrent;
 
     /**
-     * 
+     * The scroll position saving, the scroll position stored for later use
      */
     #scrollSaving;
 
@@ -142,6 +149,7 @@ export default class ScrollPadlock {
      * @returns {Object} The current scroll position object or the scroll position previously saved if on a locked state
      */
     get scroll() {
+        // If the state is locked, the saved scroll position is returned, otherwise the current scroll position is returned
         return this.#state ? this.#scrollSaving : this.#scrollCurrent;
     }
 
@@ -150,68 +158,62 @@ export default class ScrollPadlock {
      * @param {Object} position The scroll position to be set or saved if on a locked state
      */
     set scroll(position) {
-        //
+        // The scroll is locked...
         if (this.#state) {
+            // ...the given scroll position is saved for later use...
             this.#scrollSaving = position;
 
+            // ...then exits early
             return;
         }
 
-        //
+        // The scroll is not locked, then a scrollTo native DOM api is triggered
+        // (current scroll position will be retrieve through "scroll" event listener)
         this.#scrollTo(position);
     }
 
     /**
-     * 
+     * The layout dimensions
+     */
+    #layout;
+
+    /**
+     * Gets the layout dimensions, such as widths, heights, scrollbars etc...
+     * @returns {Object} The layout object
+     */
+    get layout() {
+        return this.#layout;
+    }
+
+    /**
+     * State MutationObserver object,
+     * registers the callback fired on CSS class change
      */
     #observer = new MutationObserver(() => {
-        //
+        // Caches the current scroll lock state before updating it
         const state = this.#state;
 
-        //
+        // Updates lock state member
         this.#updateState();
 
-        // No state change, exiting early
+        // No state change...
         if (this.#state === state) {
+            // ...exits early
             return;
         }
 
-        // State changed to true
+        // State changed to true...
         if (this.#state) {
+            // ...copies the current scroll position to another private member (saves current scroll position)
             this.#scrollSaving = { ...this.#scrollCurrent };
 
+            // ...and exits early
             return;
         }
 
         // State changed to false, restoring scroll position
         this.#scrollTo(this.#scrollSaving);
     });
-
-    /**
-     * 
-     */
-    #dimensions;
-
-    /**
-     * 
-     * @returns {Object}
-     */
-    get dimensions() {
-        return this.#dimensions;
-    }
-
-    /**
-     * The scrollbars size
-     */
-    #scrollbar;
-
-    /**
-     * Gets the current vertical scrollbar width size in px unit
-     * @returns {Object} The current vertical scrollbar width and the horizontal scrollbar height in px
-     */
-    get scrollbar() {
-        return this.#scrollbar;
-    }
 
     /**
      * The styler, css variables holder
@@ -222,14 +224,8 @@ export default class ScrollPadlock {
      * Window resize event handler
      */
     #resizeHandler = debounce(() => {
-        //
-        this.#performUnlockedAction(() => {
-            // 
-            this.#updateDimensions();
-
-            // 
-            this.#updateScrollbar();
-        });
+        // Refresh layout
+        this.#performUnlockedAction(this.#updateLayout);
 
         // Rewrites css variables
         this.#applyStyles();
@@ -240,22 +236,22 @@ export default class ScrollPadlock {
      */
     #scrollHandler = debounce(() => {
         // Refresh scrollbars size
-        this.#performUnlockedAction(this.#updateScroll);
+        this.#performUnlockedAction(this.#updateScrollCurrent);
 
         // Rewrites css variables
         this.#applyStyles();
     }, SCROLL_DEBOUNCE_INTERVAL_MS);
 
     /**
-     * 
-     * @param {Object} position
-     * @returns {Object}
+     * Scrolls the given element to a given scroll position
+     * @param {Object} position The scroll position to be set
+     * @returns {void} Nothing
      */
     #scrollTo = position => this.#scroller.scrollTo(position[SCROLL_LEFT], position[SCROLL_TOP]);
 
     /**
-     * 
-     * @returns {Boolean}
+     * Updates the scroll state
+     * @returns {Boolean} The scroll state
      */
     #updateState = () => (this.#state = this.#classList.contains(this.#cssClassName));
 
@@ -268,7 +264,7 @@ export default class ScrollPadlock {
         // Caches the scroll lock state (true if css class is set, thus on a locked state)
         const wasLocked = this.#state;
 
-        // 
+        // Temporarily unobserves the CSS class change
         this.#unobserveCssClass();
 
         // Removes the css class temporarly
@@ -282,7 +278,7 @@ export default class ScrollPadlock {
             this.#classList.add(this.#cssClassName);
         }
 
-        //
+        // Observes the given element CSS class list for given CSS class name changes
         this.#observeCssClass();
 
         // Returns what the given function returns
@@ -290,34 +286,28 @@ export default class ScrollPadlock {
     };
 
     /**
-     * 
-     * @returns {Object}
+     * Updates the layout object
+     * @returns {Object} The layout object
      */
-    #updateDimensions = () => (this.#dimensions = getDimensions(this.#element, this.#scroller));
-
-    /**
-     * Refresh the scrollbars size at a (temporarly) unlocked state
-     * @returns {Object} The current vertical scrollbar width and the horizontal scrollbar height in px
-     */
-    #updateScrollbar = () => (this.#scrollbar = getScrollbars(this.#dimensions));
+    #updateLayout = () => (this.#layout = getLayout(this.#element, this.#scroller));
 
     /**
      * Refresh the scroll position at a (temporarly) unlocked state
      * @returns {Object} The current scroll position object
      */
-    #updateScroll = () => (this.#scrollCurrent = getScroll(this.#scroller));
+    #updateScrollCurrent = () => (this.#scrollCurrent = getScroll(this.#scroller));
 
     /**
      * Rewrites the css variables with current data
      * @returns {HTMLStyleElement} Styler element
      */
-    #applyStyles = () => setStyles(this.#target, this.#styler, this.#dimensions, this.scroll, this.scrollbar);
+    #applyStyles = () => setStyles(this.#target, this.#styler, this.layout, this.scroll);
 
     /**
-     * 
+     * Observes the element CSS class changes
      * @returns {void} Nothing
      */
-    #observeCssClass = () => this.#observer.observe(this.#target, {
+    #observeCssClass = () => this.#observer?.observe(this.#target, {
         attributes: true,
         attributeFilter: ['class'],
         childList: false,
@@ -325,20 +315,23 @@ export default class ScrollPadlock {
     });
 
     /**
-     * 
+     * Unobserves the element CSS class changes
      * @returns {void} Nothing
      */
-    #unobserveCssClass = () => this.#observer.disconnect();
+    #unobserveCssClass = () => this.#observer?.disconnect();
 
     /**
      * Effectively destroy the instance, detaching event listeners, removing styles, etc...
      * @returns {void} Nothing
      */
     destroy() {
-        //
+        // Unobserves the CSS class change
         this.#unobserveCssClass();
 
-        // Removes the css variables, styler, styler selector...
+        // Removes the observer reference
+        this.#observer = null;
+
+        // Removes the CSS variables, styler, styler selector...
         unsetStyles(this.#element, this.#styler);
 
         // Detaches the scroll event listener
@@ -365,16 +358,13 @@ export default class ScrollPadlock {
         // Refresh the css class state
         this.#updateState();
 
-        //
+        // Perform layout an scroll position refresh at unlocked state
         this.#performUnlockedAction(() => {
-            //
-            this.#updateDimensions();
-
-            // Refresh scrollbars size
-            this.#updateScrollbar();
+            // Refresh layout
+            this.#updateLayout();
 
             // Refresh scroll position
-            this.#updateScroll();
+            this.#updateScrollCurrent();
         });
 
         // Rewrites css variables

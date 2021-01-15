@@ -1,22 +1,22 @@
 import { DOM_BASE_NAME, head } from './client.mjs';
 
 import {
-    DIMENSIONS_HEIGHT_INNER,
-    DIMENSIONS_HEIGHT_SCROLL,
-    DIMENSIONS_WIDTH_OUTER,
-    DIMENSIONS_WIDTH_SCROLL,
-    DIMENSIONS_WIDTH_INNER,
-    DIMENSIONS_HEIGHT_OUTER,
-    DIMENSIONS_OUTER,
-    DIMENSIONS_INNER,
-    DIMENSIONS_WIDTH,
-    DIMENSIONS_HEIGHT,
-    DIMENSIONS_SCROLL
-} from './dimensions.mjs';
+    LAYOUT_HEIGHT_INNER,
+    LAYOUT_HEIGHT_SCROLL,
+    LAYOUT_WIDTH_OUTER,
+    LAYOUT_WIDTH_SCROLL,
+    LAYOUT_WIDTH_INNER,
+    LAYOUT_HEIGHT_OUTER,
+    LAYOUT_OUTER,
+    LAYOUT_INNER,
+    LAYOUT_WIDTH,
+    LAYOUT_HEIGHT,
+    LAYOUT_SCROLL,
+    LAYOUT_SCROLLBAR_WIDTH,
+    LAYOUT_SCROLLBAR_HEIGHT
+} from './layout.mjs';
 
 import { SCROLL_TOP, SCROLL_LEFT } from './scroll.mjs';
-
-import { SCROLLBAR_WIDTH, SCROLLBAR_HEIGHT } from './scrollbars.mjs';
 
 import { getElementParentsLength, getElementIndex, joinHyphen } from './utils.mjs';
 
@@ -29,14 +29,14 @@ const CSS_VAR_SCROLL_PREFIX = 'scroll';
 export const CSS_VAR_NAME_POSITION_TOP = CSS_VAR_PREFIX + joinHyphen(DOM_BASE_NAME, CSS_VAR_SCROLL_PREFIX, SCROLL_TOP);
 export const CSS_VAR_NAME_POSITION_LEFT = CSS_VAR_PREFIX + joinHyphen(DOM_BASE_NAME, CSS_VAR_SCROLL_PREFIX, SCROLL_LEFT);
 const CSS_VAR_SCROLLBAR_PREFIX = 'scrollbar';
-export const CSS_VAR_NAME_GAP_VERTICAL = CSS_VAR_PREFIX + joinHyphen(DOM_BASE_NAME, CSS_VAR_SCROLLBAR_PREFIX, SCROLLBAR_WIDTH);
-export const CSS_VAR_NAME_GAP_HORIZONTAL = CSS_VAR_PREFIX + joinHyphen(DOM_BASE_NAME, CSS_VAR_SCROLLBAR_PREFIX, SCROLLBAR_HEIGHT);
-export const CSS_VAR_NAME_WIDTH_OUTER = CSS_VAR_PREFIX + joinHyphen(DOM_BASE_NAME, DIMENSIONS_OUTER, DIMENSIONS_WIDTH);
-export const CSS_VAR_NAME_HEIGHT_OUTER = CSS_VAR_PREFIX + joinHyphen(DOM_BASE_NAME, DIMENSIONS_OUTER, DIMENSIONS_HEIGHT);
-export const CSS_VAR_NAME_WIDTH_INNER = CSS_VAR_PREFIX + joinHyphen(DOM_BASE_NAME, DIMENSIONS_INNER, DIMENSIONS_WIDTH);
-export const CSS_VAR_NAME_HEIGHT_INNER = CSS_VAR_PREFIX + joinHyphen(DOM_BASE_NAME, DIMENSIONS_INNER, DIMENSIONS_HEIGHT);
-export const CSS_VAR_NAME_WIDTH_SCROLL = CSS_VAR_PREFIX + joinHyphen(DOM_BASE_NAME, DIMENSIONS_SCROLL, DIMENSIONS_WIDTH);
-export const CSS_VAR_NAME_HEIGHT_SCROLL = CSS_VAR_PREFIX + joinHyphen(DOM_BASE_NAME, DIMENSIONS_SCROLL, DIMENSIONS_HEIGHT);
+export const CSS_VAR_NAME_SCROLLBAR_WIDTH = CSS_VAR_PREFIX + joinHyphen(DOM_BASE_NAME, CSS_VAR_SCROLLBAR_PREFIX, LAYOUT_WIDTH);
+export const CSS_VAR_NAME_SCROLLBAR_HEIGHT = CSS_VAR_PREFIX + joinHyphen(DOM_BASE_NAME, CSS_VAR_SCROLLBAR_PREFIX, LAYOUT_HEIGHT);
+export const CSS_VAR_NAME_WIDTH_OUTER = CSS_VAR_PREFIX + joinHyphen(DOM_BASE_NAME, LAYOUT_OUTER, LAYOUT_WIDTH);
+export const CSS_VAR_NAME_HEIGHT_OUTER = CSS_VAR_PREFIX + joinHyphen(DOM_BASE_NAME, LAYOUT_OUTER, LAYOUT_HEIGHT);
+export const CSS_VAR_NAME_WIDTH_INNER = CSS_VAR_PREFIX + joinHyphen(DOM_BASE_NAME, LAYOUT_INNER, LAYOUT_WIDTH);
+export const CSS_VAR_NAME_HEIGHT_INNER = CSS_VAR_PREFIX + joinHyphen(DOM_BASE_NAME, LAYOUT_INNER, LAYOUT_HEIGHT);
+export const CSS_VAR_NAME_WIDTH_SCROLL = CSS_VAR_PREFIX + joinHyphen(DOM_BASE_NAME, LAYOUT_SCROLL, LAYOUT_WIDTH);
+export const CSS_VAR_NAME_HEIGHT_SCROLL = CSS_VAR_PREFIX + joinHyphen(DOM_BASE_NAME, LAYOUT_SCROLL, LAYOUT_HEIGHT);
 
 // CSS variables value unit of measurement
 const CSS_VAR_UNIT_VALUE = 'px';
@@ -48,12 +48,11 @@ const CSS_STYLE_SHEET_ONLY_RULE_INDEX = 0;
  * Updates a given element css variables to a given styler element ensuring its presence in head
  * @param {HTMLElement} element The given element whose css variables need to be updated
  * @param {HTMLStyleElement} styler The styler element where the css variables are written
- * @param {Object} dimensions
+ * @param {Object} layout
  * @param {Object} scroll The scroll position to be set in css variables
- * @param {Object} scrollbar The scrollbars size to be set in css variables
  * @returns {HTMLStyleElement} Styler element
  */
-export const setStyles = (element, styler, dimensions, scroll, scrollbar) => {
+export const setStyles = (element, styler, layout, scroll) => {
     // Ensures style tag dom presence, StyleSheet API throws otherwise
     if (!head.contains(styler)) {
         head.appendChild(styler);
@@ -78,17 +77,17 @@ export const setStyles = (element, styler, dimensions, scroll, scrollbar) => {
         [CSS_VAR_NAME_POSITION_TOP]: scroll[SCROLL_TOP],
         [CSS_VAR_NAME_POSITION_LEFT]: scroll[SCROLL_LEFT],
 
-        [CSS_VAR_NAME_WIDTH_OUTER]: dimensions[DIMENSIONS_WIDTH_OUTER],
-        [CSS_VAR_NAME_HEIGHT_OUTER]: dimensions[DIMENSIONS_HEIGHT_OUTER],
+        [CSS_VAR_NAME_WIDTH_OUTER]: layout[LAYOUT_WIDTH_OUTER],
+        [CSS_VAR_NAME_HEIGHT_OUTER]: layout[LAYOUT_HEIGHT_OUTER],
 
-        [CSS_VAR_NAME_WIDTH_INNER]: dimensions[DIMENSIONS_WIDTH_INNER],
-        [CSS_VAR_NAME_HEIGHT_INNER]: dimensions[DIMENSIONS_HEIGHT_INNER],
+        [CSS_VAR_NAME_WIDTH_INNER]: layout[LAYOUT_WIDTH_INNER],
+        [CSS_VAR_NAME_HEIGHT_INNER]: layout[LAYOUT_HEIGHT_INNER],
 
-        [CSS_VAR_NAME_WIDTH_SCROLL]: dimensions[DIMENSIONS_WIDTH_SCROLL],
-        [CSS_VAR_NAME_HEIGHT_SCROLL]: dimensions[DIMENSIONS_HEIGHT_SCROLL],
+        [CSS_VAR_NAME_WIDTH_SCROLL]: layout[LAYOUT_WIDTH_SCROLL],
+        [CSS_VAR_NAME_HEIGHT_SCROLL]: layout[LAYOUT_HEIGHT_SCROLL],
 
-        [CSS_VAR_NAME_GAP_VERTICAL]: scrollbar[SCROLLBAR_WIDTH],
-        [CSS_VAR_NAME_GAP_HORIZONTAL]: scrollbar[SCROLLBAR_HEIGHT]
+        [CSS_VAR_NAME_SCROLLBAR_WIDTH]: layout[LAYOUT_SCROLLBAR_WIDTH],
+        [CSS_VAR_NAME_SCROLLBAR_HEIGHT]: layout[LAYOUT_SCROLLBAR_HEIGHT]
     };
 
     // Enumerates the rules data object key (the css variables names)

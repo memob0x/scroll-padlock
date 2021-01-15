@@ -1,14 +1,21 @@
-import { DIMENSIONS_WIDTH_INNER, DIMENSIONS_HEIGHT_INNER, DIMENSIONS_HEIGHT_OUTER, DIMENSIONS_WIDTH_SCROLL, DIMENSIONS_HEIGHT_SCROLL, DIMENSIONS_WIDTH_OUTER } from '../src/dimensions.mjs';
+import {
+    LAYOUT_SCROLLBAR_HEIGHT,
+    LAYOUT_SCROLLBAR_WIDTH,
+    LAYOUT_WIDTH_INNER,
+    LAYOUT_HEIGHT_INNER,
+    LAYOUT_HEIGHT_OUTER,
+    LAYOUT_WIDTH_SCROLL,
+    LAYOUT_HEIGHT_SCROLL,
+    LAYOUT_WIDTH_OUTER
+} from '../src/layout.mjs';
 
 import { SCROLL_TOP, SCROLL_LEFT } from '../src/scroll.mjs';
-
-import { SCROLLBAR_WIDTH, SCROLLBAR_HEIGHT } from '../src/scrollbars.mjs';
 
 import {
     DATA_ATTR_NAME,
     CSS_VAR_NAME_POSITION_LEFT,
-    CSS_VAR_NAME_GAP_HORIZONTAL,
-    CSS_VAR_NAME_GAP_VERTICAL,
+    CSS_VAR_NAME_SCROLLBAR_HEIGHT,
+    CSS_VAR_NAME_SCROLLBAR_WIDTH,
     CSS_VAR_NAME_POSITION_TOP,
     setStyles,
     unsetStyles
@@ -32,15 +39,25 @@ describe('style', () => {
         body.prepend(div);
 
         let scroll = { [SCROLL_TOP]: 0, [SCROLL_LEFT]: 0 };
-        let scrollbar = { [SCROLLBAR_WIDTH]: 0, [SCROLLBAR_HEIGHT]: 0 };
-        let dimensions = { [DIMENSIONS_WIDTH_OUTER]: 0, [DIMENSIONS_HEIGHT_OUTER]: 0, [DIMENSIONS_WIDTH_INNER]: 0, [DIMENSIONS_HEIGHT_INNER]: 0, [DIMENSIONS_WIDTH_SCROLL]: 0, [DIMENSIONS_HEIGHT_SCROLL]: 0 };
 
-        expect(setStyles(div, styler, dimensions, scroll, scrollbar)).to.equals(styler);
+        let layout = {
+            [LAYOUT_SCROLLBAR_WIDTH]: 0,
+            [LAYOUT_SCROLLBAR_HEIGHT]: 0,
+            [LAYOUT_WIDTH_OUTER]: 0,
+            [LAYOUT_HEIGHT_OUTER]: 0,
+            [LAYOUT_WIDTH_INNER]: 0,
+            [LAYOUT_HEIGHT_INNER]: 0,
+            [LAYOUT_WIDTH_SCROLL]: 0,
+            [LAYOUT_HEIGHT_SCROLL]: 0
+        };
+
+        expect(setStyles(div, styler, layout, scroll)).to.equals(styler);
 
         expect(getCSSVariableValue(div, CSS_VAR_NAME_POSITION_TOP)).to.equals(`${scroll[SCROLL_TOP]}px`);
         expect(getCSSVariableValue(div, CSS_VAR_NAME_POSITION_LEFT)).to.equals(`${scroll[SCROLL_LEFT]}px`);
-        expect(getCSSVariableValue(div, CSS_VAR_NAME_GAP_VERTICAL)).to.equals(`${scrollbar[SCROLLBAR_WIDTH]}px`);
-        expect(getCSSVariableValue(div, CSS_VAR_NAME_GAP_HORIZONTAL)).to.equals(`${scrollbar[SCROLLBAR_HEIGHT]}px`);
+
+        expect(getCSSVariableValue(div, CSS_VAR_NAME_SCROLLBAR_WIDTH)).to.equals(`${layout[LAYOUT_SCROLLBAR_WIDTH]}px`);
+        expect(getCSSVariableValue(div, CSS_VAR_NAME_SCROLLBAR_HEIGHT)).to.equals(`${layout[LAYOUT_SCROLLBAR_HEIGHT]}px`);
 
         expect(head.contains(styler)).to.be.true;
 
@@ -57,20 +74,30 @@ describe('style', () => {
         expect(div.matches(`[${DATA_ATTR_NAME}]`)).to.be.false;
 
         scroll = { [SCROLL_TOP]: 123, [SCROLL_LEFT]: 345 };
-        scrollbar = { [SCROLLBAR_WIDTH]: 567, [SCROLLBAR_HEIGHT]: 789 };
-        dimensions = { [DIMENSIONS_WIDTH_OUTER]: 1111, [DIMENSIONS_HEIGHT_OUTER]: 1111, [DIMENSIONS_WIDTH_INNER]: 1111, [DIMENSIONS_HEIGHT_INNER]: 1111, [DIMENSIONS_WIDTH_SCROLL]: 1111, [DIMENSIONS_HEIGHT_SCROLL]: 1111 };
+
+        layout = {
+            [LAYOUT_WIDTH_OUTER]: 1234,
+            [LAYOUT_HEIGHT_OUTER]: 4325,
+            [LAYOUT_WIDTH_INNER]: 6542,
+            [LAYOUT_HEIGHT_INNER]: 5364,
+            [LAYOUT_WIDTH_SCROLL]: 3464,
+            [LAYOUT_HEIGHT_SCROLL]: 5675,
+            [LAYOUT_SCROLLBAR_HEIGHT]: 22,
+            [LAYOUT_SCROLLBAR_WIDTH]: 33
+        };
 
         const indexShifterDummyEl = createElement();
 
         // NOTE: prepending because of karma scripts at the end of body (they would affect index detection)
         body.prepend(indexShifterDummyEl);
 
-        setStyles(div, styler, dimensions, scroll, scrollbar);
+        setStyles(div, styler, layout, scroll);
 
         expect(getCSSVariableValue(div, CSS_VAR_NAME_POSITION_TOP)).to.equals(`${scroll[SCROLL_TOP]}px`);
         expect(getCSSVariableValue(div, CSS_VAR_NAME_POSITION_LEFT)).to.equals(`${scroll[SCROLL_LEFT]}px`);
-        expect(getCSSVariableValue(div, CSS_VAR_NAME_GAP_VERTICAL)).to.equals(`${scrollbar[SCROLLBAR_WIDTH]}px`);
-        expect(getCSSVariableValue(div, CSS_VAR_NAME_GAP_HORIZONTAL)).to.equals(`${scrollbar[SCROLLBAR_HEIGHT]}px`);
+
+        expect(getCSSVariableValue(div, CSS_VAR_NAME_SCROLLBAR_WIDTH)).to.equals(`${layout[LAYOUT_SCROLLBAR_WIDTH]}px`);
+        expect(getCSSVariableValue(div, CSS_VAR_NAME_SCROLLBAR_HEIGHT)).to.equals(`${layout[LAYOUT_SCROLLBAR_HEIGHT]}px`);
 
         let oldAttrValue = attrValue;
         attrValue = div.getAttribute(DATA_ATTR_NAME);

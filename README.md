@@ -4,7 +4,7 @@
 [![scroll-padlock (latest)](https://img.shields.io/npm/v/scroll-padlock/latest.svg)](https://www.npmjs.com/package/scroll-padlock)
 [![scroll-padlock (downloads)](https://img.shields.io/npm/dy/scroll-padlock.svg)](https://www.npmjs.com/package/scroll-padlock)
 
-A small script (~4K gzipped) aimed to encourage __**CSS-first** html elements scroll lock__ avoiding "contents jump".
+A small script (~4K gzipped) aimed to encourage a **CSS-first** approach when **locking html elements scroll** avoiding "contents jump" and iOS Safari quirkiness.
 
 🙅 Without this library:
 
@@ -13,6 +13,14 @@ A small script (~4K gzipped) aimed to encourage __**CSS-first** html elements sc
 💁 With this library:
 
 ![with scrollbar gap compensation](https://github.com/memob0x/scroll-padlock/blob/master/docs/with-gap-compensation.gif?raw=true)
+
+## Try it out!
+Here's some example projects for the most common setups:
+
+* Vanilla ([Preview](#) - [Browse](#))
+* Angular ([Preview](#) - [Browse](#))
+* React ([Preview](#) - [Browse](#))
+* Vue ([Preview](#) - [Browse](#))
 
 ## Inclusion
 
@@ -24,40 +32,37 @@ $ npm install scroll-padlock
 
 The source code is entirely written in [standard ECMAScript](https://tc39.es/), but the final distribution includes transpiled [umd](https://github.com/umdjs/umd), [iife](https://developer.mozilla.org/en-US/docs/Glossary/IIFE), [amd](https://en.wikipedia.org/wiki/Asynchronous_module_definition), [cjs](https://en.wikipedia.org/wiki/CommonJS), [esm](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules) and [SystemJS](https://github.com/systemjs/systemjs) bundles.
 
+## Under the Hood
+
+This library just sets some [CSS variables](#css-variables) on html elements, to do that it **observes [CSS class mutations](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver)** and **listens to [window resize](https://developer.mozilla.org/en-US/docs/Web/API/Window/resize_event) and [scroll](https://developer.mozilla.org/en-US/docs/Web/API/Element/scroll_event) events**.
+
 ## Usage
 
-To set and update the CSS variables the library **observes [CSS class mutations](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver)** and **listens to [window resize](https://developer.mozilla.org/en-US/docs/Web/API/Window/resize_event) and [scroll](https://developer.mozilla.org/en-US/docs/Web/API/Element/scroll_event) events**; thus **creating an instance** is the only thing that has to be done.
+Since the [CSS class](#CSS-Rules-Examples) that would prevent an element to scroll is automatically observed, an instance must be created providing the given element and its CSS class as parameters.
 
 ```javascript
-// The class that would lock the page scroll
+// The css class with the rules that would lock the page scroll
 const SCROLL_LOCKED_CSS_CLASS_NAME = 'your-locked-class';
 
-// The element which scroll needs to be controlled
+// The element which scroll state needs to be controlled
 const { documentElement } = document;
 
-// Creates the instance...
+// Creates the instance
 const instance = new ScrollPadlock(documentElement, SCROLL_LOCKED_CSS_CLASS_NAME);
+```
 
-// ...at this point every given class change is observed and window resize or scroll events are listened.
+At this point, the lock state can be changed simply toggling that CSS class, both with native DOM API or through a reactive framework virtual DOM.
 
+```javascript
 const { classList } = documentElement;
 
 // Locks the body scroll
 classList.add(SCROLL_LOCKED_CSS_CLASS_NAME);
+
+// Unlocks the body scroll
+classList.remove(SCROLL_LOCKED_CSS_CLASS_NAME);
 ```
-
-As an instance is created, some CSS variables are set at the given element level (the element provided to the constructor as a parameter), making CSS "aware" of the following values.
-
-* `--scroll-padlock-scroll-top`: the number of pixels that the target is scrolled vertically.
-* `--scroll-padlock-scroll-left`: the number of pixels that the target is scrolled horizontally.
-* `--scroll-padlock-scrollbar-width`: the target's vertical scrollbar size.
-* `--scroll-padlock-scrollbar-height`: the target's horizontal scrollbar size.
-* `--scroll-padlock-outer-width`: the target's width including the scrollbar size.
-* `--scroll-padlock-outer-height`: the target's height including the scrollbar size.
-* `--scroll-padlock-inner-width`: the target's width without the scrollbar size.
-* `--scroll-padlock-inner-height`: the target's height without the scrollbar size.
-* `--scroll-padlock-scroll-width`: the target's content width.
-* `--scroll-padlock-scroll-height`: the target's content height.
+## CSS Rules Examples
 
 The following ruleset alone is enough to ensure a cross-browser body scroll lock for a standard vertical-scroll page:
 
@@ -102,6 +107,21 @@ html.your-locked-class.not-ios body {
 }
 ```
 
+## CSS Variables
+
+This is the complete list of CSS variables set by this library on the given elements.
+
+* `--scroll-padlock-scroll-top`: the number of pixels that the target is scrolled vertically.
+* `--scroll-padlock-scroll-left`: the number of pixels that the target is scrolled horizontally.
+* `--scroll-padlock-scrollbar-width`: the target's vertical scrollbar size.
+* `--scroll-padlock-scrollbar-height`: the target's horizontal scrollbar size.
+* `--scroll-padlock-outer-width`: the target's width including the scrollbar size.
+* `--scroll-padlock-outer-height`: the target's height including the scrollbar size.
+* `--scroll-padlock-inner-width`: the target's width without the scrollbar size.
+* `--scroll-padlock-inner-height`: the target's height without the scrollbar size.
+* `--scroll-padlock-scroll-width`: the target's content width.
+* `--scroll-padlock-scroll-height`: the target's content height.
+
 ## API
 
 The `destroy` method is particularly important when using **reactive frameworks** (such as React, Vue, Angular, etc...) which components lifecycle might generate memory leaks: **call `destroy` method when the components in which scroll-padlock is used get unmounted**.
@@ -126,18 +146,24 @@ const { top, left } = instance.scroll;
 // otherwise the instance element is directly scrolled to the given position
 instance.scroll = { top, left };
 
-// Gets the current vertical and horizontal scrollbars size
-const { width, height } = instance.scrollbar;
-
-// Gets the current instance element dimensions
+// Gets the current instance element layout sizes
 const {
+    // The target's width and height including the scrollbar size
     outerWidth,
     outerHeight,
+
+    // The target's width and height without the scrollbar size
     innerWidth,
     innerHeight,
+
+    // The target's content width and height
     scrollWidth,
-    scrollHeight
-} = instanse.dimensions;
+    scrollHeight,
+
+    // The target's vertical and horizontal scrollbar size
+    scrollbarWidth,
+    scrollbarHeight
+} = instanse.layout;
 ```
 
 ## TL;TR: a body scroll overview
@@ -206,11 +232,3 @@ The problem should be solved at this point.
 All [modern browsers](https://teamtreehouse.com/community/what-is-a-modern-browser) have been tested.
 
 The library doesn't provide a fallback for those browsers which don't support [CSS variables](https://caniuse.com/css-variables) (mainly Internet Explorer 11); since these browsers tipically support _overflow: hidden_, the [JS API](#API) can be used to implement the scrollbars-gaps compensation normally achievable through CSS by standard browsers (a graceful degradation approach is highly suggested though).
-
-## Try it out!
-Here's some example projects for the most common setups:
-
-* Vanilla ([Preview](#) - [Browse](#))
-* Angular ([Preview](#) - [Browse](#))
-* React ([Preview](#) - [Browse](#))
-* Vue ([Preview](#) - [Browse](#))
