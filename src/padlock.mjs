@@ -253,7 +253,7 @@ export default class ScrollPadlock {
      * Updates the scroll state
      * @returns {Boolean} The scroll state
      */
-    #updateState = () => (this.#state = this.#classList.contains(this.#cssClassName));
+    #updateState = () => (this.#state = !!this.#classList?.contains(this.#cssClassName));
 
     /**
      * Fires a given function at a unlocked scroll state
@@ -268,14 +268,14 @@ export default class ScrollPadlock {
         this.#unobserveCssClass();
 
         // Removes the css class temporarly
-        this.#classList.remove(this.#cssClassName);
+        this.#classList?.remove(this.#cssClassName);
 
         // Fires the given function and caches the return value
         const result = action();
 
         // Relocks the css class if was set before
         if (wasLocked) {
-            this.#classList.add(this.#cssClassName);
+            this.#classList?.add(this.#cssClassName);
         }
 
         // Observes the given element CSS class list for given CSS class name changes
@@ -328,9 +328,6 @@ export default class ScrollPadlock {
         // Unobserves the CSS class change
         this.#unobserveCssClass();
 
-        // Removes the observer reference
-        this.#observer = null;
-
         // Removes the CSS variables, styler, styler selector...
         unsetStyles(this.#element, this.#styler);
 
@@ -343,11 +340,8 @@ export default class ScrollPadlock {
         // Removes the instance from the instances collection
         instances.delete(this.#element);
 
-        // Removes the element reference
-        this.#element = null;
-
-        // Removes the scroller reference
-        this.#scroller = null;
+        // Removes references
+        this.#element = this.#target = this.#scroller = this.#observer = this.#styler = this.#classList = null;
     }
 
     /**

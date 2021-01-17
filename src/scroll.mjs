@@ -10,6 +10,6 @@ export const SCROLL_LEFT = 'left';
 export const getScroll = element => ({
     // NOTE: assuming it's page case by checking scrollY|scrollX and pageYOffset|pageXOffset properties first (available for window only)
     // and then checking scrollTop|scrollLeft (available for html elements only)
-    [SCROLL_TOP]: element.scrollY ?? element.pageYOffset ?? element.scrollTop ?? 0,
-    [SCROLL_LEFT]: element.scrollX ?? element.pageXOffset ?? element.scrollLeft ?? 0
+    [SCROLL_TOP]: element?.scrollY ?? element?.pageYOffset ?? element?.scrollTop ?? 0,
+    [SCROLL_LEFT]: element?.scrollX ?? element?.pageXOffset ?? element?.scrollLeft ?? 0
 });

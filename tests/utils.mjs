@@ -1,5 +1,7 @@
 import { debounce, getElementParentsLength, getElementIndex, joinHyphen } from '../src/utils.mjs';
 
+import { body, documentElement, createDiv } from './_tests.mjs';
+
 describe('utils', () => {
     const debounceIntervalMs = 500;
 
@@ -32,18 +34,12 @@ describe('utils', () => {
             }, debounceIntervalMs);
         }, debounceIntervalMs);
     });
-    
-    const doc = document;
-    const html = doc.documentElement;
-    const body = doc.body;
-    
-    const createDummy = () => doc.createElement('div');
 
     it('should be able to count a given element parents', () => {
-        const div1 = createDummy();
-        const div2 = createDummy();
+        const div1 = createDiv();
+        const div2 = createDiv();
 
-        expect(getElementParentsLength(html)).to.equals(0);
+        expect(getElementParentsLength(documentElement)).to.equals(0);
         expect(getElementParentsLength(body)).to.equals(1);
 
         div1.append(div2);
@@ -58,11 +54,11 @@ describe('utils', () => {
     });
 
     it('should be able to get a given element index in DOM tree', () => {
-        const div1 = createDummy();
-        const div2 = createDummy();
-        const div3 = createDummy();
+        const div1 = createDiv();
+        const div2 = createDiv();
+        const div3 = createDiv();
 
-        expect(getElementIndex(html)).to.equals(0);
+        expect(getElementIndex(documentElement)).to.equals(0);
 
         // NOTE: there's head before body
         expect(getElementIndex(body)).to.equals(1);

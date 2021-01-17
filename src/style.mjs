@@ -54,21 +54,21 @@ const CSS_STYLE_SHEET_ONLY_RULE_INDEX = 0;
  */
 export const setStyles = (element, styler, layout, scroll) => {
     // Ensures style tag dom presence, StyleSheet API throws otherwise
-    if (!head.contains(styler)) {
+    if (!head.contains(styler) && styler) {
         head.appendChild(styler);
     }
     
     // Element must have a dynamic attribute to be used as a unique css selector
-    const dataAttrValue = element.getAttribute(DATA_ATTR_NAME) ?? joinHyphen(getElementParentsLength(element), getElementIndex(element));
+    const dataAttrValue = element?.getAttribute(DATA_ATTR_NAME) ?? joinHyphen(getElementParentsLength(element), getElementIndex(element));
 
     // Assigns that selector (a "data attribute")
-    element.setAttribute(DATA_ATTR_NAME, dataAttrValue);
+    element?.setAttribute(DATA_ATTR_NAME, dataAttrValue);
 
     // CSSStyleSheet instance reference
-    const { sheet } = styler;
+    const { sheet } = styler ?? {};
 
     // Cleans up former CSS rule
-    if (sheet.cssRules[CSS_STYLE_SHEET_ONLY_RULE_INDEX]) {
+    if (sheet?.cssRules?.[CSS_STYLE_SHEET_ONLY_RULE_INDEX]) {
         sheet.deleteRule(CSS_STYLE_SHEET_ONLY_RULE_INDEX);
     }
 
@@ -103,7 +103,7 @@ export const setStyles = (element, styler, layout, scroll) => {
     }
 
     // Sets new rule up
-    sheet.insertRule(`[${DATA_ATTR_NAME}="${dataAttrValue}"] { ${rules} }`, CSS_STYLE_SHEET_ONLY_RULE_INDEX);
+    sheet?.insertRule(`[${DATA_ATTR_NAME}="${dataAttrValue}"] { ${rules} }`, CSS_STYLE_SHEET_ONLY_RULE_INDEX);
 
     // Returns the given styler element itself
     return styler;
@@ -117,10 +117,10 @@ export const setStyles = (element, styler, layout, scroll) => {
  */
 export const unsetStyles = (element, styler) => {
     // Removes the styler element from head
-    styler.remove();
+    styler?.remove();
 
     // Removes the data attr unique selector
-    element.removeAttribute(DATA_ATTR_NAME);
+    element?.removeAttribute(DATA_ATTR_NAME);
 
     // Returns the given styler element itself
     return styler;

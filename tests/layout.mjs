@@ -10,13 +10,12 @@ import {
     getLayout
 } from '../src/layout.mjs';
 
-describe('layout', () => {
-    const doc = document;
-    const { head, body, documentElement } = doc;
+import { head, body, documentElement, createElement, createDiv } from './_tests.mjs';
 
+describe('layout', () => {
     const SCROLLBAR_SIZE = 20;
 
-    const styler = doc.createElement('style');
+    const styler = createElement('style');
 
     before(() => {
         head.append(styler);
@@ -27,7 +26,7 @@ describe('layout', () => {
     after(() => (styler.remove()));
 
     it('should be able to retrieve html elements dimensions', () => {
-        const div = doc.createElement('div');
+        const div = createDiv();
 
         body.append(div);
 
@@ -64,7 +63,7 @@ describe('layout', () => {
     });
 
     it('should be able to get a given element scrollbars width', () => {
-        const div = doc.createElement('div');
+        const div = createDiv();
 
         const { style } = div;
 

@@ -1,15 +1,12 @@
 import { SCROLL_TOP, SCROLL_LEFT, getScroll } from '../src/scroll.mjs';
 
+import { body, createDiv } from './_tests.mjs';
+
 describe('scroll', () => {
-    const doc = document;
-    const { body } = doc;
-
-    const createDummy = () => doc.createElement('div');
-
     let expander;
 
     beforeEach(() => {
-        expander = createDummy();
+        expander = createDiv();
 
         const styles = expander.style;
 
@@ -19,7 +16,7 @@ describe('scroll', () => {
     afterEach(() => expander.remove());
 
     it('should be able to get an element scroll position', () => {
-        const div = createDummy();
+        const div = createDiv();
 
         const styles = div.style;
 

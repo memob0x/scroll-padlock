@@ -23,16 +23,11 @@ import {
 
 import { getElementParentsLength, getElementIndex } from '../src/utils.mjs';
 
+import { head, body, createElement, createDiv, getCSSVariableValue } from './_tests.mjs';
+
 describe('style', () => {
-    const doc = document;
-    const { head, body } = doc;
-
-    const getCSSVariableValue = (element, variableName) => window.getComputedStyle(element).getPropertyValue(variableName).trim();
-
-    const createElement = (tag = 'div') => doc.createElement(tag);
-
     const styler = createElement('style');
-    const div = createElement();
+    const div = createDiv();
 
     it('should be able to append a style tag with css variables for given values targeting a given element', () => {
         // NOTE: prepending because of karma scripts at the end of body (they would affect index detection)
@@ -86,7 +81,7 @@ describe('style', () => {
             [LAYOUT_SCROLLBAR_WIDTH]: 33
         };
 
-        const indexShifterDummyEl = createElement();
+        const indexShifterDummyEl = createDiv();
 
         // NOTE: prepending because of karma scripts at the end of body (they would affect index detection)
         body.prepend(indexShifterDummyEl);

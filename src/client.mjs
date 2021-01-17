@@ -17,7 +17,7 @@ export const EVENT_NAME_RESIZE = 'resize';
  * @param {Object|Boolean} options The event listener options object (or boolean to address "passive" property only)
  * @returns {void} Nothing
  */
-export const addListener = (element, eventName, listener, options = true) => element.addEventListener(eventName, listener, options);
+export const addListener = (element, eventName, listener, options = true) => element?.addEventListener(eventName, listener, options);
 
 /**
  * Unregisters an event listener
@@ -27,4 +27,4 @@ export const addListener = (element, eventName, listener, options = true) => ele
  * @param {Object|Boolean} options The event listener options object (or boolean to address "passive" property only)
  * @returns {void} Nothing
  */
-export const removeListener = (element, eventName, listener, options = true) => element.removeEventListener(eventName, listener, options);
+export const removeListener = (element, eventName, listener, options = true) => element?.removeEventListener(eventName, listener, options);
