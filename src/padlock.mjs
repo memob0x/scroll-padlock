@@ -2,6 +2,8 @@ import {
     DOM_BASE_NAME,
     EVENT_NAME_SCROLL,
     EVENT_NAME_RESIZE,
+    RESIZE_DEBOUNCE_INTERVAL_MS,
+    SCROLL_DEBOUNCE_INTERVAL_MS,
     doc,
     documentElement,
     body,
@@ -22,10 +24,6 @@ const DEFAULT_ELEMENT = documentElement;
 const DEFAULT_TARGET = body;
 const DEFAULT_SCROLLER = window;
 const DEFAULT_CSS_CLASS_NAME = `${DOM_BASE_NAME}-locked`;
-
-// Static settings
-const RESIZE_DEBOUNCE_INTERVAL_MS = 250;
-const SCROLL_DEBOUNCE_INTERVAL_MS = 125;
 
 // Instances collection closure,
 // a weakmap is used in order to keep every instance associated with the scrollable element itself

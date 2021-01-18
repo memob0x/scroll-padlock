@@ -1,6 +1,6 @@
 import Padlock from '../src/padlock.mjs';
 
-import { EVENT_NAME_SCROLL, EVENT_NAME_RESIZE } from '../src/client.mjs';
+import { EVENT_NAME_SCROLL, EVENT_NAME_RESIZE, RESIZE_DEBOUNCE_INTERVAL_MS, SCROLL_DEBOUNCE_INTERVAL_MS } from '../src/client.mjs';
 
 import { createDiv, documentElement, body, isPadlockElement, dispatchCustomEvent } from './_tests.mjs';
 
@@ -71,20 +71,121 @@ describe('padlock', () => {
             instance.destroy();
         }).to.not.throw(Error);
     });
-    
-    // TODO: test resize on element
-    // TODO: test resize on global
-    // TODO: test scroll on element
-    // TODO: test scroll on global
-    
-    // TODO: test scroll getter on element
-    // TODO: test scroll setter on element
 
-    // TODO: test scroll getter on element
-    // TODO: test scroll setter on global
+    it('should update page layout values on resize', done => {
+        const instance = new Padlock();
+        
+        const { layout } = instance;
+        
+        expect(layout).to.deep.equals(instance.layout);
 
-    // TODO: test layout getter on element
-    // TODO: test layout getter on global
+        body.append(expander);
+
+        dispatchCustomEvent(window, 'resize');
+
+        setTimeout(() => {
+            expect(layout).to.not.deep.equals(instance.layout);
+
+            instance.destroy();
+
+            expander.remove();
+
+            done();
+        }, RESIZE_DEBOUNCE_INTERVAL_MS);
+    });
+
+    it('should update elements layout values on resize', done => {
+        const _scroller = scroller.cloneNode();
+
+        const { style } = scroller;
+
+        style.width = '100%';
+        style.position = 'absolute';
+        style.top = style.left = '0px';
+
+        body.append(scroller);
+
+        const instance = new Padlock(scroller);
+        
+        const { layout } = instance;
+
+        scroller.append(expander);
+        
+        expect(layout).to.deep.equals(instance.layout);
+
+        dispatchCustomEvent(window, 'resize');
+
+        setTimeout(() => {
+            expect(layout).to.not.deep.equals(instance.layout);
+
+            expander.remove();
+            scroller.remove();
+
+            scroller = _scroller;
+
+            done();
+        }, RESIZE_DEBOUNCE_INTERVAL_MS);
+    });
+
+    it('should update elements scroll values on scroll', done => {
+        scroller.scrollTo(0, 0);
+
+        scroller.append(expander);
+        body.append(scroller);
+
+        const instance = new Padlock(scroller);
+        
+        const { scroll } = instance;
+        
+        expect(scroll).to.deep.equals(instance.scroll);
+
+        scroller.scrollTo(345, 123);
+
+        setTimeout(() => {
+            expect(scroll).to.not.deep.equals(instance.scroll);
+
+            expander.remove();
+            scroller.remove();
+
+            scroller.scrollTo(0, 0);
+
+            done();
+        }, SCROLL_DEBOUNCE_INTERVAL_MS + 20); // TODO: check why extra ms is needed here
+    });
+
+    it('should update page scroll values on scroll', done => {
+        window.scrollTo(0, 0);
+
+        body.append(expander);
+
+        const instance = new Padlock();
+        
+        const { scroll } = instance;
+        
+        expect(scroll).to.deep.equals(instance.scroll);
+
+        window.scrollTo(123, 345);
+
+        setTimeout(() => {
+            expect(scroll).to.not.deep.equals(instance.scroll);
+
+            instance.destroy();
+
+            expander.remove();
+
+            window.scrollTo(0, 0);
+
+            done();
+        }, SCROLL_DEBOUNCE_INTERVAL_MS + 20); // TODO: check why extra ms is needed here
+    });
+
+    xit('should set new scroll on elements instance', () => {
+        // TODO: ...
+    });
+
+    xit('should set new scroll on page instance', () => {
+        // TODO: ...
+    });
 
     it('destroy method should avoid further computations or DOM changes', () => {
         const div = createDiv();
@@ -110,7 +211,7 @@ describe('padlock', () => {
         expect(isPadlockElement(div)).to.be.false;
     });
 
-    it('should update values through update method', () => {
+    it('should update values through update method elements padlock', () => {
         body.append(scroller);
 
         const instance = new Padlock(scroller);
@@ -125,6 +226,25 @@ describe('padlock', () => {
         
         expect(layout).to.not.deep.equals(instance.layout);
 
+        expander.remove();
         scroller.remove();
+    });
+
+    it('should update values through update method on page padlock', () => {
+        const instance = new Padlock();
+        
+        const { layout } = instance;
+
+        body.append(expander);
+        
+        expect(layout).to.deep.equals(instance.layout);
+
+        instance.update();
+        
+        expect(layout).to.not.deep.equals(instance.layout);
+
+        instance.destroy();
+
+        expander.remove();
     });
 });

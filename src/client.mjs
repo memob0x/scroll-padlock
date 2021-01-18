@@ -9,6 +9,10 @@ export const DOM_BASE_NAME = 'scroll-padlock';
 export const EVENT_NAME_SCROLL = 'scroll';
 export const EVENT_NAME_RESIZE = 'resize';
 
+// Common global time values
+export const RESIZE_DEBOUNCE_INTERVAL_MS = 250;
+export const SCROLL_DEBOUNCE_INTERVAL_MS = 125;
+
 /**
  * Registers an event listener
  * @param {Window|HTMLElement} element The given element target of the event listener

@@ -39,6 +39,8 @@ describe('scroll', () => {
     });
 
     it('should be able to get the page scroll position', () => {
+        window.scrollTo(0, 0);
+
         body.append(expander);
 
         expect(getScroll(window)).to.deep.equals({ [SCROLL_TOP]: 0, [SCROLL_LEFT]: 0 });
@@ -48,5 +50,7 @@ describe('scroll', () => {
         window.scrollTo(newPosition[SCROLL_LEFT], newPosition[SCROLL_TOP]);
 
         expect(getScroll(window)).to.deep.equals(newPosition);
+        
+        window.scrollTo(0, 0);
     });
 });
