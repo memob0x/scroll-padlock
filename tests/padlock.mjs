@@ -1,235 +1,300 @@
-import {
-    html,
-    body,
-
-    setCSSRules,
-    removeCSSRules,
-
-    SCROLL_GAP_VALUE_DEFAULT,
-    SCROLL_GAP_VALUE_LARGER,
-    SCROLL_GAP_CSS_CLASS_NAME_LARGER,
-
-    getCSSVariableValue,
-    getScrollableElement
-} from './_test-utils.mjs';
-
-import { eventNamePrefix } from '../src/client.mjs';
-
-import { cssVarNameGapVertical } from '../src/style.mjs';
-
 import Padlock from '../src/padlock.mjs';
 
-describe('padlock', () => {
+import { EVENT_NAME_SCROLL, EVENT_NAME_RESIZE, RESIZE_DEBOUNCE_INTERVAL_MS, SCROLL_DEBOUNCE_INTERVAL_MS } from '../src/client.mjs';
+
+import { createDiv, documentElement, body, isPadlockElement, dispatchCustomEvent } from './_tests.mjs';
+
+describe('padlock', () => {    
+    let expander;
     let scroller;
 
-    before(() => setCSSRules());
-
-    after(() => removeCSSRules());
-
     beforeEach(() => {
-        scroller = getScrollableElement();
+        expander = createDiv();
+
+        const expanderStyle = expander.style;
+
+        expanderStyle.width = expanderStyle.height = '2000px';
+        
+        scroller = createDiv();
+
+        const scrollerStyle = scroller.style;
+
+        scrollerStyle.width = scrollerStyle.height = '100px';
+
+        scrollerStyle.overflow = 'auto';
+    });
+
+    afterEach(() => expander.remove());
+
+    it('should be able to create an instance and throw if incorrect arguments are passed', () => {
+        // invalid element
+        expect(() => void new Padlock(null)).to.throw(TypeError);
+
+        // invalid class
+        expect(() => void new Padlock(createDiv(), '')).to.throw(TypeError);
+        expect(() => void new Padlock(createDiv(), null)).to.throw(TypeError);
+
+        // same el instance throws
+        expect(() => {
+            const div = createDiv();
+            
+            void new Padlock(div);
+            void new Padlock(div);
+        }).to.throw(Error);
+
+        // same el instance doesn't throw if instance is destroyed
+        expect(() => {
+            const div = createDiv();
+            
+            let instance = new Padlock(div);
+
+            instance.destroy();
+
+            instance = new Padlock(div);
+
+            instance.destroy();
+        }).to.not.throw(Error);
+
+        expect(() => {            
+            // no element given = global scroller = <html> element
+            let instance = new Padlock();
+
+            expect(isPadlockElement(documentElement));
+
+            instance.destroy();
+
+            // <body> given = global scroller = <html> element
+            instance = new Padlock(body);
+
+            expect(isPadlockElement(documentElement));
+
+            instance.destroy();
+        }).to.not.throw(Error);
+    });
+
+    it('should update page layout values on resize', done => {
+        const instance = new Padlock();
+        
+        const { layout } = instance;
+        
+        expect(layout).to.deep.equals(instance.layout);
+
+        body.append(expander);
+
+        dispatchCustomEvent(window, 'resize');
+
+        setTimeout(() => {
+            expect(layout).to.not.deep.equals(instance.layout);
+
+            instance.destroy();
+
+            expander.remove();
+
+            done();
+        }, RESIZE_DEBOUNCE_INTERVAL_MS);
+    });
+
+    it('should update elements layout values on resize', done => {
+        const _scroller = scroller.cloneNode();
+
+        const { style } = scroller;
+
+        style.width = '100%';
+        style.position = 'absolute';
+        style.top = style.left = '0px';
 
         body.append(scroller);
+
+        const instance = new Padlock(scroller);
+        
+        const { layout } = instance;
+
+        scroller.append(expander);
+        
+        expect(layout).to.deep.equals(instance.layout);
+
+        dispatchCustomEvent(window, 'resize');
+
+        setTimeout(() => {
+            expect(layout).to.not.deep.equals(instance.layout);
+
+            expander.remove();
+            scroller.remove();
+
+            scroller = _scroller;
+
+            done();
+        }, RESIZE_DEBOUNCE_INTERVAL_MS);
     });
 
-    afterEach(() => {
-        scroller.remove();
+    it('should update elements scroll values on scroll', done => {
+        scroller.scrollTo(0, 0);
 
-        scroller = null;
+        scroller.append(expander);
+        body.append(scroller);
+
+        const instance = new Padlock(scroller);
+        
+        const { scroll } = instance;
+        
+        expect(scroll).to.deep.equals(instance.scroll);
+
+        scroller.scrollTo(345, 123);
+
+        setTimeout(() => {
+            expect(scroll).to.not.deep.equals(instance.scroll);
+
+            scroller.scrollTo(0, 0);
+
+            expander.remove();
+            scroller.remove();
+
+            done();
+        }, SCROLL_DEBOUNCE_INTERVAL_MS + 20); // TODO: check why extra ms is needed here
     });
 
-    it('should be able to be initialized on valid elements only', () => {
-        const instance = new Padlock(document.createElement('div'));
+    it('should update page scroll values on scroll', done => {
+        window.scrollTo(0, 0);
 
-        expect(instance).to.be.an.instanceOf(Padlock);
+        body.append(expander);
 
-        instance.destroy();
-
-        expect(() => new Padlock(window)).to.throw();
-        
-        expect(() => new Padlock(null)).to.throw();
-    });
-    
-    it('should initialize instance on documentElement if no element argument is passed to constructor', () => {
-        const global = new Padlock();
-
-        const div = document.createElement('div');
-        
-        const local = new Padlock(div);
-
-        expect(global).to.have.property('element');
-
-        expect(global.element).to.equals(html);
-
-        expect(local.element).to.equals(div);
-
-        expect(global).to.respondTo('destroy');
-
-        global.destroy();
-
-        local.destroy();
-
-        expect(global.element).to.equals(null);
-
-        expect(local.element).to.equals(null);
-    });
-    
-    it('should throw if an instance is attached to an element with a padlock instance already attached', () => {
-        const div = document.createElement('div');
-        
-        let instance;
-        
-        instance = new Padlock(div);
-        
-        expect(() => new Padlock(div)).to.throw();
-
-        instance.destroy();
-        
-        expect(() => (instance = new Padlock(div))).to.not.throw();
-
-        instance.destroy();
-    });
-
-    it('should be able to access the padlock styler element through a getter accessor', () => {
         const instance = new Padlock();
-
-        expect(instance.styler).to.be.an.instanceOf(HTMLStyleElement);
-
-        const dummyString = 'whatever';
-
-        // setter is not available
-        expect.styler = dummyString;
-
-        expect(instance.styler).to.not.equals(dummyString);
-
-        instance.destroy();
-    });
-
-    it('should be able to access the scrollbar width through a getter accessor', () => {
-        const instance = new Padlock(document.createElement('div'));
-
-        let objectAssertion;
         
-        objectAssertion = expect(instance.scrollbar).to.be.an('object');
-        objectAssertion.that.has.property('vertical').that.is.an('number');
-        objectAssertion.that.has.property('horizontal').that.is.an('number');
+        const { scroll } = instance;
+        
+        expect(scroll).to.deep.equals(instance.scroll);
 
-        const dummyScrollbar = { horizontal: 123, vertical: 456 };
+        window.scrollTo(123, 345);
 
-        // setter is not available
-        objectAssertion.scrollbar = dummyScrollbar;
+        setTimeout(() => {
+            expect(scroll).to.not.deep.equals(instance.scroll);
 
-        objectAssertion = expect(instance.scrollbar).to.be.an('object');
-        objectAssertion.that.has.property('vertical').that.not.equals(dummyScrollbar.vertical);
-        objectAssertion.that.has.property('horizontal').that.not.equals(dummyScrollbar.horizontal);
+            instance.destroy();
 
-        instance.destroy();
+            window.scrollTo(0, 0);
+
+            expander.remove();
+
+            done();
+        }, SCROLL_DEBOUNCE_INTERVAL_MS + 20); // TODO: check why extra ms is needed here
     });
 
-    it('should be able to access the padlock state and change it through accessors', () => {
-        const div = document.createElement('div');
+    it('should set new scroll elements scroll position', done => {
+        scroller.scrollTo(0, 0);
+
+        scroller.append(expander);
+        body.append(scroller);
+
+        const instance = new Padlock(scroller);
+        
+        const { scroll } = instance;
+        
+        expect(scroll).to.deep.equals(instance.scroll);
+        
+        const newScroll = { top: 345, left: 123 };
+
+        instance.scroll = newScroll;
+
+        setTimeout(() => {
+            expect(scroll).to.not.deep.equals(instance.scroll);
+            expect(newScroll).to.deep.equals(instance.scroll);
+
+            scroller.scrollTo(0, 0);
+
+            expander.remove();
+            scroller.remove();
+
+            done();
+        }, SCROLL_DEBOUNCE_INTERVAL_MS + 20); // TODO: check why extra ms is needed here
+    });
+
+    it('should set new scroll page scroll position', done => {
+        window.scrollTo(0, 0);
+
+        body.append(expander);
+
+        const instance = new Padlock();
+        
+        const { scroll } = instance;
+        
+        expect(scroll).to.deep.equals(instance.scroll);
+        
+        const newScroll = { top: 345, left: 123 };
+
+        instance.scroll = newScroll;
+
+        setTimeout(() => {
+            expect(scroll).to.not.deep.equals(instance.scroll);
+            expect(newScroll).to.deep.equals(instance.scroll);
+
+            instance.destroy();
+
+            window.scrollTo(0, 0);
+
+            expander.remove();
+
+            done();
+        }, SCROLL_DEBOUNCE_INTERVAL_MS + 20); // TODO: check why extra ms is needed here
+    });
+
+    it('destroy method should avoid further computations or DOM changes', () => {
+        const div = createDiv();
 
         const instance = new Padlock(div);
-        
-        let calls = 0;
 
-        const handler = () => calls++;
-
-        div.addEventListener(`${eventNamePrefix}-lock`, handler, { once: true });
-        div.addEventListener(`${eventNamePrefix}-unlock`, handler, { once: true });
-
-        expect(instance.state).to.be.false;
-
-        instance.state = true; // 1
-        
-        expect(instance.state).to.be.true;
-
-        instance.state = false; // 2
-
-        expect(instance.state).to.be.false;
-
-        expect(calls).to.equals(2);
+        expect(isPadlockElement(div)).to.be.true;
 
         instance.destroy();
-    });
 
-    it('should be able to retrieve current scroll position through getter accessor', () => {
-        const instance = new Padlock(scroller);
+        expect(isPadlockElement(div)).to.be.false;
 
-        expect(instance.scroll.top).to.equals(scroller.scrollTop);
-        expect(instance.scroll.left).to.equals(scroller.scrollLeft);
+        dispatchCustomEvent(div, EVENT_NAME_SCROLL);
 
-        instance.destroy();
-    });
+        expect(isPadlockElement(div)).to.be.false;
 
-    it('should be able to set scroll position through setter accessor when state is unlocked', () => {
-        const instance = new Padlock(scroller);    
+        dispatchCustomEvent(div, EVENT_NAME_RESIZE);
 
-        const position = {
-            top: 123,
-            left: 345
-        };
-
-        instance.scroll = position;
-
-        expect(scroller.scrollTop).to.equals(position.top);
-        expect(scroller.scrollLeft).to.equals(position.left);
-
-        expect(instance.scroll.top).to.equals(scroller.scrollTop);
-        expect(instance.scroll.left).to.equals(scroller.scrollLeft);
-
-        instance.destroy();
-    });
-
-    it('should be able to save scroll position through setter accessor when state i locked', () => {
-        const instance = new Padlock(scroller);
-
-        instance.state = true;
-
-        const position = {
-            top: 345,
-            left: 678
-        };
-
-        expect(instance.scroll.top).to.equals(scroller.scrollTop);
-        expect(instance.scroll.left).to.equals(scroller.scrollLeft);
-
-        instance.scroll = position;
-
-        expect(scroller.scrollTop).to.equals(0);
-        expect(scroller.scrollLeft).to.equals(0);
-
-        expect(instance.scroll.top).to.equals(position.top);
-        expect(instance.scroll.left).to.equals(position.left);
-
-        instance.state = false;
-
-        expect(scroller.scrollTop).to.equals(position.top);
-        expect(scroller.scrollLeft).to.equals(position.left);
-
-        expect(instance.scroll.top).to.equals(scroller.scrollTop);
-        expect(instance.scroll.left).to.equals(scroller.scrollLeft);
-
-        instance.destroy();
-    });
-
-    it('should be able to update css variables through method', () => {
-        const instance = new Padlock(scroller);
-
-        instance.state = true;
-        
-        expect(getCSSVariableValue(scroller, cssVarNameGapVertical)).to.equals(`${SCROLL_GAP_VALUE_DEFAULT}px`);
-
-        scroller.classList.add(SCROLL_GAP_CSS_CLASS_NAME_LARGER);
-
-        expect(getCSSVariableValue(scroller, cssVarNameGapVertical)).to.equals(`${SCROLL_GAP_VALUE_DEFAULT}px`);
+        expect(isPadlockElement(div)).to.be.false;
 
         instance.update();
 
-        expect(getCSSVariableValue(scroller, cssVarNameGapVertical)).to.equals(`${SCROLL_GAP_VALUE_LARGER}px`);
+        expect(isPadlockElement(div)).to.be.false;
+    });
+
+    it('should update values through update method elements padlock', () => {
+        body.append(scroller);
+
+        const instance = new Padlock(scroller);
         
-        scroller.classList.remove(SCROLL_GAP_CSS_CLASS_NAME_LARGER);
+        const { layout } = instance;
+
+        scroller.append(expander);
+        
+        expect(layout).to.deep.equals(instance.layout);
+
+        instance.update();
+        
+        expect(layout).to.not.deep.equals(instance.layout);
+
+        expander.remove();
+        scroller.remove();
+    });
+
+    it('should update values through update method on page padlock', () => {
+        const instance = new Padlock();
+        
+        const { layout } = instance;
+
+        body.append(expander);
+        
+        expect(layout).to.deep.equals(instance.layout);
+
+        instance.update();
+        
+        expect(layout).to.not.deep.equals(instance.layout);
 
         instance.destroy();
+
+        expander.remove();
     });
 });

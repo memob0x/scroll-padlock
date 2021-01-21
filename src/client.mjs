@@ -1,19 +1,34 @@
-// caching involved dom elements
-export const html = document.documentElement;
-export const body = document.body;
-export const head = document.head;
+// All involved client elements references
+export const doc = document;
+export const { documentElement, body, head } = doc;
 
-// all the custom events dispatched by the library will start with this string
-// in order to avoid name clashing
-export const eventNamePrefix = 'scroll-padlock';
+// DOM naming part (prefix, suffix etc...)
+export const DOM_BASE_NAME = 'scroll-padlock';
+
+// Common global event names
+export const EVENT_NAME_SCROLL = 'scroll';
+export const EVENT_NAME_RESIZE = 'resize';
+
+// Common global time values
+export const RESIZE_DEBOUNCE_INTERVAL_MS = 250;
+export const SCROLL_DEBOUNCE_INTERVAL_MS = 125;
 
 /**
- * Dispatches a custom event if custom events are supported, otherwise does nothing
- * @param {HTMLElement} element
- * @param {String} messageName The given message name to be dispatched
+ * Registers an event listener
+ * @param {Window|HTMLElement} element The given element target of the event listener
+ * @param {String} eventName The event listener name
+ * @param {Function} listener The event handler
+ * @param {Object|Boolean} options The event listener options object (or boolean to address "passive" property only)
  * @returns {void} Nothing
  */
-export const dispatchEvent = (element, messageName) =>
-    typeof window.CustomEvent === 'function'
-        ? element?.dispatchEvent(new CustomEvent(`${eventNamePrefix}-${messageName}`))
-        : () => {};
+export const addListener = (element, eventName, listener, options = true) => element?.addEventListener(eventName, listener, options);
+
+/**
+ * Unregisters an event listener
+ * @param {Window|HTMLElement} element The given element target of the event listener
+ * @param {String} eventName The event listener name
+ * @param {Function} listener The event handler
+ * @param {Object|Boolean} options The event listener options object (or boolean to address "passive" property only)
+ * @returns {void} Nothing
+ */
+export const removeListener = (element, eventName, listener, options = true) => element?.removeEventListener(eventName, listener, options);

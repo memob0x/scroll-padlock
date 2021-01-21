@@ -1,40 +1,81 @@
-import { html, body } from './_test-utils.mjs';
+import { debounce, getElementParentsLength, getElementIndex, joinHyphen } from '../src/utils.mjs';
 
-import { isNumber, isGlobalScroller } from '../src/utils.mjs';
+import { body, documentElement, createDiv } from './_tests.mjs';
 
 describe('utils', () => {
-    it('should recognize valid numbers', () => {
-        expect(isNumber(0)).to.be.true;
-        expect(isNumber(+10)).to.be.true;
-        expect(isNumber(0xff)).to.be.true;
+    const debounceIntervalMs = 500;
 
-        expect(isNumber('-10')).to.be.false;
-        expect(isNumber('0')).to.be.false;
-        expect(isNumber('0xFF')).to.be.false;
-        expect(isNumber('8e5')).to.be.false;
-        expect(isNumber('3.1415')).to.be.false;
-        expect(isNumber('-0x42')).to.be.false;
-        expect(isNumber('7.2acdgs')).to.be.false;
-        expect(isNumber('')).to.be.false;
-        expect(isNumber({})).to.be.false;
-        expect(isNumber(NaN)).to.be.false;
-        expect(isNumber(null)).to.be.false;
-        expect(isNumber(true)).to.be.false;
-        expect(isNumber(Infinity)).to.be.false;
-        expect(isNumber(undefined)).to.be.false;
+    it('should be able to make a debounced function off a given function', done => {
+        let calls = 0;
+
+        const fn = debounce(() => (calls++), debounceIntervalMs);
+
+        // will be detected
+        fn();
+
+        // not detected
+        fn();
+
+        expect(calls).to.equals(0);
+
+        setTimeout(() => {
+            expect(calls).to.equals(1);
+
+            // will be detected
+            fn();
+
+            // not detected
+            fn();
+
+            setTimeout(() => {
+                expect(calls).to.equals(2);
+
+                done();
+            }, debounceIntervalMs);
+        }, debounceIntervalMs);
     });
 
-    it('should recognize global scroller', () => {
-        expect(isGlobalScroller(0)).to.be.false;
-        expect(isGlobalScroller('1')).to.be.false;
-        expect(isGlobalScroller(window)).to.be.false;
-        expect(isGlobalScroller(document)).to.be.false;
-        expect(isGlobalScroller(document.createElement('div'))).to.be.false;
+    it('should be able to count a given element parents', () => {
+        const div1 = createDiv();
+        const div2 = createDiv();
 
-        expect(isGlobalScroller(document.createElement('body'))).to.be.false;
-        expect(isGlobalScroller(document.createElement('html'))).to.be.false;
-        
-        expect(isGlobalScroller(html)).to.be.true;
-        expect(isGlobalScroller(body)).to.be.true;
+        expect(getElementParentsLength(documentElement)).to.equals(0);
+        expect(getElementParentsLength(body)).to.equals(1);
+
+        div1.append(div2);
+
+        body.append(div1);
+
+        expect(getElementParentsLength(div1)).to.equals(2);
+        expect(getElementParentsLength(div2)).to.equals(3);
+
+        div1.remove();
+        div2.remove();
     });
+
+    it('should be able to get a given element index in DOM tree', () => {
+        const div1 = createDiv();
+        const div2 = createDiv();
+        const div3 = createDiv();
+
+        expect(getElementIndex(documentElement)).to.equals(0);
+
+        // NOTE: there's head before body
+        expect(getElementIndex(body)).to.equals(1);
+
+        // NOTE: prepending because of karma scripts at the end of body (they would affect index detection)
+        body.prepend(div3);
+        body.prepend(div2);
+        body.prepend(div1);
+
+        expect(getElementIndex(div1)).to.equals(0);
+        expect(getElementIndex(div2)).to.equals(1);
+        expect(getElementIndex(div3)).to.equals(2);
+
+        div1.remove();
+        div2.remove();
+        div3.remove();
+    });
+
+    it('should be able to join string fragments with hyphens', () => expect(joinHyphen('foo', 'barr', 1234)).to.equals('foo-barr-1234'));
 });

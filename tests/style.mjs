@@ -1,174 +1,108 @@
 import {
-    html,
-    head,
-    body,
-    
-    setCSSRules,
-    removeCSSRules,
-    getCSSVariableValue,
+    LAYOUT_SCROLLBAR_HEIGHT,
+    LAYOUT_SCROLLBAR_WIDTH,
+    LAYOUT_WIDTH_INNER,
+    LAYOUT_HEIGHT_INNER,
+    LAYOUT_HEIGHT_OUTER,
+    LAYOUT_WIDTH_SCROLL,
+    LAYOUT_HEIGHT_SCROLL,
+    LAYOUT_WIDTH_OUTER
+} from '../src/layout.mjs';
 
-    getScrollableElement,
-
-    SCROLL_GAP_VALUE_DEFAULT,
-    SCROLL_GAP_VALUE_LARGER,
-    SCROLL_GAP_CSS_CLASS_NAME_LARGER
-} from './_test-utils.mjs';
-
-import { saveScrollPosition } from '../src/scroll.mjs';
+import { SCROLL_TOP, SCROLL_LEFT } from '../src/scroll.mjs';
 
 import {
-    updateCssVariables,
-    getScrollbarsGaps,
-    cssVarNamePositionTop,
-    cssVarNameGapVertical,
-    cssClassLocked,
-    addLockedCssClass,
-    removeLockedCssClass,
-    cssClassBase,
-    getStyler,
-    clearStyle,
-    toggleCssClass,
-    addBaseCssClass,
-    removeBaseCssClass,
-    getGlobalScrollerWidth,
-    getGlobalScrollerHeight
+    DATA_ATTR_NAME,
+    CSS_VAR_NAME_POSITION_LEFT,
+    CSS_VAR_NAME_SCROLLBAR_HEIGHT,
+    CSS_VAR_NAME_SCROLLBAR_WIDTH,
+    CSS_VAR_NAME_POSITION_TOP,
+    setStyles,
+    unsetStyles
 } from '../src/style.mjs';
 
+import { getElementParentsLength, getElementIndex } from '../src/utils.mjs';
+
+import { head, body, createElement, createDiv, getCSSVariableValue } from './_tests.mjs';
+
 describe('style', () => {
-    let scroller;
+    const styler = createElement('style');
+    const div = createDiv();
 
-    before(() => setCSSRules());
+    it('should be able to append a style tag with css variables for given values targeting a given element', () => {
+        // NOTE: prepending because of karma scripts at the end of body (they would affect index detection)
+        body.prepend(div);
 
-    after(() => removeCSSRules());
+        let scroll = { [SCROLL_TOP]: 0, [SCROLL_LEFT]: 0 };
 
-    beforeEach(() => {
-        scroller = getScrollableElement();
+        let layout = {
+            [LAYOUT_SCROLLBAR_WIDTH]: 0,
+            [LAYOUT_SCROLLBAR_HEIGHT]: 0,
+            [LAYOUT_WIDTH_OUTER]: 0,
+            [LAYOUT_HEIGHT_OUTER]: 0,
+            [LAYOUT_WIDTH_INNER]: 0,
+            [LAYOUT_HEIGHT_INNER]: 0,
+            [LAYOUT_WIDTH_SCROLL]: 0,
+            [LAYOUT_HEIGHT_SCROLL]: 0
+        };
 
-        body.append(scroller);
-    });
+        expect(setStyles(div, styler, layout, scroll)).to.equals(styler);
 
-    afterEach(() => {
-        scroller.remove();
+        expect(getCSSVariableValue(div, CSS_VAR_NAME_POSITION_TOP)).to.equals(`${scroll[SCROLL_TOP]}px`);
+        expect(getCSSVariableValue(div, CSS_VAR_NAME_POSITION_LEFT)).to.equals(`${scroll[SCROLL_LEFT]}px`);
 
-        scroller = null;
-    });
+        expect(getCSSVariableValue(div, CSS_VAR_NAME_SCROLLBAR_WIDTH)).to.equals(`${layout[LAYOUT_SCROLLBAR_WIDTH]}px`);
+        expect(getCSSVariableValue(div, CSS_VAR_NAME_SCROLLBAR_HEIGHT)).to.equals(`${layout[LAYOUT_SCROLLBAR_HEIGHT]}px`);
 
-    it('should write consistent scroll position css variables', () => {
-        // 0. ensuring scroll top position is 0, variable should be 0px after updateCssVariables call
-        let scrollPosition = 0;
-        scroller.scrollTo(0, scrollPosition);
-
-        saveScrollPosition(scroller);
-        const styler = updateCssVariables(scroller);
-
-        expect(getCSSVariableValue(scroller, cssVarNamePositionTop)).to.equals(`${scrollPosition}px`);
-
-        // 1. changing scroll position, variable should reflect the new value after updateCssVariables call
-        scrollPosition = 120;
-        scroller.scrollTo(0, scrollPosition);
-
-        saveScrollPosition(scroller);
-        updateCssVariables(scroller);
-
-        expect(getStyler(scroller)).to.equals(styler);
-
-        expect(getCSSVariableValue(scroller, cssVarNamePositionTop)).to.equals(`-${scrollPosition}px`);
         expect(head.contains(styler)).to.be.true;
 
-        expect(clearStyle(scroller)).to.equals(styler);
-        
+        expect(div.matches(`[${DATA_ATTR_NAME}]`)).to.be.true;
+
+        let attrValue = div.getAttribute(DATA_ATTR_NAME);
+
+        expect(attrValue).to.equals(`${getElementParentsLength(div)}-${getElementIndex(div)}`);
+
+        expect(unsetStyles(div, styler)).to.equals(styler);
+
         expect(head.contains(styler)).to.be.false;
-        expect(getStyler(scroller)).to.equals(null);
-    });
 
-    it('should calculate and write consistent scrollbar gap css variables', () => {
-        // 0. should calculate and write current scrollbar gap css variable
-        updateCssVariables(scroller);
+        expect(div.matches(`[${DATA_ATTR_NAME}]`)).to.be.false;
 
-        expect(getScrollbarsGaps(scroller).vertical).to.equals(SCROLL_GAP_VALUE_DEFAULT);
-        expect(getCSSVariableValue(scroller, cssVarNameGapVertical)).to.equals(`${SCROLL_GAP_VALUE_DEFAULT}px`);
-    });
+        scroll = { [SCROLL_TOP]: 123, [SCROLL_LEFT]: 345 };
 
-    it('should update css variables', () => {
-        // 0. should calculate and write current scrollbar gap css variable
-        updateCssVariables(scroller);
+        layout = {
+            [LAYOUT_WIDTH_OUTER]: 1234,
+            [LAYOUT_HEIGHT_OUTER]: 4325,
+            [LAYOUT_WIDTH_INNER]: 6542,
+            [LAYOUT_HEIGHT_INNER]: 5364,
+            [LAYOUT_WIDTH_SCROLL]: 3464,
+            [LAYOUT_HEIGHT_SCROLL]: 5675,
+            [LAYOUT_SCROLLBAR_HEIGHT]: 22,
+            [LAYOUT_SCROLLBAR_WIDTH]: 33
+        };
 
-        expect(getScrollbarsGaps(scroller).vertical).to.equals(SCROLL_GAP_VALUE_DEFAULT);
-        expect(getCSSVariableValue(scroller, cssVarNameGapVertical)).to.equals(`${SCROLL_GAP_VALUE_DEFAULT}px`);
+        const indexShifterDummyEl = createDiv();
 
-        // 1. after a programmatic change to the scrollbar width style, should recalculate and rewrite the css variable accordingly after updateCssVariables call
-        scroller.classList.add(SCROLL_GAP_CSS_CLASS_NAME_LARGER);
-        updateCssVariables(scroller);
+        // NOTE: prepending because of karma scripts at the end of body (they would affect index detection)
+        body.prepend(indexShifterDummyEl);
 
-        expect(getScrollbarsGaps(scroller).vertical).to.equals(SCROLL_GAP_VALUE_LARGER);
-        expect(getCSSVariableValue(scroller, cssVarNameGapVertical)).to.equals(`${SCROLL_GAP_VALUE_LARGER}px`);
+        setStyles(div, styler, layout, scroll);
 
-        // cleanup
-        scroller.classList.remove(SCROLL_GAP_CSS_CLASS_NAME_LARGER);
-    });
+        expect(getCSSVariableValue(div, CSS_VAR_NAME_POSITION_TOP)).to.equals(`${scroll[SCROLL_TOP]}px`);
+        expect(getCSSVariableValue(div, CSS_VAR_NAME_POSITION_LEFT)).to.equals(`${scroll[SCROLL_LEFT]}px`);
 
-    it('should be able to toggle a given css class to a given element', () => {
-        const className = 'foo';
+        expect(getCSSVariableValue(div, CSS_VAR_NAME_SCROLLBAR_WIDTH)).to.equals(`${layout[LAYOUT_SCROLLBAR_WIDTH]}px`);
+        expect(getCSSVariableValue(div, CSS_VAR_NAME_SCROLLBAR_HEIGHT)).to.equals(`${layout[LAYOUT_SCROLLBAR_HEIGHT]}px`);
 
-        expect(toggleCssClass(scroller, className)).to.be.true;
-        expect(scroller.classList.contains(className)).to.be.true;
+        let oldAttrValue = attrValue;
+        attrValue = div.getAttribute(DATA_ATTR_NAME);
 
-        expect(toggleCssClass(scroller, className)).to.be.true;
-        expect(scroller.classList.contains(className)).to.be.false;
+        expect(attrValue).not.to.equals(oldAttrValue);
+        expect(attrValue).to.equals(`${getElementParentsLength(div)}-${getElementIndex(div)}`);
 
-        expect(toggleCssClass(scroller, className, false)).to.be.false;
-        
-        expect(toggleCssClass(scroller, className, true)).to.be.true;
-        expect(toggleCssClass(scroller, className, true)).to.be.false;
-        
-        expect(toggleCssClass(scroller, className, false)).to.be.true;
-        expect(toggleCssClass(scroller, className, false)).to.be.false;
-    });
+        unsetStyles(div, styler);
 
-    it('should be able to set or remove the library locked css class to the given element', () => {
-        addLockedCssClass(scroller);
-
-        expect(scroller.classList.contains(cssClassLocked)).to.be.true;
-
-        removeLockedCssClass(scroller);
-
-        expect(scroller.classList.contains(cssClassLocked)).to.be.false;
-    });
-
-    it('should be able to set or remove the library base css class to the given element', () => {
-        addBaseCssClass(scroller);
-
-        expect(scroller.classList.contains(cssClassBase)).to.be.true;
-
-        removeBaseCssClass(scroller);
-
-        expect(scroller.classList.contains(cssClassBase)).to.be.false;
-    });
-
-    it('should be able to retrieve elements or body width and height', () => {
-        const div = document.createElement('div');
-
-        const size = 100;
-
-        div.style.width = div.style.height = `${size}px`;
-
-        body.append(div);
-
-        expect(getGlobalScrollerWidth(div)).to.equals(size);
-        expect(getGlobalScrollerHeight(div)).to.equals(size);
-
-        div.style.transform = 'scale(1.1)';
-
-        expect(getGlobalScrollerWidth(div)).to.be.greaterThan(size);
-        expect(getGlobalScrollerHeight(div)).to.be.greaterThan(size);
-
+        indexShifterDummyEl.remove();
         div.remove();
-
-        html.style.height = '100%';
-
-        expect(Math.round(getGlobalScrollerWidth(html))).to.equals(Math.round(window.innerWidth));
-        expect(Math.round(getGlobalScrollerHeight(html))).to.equals(Math.round(window.innerHeight));
-
-        html.style.height = '';
     });
 });

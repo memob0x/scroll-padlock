@@ -1,259 +1,127 @@
-import { head } from './client.mjs';
+import { DOM_BASE_NAME, head } from './client.mjs';
 
-import { isGlobalScroller } from './utils.mjs';
+import {
+    LAYOUT_HEIGHT_INNER,
+    LAYOUT_HEIGHT_SCROLL,
+    LAYOUT_WIDTH_OUTER,
+    LAYOUT_WIDTH_SCROLL,
+    LAYOUT_WIDTH_INNER,
+    LAYOUT_HEIGHT_OUTER,
+    LAYOUT_OUTER,
+    LAYOUT_INNER,
+    LAYOUT_WIDTH,
+    LAYOUT_HEIGHT,
+    LAYOUT_SCROLL,
+    LAYOUT_SCROLLBAR_WIDTH,
+    LAYOUT_SCROLLBAR_HEIGHT
+} from './layout.mjs';
 
-import { isValidScrollPosition, getSavedScrollPosition } from './scroll.mjs';
+import { SCROLL_TOP, SCROLL_LEFT } from './scroll.mjs';
 
-// dom naming part (prefix, suffix etc...)
-const domBaseName = 'scroll-padlock';
+import { getElementParentsLength, getElementIndex, joinHyphen } from './utils.mjs';
 
-// css variables suffixes
-const cssVarRoundedSuffix = 'round';
-const cssVarRectSuffix = 'rect';
-const cssVarScrollbarSuffix = 'scrollbar-gap';
+// Data attribute name
+export const DATA_ATTR_NAME = joinHyphen('data', DOM_BASE_NAME);
 
-// css variables names
-export const cssVarNamePositionTop = `--${domBaseName}-top-${cssVarRectSuffix}`;
-export const cssVarNamePositionLeft = `--${domBaseName}-left-${cssVarRectSuffix}`;
-export const cssVarNameGapVertical = `--${domBaseName}-vertical-${cssVarScrollbarSuffix}`;
-export const cssVarNameGapHorizontal = `--${domBaseName}-horizontal-${cssVarScrollbarSuffix}`;
+// CSS variables names
+const CSS_VAR_PREFIX = '--';
+const CSS_VAR_SCROLL_PREFIX = 'scroll';
+export const CSS_VAR_NAME_POSITION_TOP = CSS_VAR_PREFIX + joinHyphen(DOM_BASE_NAME, CSS_VAR_SCROLL_PREFIX, SCROLL_TOP);
+export const CSS_VAR_NAME_POSITION_LEFT = CSS_VAR_PREFIX + joinHyphen(DOM_BASE_NAME, CSS_VAR_SCROLL_PREFIX, SCROLL_LEFT);
+const CSS_VAR_SCROLLBAR_PREFIX = 'scrollbar';
+export const CSS_VAR_NAME_SCROLLBAR_WIDTH = CSS_VAR_PREFIX + joinHyphen(DOM_BASE_NAME, CSS_VAR_SCROLLBAR_PREFIX, LAYOUT_WIDTH);
+export const CSS_VAR_NAME_SCROLLBAR_HEIGHT = CSS_VAR_PREFIX + joinHyphen(DOM_BASE_NAME, CSS_VAR_SCROLLBAR_PREFIX, LAYOUT_HEIGHT);
+export const CSS_VAR_NAME_WIDTH_OUTER = CSS_VAR_PREFIX + joinHyphen(DOM_BASE_NAME, LAYOUT_OUTER, LAYOUT_WIDTH);
+export const CSS_VAR_NAME_HEIGHT_OUTER = CSS_VAR_PREFIX + joinHyphen(DOM_BASE_NAME, LAYOUT_OUTER, LAYOUT_HEIGHT);
+export const CSS_VAR_NAME_WIDTH_INNER = CSS_VAR_PREFIX + joinHyphen(DOM_BASE_NAME, LAYOUT_INNER, LAYOUT_WIDTH);
+export const CSS_VAR_NAME_HEIGHT_INNER = CSS_VAR_PREFIX + joinHyphen(DOM_BASE_NAME, LAYOUT_INNER, LAYOUT_HEIGHT);
+export const CSS_VAR_NAME_WIDTH_SCROLL = CSS_VAR_PREFIX + joinHyphen(DOM_BASE_NAME, LAYOUT_SCROLL, LAYOUT_WIDTH);
+export const CSS_VAR_NAME_HEIGHT_SCROLL = CSS_VAR_PREFIX + joinHyphen(DOM_BASE_NAME, LAYOUT_SCROLL, LAYOUT_HEIGHT);
 
-// css variables value unit of measurement
-const cssVarUnitValue = 'px';
+// CSS variables value unit of measurement
+const CSS_VAR_UNIT_VALUE = 'px';
 
-// data attribute name
-const dataAttrName = `data-${domBaseName}`;
-
-// base css class name (initialization)
-export const cssClassBase = domBaseName;
-
-// css class name on locked state
-export const cssClassLocked = `${cssClassBase}--locked`;
-
-// scrollbar gap detection css overflow states
-const cssOverflowUnset = '';
-const cssOverflowHidden = 'hidden';
-
-// stylers closure
-// a weakmap is used in order to keep every styler associated with the scrollable element itself
-const stylers = new WeakMap();
-
-// TODO: make jsdocs more clear
-
-/**
- * Gets a the value for a given property name of a given element bounding client rect
- * @param {HTMLElement} element The given elemetn
- * @param {String} prop The given property name
- * @returns {Number} THe property value
- */
-const getBoundingClientRectProp = (element, prop) => element?.getBoundingClientRect()?.[prop] ?? 0;
+// Only-rule index
+const CSS_STYLE_SHEET_ONLY_RULE_INDEX = 0;
 
 /**
- * Gets a given element width (without scrollbar)
- * @param {HTMLElement} element The given element whose width needs to be retrieved
- * @returns {Number} The given element scroll-width
+ * Updates a given element css variables to a given styler element ensuring its presence in head
+ * @param {HTMLElement} element The given element whose css variables need to be updated
+ * @param {HTMLStyleElement} styler The styler element where the css variables are written
+ * @param {Object} layout
+ * @param {Object} scroll The scroll position to be set in css variables
+ * @returns {HTMLStyleElement} Styler element
  */
-export const getGlobalScrollerWidth = element => getBoundingClientRectProp(element, 'width');
-
-/**
- * Gets a given element height (without scrollbar)
- * @param {HTMLElement} element The given element whose height needs to be retrieved
- * @returns {Number} The given element scroll-height
- */
-export const getGlobalScrollerHeight = element => getBoundingClientRectProp(element, 'height');
-
-/**
- * Gets the global scrollable element (body or html) current vertical scrollbar width size in px unit
- * @param {HTMLElement} element The given global scrollable element (body or html) whose scrollbar gaps need to be retrieved
- * @returns {Object} The current vertical scrollbar width and the horizontal scrollbar height in px
- */
-const getGlobalScrollerGaps = element => {
-    const styles = element?.style ?? {};
-
-    // caches current element sizes
-    // NOTE: right now only getBoundingClientRect grant sub pixel measures, repaint would have been done anyway so...
-    const width = getGlobalScrollerWidth(element);
-    const height = getGlobalScrollerHeight(element);
-
-    // horizontal scrollbar
-
-    // hides horizontal scrollbar
-    styles.overflowX = cssOverflowHidden;
-
-    // gets horizontal scrollbar gap size (height with possible scrollbar - height without scrollbar)
-    const horizontal = getGlobalScrollerHeight(element) - height;
-
-    // clears horizontal scrollbar (previously set) hiding property value
-    styles.overflowX = cssOverflowUnset;
+export const setStyles = (element, styler, layout, scroll) => {
+    // Ensures style tag dom presence, StyleSheet API throws otherwise
+    if (!head.contains(styler) && styler) {
+        head.appendChild(styler);
+    }
     
-    // vertical scrollbar
+    // Element must have a dynamic attribute to be used as a unique css selector
+    const dataAttrValue = element?.getAttribute(DATA_ATTR_NAME) ?? joinHyphen(getElementParentsLength(element), getElementIndex(element));
 
-    // hides vertical scrollbar
-    styles.overflow = cssOverflowHidden;
-    
-    // gets vertical scrollbar gap size (width with possible scrollbar - width without scrollbar)
-    const vertical = getGlobalScrollerWidth(element) - width;
+    // Assigns that selector (a "data attribute")
+    element?.setAttribute(DATA_ATTR_NAME, dataAttrValue);
 
-    // clears vertical scrollbar (previously set) hiding property value
-    styles.overflow = cssOverflowUnset;
+    // CSSStyleSheet instance reference
+    const { sheet } = styler ?? {};
 
-    return { vertical, horizontal };
-};
-
-/**
- * Gets a given element current vertical scrollbar width size in px unit
- * @param {HTMLElement} element The given element whose scrollbar gaps need to be retrieved
- * @returns {Object} The current vertical scrollbar width and the horizontal scrollbar height in px
- */
-const getElementScrollerGaps = element => ({
-    horizontal: element.offsetHeight - element.clientHeight,
-    vertical: element.offsetWidth - element.clientWidth
-});
-
-/**
- * Gets a given element current vertical scrollbar width size in px unit
- * @param {HTMLElement} element The given element whose scrollbar gaps need to be retrieved
- * @returns {Object} The current vertical scrollbar width and the horizontal scrollbar height in px
- */
-// NOTE: right now this is the safest and more robust way to detect the scrollbar size (which is also compatible with iOS pinch to zoom)
-// overflow property is going to change anyway, so this not-100%-clean approach (debatably) is kept for now
-export const getScrollbarsGaps = element => {
-    // clears possible body scroll lock state css strategies
-    const wasLocked = removeLockedCssClass(element);
-
-    // gets the scrollbar gaps (the horizontal and vertical scrollbar-width property value)
-    const scrollbarGaps = isGlobalScroller(element) ? getGlobalScrollerGaps(element) : getElementScrollerGaps(element);
-
-    // possibly re applies body scroll lock state css strategies
-    if (wasLocked) {
-        addLockedCssClass(element);
+    // Cleans up former CSS rule
+    if (sheet?.cssRules?.[CSS_STYLE_SHEET_ONLY_RULE_INDEX]) {
+        sheet.deleteRule(CSS_STYLE_SHEET_ONLY_RULE_INDEX);
     }
 
-    // returns the vertical and horizontal scrollbar gaps as an object ({ vertical, horizontal })
-    return scrollbarGaps;
-};
+    // the css variables names and values as an object
+    const rulesData = {
+        [CSS_VAR_NAME_POSITION_TOP]: scroll[SCROLL_TOP],
+        [CSS_VAR_NAME_POSITION_LEFT]: scroll[SCROLL_LEFT],
 
-/**
- * Gets the given scrollable element (associated) styler
- * @param {HTMLElement} element The given scrollable element whose styler needs to be deleted
- * @returns {HTMLStyleElement|null} Styler element, null if not inserted to head
- */
-export const getStyler = element => stylers.get(element) ?? null;
+        [CSS_VAR_NAME_WIDTH_OUTER]: layout[LAYOUT_WIDTH_OUTER],
+        [CSS_VAR_NAME_HEIGHT_OUTER]: layout[LAYOUT_HEIGHT_OUTER],
+
+        [CSS_VAR_NAME_WIDTH_INNER]: layout[LAYOUT_WIDTH_INNER],
+        [CSS_VAR_NAME_HEIGHT_INNER]: layout[LAYOUT_HEIGHT_INNER],
+
+        [CSS_VAR_NAME_WIDTH_SCROLL]: layout[LAYOUT_WIDTH_SCROLL],
+        [CSS_VAR_NAME_HEIGHT_SCROLL]: layout[LAYOUT_HEIGHT_SCROLL],
+
+        [CSS_VAR_NAME_SCROLLBAR_WIDTH]: layout[LAYOUT_SCROLLBAR_WIDTH],
+        [CSS_VAR_NAME_SCROLLBAR_HEIGHT]: layout[LAYOUT_SCROLLBAR_HEIGHT]
+    };
+
+    // Enumerates the rules data object key (the css variables names)
+    const rulesDataKeys = Object.keys(rulesData);
+
+    // Composes updated css variables rule
+    // (addressing a formerly set data attr selector)
+    let rules = '';
+    for (let i = 0, j = rulesDataKeys.length; i < j; i++) {
+        const key = rulesDataKeys[i];
+
+        rules += `${key}: ${rulesData[key]}${CSS_VAR_UNIT_VALUE};`;
+    }
+
+    // Sets new rule up
+    sheet?.insertRule(`[${DATA_ATTR_NAME}="${dataAttrValue}"] { ${rules} }`, CSS_STYLE_SHEET_ONLY_RULE_INDEX);
+
+    // Returns the given styler element itself
+    return styler;
+};
 
 /**
  * Deletes a given scrollable element (associated) styler
  * @param {HTMLElement} element The given scrollable element whose styler needs to be deleted
- * @returns {HTMLStyleElement|null} Styler element, null if not inserted to head
- */
-export const clearStyle = element => {
-    const styler = getStyler(element);
-
-    styler?.remove();
-
-    stylers.delete(element);
-
-    element.removeAttribute(dataAttrName);
-
-    return styler;
-};
-
-/**
- * Updates a given element css variables to the current state
- * @param {HTMLElement} element The given element whose css variables need to be updated
+ * @param {HTMLStyleElement} styler The styler element to be removed from head
  * @returns {HTMLStyleElement} Styler element
  */
-export const updateCssVariables = element => {
-    // ensuring style tag reference existance
-    if (!stylers.has(element)) {
-        stylers.set(element, document.createElement('style'));
-    }
+export const unsetStyles = (element, styler) => {
+    // Removes the styler element from head
+    styler?.remove();
 
-    // getting style tag reference
-    const styler = getStyler(element);
+    // Removes the data attr unique selector
+    element?.removeAttribute(DATA_ATTR_NAME);
 
-    // ensuring style tag dom presence, StyleSheet API throws otherwise
-    if (!head.contains(styler)) {
-        head.appendChild(styler);
-    }
-
-    // ensuring data attr based unique selector
-    if (!element?.matches(`[${dataAttrName}]`)) {
-        element?.setAttribute(dataAttrName, Date.now());
-    }
-
-    // only rule
-    const index = 0;
-
-    // clean up past rules
-    if (styler.sheet.cssRules[index]) {
-        styler.sheet.deleteRule(index);
-    }
-
-    // calculating scrollbar gap
-    const scrollbarsGaps = getScrollbarsGaps(element);
-    // gets the current scroll position object saving or default
-    const scrollSaving = getSavedScrollPosition(element);
-    const scrollPosition = isValidScrollPosition(scrollSaving) ? scrollSaving : { top: 0, left: 0 };
-
-    // composes updated css variables rule
-    const rule = `[${dataAttrName}="${element?.getAttribute(dataAttrName)}"] {
-        ${cssVarNamePositionTop}: ${scrollPosition.top * -1}${cssVarUnitValue};
-        ${cssVarNamePositionLeft}: ${scrollPosition.left * -1}${cssVarUnitValue};
-
-        ${cssVarNameGapVertical}: ${scrollbarsGaps.vertical}${cssVarUnitValue};
-        ${cssVarNameGapHorizontal}: ${scrollbarsGaps.horizontal}${cssVarUnitValue};
-        
-        ${cssVarNameGapVertical}-${cssVarRoundedSuffix}: ${Math.round(scrollbarsGaps.vertical)}${cssVarUnitValue};
-        ${cssVarNameGapHorizontal}-${cssVarRoundedSuffix}: ${Math.round(scrollbarsGaps.horizontal)}${cssVarUnitValue};
-    }`;
-
-    // sets new rule up
-    styler.sheet.insertRule(rule, index);
-
+    // Returns the given styler element itself
     return styler;
 };
-
-/**
- * Toggles a given css class on a given element
- * @param {HTMLElement} element The element whose css class needs to be toggled
- * @param {String} className The css class to be toggled
- * @param {Boolean} bool Whether the class should be added ro removed
- * @returns {Boolean} Whether the toggle (or the force removal, or the force add) has been successful
- */
-export const toggleCssClass = (element, className, bool) => {
-    const hadClass = !!element?.classList?.contains(className);
-
-    bool = bool ?? !hadClass;
-
-    element?.classList?.toggle(className, bool);
-
-    return (bool && !hadClass) || (!bool && hadClass);
-};
-
-/**
- * Syntactic sugar, adds a locked stase css class to a given element
- * @param {HTMLElement} element The given element
- * @returns {Boolean} Whether the css class has been given successfully or not
- */
-export const addLockedCssClass = element => toggleCssClass(element, cssClassLocked, true);
-
-/**
- * Syntactic sugar, removes a locked stase css class to a given element
- * @param {HTMLElement} element The given element
- * @returns {Boolean} Whether the css class has been removed successfully or not
- */
-export const removeLockedCssClass = element => toggleCssClass(element, cssClassLocked, false);
-
-/**
- * Syntactic sugar, removes a base (initialization) stase css class to a given element
- * @param {HTMLElement} element The given element
- * @returns {Boolean} Whether the css class has been removed successfully or not
- */
-export const addBaseCssClass = element => toggleCssClass(element, cssClassBase, true);
-
-/**
- * Syntactic sugar, removes a base (initialization) stase css class to a given element
- * @param {HTMLElement} element The given element
- * @returns {Boolean} Whether the css class has been removed successfully or not
- */
-export const removeBaseCssClass = element => toggleCssClass(element, cssClassBase, false);

@@ -1,13 +1,29 @@
-import { dispatchEvent, eventNamePrefix } from '../src/client.mjs';
+import { createDiv, dispatchCustomEvent } from './_tests.mjs';
+
+import { addListener, removeListener } from '../src/client.mjs';
 
 describe('client', () => {
-    it('should be able to dispatch a prefixed event name', done => {
-        const eventName = 'foobarrrr';
+    const customEventName = 'foobar';
+    
+    const div = createDiv();
+    
+    it('should be able to dispatch and remove events thorugh shortcut functions', () => {
+        let customEventDispatchCount = 0;
 
-        const div = document.createElement('div');
+        const customEventHandler = () => (customEventDispatchCount++);
 
-        div.addEventListener(`${eventNamePrefix}-${eventName}`, () => done(), { once: true });
+        addListener(div, customEventName, customEventHandler);
 
-        dispatchEvent(div, eventName);
+        // listened, from 0 to 1
+        dispatchCustomEvent(div, customEventName);
+
+        expect(customEventDispatchCount).to.equals(1);
+
+        removeListener(div, customEventName, customEventHandler);
+
+        // not listened, still 1
+        dispatchCustomEvent(div, customEventName);
+
+        expect(customEventDispatchCount).to.equals(1);
     });
 });
