@@ -144,10 +144,10 @@ describe('padlock', () => {
         setTimeout(() => {
             expect(scroll).to.not.deep.equals(instance.scroll);
 
+            scroller.scrollTo(0, 0);
+
             expander.remove();
             scroller.remove();
-
-            scroller.scrollTo(0, 0);
 
             done();
         }, SCROLL_DEBOUNCE_INTERVAL_MS + 20); // TODO: check why extra ms is needed here
@@ -171,20 +171,70 @@ describe('padlock', () => {
 
             instance.destroy();
 
-            expander.remove();
-
             window.scrollTo(0, 0);
+
+            expander.remove();
 
             done();
         }, SCROLL_DEBOUNCE_INTERVAL_MS + 20); // TODO: check why extra ms is needed here
     });
 
-    xit('should set new scroll on elements instance', () => {
-        // TODO: ...
+    it('should set new scroll elements scroll position', done => {
+        scroller.scrollTo(0, 0);
+
+        scroller.append(expander);
+        body.append(scroller);
+
+        const instance = new Padlock(scroller);
+        
+        const { scroll } = instance;
+        
+        expect(scroll).to.deep.equals(instance.scroll);
+        
+        const newScroll = { top: 345, left: 123 };
+
+        instance.scroll = newScroll;
+
+        setTimeout(() => {
+            expect(scroll).to.not.deep.equals(instance.scroll);
+            expect(newScroll).to.deep.equals(instance.scroll);
+
+            scroller.scrollTo(0, 0);
+
+            expander.remove();
+            scroller.remove();
+
+            done();
+        }, SCROLL_DEBOUNCE_INTERVAL_MS + 20); // TODO: check why extra ms is needed here
     });
 
-    xit('should set new scroll on page instance', () => {
-        // TODO: ...
+    it('should set new scroll page scroll position', done => {
+        window.scrollTo(0, 0);
+
+        body.append(expander);
+
+        const instance = new Padlock();
+        
+        const { scroll } = instance;
+        
+        expect(scroll).to.deep.equals(instance.scroll);
+        
+        const newScroll = { top: 345, left: 123 };
+
+        instance.scroll = newScroll;
+
+        setTimeout(() => {
+            expect(scroll).to.not.deep.equals(instance.scroll);
+            expect(newScroll).to.deep.equals(instance.scroll);
+
+            instance.destroy();
+
+            window.scrollTo(0, 0);
+
+            expander.remove();
+
+            done();
+        }, SCROLL_DEBOUNCE_INTERVAL_MS + 20); // TODO: check why extra ms is needed here
     });
 
     it('destroy method should avoid further computations or DOM changes', () => {
