@@ -1,9 +1,10 @@
 import { rollup } from 'rollup';
-import rollupBabel from '@rollup/plugin-babel';
+import rollupBabelPackage from '@rollup/plugin-babel';
 import rollupGzip from 'rollup-plugin-gzip';
 import rollupUglifyPackage from 'rollup-plugin-uglify';
 import { terser as rollupTerser } from 'rollup-plugin-terser';
 
+const { getBabelOutputPlugin: rollupBabel } = rollupBabelPackage;
 const { uglify: rollupUglify } = rollupUglifyPackage;
 
 const babelPresets = ['@babel/preset-env'];
@@ -34,7 +35,7 @@ const buildBundle = async options => {
             const plugins = [];
 
             plugins.push(
-                rollupBabel.getBabelOutputPlugin({
+                rollupBabel({
                     comments: false,
                     presets: babelPresets,
                     plugins: babelPlugins,
