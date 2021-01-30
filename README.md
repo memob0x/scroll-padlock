@@ -4,7 +4,7 @@
 [![scroll-padlock (latest)](https://img.shields.io/npm/v/scroll-padlock/latest.svg)](https://www.npmjs.com/package/scroll-padlock)
 [![scroll-padlock (downloads)](https://img.shields.io/npm/dy/scroll-padlock.svg)](https://www.npmjs.com/package/scroll-padlock)
 
-A small script (~4K gzipped) aimed to encourage a **CSS-first** approach when **locking html elements scroll** avoiding "contents jump" and iOS Safari quirkiness.
+A small (~4K gzipped) unobtrusive script aimed to encourage a **CSS-first** approach when **locking html elements scroll** avoiding "contents jump" and iOS Safari quirkiness.
 
 🙅 Without this library:
 
@@ -34,11 +34,11 @@ The source code is entirely written in [standard ECMAScript](https://tc39.es/), 
 
 ## Under the Hood
 
-This library just sets some [CSS variables](#css-variables) on html elements, to do that it **observes [CSS class mutations](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver)** and **listens to [window resize](https://developer.mozilla.org/en-US/docs/Web/API/Window/resize_event) and [scroll](https://developer.mozilla.org/en-US/docs/Web/API/Element/scroll_event) events**.
+Some [CSS variables](#css-variables), addressing a given html element **data attribute** (dinamically set), are set through a `style` appended in `head`, a given **CSS class** is **[observed](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver)** to determine current state while **[window resize](https://developer.mozilla.org/en-US/docs/Web/API/Window/resize_event) and [scroll](https://developer.mozilla.org/en-US/docs/Web/API/Element/scroll_event) events** are listened in order to update CSS variables; no other DOM modifications besides that.
 
 ## Usage
 
-Since the [CSS class](#CSS-Rules-Examples) that would prevent an element to scroll is automatically observed, an instance must be created providing the given element and its CSS class as parameters.
+An instance requires the **html element** which scroll needs to be controlled and the [CSS class](#CSS-Rules-Examples) that would lock it.
 
 ```javascript
 // The css class with the rules that would lock the page scroll
@@ -51,7 +51,7 @@ const { documentElement } = document;
 const instance = new ScrollPadlock(documentElement, SCROLL_LOCKED_CSS_CLASS_NAME);
 ```
 
-At this point, the lock state can be changed simply toggling that CSS class, both with native DOM API or through a reactive framework virtual DOM.
+At this point, the lock state can be changed simply **toggling that CSS class**; since the CSS class change is internally observed, the class change itself can be done through native DOM API, a reactive framework virtual DOM, another library, etc...
 
 ```javascript
 const { classList } = documentElement;
@@ -80,7 +80,7 @@ html.your-locked-class {
 }
 ```
 
-Please note that some [browser recognition logic](https://gist.github.com/memob0x/0869e759887441b1349fdfe6bf5a188d) can be applied in order to address iOS more specifically, keeping the standard overflow approach for the browsers that respects it:
+Some [browser recognition logic](https://gist.github.com/memob0x/0869e759887441b1349fdfe6bf5a188d) can be applied in order to address iOS more specifically, keeping the standard overflow approach for the browsers that respects it:
 
 ```css
 /* iOS only */
@@ -124,7 +124,7 @@ This is the complete list of CSS variables set by this library on the given elem
 
 ## API
 
-The `destroy` method is particularly important when using **reactive frameworks** (such as React, Vue, Angular, etc...) which components lifecycle might generate memory leaks: **call `destroy` method when the components in which scroll-padlock is used get unmounted**.
+The `destroy` method is particularly important when using **reactive frameworks** (such as React, Vue, Angular, etc...) which components lifecycle might generate memory leaks: **call `destroy` method when the component in which scroll-padlock is used gets unmounted**.
 
 ```javascript
 // Detaches instance events, removes styles, etc...
