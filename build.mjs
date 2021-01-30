@@ -1,6 +1,10 @@
 import { rollup } from 'rollup';
 import rollupBabel from '@rollup/plugin-babel';
 import rollupGzip from 'rollup-plugin-gzip';
+import rollupUglifyPackage from 'rollup-plugin-uglify';
+import { terser as rollupTerser } from 'rollup-plugin-terser';
+
+const { uglify: rollupUglify } = rollupUglifyPackage;
 
 const babelPresets = ['@babel/preset-env'];
 const babelPlugins = ['@babel/plugin-proposal-class-properties'];
@@ -26,17 +30,26 @@ const buildBundle = async options => {
         name: 'ScrollPadlock',
         file: `${root}dist/${type}/scroll-padlock${ min ? '.min' : '' }.js`,
         exports: 'auto',
-        plugins: [
-            rollupBabel.getBabelOutputPlugin({
-                compact: min,
-                comments: false,
-                presets: babelPresets,
-                plugins: babelPlugins,
-                allowAllFormats: true
-            }),
-            
-            rollupGzip()
-        ]
+        plugins: (() => {
+            const plugins = [];
+
+            plugins.push(
+                rollupBabel.getBabelOutputPlugin({
+                    comments: false,
+                    presets: babelPresets,
+                    plugins: babelPlugins,
+                    allowAllFormats: true
+                })
+            );
+
+            if( min ){
+                plugins.push(type === 'es' ? rollupTerser() : rollupUglify());
+            }
+
+            plugins.push(rollupGzip());
+
+            return plugins;
+        })()
     })));
 
     await buildBundle({
