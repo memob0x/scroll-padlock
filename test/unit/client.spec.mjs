@@ -1,11 +1,15 @@
-import { createDiv, dispatchCustomEvent } from './_test-utils.mjs';
+import 'jsdom-global/register.js';
 
-import { addListener, removeListener } from '../src/client.mjs';
+import chai from 'chai';
+
+import { addListener, removeListener } from '../../src/client.mjs';
+
+const { expect } = chai;
 
 describe('client', () => {
     const customEventName = 'foobar';
     
-    const div = createDiv();
+    const div = document.createElement('div');
     
     it('should be able to dispatch and remove events thorugh shortcut functions', () => {
         let customEventDispatchCount = 0;
@@ -15,14 +19,14 @@ describe('client', () => {
         addListener(div, customEventName, customEventHandler);
 
         // listened, from 0 to 1
-        dispatchCustomEvent(div, customEventName);
+        div.dispatchEvent(new CustomEvent(customEventName));
 
         expect(customEventDispatchCount).to.equals(1);
 
         removeListener(div, customEventName, customEventHandler);
 
         // not listened, still 1
-        dispatchCustomEvent(div, customEventName);
+        div.dispatchEvent(new CustomEvent(customEventName));
 
         expect(customEventDispatchCount).to.equals(1);
     });

@@ -184,10 +184,16 @@ export default class ScrollPadlock {
     }
 
     /**
+     * The current css class observer state
+     * True if observing, false if not
+     */
+    #observerState = false;
+
+    /**
      * State MutationObserver object,
      * registers the callback fired on CSS class change
      */
-    #observer = new MutationObserver(() => {
+    #observer = (implementationName => implementationName in window ? new window[implementationName](() => {
         // Caches the current scroll lock state before updating it
         const state = this.#state;
 
@@ -211,7 +217,7 @@ export default class ScrollPadlock {
 
         // State changed to false, restoring scroll position
         this.#scrollTo(this.#scrollSaving);
-    });
+    }) : null)('MutationObserver');
 
     /**
      * The styler, css variables holder
@@ -303,20 +309,36 @@ export default class ScrollPadlock {
 
     /**
      * Observes the element CSS class changes
-     * @returns {void} Nothing
+     * @returns {Boolean} The css class observer state
      */
-    #observeCssClass = () => this.#observer?.observe(this.#target, {
-        attributes: true,
-        attributeFilter: ['class'],
-        childList: false,
-        characterData: false
-    });
+    #observeCssClass = () => {
+        if( this.#observerState ){
+            return this.#observerState;
+        }
+
+        this.#observer?.observe(this.#target, {
+            attributes: true,
+            attributeFilter: ['class'],
+            childList: false,
+            characterData: false
+        });
+        
+        return this.#observerState = !!this.#observer;
+    };
 
     /**
      * Unobserves the element CSS class changes
-     * @returns {void} Nothing
+     * @returns {Boolean} The css class observer state
      */
-    #unobserveCssClass = () => this.#observer?.disconnect();
+    #unobserveCssClass = () => {
+        if( !this.#observerState ){    
+            return this.#observerState;
+        }
+        
+        this.#observer?.disconnect();
+        
+        return this.#observerState = false;
+    };
 
     /**
      * Effectively destroy the instance, detaching event listeners, removing styles, etc...

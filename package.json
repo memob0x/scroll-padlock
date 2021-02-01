@@ -36,8 +36,9 @@
     ],
     "scripts": {
         "lint": "./node_modules/.bin/eslint --ext .js --ext .mjs . --fix",
-        "build": "npm run lint && node ./build.mjs",
-        "test": "npm run lint && karma start --single-run --browsers ChromeHeadless karma.conf.js"
+        "build": "node ./build.mjs",
+        "test:unit": "./node_modules/.bin/mocha ./test/unit/*.spec.*",
+        "test": "npm run test:unit"
     },
     "devDependencies": {
         "@babel/core": "^7.12.10",
@@ -48,13 +49,9 @@
         "@rollup/plugin-babel": "^5.2.3",
         "chai": "4.2.0",
         "eslint": "^7.19.0",
-        "karma": "^6.0.3",
-        "karma-chai": "^0.1.0",
-        "karma-chrome-launcher": "^3.1.0",
-        "karma-mocha": "^2.0.1",
-        "karma-mocha-reporter": "^2.2.5",
+        "jsdom": "16.4.0",
+        "jsdom-global": "3.0.2",
         "mocha": "8.2.1",
-        "puppeteer": "^5.5.0",
         "rollup": "^2.38.3",
         "rollup-plugin-gzip": "^2.5.0",
         "rollup-plugin-terser": "^7.0.2",
