@@ -8,8 +8,20 @@ import { DATA_ATTR_NAME } from '../../src/style.mjs';
 
 import {
     EVENT_NAME_SCROLL,
-    EVENT_NAME_RESIZE
+    EVENT_NAME_RESIZE,
+    RESIZE_DEBOUNCE_INTERVAL_MS,
+    SCROLL_DEBOUNCE_INTERVAL_MS
 } from '../../src/client.mjs';
+
+import {
+    LAYOUT_WIDTH_OUTER,
+    LAYOUT_HEIGHT_OUTER
+} from '../../src/layout.mjs';
+
+import {
+    SCROLL_TOP,
+    SCROLL_LEFT
+} from '../../src/scroll.mjs';
 
 const { expect } = chai;
 
@@ -68,15 +80,205 @@ describe('padlock', () => {
         }).to.not.throw(Error);
     });
 
-    xit('should update instance "layout" object on resize', () => {});
+    const sleep = timeout => new Promise(resolve => setTimeout(resolve, timeout));
 
-    xit('should update instance "scroll" object on scroll', () => {});
+    it('should update instance "layout" object only on resize and "scroll" object only on scroll', async () => {
+        const div = document.createElement('div');
 
-    xit('should update instance "scroll" object and "layout" object on "update" method call', () => {});
+        let dimensions = {
+            width: 100,
+            height: 200
+        };
+        let scrollPosition = {
+            top: 1000,
+            left: 2000
+        };
 
-    xit('should trigger "scrollTo" native method when using "scroll" accessor as a setter when state is unlocked', () => {});
+        div.getBoundingClientRect = () => dimensions;
+        div.scrollTop = scrollPosition.top;
+        div.scrollLeft = scrollPosition.left;
 
-    xit('should not trigger "scrollTo" native method when using "scroll" accessor as a setter when locked, but should update "scroll" object instead', () => {});
+        const instance = new Padlock(div);
+
+        expect(instance.layout).to.include({
+            [LAYOUT_WIDTH_OUTER]: dimensions.width,
+            [LAYOUT_HEIGHT_OUTER]: dimensions.height
+        });
+        expect(instance.scroll).to.include({
+            [SCROLL_TOP]: scrollPosition.top,
+            [SCROLL_LEFT]: scrollPosition.left
+        });
+
+        dimensions = {
+            width: 300,
+            height: 400
+        };
+        scrollPosition = {
+            top: 2000,
+            left: 3000
+        };
+
+        div.getBoundingClientRect = () => dimensions;
+        div.scrollTop = scrollPosition.top;
+        div.scrollLeft = scrollPosition.left;
+
+        expect(instance.layout).to.not.include({
+            [LAYOUT_WIDTH_OUTER]: dimensions.width,
+            [LAYOUT_HEIGHT_OUTER]: dimensions.height
+        });
+        expect(instance.scroll).to.not.include({
+            [SCROLL_TOP]: scrollPosition.top,
+            [SCROLL_LEFT]: scrollPosition.left
+        });
+
+        window.dispatchEvent(new CustomEvent(EVENT_NAME_RESIZE));
+
+        await sleep(RESIZE_DEBOUNCE_INTERVAL_MS);
+        
+        expect(instance.layout).to.include({
+            [LAYOUT_WIDTH_OUTER]: dimensions.width,
+            [LAYOUT_HEIGHT_OUTER]: dimensions.height
+        });
+        expect(instance.scroll).to.not.include({
+            [SCROLL_TOP]: scrollPosition.top,
+            [SCROLL_LEFT]: scrollPosition.left
+        });
+
+        dimensions = {
+            width: 400,
+            height: 500
+        };
+
+        div.dispatchEvent(new CustomEvent(EVENT_NAME_SCROLL));
+
+        await sleep(SCROLL_DEBOUNCE_INTERVAL_MS);
+
+        expect(instance.layout).not.to.include({
+            [LAYOUT_WIDTH_OUTER]: dimensions.width,
+            [LAYOUT_HEIGHT_OUTER]: dimensions.height
+        });
+        expect(instance.scroll).to.include({
+            [SCROLL_TOP]: scrollPosition.top,
+            [SCROLL_LEFT]: scrollPosition.left
+        });
+
+        instance.destroy();
+    });
+
+    it('should update instance "scroll" object and "layout" object on "update" method call', () => { 
+        const div = document.createElement('div');
+
+        let dimensions = {
+            width: 100,
+            height: 200
+        };
+        let scrollPosition = {
+            top: 1000,
+            left: 2000
+        };
+
+        div.getBoundingClientRect = () => dimensions;
+        div.scrollTop = scrollPosition.top;
+        div.scrollLeft = scrollPosition.left;
+
+        const instance = new Padlock(div);
+
+        expect(instance.layout).to.include({
+            [LAYOUT_WIDTH_OUTER]: dimensions.width,
+            [LAYOUT_HEIGHT_OUTER]: dimensions.height
+        });
+        expect(instance.scroll).to.include({
+            [SCROLL_TOP]: scrollPosition.top,
+            [SCROLL_LEFT]: scrollPosition.left
+        });
+
+        dimensions = {
+            width: 300,
+            height: 400
+        };
+        scrollPosition = {
+            top: 2000,
+            left: 3000
+        };
+
+        div.getBoundingClientRect = () => dimensions;
+        div.scrollTop = scrollPosition.top;
+        div.scrollLeft = scrollPosition.left;
+
+        expect(instance.layout).to.not.include({
+            [LAYOUT_WIDTH_OUTER]: dimensions.width,
+            [LAYOUT_HEIGHT_OUTER]: dimensions.height
+        });
+        expect(instance.scroll).to.not.include({
+            [SCROLL_TOP]: scrollPosition.top,
+            [SCROLL_LEFT]: scrollPosition.left
+        });
+
+        instance.update();
+        
+        expect(instance.layout).to.include({
+            [LAYOUT_WIDTH_OUTER]: dimensions.width,
+            [LAYOUT_HEIGHT_OUTER]: dimensions.height
+        });
+        expect(instance.scroll).to.include({
+            [SCROLL_TOP]: scrollPosition.top,
+            [SCROLL_LEFT]: scrollPosition.left
+        });
+
+        instance.destroy();
+    });
+
+    it('should scroll the element through "scroll" setter when unlocked state, save it for later when locked, restore saved scroll on unlock', async () => {
+        const div = document.createElement('div');
+
+        const lockedStateCSSClassName = 'loooocked';
+
+        let scrollToCalls = 0;
+
+        div.scrollTo = arg => {
+            scrollToCalls++;
+            
+            if( typeof arg === 'object' ){
+                div.scrollTop = arg?.top;
+            }
+
+            if( typeof arg === 'number' ){
+                div.scrollTop = arg;
+            }
+        };
+        
+        const instance = new Padlock(div, lockedStateCSSClassName);
+
+        // Tests programmatic scroll change through instance
+        let { scrollTop } = div;
+
+        instance.scroll = { top: 100, left: 200 };
+
+        expect(scrollTop).not.to.equals(div.scrollTop);
+        expect(scrollToCalls).to.equals(1);
+
+        scrollTop = instance.scroll.top;
+
+        // Tests programmatic scroll change attempt through instance on locked state (given scroll object is saved for later)
+        ({ scrollTop } = div);
+
+        div.classList.add(lockedStateCSSClassName);
+
+        await sleep(1);
+
+        instance.scroll = { top: 200, left: 300 };
+
+        expect(scrollTop).to.equals(div.scrollTop);
+        expect(scrollToCalls).to.equals(1);
+
+        // Tests automatic scroll restore on previously given scroll object (through scroll change attempt)
+        div.classList.remove(lockedStateCSSClassName);
+
+        await sleep(1);
+
+        expect(scrollTop).not.to.equals(div.scrollTop);
+        expect(scrollToCalls).to.equals(2);
+    });
 
     it('should avoid further computations or DOM changes after "destroy" method call', () => {
         const div = document.createElement('div');

@@ -39,11 +39,12 @@ import {
 const { expect } = chai;
 
 describe('style', () => {
-    const styler = document.createElement('style');
-    const div = document.createElement('div');
-
     it('should be able to append a style tag with css variables for given values targeting a given element', () => {
-        document.body.prepend(div);
+        const styler = document.createElement('style');
+        const div = document.createElement('div');
+        const holder = document.createElement('div');
+
+        holder.prepend(div);
 
         let layout = {
             [LAYOUT_WIDTH_SCROLL]: 1,
@@ -87,7 +88,7 @@ describe('style', () => {
 
         const indexShifterDummyEl = document.createElement('div');
 
-        document.body.prepend(indexShifterDummyEl);
+        holder.prepend(indexShifterDummyEl);
 
         layout = {
             [LAYOUT_WIDTH_SCROLL]: 10,

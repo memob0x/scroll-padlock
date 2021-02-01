@@ -40,6 +40,8 @@ describe('utils', () => {
     });
 
     it('should be able to count a given element parents', () => {
+        const holder = document.createElement('div');
+
         const div1 = document.createElement('div');
 
         const div2 = document.createElement('div');
@@ -48,20 +50,20 @@ describe('utils', () => {
 
         expect(getElementParentsLength(document.body)).to.equals(1);
 
+        expect(getElementParentsLength(holder)).to.equals(0);
+
         div1.prepend(div2);
 
-        document.body.prepend(div1);
+        holder.prepend(div1);
 
-        expect(getElementParentsLength(div1)).to.equals(2);
+        expect(getElementParentsLength(div1)).to.equals(1);
 
-        expect(getElementParentsLength(div2)).to.equals(3);
-
-        div1.remove();
-
-        div2.remove();
+        expect(getElementParentsLength(div2)).to.equals(2);
     });
 
     it('should be able to get a given element index in DOM tree', () => {
+        const holder = document.createElement('div');
+
         const div1 = document.createElement('div');
 
         const div2 = document.createElement('div');
@@ -70,26 +72,19 @@ describe('utils', () => {
 
         expect(getElementIndex(document.documentElement)).to.equals(0);
 
-        // NOTE: there's head before document.body
-        expect(getElementIndex(document.body)).to.equals(1);
+        expect(getElementIndex(holder)).to.equals(0);
 
-        document.body.prepend(div3);
+        holder.prepend(div3);
 
-        document.body.prepend(div2);
+        holder.prepend(div2);
 
-        document.body.prepend(div1);
+        holder.prepend(div1);
 
         expect(getElementIndex(div1)).to.equals(0);
 
         expect(getElementIndex(div2)).to.equals(1);
 
         expect(getElementIndex(div3)).to.equals(2);
-
-        div1.remove();
-
-        div2.remove();
-
-        div3.remove();
     });
 
     it('should be able to join string fragments with hyphens', () => expect(joinHyphen('foo', 'barr', 1234)).to.equals('foo-barr-1234'));
