@@ -23,7 +23,7 @@ import {
 
 import { getElementParentsLength, getElementIndex } from '../src/utils.mjs';
 
-import { head, body, createElement, createDiv, getCSSVariableValue } from './_tests.mjs';
+import { head, body, createElement, createDiv, getCSSVariableValue } from './_test-utils.mjs';
 
 describe('style', () => {
     const styler = createElement('style');

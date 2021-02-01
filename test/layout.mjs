@@ -10,7 +10,7 @@ import {
     getLayout
 } from '../src/layout.mjs';
 
-import { head, body, documentElement, createElement, createDiv } from './_tests.mjs';
+import { head, body, documentElement, createElement, createDiv } from './_test-utils.mjs';
 
 describe('layout', () => {
     const SCROLLBAR_SIZE = 20;

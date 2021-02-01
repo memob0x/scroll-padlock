@@ -1,6 +1,6 @@
 import { SCROLL_TOP, SCROLL_LEFT, getScroll } from '../src/scroll.mjs';
 
-import { body, createDiv } from './_tests.mjs';
+import { body, createDiv } from './_test-utils.mjs';
 
 describe('scroll', () => {
     let expander;

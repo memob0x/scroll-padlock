@@ -1,4 +1,4 @@
-import { createDiv, dispatchCustomEvent } from './_tests.mjs';
+import { createDiv, dispatchCustomEvent } from './_test-utils.mjs';
 
 import { addListener, removeListener } from '../src/client.mjs';
 

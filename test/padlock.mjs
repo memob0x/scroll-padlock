@@ -2,7 +2,7 @@ import Padlock from '../src/padlock.mjs';
 
 import { EVENT_NAME_SCROLL, EVENT_NAME_RESIZE, RESIZE_DEBOUNCE_INTERVAL_MS, SCROLL_DEBOUNCE_INTERVAL_MS } from '../src/client.mjs';
 
-import { createDiv, documentElement, body, isPadlockElement, dispatchCustomEvent } from './_tests.mjs';
+import { createDiv, documentElement, body, isPadlockElement, dispatchCustomEvent } from './_test-utils.mjs';
 
 describe('padlock', () => {    
     let expander;

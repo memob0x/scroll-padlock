@@ -1,6 +1,6 @@
 import { debounce, getElementParentsLength, getElementIndex, joinHyphen } from '../src/utils.mjs';
 
-import { body, documentElement, createDiv } from './_tests.mjs';
+import { body, documentElement, createDiv } from './_test-utils.mjs';
 
 describe('utils', () => {
     const debounceIntervalMs = 500;

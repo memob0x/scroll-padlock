@@ -8,7 +8,7 @@ module.exports = config => config.set({
 
     files: [
         {
-            pattern: './tests/**/*.mjs',
+            pattern: './test/**/*.mjs',
             type: 'module'
         },
 

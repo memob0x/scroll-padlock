@@ -3,12 +3,10 @@ import rollupBabelPackage from '@rollup/plugin-babel';
 import rollupGzip from 'rollup-plugin-gzip';
 import rollupUglifyPackage from 'rollup-plugin-uglify';
 import { terser as rollupTerser } from 'rollup-plugin-terser';
+import fs from 'fs/promises';
 
 const { getBabelOutputPlugin: rollupBabel } = rollupBabelPackage;
 const { uglify: rollupUglify } = rollupUglifyPackage;
-
-const babelPresets = ['@babel/preset-env'];
-const babelPlugins = ['@babel/plugin-proposal-class-properties'];
 
 const buildBundle = async options => {
     const result = await rollup({
@@ -24,6 +22,10 @@ const buildBundle = async options => {
 (async root => {
     const bundles = [];
 
+    // TODO: check why this is not red by default
+    const babelConfigStream = await fs.readFile('./babel.config.json');
+    const babelConfig = JSON.parse(babelConfigStream);
+
     ['amd', 'iife', 'system', 'es', 'cjs', 'umd'].forEach(type => [true, false].forEach(min => bundles.push({
         compact: min,
         sourcemap: true,
@@ -36,9 +38,8 @@ const buildBundle = async options => {
 
             plugins.push(
                 rollupBabel({
+                    ...babelConfig,
                     comments: false,
-                    presets: babelPresets,
-                    plugins: babelPlugins,
                     allowAllFormats: true
                 })
             );

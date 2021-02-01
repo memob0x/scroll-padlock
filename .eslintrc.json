@@ -10,45 +10,23 @@
     "globals": {
         "expect": true
     },
+    "parser": "@babel/eslint-parser",
     "extends": [
-        "eslint:recommended",
-        "plugin:vue/essential"
+        "eslint:recommended"
     ],
     "parserOptions": {
-        "ecmaVersion": 2020,
-        "parser": "babel-eslint",
-        "ecmaFeatures": {
-            "legacyDecorators": true
-        }
+        "sourceType": "module",
+        "ecmaVersion": 2020
     },
-    "plugins": [
-        "vue"
-    ],
     "rules": {
         "indent": [
             "warn",
             4,
             {
                 "SwitchCase": 1,
-                "ignoredNodes": ["TemplateLiteral"]
-            }
-        ],
-        "vue/script-indent": [
-            "warn",
-            4,
-            {
-                "baseIndent": 1
-            }
-        ],
-        "vue/html-indent": [
-            "warn",
-            4,
-            {
-                "attribute": 1,
-                "baseIndent": 1,
-                "closeBracket": 0,
-                "alignAttributesVertically": true,
-                "ignores": []
+                "ignoredNodes": [
+                    "TemplateLiteral"
+                ]
             }
         ],
         "no-multi-spaces": "warn",
@@ -80,15 +58,5 @@
             "warn",
             "1tbs"
         ]
-    },
-    "overrides": [
-        {
-            "files": [
-                "*.vue"
-            ],
-            "rules": {
-                "indent": "off"
-            }
-        }
-    ]
+    }
 }
