@@ -16,10 +16,10 @@ describe('utils', () => {
 
         const fn = debounce(() => (calls++), debounceIntervalMs);
 
-        // will be detected
+        // This call will be detected
         fn();
 
-        // not detected
+        // This call won't be detected because of debounce
         fn();
 
         expect(calls).to.equals(0);
@@ -28,10 +28,10 @@ describe('utils', () => {
 
         expect(calls).to.equals(1);
 
-        // will be detected
+        // This will be detected
         fn();
 
-        // not detected
+        // This call won't be detected because of debounce
         fn();
 
         await sleep(debounceIntervalMs);

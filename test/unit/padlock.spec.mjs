@@ -27,14 +27,14 @@ const { expect } = chai;
 
 describe('padlock', () => {
     it('should be able to create an instance and throw if incorrect arguments are passed', () => {
-        // invalid element
+        // This instance has an invalid element argument
         expect(() => void new Padlock(null)).to.throw(TypeError);
 
-        // invalid class
+        // This instance has an invalid CSS class argument
         expect(() => void new Padlock(document.createElement('div'), '')).to.throw(TypeError);
         expect(() => void new Padlock(document.createElement('div'), null)).to.throw(TypeError);
 
-        // same el instance throws
+        // These instances are created on the same element, an error has to be thrown
         expect(() => {
             const div = document.createElement('div');
             
@@ -50,7 +50,7 @@ describe('padlock', () => {
             }
         }).to.throw(Error);
 
-        // same el instance doesn't throw if instance is destroyed
+        // These instances are created on the same element, but no error is thrown because the first one is destroyed before the second
         expect(() => {
             const div = document.createElement('div');
             
@@ -64,14 +64,14 @@ describe('padlock', () => {
         }).to.not.throw(Error);
 
         expect(() => {            
-            // no element given = global scroller = <html> element
+            // If no element is given as an argument, then the default one is page scroller (<html> element)
             let instance = new Padlock();
 
             expect(document.documentElement.matches(`[${DATA_ATTR_NAME}]`));
 
             instance.destroy();
 
-            // <body> given = global scroller = <html> element
+            // If <body> is given as an argument, then it's a global scroller (still <html> element)
             instance = new Padlock(document.body);
 
             expect(document.documentElement.matches(`[${DATA_ATTR_NAME}]`));

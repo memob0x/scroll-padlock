@@ -8,34 +8,34 @@ import fs from 'fs/promises';
 const { getBabelOutputPlugin: rollupBabel } = rollupBabelPackage;
 const { uglify: rollupUglify } = rollupUglifyPackage;
 
-const buildBundle = async options => {
-    const result = await rollup({
-        ...options.input,
-        plugins: options.plugins
-    });
+const root = '.';
 
-    options.output = Array.isArray(options.output) ? options.output : [options.output];
+const types = ['amd', 'iife', 'system', 'es', 'cjs', 'umd'];
 
-    await Promise.all(options.output.map(output => result.write(output)));
-};
+(async () => {
+    const streams = await Promise.all([
+        // TODO: check why this is not read by default
+        fs.readFile(`${root}/babel.config.json`),
 
-(async root => {
-    const bundles = [];
+        rollup({
+            input: `${root}/src/padlock.mjs`
+        })
+    ]);
 
-    // TODO: check why this is not red by default
-    const babelConfigStream = await fs.readFile('./babel.config.json');
-    const babelConfig = JSON.parse(babelConfigStream);
+    const babelConfig = JSON.parse(streams[0]);
 
-    ['amd', 'iife', 'system', 'es', 'cjs', 'umd'].forEach(type => [true, false].forEach(min => bundles.push({
-        compact: min,
-        sourcemap: true,
-        format: type,
-        name: 'ScrollPadlock',
-        file: `${root}dist/${type}/scroll-padlock${ min ? '.min' : '' }.js`,
-        exports: 'auto',
-        plugins: (() => {
+    const rollupResult = streams[1];
+
+    const writing = [];
+    
+    for( let ii = 0, jj = types.length; ii < jj; ii++ ){
+        const type = types[ii];
+
+        for( let i = 0; i < 2; i++ ){
+            const min = i === 1;
+
             const plugins = [];
-
+    
             plugins.push(
                 rollupBabel({
                     ...babelConfig,
@@ -50,15 +50,16 @@ const buildBundle = async options => {
 
             plugins.push(rollupGzip());
 
-            return plugins;
-        })()
-    })));
+            writing.push(rollupResult.write({
+                sourcemap: true,
+                format: type,
+                name: 'ScrollPadlock',
+                file: `${root}/dist/${type}/scroll-padlock${ min ? '.min' : '' }.js`,
+                exports: 'auto',
+                plugins
+            }));
+        }
+    }
 
-    await buildBundle({
-        input: {
-            input: `${root}src/padlock.mjs`
-        },
-
-        output: bundles
-    });
-})('./');
+    await Promise.all(writing);
+})();
