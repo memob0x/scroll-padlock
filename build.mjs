@@ -10,10 +10,14 @@ const { uglify: rollupUglify } = rollupUglifyPackage;
 
 const root = '.';
 
-const types = ['amd', 'iife', 'system', 'es', 'cjs', 'umd'];
+const bundlesTypes = ['amd', 'iife', 'system', 'es', 'cjs', 'umd'];
 
 (async () => {
-    const streams = await Promise.all([
+    const [
+        babelConfigStream = 0,
+
+        rollupResult = 1
+    ] = await Promise.all([
         // TODO: check why this is not read by default
         fs.readFile(`${root}/babel.config.json`),
 
@@ -22,39 +26,34 @@ const types = ['amd', 'iife', 'system', 'es', 'cjs', 'umd'];
         })
     ]);
 
-    const babelConfig = JSON.parse(streams[0]);
-
-    const rollupResult = streams[1];
+    const babelConfig = JSON.parse(babelConfigStream);
 
     const writing = [];
     
-    for( let ii = 0, jj = types.length; ii < jj; ii++ ){
-        const type = types[ii];
+    for( let bundlnesTypesIndex = 0, bundlesTypesLength = bundlesTypes.length; bundlnesTypesIndex < bundlesTypesLength; bundlnesTypesIndex++ ){
+        const bundleType = bundlesTypes[bundlnesTypesIndex];
+        const isESMBundle = bundleType === 'es';
 
         for( let i = 0; i < 2; i++ ){
-            const min = i === 1;
+            const isMinBundle = i === 1;
 
-            const plugins = [];
-    
-            plugins.push(
-                rollupBabel({
-                    ...babelConfig,
-                    comments: false,
-                    allowAllFormats: true
-                })
-            );
+            const plugins = [rollupBabel({
+                ...babelConfig,
+                comments: false,
+                allowAllFormats: true
+            })];
 
-            if( min ){
-                plugins.push(type === 'es' ? rollupTerser() : rollupUglify());
+            if( isMinBundle ){
+                plugins.push(isESMBundle ? rollupTerser() : rollupUglify());
             }
 
             plugins.push(rollupGzip());
 
             writing.push(rollupResult.write({
                 sourcemap: true,
-                format: type,
+                format: bundleType,
                 name: 'ScrollPadlock',
-                file: `${root}/dist/${type}/scroll-padlock${ min ? '.min' : '' }.js`,
+                file: `${root}/dist/${bundleType}/scroll-padlock${ isMinBundle ? '.min' : '' }.js`,
                 exports: 'auto',
                 plugins
             }));
