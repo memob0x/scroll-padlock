@@ -1,48 +1,36 @@
-import { DOM_BASE_NAME, head } from './client.mjs';
-
 import {
-    LAYOUT_HEIGHT_INNER,
-    LAYOUT_HEIGHT_SCROLL,
+    STYLER_METHOD_ADD,
+    DATA_ATTR_NAME,
+    CSS_STYLE_SHEET_ONLY_RULE_INDEX,
+    CSS_VAR_NAME_POSITION_TOP,
+    CSS_VAR_NAME_POSITION_LEFT,
+    CSS_VAR_NAME_WIDTH_OUTER,
+    CSS_VAR_NAME_HEIGHT_OUTER,
+    CSS_VAR_NAME_WIDTH_INNER,
+    CSS_VAR_NAME_HEIGHT_INNER,
+    CSS_VAR_NAME_WIDTH_SCROLL,
+    CSS_VAR_NAME_HEIGHT_SCROLL,
+    CSS_VAR_NAME_SCROLLBAR_WIDTH,
+    CSS_VAR_NAME_SCROLLBAR_HEIGHT,
+    CSS_VAR_UNIT_VALUE,
+    STYLER_METHOD_REMOVE,
+    SCROLL_TOP,
+    SCROLL_LEFT,
     LAYOUT_WIDTH_OUTER,
-    LAYOUT_WIDTH_SCROLL,
-    LAYOUT_WIDTH_INNER,
     LAYOUT_HEIGHT_OUTER,
-    LAYOUT_OUTER,
-    LAYOUT_INNER,
-    LAYOUT_WIDTH,
-    LAYOUT_HEIGHT,
-    LAYOUT_SCROLL,
+    LAYOUT_WIDTH_INNER,
+    LAYOUT_HEIGHT_INNER,
+    LAYOUT_WIDTH_SCROLL,
+    LAYOUT_HEIGHT_SCROLL,
     LAYOUT_SCROLLBAR_WIDTH,
     LAYOUT_SCROLLBAR_HEIGHT
-} from './layout.mjs';
+} from './constants.mjs';
 
-import { SCROLL_TOP, SCROLL_LEFT } from './scroll.mjs';
+import joinHyphen from './join-array-of-strings-with-hyphen.mjs';
 
-import { getElementParentsLength, getElementIndex, joinHyphen } from './utils.mjs';
+import getElementParentsLength from './get-element-parents-length.mjs';
 
-// Data attribute name
-export const DATA_ATTR_NAME = joinHyphen('data', DOM_BASE_NAME);
-
-// CSS variables names
-const CSS_VAR_PREFIX = '--';
-const CSS_VAR_SCROLL_PREFIX = 'scroll';
-export const CSS_VAR_NAME_POSITION_TOP = CSS_VAR_PREFIX + joinHyphen(DOM_BASE_NAME, CSS_VAR_SCROLL_PREFIX, SCROLL_TOP);
-export const CSS_VAR_NAME_POSITION_LEFT = CSS_VAR_PREFIX + joinHyphen(DOM_BASE_NAME, CSS_VAR_SCROLL_PREFIX, SCROLL_LEFT);
-const CSS_VAR_SCROLLBAR_PREFIX = 'scrollbar';
-export const CSS_VAR_NAME_SCROLLBAR_WIDTH = CSS_VAR_PREFIX + joinHyphen(DOM_BASE_NAME, CSS_VAR_SCROLLBAR_PREFIX, LAYOUT_WIDTH);
-export const CSS_VAR_NAME_SCROLLBAR_HEIGHT = CSS_VAR_PREFIX + joinHyphen(DOM_BASE_NAME, CSS_VAR_SCROLLBAR_PREFIX, LAYOUT_HEIGHT);
-export const CSS_VAR_NAME_WIDTH_OUTER = CSS_VAR_PREFIX + joinHyphen(DOM_BASE_NAME, LAYOUT_OUTER, LAYOUT_WIDTH);
-export const CSS_VAR_NAME_HEIGHT_OUTER = CSS_VAR_PREFIX + joinHyphen(DOM_BASE_NAME, LAYOUT_OUTER, LAYOUT_HEIGHT);
-export const CSS_VAR_NAME_WIDTH_INNER = CSS_VAR_PREFIX + joinHyphen(DOM_BASE_NAME, LAYOUT_INNER, LAYOUT_WIDTH);
-export const CSS_VAR_NAME_HEIGHT_INNER = CSS_VAR_PREFIX + joinHyphen(DOM_BASE_NAME, LAYOUT_INNER, LAYOUT_HEIGHT);
-export const CSS_VAR_NAME_WIDTH_SCROLL = CSS_VAR_PREFIX + joinHyphen(DOM_BASE_NAME, LAYOUT_SCROLL, LAYOUT_WIDTH);
-export const CSS_VAR_NAME_HEIGHT_SCROLL = CSS_VAR_PREFIX + joinHyphen(DOM_BASE_NAME, LAYOUT_SCROLL, LAYOUT_HEIGHT);
-
-// CSS variables value unit of measurement
-const CSS_VAR_UNIT_VALUE = 'px';
-
-// Only-rule index
-const CSS_STYLE_SHEET_ONLY_RULE_INDEX = 0;
+import getElementIndex from './get-element-index.mjs';
 
 /**
  * Updates a given element css variables to a given styler element ensuring its presence in head
@@ -52,10 +40,10 @@ const CSS_STYLE_SHEET_ONLY_RULE_INDEX = 0;
  * @param {Object} scroll The scroll position to be set in css variables
  * @returns {HTMLStyleElement} Styler element
  */
-export const setStyles = (element, styler, layout, scroll) => {
+const set = (element, styler, target, layout, scroll) => {
     // Ensures style tag dom presence, StyleSheet API throws otherwise
-    if (!head.contains(styler) && styler) {
-        head.appendChild(styler);
+    if (!target?.contains(styler) && styler) {
+        target.appendChild(styler);
     }
     
     // Element must have a dynamic attribute to be used as a unique css selector
@@ -115,7 +103,7 @@ export const setStyles = (element, styler, layout, scroll) => {
  * @param {HTMLStyleElement} styler The styler element to be removed from head
  * @returns {HTMLStyleElement} Styler element
  */
-export const unsetStyles = (element, styler) => {
+const unset = (element, styler) => {
     // Removes the styler element from head
     styler?.remove();
 
@@ -125,3 +113,17 @@ export const unsetStyles = (element, styler) => {
     // Returns the given styler element itself
     return styler;
 };
+
+/**
+ * 
+ * @param {String} method
+ * @param {HTMLElement} element
+ * @param {HTMLStyleElement} styler
+ * @param {HTMLElement} target
+ * @param {Object} layout
+ * @param {Object} scroll
+ */
+export default (method, element, styler, target, layout, scroll) => ({
+    [STYLER_METHOD_ADD]: set,
+    [STYLER_METHOD_REMOVE]: unset
+})[method](element, styler, target, layout, scroll);

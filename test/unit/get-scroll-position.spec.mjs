@@ -2,11 +2,11 @@ import 'jsdom-global/register.js';
 
 import chai from 'chai';
 
-import { getScroll } from '../../src/scroll.mjs';
+import getScroll from '../../src/get-scroll-position.mjs';
 
 const { expect } = chai;
 
-describe('scroll', () => {
+describe('get-scroll-position', () => {
     it('should be able to get an element scroll position', () => {
         const div = document.createElement('div');
         

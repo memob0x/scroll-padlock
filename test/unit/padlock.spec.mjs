@@ -4,24 +4,17 @@ import chai from 'chai';
 
 import Padlock from '../../src/padlock.mjs';
 
-import { DATA_ATTR_NAME } from '../../src/style.mjs';
-
 import {
+    DATA_ATTR_NAME,
     EVENT_NAME_SCROLL,
+    LAYOUT_WIDTH_OUTER,
+    LAYOUT_HEIGHT_OUTER,
     EVENT_NAME_RESIZE,
     RESIZE_DEBOUNCE_INTERVAL_MS,
-    SCROLL_DEBOUNCE_INTERVAL_MS
-} from '../../src/client.mjs';
-
-import {
-    LAYOUT_WIDTH_OUTER,
-    LAYOUT_HEIGHT_OUTER
-} from '../../src/layout.mjs';
-
-import {
+    SCROLL_DEBOUNCE_INTERVAL_MS,
     SCROLL_TOP,
     SCROLL_LEFT
-} from '../../src/scroll.mjs';
+} from '../../src/constants.mjs';
 
 const { expect } = chai;
 

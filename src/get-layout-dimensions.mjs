@@ -1,25 +1,17 @@
-// Mainly strings compositions constants
-export const LAYOUT_WIDTH_CASE = 'Width';
-export const LAYOUT_HEIGHT_CASE = 'Height';
-export const LAYOUT_WIDTH = LAYOUT_WIDTH_CASE.toLowerCase();
-export const LAYOUT_HEIGHT = LAYOUT_HEIGHT_CASE.toLowerCase();
-export const LAYOUT_OUTER = 'outer';
-export const LAYOUT_INNER = 'inner';
-const LAYOUT_CLIENT = 'client';
-const LAYOUT_SCROLLBAR = 'scrollbar';
-export const LAYOUT_SCROLL = 'scroll';
-const LAYOUT_HEIGHT_CLIENT = LAYOUT_CLIENT + LAYOUT_HEIGHT_CASE;
-const LAYOUT_WIDTH_CLIENT = LAYOUT_CLIENT + LAYOUT_WIDTH_CASE;
-
-// Dimensions object properties names
-export const LAYOUT_WIDTH_OUTER = LAYOUT_OUTER + LAYOUT_WIDTH_CASE;
-export const LAYOUT_WIDTH_INNER = LAYOUT_INNER + LAYOUT_WIDTH_CASE;
-export const LAYOUT_WIDTH_SCROLL = LAYOUT_SCROLL + LAYOUT_WIDTH_CASE;
-export const LAYOUT_HEIGHT_OUTER = LAYOUT_OUTER + LAYOUT_HEIGHT_CASE;
-export const LAYOUT_HEIGHT_INNER = LAYOUT_INNER + LAYOUT_HEIGHT_CASE;
-export const LAYOUT_HEIGHT_SCROLL = LAYOUT_SCROLL + LAYOUT_HEIGHT_CASE;
-export const LAYOUT_SCROLLBAR_WIDTH = LAYOUT_SCROLLBAR + LAYOUT_WIDTH_CASE;
-export const LAYOUT_SCROLLBAR_HEIGHT = LAYOUT_SCROLLBAR + LAYOUT_HEIGHT_CASE;
+import {
+    LAYOUT_WIDTH,
+    LAYOUT_WIDTH_INNER,
+    LAYOUT_HEIGHT,
+    LAYOUT_HEIGHT_INNER,
+    LAYOUT_WIDTH_CLIENT,
+    LAYOUT_HEIGHT_CLIENT,
+    LAYOUT_WIDTH_OUTER,
+    LAYOUT_HEIGHT_OUTER,
+    LAYOUT_WIDTH_SCROLL,
+    LAYOUT_HEIGHT_SCROLL,
+    LAYOUT_SCROLLBAR_WIDTH,
+    LAYOUT_SCROLLBAR_HEIGHT
+} from './constants.mjs';
 
 /**
  * Gets a given element or browser dimensions
@@ -27,7 +19,7 @@ export const LAYOUT_SCROLLBAR_HEIGHT = LAYOUT_SCROLLBAR + LAYOUT_HEIGHT_CASE;
  * @param {Window|HTMLElement} scroller The given scrollable used to retrieve some dimensions when the given element is global (page)
  * @returns {Object} The given element dimensions as an object ({ top, left })
  */
-export const getLayout = (element, scroller) => {
+export default (element, scroller) => {
     // Implying global (page) element...
     let outer = {
         [LAYOUT_WIDTH]: scroller?.[LAYOUT_WIDTH_INNER],

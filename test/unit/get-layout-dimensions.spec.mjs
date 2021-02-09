@@ -10,13 +10,14 @@ import {
     LAYOUT_WIDTH_SCROLL,
     LAYOUT_HEIGHT_OUTER,
     LAYOUT_HEIGHT_INNER,
-    LAYOUT_HEIGHT_SCROLL,
-    getLayout
-} from '../../src/layout.mjs';
+    LAYOUT_HEIGHT_SCROLL
+} from '../../src/constants.mjs';
+
+import getLayout from '../../src/get-layout-dimensions.mjs';
 
 const { expect } = chai;
 
-describe('layout', () => {
+describe('get-layout-dimensions', () => {
     it('should be able to retrieve html elements dimensions', () => {
         const mockedDiv = {
             offsetWidth: 1,

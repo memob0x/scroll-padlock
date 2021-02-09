@@ -54,7 +54,7 @@ const bundlesTypes = ['amd', 'iife', 'system', 'es', 'cjs', 'umd'];
                 format: bundleType,
                 name: 'ScrollPadlock',
                 file: `${root}/dist/${bundleType}/scroll-padlock${ isMinBundle ? '.min' : '' }.js`,
-                exports: 'auto',
+                exports: 'default',
                 plugins
             }));
         }

@@ -38,7 +38,7 @@
         "lint": "./node_modules/.bin/eslint --ext .js --ext .mjs . --fix",
         "build": "node ./build.mjs",
         "test:unit": "./node_modules/.bin/mocha ./test/unit/*.spec.*",
-        "test:e2e": "./node_modules/.bin/mocha-headless-chrome --file ./test/e2e/index.html",
+        "test:e2e": "node ./test/e2e/index.mjs",
         "test": "npm run test:unit && npm run test:e2e"
     },
     "devDependencies": {
@@ -53,8 +53,8 @@
         "jsdom": "16.4.0",
         "jsdom-global": "3.0.2",
         "mocha": "8.2.1",
-        "mocha-headless-chrome": "^3.1.0",
-        "rollup": "^2.38.4",
+        "puppeteer": "^7.0.4",
+        "rollup": "^2.38.5",
         "rollup-plugin-gzip": "^2.5.0",
         "rollup-plugin-terser": "^7.0.2",
         "rollup-plugin-uglify": "^6.0.4"

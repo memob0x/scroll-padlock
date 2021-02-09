@@ -1,29 +1,34 @@
 import {
-    DOM_BASE_NAME,
-    EVENT_NAME_SCROLL,
+    WINDOW,
+    DOCUMENT,
+    DOCUMENT_ELEMENT,
+    BODY_ELEMENT,
+    HEAD_ELEMENT,
+    SCROLL_LEFT,
+    SCROLL_TOP,
+    DEFAULT_ELEMENT,
+    DEFAULT_CSS_CLASS_NAME,
+    LISTENER_METHOD_ADD,
+    LISTENER_METHOD_REMOVE,
     EVENT_NAME_RESIZE,
+    EVENT_NAME_SCROLL,
+    DEFAULT_TARGET,
+    DEFAULT_SCROLLER,
     RESIZE_DEBOUNCE_INTERVAL_MS,
     SCROLL_DEBOUNCE_INTERVAL_MS,
-    doc,
-    documentElement,
-    body,
-    addListener,
-    removeListener
-} from './client.mjs';
+    STYLER_METHOD_ADD,
+    STYLER_METHOD_REMOVE
+} from './constants.mjs';
 
-import { debounce } from './utils.mjs';
+import listener from './listener.mjs';
 
-import { SCROLL_TOP, SCROLL_LEFT, getScroll } from './scroll.mjs';
+import debounce from './debounce.mjs';
 
-import { getLayout } from './layout.mjs';
+import getLayout from './get-layout-dimensions.mjs';
 
-import { setStyles, unsetStyles } from './style.mjs';
+import getScroll from './get-scroll-position.mjs';
 
-// Default class members values
-const DEFAULT_ELEMENT = documentElement;
-const DEFAULT_TARGET = body;
-const DEFAULT_SCROLLER = window;
-const DEFAULT_CSS_CLASS_NAME = `${DOM_BASE_NAME}-locked`;
+import styler from './styler.mjs';
 
 // Instances collection closure,
 // a weakmap is used in order to keep every instance associated with the scrollable element itself
@@ -37,7 +42,7 @@ export default class ScrollPadlock {
      */
     constructor(element = DEFAULT_ELEMENT, cssClassName = DEFAULT_CSS_CLASS_NAME) {
         // Window as element argument support
-        const elementIsWindow = element === window;
+        const elementIsWindow = element === WINDOW;
 
         // Scrollable html elements support
         const elementIsHtmlElement = element instanceof HTMLElement;
@@ -54,7 +59,7 @@ export default class ScrollPadlock {
         }
 
         // Global page (window, html or body as element argument)
-        const elementIsGlobal = elementIsWindow || element === documentElement || element === body;
+        const elementIsGlobal = elementIsWindow || element === DOCUMENT_ELEMENT || element === BODY_ELEMENT;
 
         // Custom scrollable element case:
         // if the given element is not global (page scroll)
@@ -95,10 +100,10 @@ export default class ScrollPadlock {
         this.#observeCssClass();
 
         // Attaches resize event listener
-        addListener(window, EVENT_NAME_RESIZE, this.#resizeHandler);
+        listener(LISTENER_METHOD_ADD, WINDOW, EVENT_NAME_RESIZE, this.#resizeHandler);
 
         // Attaches scroll event listener
-        addListener(this.#scroller, EVENT_NAME_SCROLL, this.#scrollHandler);
+        listener(LISTENER_METHOD_ADD, this.#scroller, EVENT_NAME_SCROLL, this.#scrollHandler);
     }
 
     /**
@@ -193,7 +198,7 @@ export default class ScrollPadlock {
      * State MutationObserver object,
      * registers the callback fired on CSS class change
      */
-    #observer = (implementationName => implementationName in window ? new window[implementationName](() => {
+    #observer = (implementationName => implementationName in WINDOW ? new WINDOW[implementationName](() => {
         // Caches the current scroll lock state before updating it
         const state = this.#state;
 
@@ -222,7 +227,7 @@ export default class ScrollPadlock {
     /**
      * The styler, css variables holder
      */
-    #styler = doc.createElement('style');
+    #styler = DOCUMENT.createElement('style');
 
     /**
      * Window resize event handler
@@ -305,7 +310,7 @@ export default class ScrollPadlock {
      * Rewrites the css variables with current data
      * @returns {HTMLStyleElement} Styler element
      */
-    #applyStyles = () => setStyles(this.#target, this.#styler, this.layout, this.scroll);
+    #applyStyles = () => styler(STYLER_METHOD_ADD, this.#target, this.#styler, HEAD_ELEMENT, this.layout, this.scroll);
 
     /**
      * Observes the element CSS class changes
@@ -349,13 +354,13 @@ export default class ScrollPadlock {
         this.#unobserveCssClass();
 
         // Removes the CSS variables, styler, styler selector...
-        unsetStyles(this.#element, this.#styler);
+        styler(STYLER_METHOD_REMOVE, this.#element, this.#styler);
 
         // Detaches the scroll event listener
-        removeListener(this.#scroller, EVENT_NAME_SCROLL, this.#scrollHandler);
+        listener(LISTENER_METHOD_REMOVE, this.#scroller, EVENT_NAME_SCROLL, this.#scrollHandler);
 
         // Detaches the resize event listener
-        removeListener(window, EVENT_NAME_RESIZE, this.#resizeHandler);
+        listener(LISTENER_METHOD_REMOVE, WINDOW, EVENT_NAME_RESIZE, this.#resizeHandler);
 
         // Removes the instance from the instances collection
         instances.delete(this.#element);
