@@ -54,9 +54,9 @@ beforeEach(async () => {
     await page.addScriptTag({
         type: 'module',
         content: `
-            import { SCROLL_DEBOUNCE_INTERVAL_MS } from "${PROTOCOL}://${DOMAIN}:${PORT}/src/constants.mjs";
+            import { TIME_MS_DEBOUNCE_SCROLL } from "${PROTOCOL}://${DOMAIN}:${PORT}/src/constants.mjs";
             
-            window.SCROLL_DEBOUNCE_INTERVAL_MS = SCROLL_DEBOUNCE_INTERVAL_MS;
+            window.TIME_MS_DEBOUNCE_SCROLL = TIME_MS_DEBOUNCE_SCROLL;
         `
     });
     
@@ -91,7 +91,7 @@ describe('ScrollPadlock instance on page scroll', () => {
 
         window.scrollTo(position);
 
-        await window.sleep(window.SCROLL_DEBOUNCE_INTERVAL_MS);
+        await window.sleep(window.TIME_MS_DEBOUNCE_SCROLL);
 
         await new Promise(resolve => setTimeout(resolve, 1000));
 

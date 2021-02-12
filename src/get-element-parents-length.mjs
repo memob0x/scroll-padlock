@@ -1,3 +1,5 @@
+import getElementParent from './get-element-parent.mjs';
+
 /**
  * Gets the number of ancestors of a given element
  * @param {HTMLElement} element The given element to be checked
@@ -9,7 +11,7 @@ export default element => {
     while (element) {
         count++;
 
-        element = element?.parentElement;
+        element = getElementParent(element);
     }
 
     return count;

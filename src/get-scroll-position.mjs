@@ -1,6 +1,13 @@
 import {
-    SCROLL_TOP,
-    SCROLL_LEFT
+    TOP,
+    LEFT,
+    PAGE,
+    SCROLL,
+    Y_CAPITALIZED,
+    X_CAPITALIZED,
+    OFFSET_CAPITALIZED,
+    TOP_CAPITALIZED,
+    LEFT_CAPITALIZED
 } from './constants.mjs';
 
 /**
@@ -11,6 +18,6 @@ import {
 export default element => ({
     // NOTE: assuming it's page case by checking scrollY|scrollX and pageYOffset|pageXOffset properties first (available for window only)
     // and then checking scrollTop|scrollLeft (available for html elements only)
-    [SCROLL_TOP]: element?.scrollY ?? element?.pageYOffset ?? element?.scrollTop ?? 0,
-    [SCROLL_LEFT]: element?.scrollX ?? element?.pageXOffset ?? element?.scrollLeft ?? 0
+    [TOP]: element?.[SCROLL + Y_CAPITALIZED] ?? element?.[PAGE + Y_CAPITALIZED + OFFSET_CAPITALIZED] ?? element?.[SCROLL + TOP_CAPITALIZED] ?? 0,
+    [LEFT]: element?.[SCROLL + X_CAPITALIZED] ?? element?.[PAGE + X_CAPITALIZED + OFFSET_CAPITALIZED] ?? element?.[SCROLL + LEFT_CAPITALIZED] ?? 0
 });

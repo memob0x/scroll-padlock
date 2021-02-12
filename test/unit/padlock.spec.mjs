@@ -5,15 +5,15 @@ import chai from 'chai';
 import Padlock from '../../src/padlock.mjs';
 
 import {
-    DATA_ATTR_NAME,
+    DOM_DATA_ATTRIBUTE_NAME,
     EVENT_NAME_SCROLL,
-    LAYOUT_WIDTH_OUTER,
-    LAYOUT_HEIGHT_OUTER,
+    OUTER_WIDTH,
+    OUTER_HEIGHT,
     EVENT_NAME_RESIZE,
-    RESIZE_DEBOUNCE_INTERVAL_MS,
-    SCROLL_DEBOUNCE_INTERVAL_MS,
-    SCROLL_TOP,
-    SCROLL_LEFT
+    TIME_MS_DEBOUNCE_RESIZE,
+    TIME_MS_DEBOUNCE_SCROLL,
+    TOP,
+    LEFT
 } from '../../src/constants.mjs';
 
 import sleep from '../utils/sleep.mjs';
@@ -62,14 +62,14 @@ describe('padlock', () => {
             // If no element is given as an argument, then the default one is page scroller (<html> element)
             let instance = new Padlock();
 
-            expect(document.documentElement.matches(`[${DATA_ATTR_NAME}]`));
+            expect(document.documentElement.matches(`[${DOM_DATA_ATTRIBUTE_NAME}]`));
 
             instance.destroy();
 
             // If <body> is given as an argument, then it's a global scroller (still <html> element)
             instance = new Padlock(document.body);
 
-            expect(document.documentElement.matches(`[${DATA_ATTR_NAME}]`));
+            expect(document.documentElement.matches(`[${DOM_DATA_ATTRIBUTE_NAME}]`));
 
             instance.destroy();
         }).to.not.throw(Error);
@@ -94,12 +94,12 @@ describe('padlock', () => {
         const instance = new Padlock(div);
 
         expect(instance.layout).to.include({
-            [LAYOUT_WIDTH_OUTER]: dimensions.width,
-            [LAYOUT_HEIGHT_OUTER]: dimensions.height
+            [OUTER_WIDTH]: dimensions.width,
+            [OUTER_HEIGHT]: dimensions.height
         });
         expect(instance.scroll).to.include({
-            [SCROLL_TOP]: scrollPosition.top,
-            [SCROLL_LEFT]: scrollPosition.left
+            [TOP]: scrollPosition.top,
+            [LEFT]: scrollPosition.left
         });
 
         dimensions = {
@@ -116,25 +116,25 @@ describe('padlock', () => {
         div.scrollLeft = scrollPosition.left;
 
         expect(instance.layout).to.not.include({
-            [LAYOUT_WIDTH_OUTER]: dimensions.width,
-            [LAYOUT_HEIGHT_OUTER]: dimensions.height
+            [OUTER_WIDTH]: dimensions.width,
+            [OUTER_HEIGHT]: dimensions.height
         });
         expect(instance.scroll).to.not.include({
-            [SCROLL_TOP]: scrollPosition.top,
-            [SCROLL_LEFT]: scrollPosition.left
+            [TOP]: scrollPosition.top,
+            [LEFT]: scrollPosition.left
         });
 
         window.dispatchEvent(new CustomEvent(EVENT_NAME_RESIZE));
 
-        await sleep(RESIZE_DEBOUNCE_INTERVAL_MS);
+        await sleep(TIME_MS_DEBOUNCE_RESIZE);
         
         expect(instance.layout).to.include({
-            [LAYOUT_WIDTH_OUTER]: dimensions.width,
-            [LAYOUT_HEIGHT_OUTER]: dimensions.height
+            [OUTER_WIDTH]: dimensions.width,
+            [OUTER_HEIGHT]: dimensions.height
         });
         expect(instance.scroll).to.not.include({
-            [SCROLL_TOP]: scrollPosition.top,
-            [SCROLL_LEFT]: scrollPosition.left
+            [TOP]: scrollPosition.top,
+            [LEFT]: scrollPosition.left
         });
 
         dimensions = {
@@ -144,15 +144,15 @@ describe('padlock', () => {
 
         div.dispatchEvent(new CustomEvent(EVENT_NAME_SCROLL));
 
-        await sleep(SCROLL_DEBOUNCE_INTERVAL_MS);
+        await sleep(TIME_MS_DEBOUNCE_SCROLL);
 
         expect(instance.layout).not.to.include({
-            [LAYOUT_WIDTH_OUTER]: dimensions.width,
-            [LAYOUT_HEIGHT_OUTER]: dimensions.height
+            [OUTER_WIDTH]: dimensions.width,
+            [OUTER_HEIGHT]: dimensions.height
         });
         expect(instance.scroll).to.include({
-            [SCROLL_TOP]: scrollPosition.top,
-            [SCROLL_LEFT]: scrollPosition.left
+            [TOP]: scrollPosition.top,
+            [LEFT]: scrollPosition.left
         });
 
         instance.destroy();
@@ -177,12 +177,12 @@ describe('padlock', () => {
         const instance = new Padlock(div);
 
         expect(instance.layout).to.include({
-            [LAYOUT_WIDTH_OUTER]: dimensions.width,
-            [LAYOUT_HEIGHT_OUTER]: dimensions.height
+            [OUTER_WIDTH]: dimensions.width,
+            [OUTER_HEIGHT]: dimensions.height
         });
         expect(instance.scroll).to.include({
-            [SCROLL_TOP]: scrollPosition.top,
-            [SCROLL_LEFT]: scrollPosition.left
+            [TOP]: scrollPosition.top,
+            [LEFT]: scrollPosition.left
         });
 
         dimensions = {
@@ -199,23 +199,23 @@ describe('padlock', () => {
         div.scrollLeft = scrollPosition.left;
 
         expect(instance.layout).to.not.include({
-            [LAYOUT_WIDTH_OUTER]: dimensions.width,
-            [LAYOUT_HEIGHT_OUTER]: dimensions.height
+            [OUTER_WIDTH]: dimensions.width,
+            [OUTER_HEIGHT]: dimensions.height
         });
         expect(instance.scroll).to.not.include({
-            [SCROLL_TOP]: scrollPosition.top,
-            [SCROLL_LEFT]: scrollPosition.left
+            [TOP]: scrollPosition.top,
+            [LEFT]: scrollPosition.left
         });
 
         instance.update();
         
         expect(instance.layout).to.include({
-            [LAYOUT_WIDTH_OUTER]: dimensions.width,
-            [LAYOUT_HEIGHT_OUTER]: dimensions.height
+            [OUTER_WIDTH]: dimensions.width,
+            [OUTER_HEIGHT]: dimensions.height
         });
         expect(instance.scroll).to.include({
-            [SCROLL_TOP]: scrollPosition.top,
-            [SCROLL_LEFT]: scrollPosition.left
+            [TOP]: scrollPosition.top,
+            [LEFT]: scrollPosition.left
         });
 
         instance.destroy();
@@ -349,25 +349,25 @@ describe('padlock', () => {
         expect(resizeRemoved).to.equals(0);
         expect(scrollRemoved).to.equals(0);
 
-        expect(div.matches(`[${DATA_ATTR_NAME}]`)).to.be.true;
+        expect(div.matches(`[${DOM_DATA_ATTRIBUTE_NAME}]`)).to.be.true;
 
         instance.destroy();
 
         expect(getStylesheetsCount()).to.equals(stylesheetsCountBeforeInit);
 
-        expect(div.matches(`[${DATA_ATTR_NAME}]`)).to.be.false;
+        expect(div.matches(`[${DOM_DATA_ATTRIBUTE_NAME}]`)).to.be.false;
 
         div.dispatchEvent(new CustomEvent(EVENT_NAME_SCROLL));
 
-        expect(div.matches(`[${DATA_ATTR_NAME}]`)).to.be.false;
+        expect(div.matches(`[${DOM_DATA_ATTRIBUTE_NAME}]`)).to.be.false;
 
         div.dispatchEvent(new CustomEvent(EVENT_NAME_RESIZE));
 
-        expect(div.matches(`[${DATA_ATTR_NAME}]`)).to.be.false;
+        expect(div.matches(`[${DOM_DATA_ATTRIBUTE_NAME}]`)).to.be.false;
 
         instance.update();
 
-        expect(div.matches(`[${DATA_ATTR_NAME}]`)).to.be.false;
+        expect(div.matches(`[${DOM_DATA_ATTRIBUTE_NAME}]`)).to.be.false;
 
         expect(observed).to.equals(1);
         expect(unobserved).to.equals(0);

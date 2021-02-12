@@ -1,10 +1,12 @@
+import getElementParent from './get-element-parent.mjs';
+
 /**
  * Gets a given element position (index) in the DOM tree (where 0 is first-child, 1 is second etc...)
  * @param {HTMLElement} element The given element to be checked
  * @returns {Number} The position of the given element in the DOM tree
  */
 export default element => {
-    const siblings = element?.parentElement?.children ?? [];
+    const siblings = getElementParent(element)?.children ?? [];
 
     let count = 0;
 

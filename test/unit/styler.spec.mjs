@@ -2,7 +2,7 @@ import 'jsdom-global/register.js';
 
 import chai from 'chai';
 
-import { DATA_ATTR_NAME, STYLER_METHOD_ADD, STYLER_METHOD_REMOVE } from '../../src/constants.mjs';
+import { DOM_DATA_ATTRIBUTE_NAME, METHOD_ADD, METHOD_REMOVE } from '../../src/constants.mjs';
 
 import styler from '../../src/styler.mjs';
 
@@ -19,35 +19,35 @@ describe('styler', () => {
 
         holder.prepend(div);
 
-        expect(styler(STYLER_METHOD_ADD, div, style, document.head, {}, {})).to.equals(style);
+        expect(styler(METHOD_ADD, div, style, document.head, {}, {})).to.equals(style);
         expect(document.head.contains(style)).to.be.true;
-        expect(div.matches(`[${DATA_ATTR_NAME}]`)).to.be.true;
+        expect(div.matches(`[${DOM_DATA_ATTRIBUTE_NAME}]`)).to.be.true;
 
-        let attrValue = div.getAttribute(DATA_ATTR_NAME);
+        let attrValue = div.getAttribute(DOM_DATA_ATTRIBUTE_NAME);
         expect(attrValue).to.equals(`${getElementParentsLength(div)}-${getElementIndex(div)}`);
 
         let rules = style.sheet.cssRules[0];
-        expect(rules.selectorText).equals(`[${DATA_ATTR_NAME}="${attrValue}"]`);
+        expect(rules.selectorText).equals(`[${DOM_DATA_ATTRIBUTE_NAME}="${attrValue}"]`);
 
-        expect(styler(STYLER_METHOD_REMOVE, div, style)).to.equals(style);
+        expect(styler(METHOD_REMOVE, div, style)).to.equals(style);
         expect(document.head.contains(style)).to.be.false;
-        expect(div.matches(`[${DATA_ATTR_NAME}]`)).to.be.false;
+        expect(div.matches(`[${DOM_DATA_ATTRIBUTE_NAME}]`)).to.be.false;
 
         const indexShifterDummyEl = document.createElement('div');
 
         holder.prepend(indexShifterDummyEl);
 
-        styler(STYLER_METHOD_ADD, div, style, document.head, {}, {});
+        styler(METHOD_ADD, div, style, document.head, {}, {});
 
         let oldAttrValue = attrValue;
-        attrValue = div.getAttribute(DATA_ATTR_NAME);
+        attrValue = div.getAttribute(DOM_DATA_ATTRIBUTE_NAME);
         expect(attrValue).not.to.equals(oldAttrValue);
         expect(attrValue).to.equals(`${getElementParentsLength(div)}-${getElementIndex(div)}`);
         
         rules = style.sheet.cssRules[0];
-        expect(rules.selectorText).equals(`[${DATA_ATTR_NAME}="${attrValue}"]`);
+        expect(rules.selectorText).equals(`[${DOM_DATA_ATTRIBUTE_NAME}="${attrValue}"]`);
 
-        styler(STYLER_METHOD_REMOVE, div, style);
+        styler(METHOD_REMOVE, div, style);
 
         indexShifterDummyEl.remove();
         div.remove();

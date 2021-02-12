@@ -3,14 +3,14 @@ import 'jsdom-global/register.js';
 import chai from 'chai';
 
 import {
-    LAYOUT_SCROLLBAR_WIDTH,
-    LAYOUT_SCROLLBAR_HEIGHT,
-    LAYOUT_WIDTH_OUTER,
-    LAYOUT_WIDTH_INNER,
-    LAYOUT_WIDTH_SCROLL,
-    LAYOUT_HEIGHT_OUTER,
-    LAYOUT_HEIGHT_INNER,
-    LAYOUT_HEIGHT_SCROLL
+    SCROLLBAR_WIDTH,
+    SCROLLBAR_HEIGHT,
+    OUTER_WIDTH,
+    INNER_WIDTH,
+    SCROLL_WIDTH,
+    OUTER_HEIGHT,
+    INNER_HEIGHT,
+    SCROLL_HEIGHT
 } from '../../src/constants.mjs';
 
 import getLayout from '../../src/get-layout-dimensions.mjs';
@@ -34,17 +34,17 @@ describe('get-layout-dimensions', () => {
         };
 
         expect(getLayout(mockedDiv, mockedDiv)).to.deep.equals({
-            [LAYOUT_WIDTH_OUTER]: mockedDiv.offsetWidth,
-            [LAYOUT_HEIGHT_OUTER]: mockedDiv.offsetHeight,
+            [OUTER_WIDTH]: mockedDiv.offsetWidth,
+            [OUTER_HEIGHT]: mockedDiv.offsetHeight,
 
-            [LAYOUT_WIDTH_INNER]: mockedDiv.clientWidth,
-            [LAYOUT_HEIGHT_INNER]: mockedDiv.clientHeight,
+            [INNER_WIDTH]: mockedDiv.clientWidth,
+            [INNER_HEIGHT]: mockedDiv.clientHeight,
 
-            [LAYOUT_WIDTH_SCROLL]: mockedDiv.scrollWidth,
-            [LAYOUT_HEIGHT_SCROLL]: mockedDiv.scrollHeight,
+            [SCROLL_WIDTH]: mockedDiv.scrollWidth,
+            [SCROLL_HEIGHT]: mockedDiv.scrollHeight,
 
-            [LAYOUT_SCROLLBAR_WIDTH]: mockedDiv.offsetWidth - mockedDiv.clientWidth,
-            [LAYOUT_SCROLLBAR_HEIGHT]: mockedDiv.offsetHeight - mockedDiv.clientHeight
+            [SCROLLBAR_WIDTH]: mockedDiv.offsetWidth - mockedDiv.clientWidth,
+            [SCROLLBAR_HEIGHT]: mockedDiv.offsetHeight - mockedDiv.clientHeight
         });
     });
 
@@ -62,17 +62,17 @@ describe('get-layout-dimensions', () => {
         };
 
         expect(getLayout(mockedDocumentElement, mockedWindow)).to.deep.equals({
-            [LAYOUT_WIDTH_OUTER]: mockedWindow.innerWidth,
-            [LAYOUT_HEIGHT_OUTER]: mockedWindow.innerHeight,
+            [OUTER_WIDTH]: mockedWindow.innerWidth,
+            [OUTER_HEIGHT]: mockedWindow.innerHeight,
 
-            [LAYOUT_WIDTH_INNER]: mockedDocumentElement.clientWidth,
-            [LAYOUT_HEIGHT_INNER]: mockedDocumentElement.clientHeight,
+            [INNER_WIDTH]: mockedDocumentElement.clientWidth,
+            [INNER_HEIGHT]: mockedDocumentElement.clientHeight,
 
-            [LAYOUT_WIDTH_SCROLL]: mockedDocumentElement.scrollWidth,
-            [LAYOUT_HEIGHT_SCROLL]: mockedDocumentElement.scrollHeight,
+            [SCROLL_WIDTH]: mockedDocumentElement.scrollWidth,
+            [SCROLL_HEIGHT]: mockedDocumentElement.scrollHeight,
 
-            [LAYOUT_SCROLLBAR_WIDTH]: mockedWindow.innerWidth - mockedDocumentElement.clientWidth,
-            [LAYOUT_SCROLLBAR_HEIGHT]: mockedWindow.innerHeight - mockedDocumentElement.clientHeight
+            [SCROLLBAR_WIDTH]: mockedWindow.innerWidth - mockedDocumentElement.clientWidth,
+            [SCROLLBAR_HEIGHT]: mockedWindow.innerHeight - mockedDocumentElement.clientHeight
         });
     });
 });

@@ -30,7 +30,7 @@ This library is downloadable via **npm**:
 $ npm install scroll-padlock
 ```
 
-The source code is entirely written in [standard ECMAScript](https://tc39.es/) with no dependencies, but the final distribution includes transpiled [umd](https://github.com/umdjs/umd), [iife](https://developer.mozilla.org/en-US/docs/Glossary/IIFE), [amd](https://en.wikipedia.org/wiki/Asynchronous_module_definition), [cjs](https://en.wikipedia.org/wiki/CommonJS), [esm](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules) and [SystemJS](https://github.com/systemjs/systemjs) bundles.
+The source code is entirely written in [standard ECMAScript](https://tc39.es/) with no dependencies, which means that any of its modules can be imported in any JavaScript project; the builded distribution includes transpiled [umd](https://github.com/umdjs/umd), [iife](https://developer.mozilla.org/en-US/docs/Glossary/IIFE), [amd](https://en.wikipedia.org/wiki/Asynchronous_module_definition), [cjs](https://en.wikipedia.org/wiki/CommonJS), [esm](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules) and [SystemJS](https://github.com/systemjs/systemjs) bundles.
 
 ## Under the Hood
 
