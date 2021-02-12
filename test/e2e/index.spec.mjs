@@ -11,17 +11,21 @@ const DOMAIN = 'localhost';
 const PORT = 8080;
 
 before(async () => {
-    const app = express();
+    try {
+        const app = express();
 
-    app.use(express.static(path.resolve('.')));
-    
-    server = app.listen(PORT);
-    
-    browser = await puppeteer.launch({
-        headless: true,
-        args: ['--disable-web-security'],
-        ignoreDefaultArgs: ['--hide-scrollbars']
-    });
+        app.use(express.static(path.resolve('.')));
+        
+        server = app.listen(PORT);
+        
+        browser = await puppeteer.launch({
+            headless: true,
+            args: ['--disable-web-security'],
+            ignoreDefaultArgs: ['--hide-scrollbars']
+        });
+    }catch(e){
+        console.error(e);
+    }
 });
 
 beforeEach(async () => {
