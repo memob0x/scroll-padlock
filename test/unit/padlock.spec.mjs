@@ -16,6 +16,8 @@ import {
     SCROLL_LEFT
 } from '../../src/constants.mjs';
 
+import sleep from '../utils/sleep.mjs';
+
 const { expect } = chai;
 
 describe('padlock', () => {
@@ -72,8 +74,6 @@ describe('padlock', () => {
             instance.destroy();
         }).to.not.throw(Error);
     });
-
-    const sleep = timeout => new Promise(resolve => setTimeout(resolve, timeout));
 
     it('should update instance "layout" object only on resize and "scroll" object only on scroll', async () => {
         const div = document.createElement('div');

@@ -1,19 +1,13 @@
+import { win, doc, documentElement, body, head } from './client.mjs';
+
 import {
-    WINDOW,
-    DOCUMENT,
-    DOCUMENT_ELEMENT,
-    BODY_ELEMENT,
-    HEAD_ELEMENT,
     SCROLL_LEFT,
     SCROLL_TOP,
-    DEFAULT_ELEMENT,
     DEFAULT_CSS_CLASS_NAME,
     LISTENER_METHOD_ADD,
     LISTENER_METHOD_REMOVE,
     EVENT_NAME_RESIZE,
     EVENT_NAME_SCROLL,
-    DEFAULT_TARGET,
-    DEFAULT_SCROLLER,
     RESIZE_DEBOUNCE_INTERVAL_MS,
     SCROLL_DEBOUNCE_INTERVAL_MS,
     STYLER_METHOD_ADD,
@@ -34,15 +28,18 @@ import styler from './styler.mjs';
 // a weakmap is used in order to keep every instance associated with the scrollable element itself
 const instances = new WeakMap();
 
+//
+const defaultElement = documentElement;
+
 export default class ScrollPadlock {
     /**
      * Creates the scroll padlock class instance on a given scrollable element
      * @param {Window|HTMLElement} [element] The given scrollable element whose scroll needs to be controlled
      * @param {String} [cssClassName] The given scrollable element whose scroll needs to be controlled
      */
-    constructor(element = DEFAULT_ELEMENT, cssClassName = DEFAULT_CSS_CLASS_NAME) {
+    constructor(element = defaultElement, cssClassName = DEFAULT_CSS_CLASS_NAME) {
         // Window as element argument support
-        const elementIsWindow = element === WINDOW;
+        const elementIsWindow = element === win;
 
         // Scrollable html elements support
         const elementIsHtmlElement = element instanceof HTMLElement;
@@ -59,7 +56,7 @@ export default class ScrollPadlock {
         }
 
         // Global page (window, html or body as element argument)
-        const elementIsGlobal = elementIsWindow || element === DOCUMENT_ELEMENT || element === BODY_ELEMENT;
+        const elementIsGlobal = elementIsWindow || element === documentElement || element === body;
 
         // Custom scrollable element case:
         // if the given element is not global (page scroll)
@@ -100,7 +97,7 @@ export default class ScrollPadlock {
         this.#observeCssClass();
 
         // Attaches resize event listener
-        listener(LISTENER_METHOD_ADD, WINDOW, EVENT_NAME_RESIZE, this.#resizeHandler);
+        listener(LISTENER_METHOD_ADD, win, EVENT_NAME_RESIZE, this.#resizeHandler);
 
         // Attaches scroll event listener
         listener(LISTENER_METHOD_ADD, this.#scroller, EVENT_NAME_SCROLL, this.#scrollHandler);
@@ -109,18 +106,18 @@ export default class ScrollPadlock {
     /**
      * The lock state element target, usually the scrollable element
      */
-    #element = DEFAULT_ELEMENT;
+    #element = defaultElement;
 
     /**
      * The original given element (the one provided to the class constructor)
      */
-    #target = DEFAULT_TARGET;
+    #target = body;
 
     /**
      * The actual scrollable element (the element that can perform and listen to scroll event)
      * Usually coincides with "element", but when "element" is document.documentElement, "scroller" is window
      */
-    #scroller = DEFAULT_SCROLLER;
+    #scroller = window;
 
     /**
      * The original given element CSS class list
@@ -198,7 +195,7 @@ export default class ScrollPadlock {
      * State MutationObserver object,
      * registers the callback fired on CSS class change
      */
-    #observer = (implementationName => implementationName in WINDOW ? new WINDOW[implementationName](() => {
+    #observer = (implementationName => implementationName in win ? new win[implementationName](() => {
         // Caches the current scroll lock state before updating it
         const state = this.#state;
 
@@ -227,7 +224,7 @@ export default class ScrollPadlock {
     /**
      * The styler, css variables holder
      */
-    #styler = DOCUMENT.createElement('style');
+    #styler = doc.createElement('style');
 
     /**
      * Window resize event handler
@@ -310,7 +307,7 @@ export default class ScrollPadlock {
      * Rewrites the css variables with current data
      * @returns {HTMLStyleElement} Styler element
      */
-    #applyStyles = () => styler(STYLER_METHOD_ADD, this.#target, this.#styler, HEAD_ELEMENT, this.layout, this.scroll);
+    #applyStyles = () => styler(STYLER_METHOD_ADD, this.#target, this.#styler, head, this.layout, this.scroll);
 
     /**
      * Observes the element CSS class changes
@@ -360,7 +357,7 @@ export default class ScrollPadlock {
         listener(LISTENER_METHOD_REMOVE, this.#scroller, EVENT_NAME_SCROLL, this.#scrollHandler);
 
         // Detaches the resize event listener
-        listener(LISTENER_METHOD_REMOVE, WINDOW, EVENT_NAME_RESIZE, this.#resizeHandler);
+        listener(LISTENER_METHOD_REMOVE, win, EVENT_NAME_RESIZE, this.#resizeHandler);
 
         // Removes the instance from the instances collection
         instances.delete(this.#element);

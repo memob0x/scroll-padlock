@@ -4,12 +4,12 @@ import chai from 'chai';
 
 import debounce from '../../src/debounce.mjs';
 
+import sleep from '../utils/sleep.mjs';
+
 const { expect } = chai;
 
 describe('debounce', () => {
     const debounceIntervalMs = 125;
-
-    const sleep = timeout => new Promise(resolve => setTimeout(resolve, timeout));
 
     it('should be able to make a debounced function off a given function', async () => {
         let calls = 0;

@@ -1,80 +1,120 @@
-const { ScrollPadlock: Padlock, chai } = window;
+import puppeteer from 'puppeteer';
+import express from 'express';
+import path from 'path';
 
-const { expect } = chai;
+let server;
+let browser;
+let page;
 
-const sleep = timeout => new Promise(resolve => setTimeout(resolve, timeout));
+const PROTOCOL = 'http';
+const DOMAIN = 'localhost';
+const PORT = 8080;
 
-const DEBOUNCE_TIMEOUT = 500;
+before(async () => {
+    const app = express();
 
-const scrollbarSize = 20;
-
-let styler;
-
-before(() => {
-    styler = document.createElement('style');
-
-    // TODO: Use CSSSTyleSheet methods instead
-    styler.innerHTML = '::-webkit-scrollbar { width: ' + scrollbarSize + 'px; height: ' + scrollbarSize + 'px; }';
-
-    document.head.append(styler);
+    app.use(express.static(path.resolve('.')));
+    
+    server = app.listen(PORT);
+    
+    browser = await puppeteer.launch({
+        headless: true,
+        args: ['--disable-web-security'],
+        ignoreDefaultArgs: ['--hide-scrollbars']
+    });
 });
 
-after(() => styler.remove());
+beforeEach(async () => {
+    page = await browser.newPage();
+    
+    page.on('console', c => console.log(c.text()));
 
-describe('ScrollPadlock instance on page scroll', () => {
-    xit('should be able to get current scroll position', () => {
-        const instance = new Padlock();
-
-        instance.destroy();
+    await page.setViewport({
+        width: 1000,
+        height: 1000
     });
 
-    xit('should be able to set current scroll position', () => {
-        const instance = new Padlock();
+    await page.addScriptTag({
+        url: `${PROTOCOL}://${DOMAIN}:${PORT}/dist/iife/scroll-padlock.js`
+    });
+
+    await page.addScriptTag({
+        url: `${PROTOCOL}://${DOMAIN}:${PORT}/node_modules/chai/chai.js`
+    });
+
+    await page.addScriptTag({
+        type: 'module',
+        content: `
+            import sleep from "${PROTOCOL}://${DOMAIN}:${PORT}/test/utils/sleep.mjs";
+            
+            window.sleep = sleep;
+        `
+    });
+
+    await page.addScriptTag({
+        type: 'module',
+        content: `
+            import { SCROLL_DEBOUNCE_INTERVAL_MS } from "${PROTOCOL}://${DOMAIN}:${PORT}/src/constants.mjs";
+            
+            window.SCROLL_DEBOUNCE_INTERVAL_MS = SCROLL_DEBOUNCE_INTERVAL_MS;
+        `
+    });
+    
+    await page.evaluate(() => {
+        const expander = document.createElement('div');
+
+        const { style } = expander;
+
+        style.width = style.height = '9999px';
+
+        document.body.append(expander);
+    });
+
+    await page.evaluate(() => window.expect = window.chai.expect);
+});
+
+afterEach(async () => await page.close());
+
+after(async () => {
+    await browser.close();
+
+    server.close();
+});
+
+describe('ScrollPadlock instance on page scroll', () => {
+    it('should be able to get current scroll position', async () => await page.evaluate(async () => {
+        const instance = new window.ScrollPadlock();
+        
+        expect(instance.scroll).to.deep.equals({ top: 0, left: 0 });
+
+        const position = { top: 100, left: 200 };
+
+        window.scrollTo(position);
+
+        await window.sleep(window.SCROLL_DEBOUNCE_INTERVAL_MS);
+
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        expect(instance.scroll).to.deep.equals(position);
 
         instance.destroy();
+    }));
+
+    xit('should be able to set current scroll position', () => {
+        /*const instance = new Padlock();
+
+        instance.destroy();*/
     });
 
     xit('should be able to get current layout dimensions', () => {
-        const instance = new Padlock();
+        /*const instance = new Padlock();
 
-        instance.destroy();
+        instance.destroy();*/
     });
 });
 
 describe('ScrollPadlock instance on a scrollable element', () => {
-    let element;
-
-    const elementSize = 100;
-    const scrollerSize = 500;
-
-    const getElementCurrentScrollPosition = () => ({
-        top: element.scrollTop,
-        left: element.scrollLeft
-    });
-
-    beforeEach(() => {
-        element = document.createElement('div');
-
-        const { style: elementStyle } = element;
-
-        const expander = element.cloneNode();
-
-        elementStyle.position = 'fixed';
-        elementStyle.width = elementStyle.height = elementSize + 'px';
-        elementStyle.overflow = 'auto';
-
-        const { style: expanderStyle } = expander;
-
-        expanderStyle.width = expanderStyle.height = scrollerSize + 'px';
-
-        element.append(expander);
-
-        document.body.append(element);
-    });
-
-    afterEach(() => element.remove());
-
-    it('should be able to get current scroll position', async () => {
+    xit('should be able to get current scroll position', async () => { /*
         const instance = new Padlock(element);
 
         // Lcroll getter on initialization
@@ -99,10 +139,10 @@ describe('ScrollPadlock instance on a scrollable element', () => {
         expect(instance.scroll.top).to.be.above(currentScrollPosition.top - 1).to.be.below(currentScrollPosition.top + 1);
         expect(instance.scroll.left).to.be.above(currentScrollPosition.left - 1).to.be.below(currentScrollPosition.left + 1);
 
-        instance.destroy();
+        instance.destroy(); */
     });
 
-    it('should be able to set current scroll position', async () => {
+    xit('should be able to set current scroll position', async () => { /*
         element.scrollTo(999, 999);
 
         const lockStateCSSClassName = 'lockeeeed';
@@ -156,10 +196,10 @@ describe('ScrollPadlock instance on a scrollable element', () => {
         expect(instance.scroll.top).to.be.above(currentScrollPosition.top - 1).to.be.below(currentScrollPosition.top + 1);
         expect(instance.scroll.left).to.be.above(currentScrollPosition.left - 1).to.be.below(currentScrollPosition.left + 1);
 
-        instance.destroy();
+        instance.destroy();*/
     });
 
-    it('should be able to get current layout dimensions', async () => {
+    xit('should be able to get current layout dimensions', async () => { /*
         element.style.overflow = 'hidden';
 
         const instance = new Padlock(element);
@@ -201,6 +241,6 @@ describe('ScrollPadlock instance on a scrollable element', () => {
             scrollbarWidth: scrollbarSize
         });
 
-        instance.destroy();
+        instance.destroy(); */
     });
 });

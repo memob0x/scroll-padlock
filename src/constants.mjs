@@ -70,16 +70,5 @@ export const LISTENER_METHOD_REMOVE = 'remove';
 export const STYLER_METHOD_ADD = LISTENER_METHOD_ADD;
 export const STYLER_METHOD_REMOVE = LISTENER_METHOD_REMOVE;
 
-// All involved client elements references
-export const DOCUMENT = document;
-export const WINDOW = window;
-const { documentElement, body, head } = DOCUMENT;
-export const DOCUMENT_ELEMENT = documentElement;
-export const BODY_ELEMENT = body;
-export const HEAD_ELEMENT = head;
-
-// Default class members values
-export const DEFAULT_ELEMENT = DOCUMENT_ELEMENT;
-export const DEFAULT_TARGET = BODY_ELEMENT;
-export const DEFAULT_SCROLLER = WINDOW;
+// 
 export const DEFAULT_CSS_CLASS_NAME = `${DOM_BASE_NAME}-locked`;
