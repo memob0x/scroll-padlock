@@ -2,6 +2,9 @@ import puppeteer from 'puppeteer';
 import express from 'express';
 import path from 'path';
 
+import sleep from '../utils/sleep.mjs';
+import { TIME_MS_DEBOUNCE_SCROLL } from '../../src/constants.mjs';
+
 let server;
 let browser;
 let page;
@@ -14,9 +17,9 @@ before(async () => {
     const app = express();
 
     app.use(express.static(path.resolve('.')));
-    
+
     server = app.listen(PORT);
-    
+
     browser = await puppeteer.launch({
         headless: true,
         args: ['--disable-web-security'],
@@ -26,7 +29,7 @@ before(async () => {
 
 beforeEach(async () => {
     page = await browser.newPage();
-    
+
     page.on('console', c => console.log(c.text()));
 
     await page.setViewport({
@@ -42,24 +45,10 @@ beforeEach(async () => {
         url: `${PROTOCOL}://${DOMAIN}:${PORT}/node_modules/chai/chai.js`
     });
 
-    await page.addScriptTag({
-        type: 'module',
-        content: `
-            import sleep from "${PROTOCOL}://${DOMAIN}:${PORT}/test/utils/sleep.mjs";
-            
-            window.sleep = sleep;
-        `
-    });
+    await page.exposeFunction('sleep', sleep);
 
-    await page.addScriptTag({
-        type: 'module',
-        content: `
-            import { TIME_MS_DEBOUNCE_SCROLL } from "${PROTOCOL}://${DOMAIN}:${PORT}/src/constants.mjs";
-            
-            window.TIME_MS_DEBOUNCE_SCROLL = TIME_MS_DEBOUNCE_SCROLL;
-        `
-    });
-    
+    await page.exposeFunction('constants', () => ({ TIME_MS_DEBOUNCE_SCROLL }));
+
     await page.evaluate(() => {
         const expander = document.createElement('div');
 
@@ -84,14 +73,14 @@ after(async () => {
 describe('ScrollPadlock instance on page scroll', () => {
     it('should be able to get current scroll position', async () => await page.evaluate(async () => {
         const instance = new window.ScrollPadlock();
-        
+
         expect(instance.scroll).to.deep.equals({ top: 0, left: 0 });
 
         const position = { top: 100, left: 200 };
 
         window.scrollTo(position);
 
-        await window.sleep(window.TIME_MS_DEBOUNCE_SCROLL);
+        await window.sleep(window.constants().TIME_MS_DEBOUNCE_SCROLL);
 
         await new Promise(resolve => setTimeout(resolve, 1000));
 
