@@ -19,7 +19,7 @@ import {
  * @param {Window|HTMLElement} scroller The given scrollable used to retrieve some dimensions when the given element is global (page)
  * @returns {Object} The given element dimensions as an object ({ top, left })
  */
-export default (element, scroller) => {
+export default (element, scroller) => {    
     // Implying global (page) element...
     let outer = {
         [WIDTH]: scroller?.[INNER_WIDTH],
@@ -46,15 +46,15 @@ export default (element, scroller) => {
         [OUTER_HEIGHT]: outerHeight,
         
         // Element area without scrollbars
-        [INNER_WIDTH]: innerWidth,
-        [INNER_HEIGHT]: innerHeight,
+        [INNER_WIDTH]: Math.min(outerWidth, innerWidth),
+        [INNER_HEIGHT]: Math.min(outerHeight, innerHeight),
 
         // Element content area
         [SCROLL_WIDTH]: element?.[SCROLL_WIDTH] ?? 0,
         [SCROLL_HEIGHT]: element?.[SCROLL_HEIGHT] ?? 0,
 
         // Element scrollbar size
-        [SCROLLBAR_WIDTH]: outerWidth - innerWidth,
-        [SCROLLBAR_HEIGHT]: outerHeight - innerHeight
+        [SCROLLBAR_WIDTH]: Math.max(0, outerWidth - innerWidth),
+        [SCROLLBAR_HEIGHT]: Math.max(0, outerHeight - innerHeight)
     };
 };

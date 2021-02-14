@@ -50,33 +50,40 @@ beforeEach(async () => {
     await page.exposeFunction('constants', () => ({ TIME_MS_DEBOUNCE_SCROLL }));
 
     await page.evaluate(() => {
+        window.expect = window.chai.expect;
+
         const doc = document;
 
-        const createDiv = () => doc.createElement('div');
+        const createEl = (tag = 'div') => doc.createElement(tag);
         
-        const { body } = doc;
+        const { body, head } = doc;
 
-        const expander = createDiv();
+        const expander = createEl();
 
         const { style: expanderStyle } = expander;
-
+        
         expanderStyle.width = expanderStyle.height = '9999px';
 
         body.append(expander);
         
-        window.div = createDiv();
+        window.div = createEl();
 
         const { style: divStyle } = window.div;
 
         divStyle.width = divStyle.height = '100px';
         divStyle.overflow = 'scroll';
+        divStyle.position = 'absolute';
 
         window.div.append(expander.cloneNode());
 
         body.append(window.div);
-    });
 
-    await page.evaluate(() => window.expect = window.chai.expect);
+        const styler = createEl('style');
+
+        styler.innerHTML = '::-webkit-scrollbar { width: 10px; height: 10px; }';
+
+        head.append(styler);
+    });
 });
 
 afterEach(async () => await page.close());
@@ -89,11 +96,11 @@ after(async () => {
 
 describe('ScrollPadlock instance on page scroll', () => {
     it('should be able to get current scroll position', async () => await page.evaluate(async () => {
-        const constants = await window.constants();
+        const { TIME_MS_DEBOUNCE_SCROLL } = await window.constants();
 
         let position = { top: 0, left: 0 };
 
-        window.scrollTo(position);
+        scrollTo(position);
 
         const instance = new window.ScrollPadlock();
 
@@ -101,9 +108,9 @@ describe('ScrollPadlock instance on page scroll', () => {
 
         position = { top: 100, left: 200 };
 
-        window.scrollTo(position);
+        scrollTo(position);
 
-        await window.sleep(constants.TIME_MS_DEBOUNCE_SCROLL + 10);
+        await sleep(TIME_MS_DEBOUNCE_SCROLL + 10);
 
         expect(instance.scroll).to.deep.equals(position);
 
@@ -111,21 +118,54 @@ describe('ScrollPadlock instance on page scroll', () => {
     }));
 
     xit('should be able to set current scroll position', () => {
-        /*const instance = new Padlock();
-
-        instance.destroy();*/
+        
     });
 
-    xit('should be able to get current layout dimensions', () => {
-        /*const instance = new Padlock();
+    it('should be able to get current layout dimensions', async () => await page.evaluate(async () => {
+        document.body.style.overflow = 'hidden';
 
-        instance.destroy();*/
-    });
+        const instance = new window.ScrollPadlock();
+
+        expect(instance.layout).to.deep.include({
+            outerWidth: window.innerWidth,
+            outerHeight: window.innerHeight,
+            innerWidth: Math.min(window.innerWidth, document.documentElement.clientWidth),
+            innerHeight: Math.min(window.innerHeight, document.documentElement.clientHeight),
+            scrollbarWidth: 0,
+            scrollbarHeight: 0
+        });
+
+        document.body.style.overflow = 'scroll';
+
+        expect(instance.layout).to.not.deep.include({
+            outerWidth: window.innerWidth,
+            outerHeight: window.innerHeight,
+            innerWidth: Math.min(window.innerWidth, document.documentElement.clientWidth),
+            innerHeight: Math.min(window.innerHeight, document.documentElement.clientHeight),
+            scrollbarWidth: 0,
+            scrollbarHeight: 0
+        });
+
+        instance.update();
+
+        expect(instance.layout).to.deep.include({
+            outerWidth: window.innerWidth,
+            outerHeight: window.innerHeight,
+            innerWidth: Math.min(window.innerWidth, document.documentElement.clientWidth),
+            innerHeight: Math.min(window.innerHeight, document.documentElement.clientHeight),
+            scrollbarWidth: window.innerWidth - Math.min(window.innerWidth, document.documentElement.clientWidth),
+            scrollbarHeight: window.innerHeight - Math.min(window.innerHeight, document.documentElement.clientHeight)
+        });
+
+        document.body.style.overflow = '';
+
+        instance.destroy();
+    }));
 });
 
 describe('ScrollPadlock instance on a scrollable element', () => {
     it('should be able to get current scroll position', async () => await page.evaluate(async () => {
-        const constants = await window.constants();
+        const { TIME_MS_DEBOUNCE_SCROLL } = await window.constants();
 
         let position = { top: 0, left: 0 };
 
@@ -139,112 +179,53 @@ describe('ScrollPadlock instance on a scrollable element', () => {
 
         window.div.scrollTo(position);
 
-        await window.sleep(constants.TIME_MS_DEBOUNCE_SCROLL + 10);
+        await window.sleep(TIME_MS_DEBOUNCE_SCROLL + 10);
 
         expect(instance.scroll).to.deep.equals(position);
 
         instance.destroy();
     }));
 
-    xit('should be able to set current scroll position', async () => { /*
-        element.scrollTo(999, 999);
+    xit('should be able to set current scroll position', async () => { 
 
-        const lockStateCSSClassName = 'lockeeeed';
-        const instance = new Padlock(element, lockStateCSSClassName);
-
-        element.classList.add(lockStateCSSClassName);
-
-        await sleep(1);
-
-        // Locked scenario scroll setter test
-        let newPosition = {
-            top: Math.round(scrollerSize / 2),
-            left: Math.round(scrollerSize / 2)
-        };
-
-        instance.scroll = newPosition;
-
-        // Locked scenario scroll getter Test
-        expect(instance.scroll.top).to.be.above(newPosition.top - 1).to.be.below(newPosition.top + 1);
-        expect(instance.scroll.left).to.be.above(newPosition.left - 1).to.be.below(newPosition.left + 1);
-
-        let currentScrollPosition = getElementCurrentScrollPosition();
-        expect(instance.scroll.top).to.be.below(currentScrollPosition.top - 1);
-        expect(instance.scroll.left).to.be.below(currentScrollPosition.left - 1);
-
-        element.classList.remove(lockStateCSSClassName);
-
-        await sleep(DEBOUNCE_TIMEOUT);
-
-        expect(instance.scroll.top).to.be.above(newPosition.top - 1).to.be.below(newPosition.top + 1);
-        expect(instance.scroll.left).to.be.above(newPosition.left - 1).to.be.below(newPosition.left + 1);
-
-        currentScrollPosition = getElementCurrentScrollPosition();
-        expect(instance.scroll.top).to.be.above(currentScrollPosition.top - 1).to.be.below(currentScrollPosition.top + 1);
-        expect(instance.scroll.left).to.be.above(currentScrollPosition.left - 1).to.be.below(currentScrollPosition.left + 1);
-
-        // Unlocked scenario scroll setter test
-        newPosition = {
-            top: Math.round(scrollerSize / 3),
-            left: Math.round(scrollerSize / 3)
-        };
-
-        instance.scroll = newPosition;
-
-        await sleep(DEBOUNCE_TIMEOUT);
-
-        expect(instance.scroll.top).to.be.above(newPosition.top - 1).to.be.below(newPosition.top + 1);
-        expect(instance.scroll.left).to.be.above(newPosition.left - 1).to.be.below(newPosition.left + 1);
-
-        currentScrollPosition = getElementCurrentScrollPosition();
-        expect(instance.scroll.top).to.be.above(currentScrollPosition.top - 1).to.be.below(currentScrollPosition.top + 1);
-        expect(instance.scroll.left).to.be.above(currentScrollPosition.left - 1).to.be.below(currentScrollPosition.left + 1);
-
-        instance.destroy();*/
     });
 
-    xit('should be able to get current layout dimensions', async () => { /*
-        element.style.overflow = 'hidden';
+    it('should be able to get current layout dimensions', async () => await page.evaluate(async () => {
+        window.div.style.overflow = 'hidden';
 
-        const instance = new Padlock(element);
+        const instance = new window.ScrollPadlock(window.div);
 
-        expect(instance.layout).to.deep.equals({
-            innerHeight: elementSize,
-            innerWidth: elementSize,
-            outerHeight: elementSize,
-            outerWidth: elementSize,
-            scrollHeight: scrollerSize,
-            scrollWidth: scrollerSize,
-            scrollbarHeight: 0,
-            scrollbarWidth: 0
+        expect(instance.layout).to.deep.include({
+            outerWidth: window.div.getBoundingClientRect().width,
+            outerHeight: window.div.getBoundingClientRect().height,
+            innerWidth: window.div.clientWidth,
+            innerHeight: window.div.clientHeight,
+            scrollbarWidth: 0,
+            scrollbarHeight: 0
         });
 
-        element.style.overflow = 'scroll';
+        window.div.style.overflow = 'scroll';
 
-        expect(instance.layout).to.deep.equals({
-            innerHeight: elementSize,
-            innerWidth: elementSize,
-            outerHeight: elementSize,
-            outerWidth: elementSize,
-            scrollHeight: scrollerSize,
-            scrollWidth: scrollerSize,
-            scrollbarHeight: 0,
-            scrollbarWidth: 0
+        expect(instance.layout).to.not.deep.include({
+            outerWidth: window.div.getBoundingClientRect().width,
+            outerHeight: window.div.getBoundingClientRect().height,
+            innerWidth: window.div.clientWidth,
+            innerHeight: window.div.clientHeight,
+            scrollbarWidth: 0,
+            scrollbarHeight: 0
         });
 
         instance.update();
 
-        expect(instance.layout).to.deep.equals({
-            innerHeight: elementSize - scrollbarSize,
-            innerWidth: elementSize - scrollbarSize,
-            outerHeight: elementSize,
-            outerWidth: elementSize,
-            scrollHeight: scrollerSize,
-            scrollWidth: scrollerSize,
-            scrollbarHeight: scrollbarSize,
-            scrollbarWidth: scrollbarSize
+        expect(instance.layout).to.deep.include({
+            outerWidth: window.div.getBoundingClientRect().width,
+            outerHeight: window.div.getBoundingClientRect().height,
+            innerWidth: window.div.clientWidth,
+            innerHeight: window.div.clientHeight,
+            scrollbarWidth: window.div.getBoundingClientRect().width - window.div.clientWidth,
+            scrollbarHeight: window.div.getBoundingClientRect().height - window.div.clientHeight
         });
 
-        instance.destroy(); */
-    });
+        instance.destroy();
+    }));
 });

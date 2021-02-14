@@ -20,22 +20,20 @@ const { expect } = chai;
 describe('get-layout-dimensions', () => {
     it('should be able to retrieve html elements dimensions', () => {
         const mockedDiv = {
-            offsetWidth: 1,
-            offsetHeight: 2,
-            clientWidth: 3,
-            clientHeight: 4,
-            scrollWidth: 5,
-            scrollHeight: 6,
+            clientWidth: 10,
+            clientHeight: 20,
+            scrollWidth: 50,
+            scrollHeight: 60,
 
             getBoundingClientRect: () => ({
-                width: 1,
-                height: 2
+                width: 30,
+                height: 40
             })
         };
 
         expect(getLayout(mockedDiv, mockedDiv)).to.deep.equals({
-            [OUTER_WIDTH]: mockedDiv.offsetWidth,
-            [OUTER_HEIGHT]: mockedDiv.offsetHeight,
+            [OUTER_WIDTH]: mockedDiv.getBoundingClientRect().width,
+            [OUTER_HEIGHT]: mockedDiv.getBoundingClientRect().height,
 
             [INNER_WIDTH]: mockedDiv.clientWidth,
             [INNER_HEIGHT]: mockedDiv.clientHeight,
@@ -43,22 +41,22 @@ describe('get-layout-dimensions', () => {
             [SCROLL_WIDTH]: mockedDiv.scrollWidth,
             [SCROLL_HEIGHT]: mockedDiv.scrollHeight,
 
-            [SCROLLBAR_WIDTH]: mockedDiv.offsetWidth - mockedDiv.clientWidth,
-            [SCROLLBAR_HEIGHT]: mockedDiv.offsetHeight - mockedDiv.clientHeight
+            [SCROLLBAR_WIDTH]: mockedDiv.getBoundingClientRect().width - mockedDiv.clientWidth,
+            [SCROLLBAR_HEIGHT]: mockedDiv.getBoundingClientRect().height - mockedDiv.clientHeight
         });
     });
 
     it('should be able to detect page dimensions', () => {
         const mockedWindow = {
-            innerWidth: 1,
-            innerHeight: 2
+            innerWidth: 30,
+            innerHeight: 40
         };
 
         const mockedDocumentElement = {
-            clientWidth: 3,
-            clientHeight: 4,
-            scrollWidth: 5,
-            scrollHeight: 6
+            clientWidth: 10,
+            clientHeight: 20,
+            scrollWidth: 50,
+            scrollHeight: 60
         };
 
         expect(getLayout(mockedDocumentElement, mockedWindow)).to.deep.equals({
