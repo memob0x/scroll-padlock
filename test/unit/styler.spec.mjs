@@ -2,7 +2,7 @@ import 'jsdom-global/register.js';
 
 import chai from 'chai';
 
-import { DOM_DATA_ATTRIBUTE_NAME, METHOD_ADD, METHOD_REMOVE } from '../../src/constants.mjs';
+import { DOM_DATA_ATTRIBUTE_NAME, ADD, REMOVE } from '../../src/constants.mjs';
 
 import styler from '../../src/styler.mjs';
 
@@ -19,7 +19,7 @@ describe('styler', () => {
 
         holder.prepend(div);
 
-        expect(styler(METHOD_ADD, div, style, document.head, {}, {})).to.equals(style);
+        expect(styler(ADD, div, style, document.head, {}, {})).to.equals(style);
         expect(document.head.contains(style)).to.be.true;
         expect(div.matches(`[${DOM_DATA_ATTRIBUTE_NAME}]`)).to.be.true;
 
@@ -29,7 +29,7 @@ describe('styler', () => {
         let rules = style.sheet.cssRules[0];
         expect(rules.selectorText).equals(`[${DOM_DATA_ATTRIBUTE_NAME}="${attrValue}"]`);
 
-        expect(styler(METHOD_REMOVE, div, style)).to.equals(style);
+        expect(styler(REMOVE, div, style)).to.equals(style);
         expect(document.head.contains(style)).to.be.false;
         expect(div.matches(`[${DOM_DATA_ATTRIBUTE_NAME}]`)).to.be.false;
 
@@ -37,7 +37,7 @@ describe('styler', () => {
 
         holder.prepend(indexShifterDummyEl);
 
-        styler(METHOD_ADD, div, style, document.head, {}, {});
+        styler(ADD, div, style, document.head, {}, {});
 
         let oldAttrValue = attrValue;
         attrValue = div.getAttribute(DOM_DATA_ATTRIBUTE_NAME);
@@ -47,7 +47,7 @@ describe('styler', () => {
         rules = style.sheet.cssRules[0];
         expect(rules.selectorText).equals(`[${DOM_DATA_ATTRIBUTE_NAME}="${attrValue}"]`);
 
-        styler(METHOD_REMOVE, div, style);
+        styler(REMOVE, div, style);
 
         indexShifterDummyEl.remove();
         div.remove();

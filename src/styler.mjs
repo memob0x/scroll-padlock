@@ -1,7 +1,7 @@
 import {
     HYPHEN,
-    METHOD_ADD,
-    METHOD_REMOVE,
+    ADD,
+    REMOVE,
     DOM_DATA_ATTRIBUTE_NAME,
     CSS_VAR_NAME_POSITION_TOP,
     CSS_VAR_NAME_POSITION_LEFT,
@@ -126,6 +126,6 @@ const unset = (element, styler) => {
  * @returns {HTMLStyleElement} Styler element
  */
 export default (method, element, styler, target, layout, scroll) => ({
-    [METHOD_ADD]: set,
-    [METHOD_REMOVE]: unset
+    [ADD]: set,
+    [REMOVE]: unset
 })[method](element, styler, target, layout, scroll);

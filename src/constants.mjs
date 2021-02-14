@@ -5,27 +5,24 @@ export const INNER = 'inner';
 export const CLIENT = 'client';
 export const SCROLLBAR = 'scrollbar';
 export const SCROLL = 'scroll';
+export const RESIZE = 'resize';
 export const WIDTH_CAPITALIZED = 'Width';
 export const HEIGHT_CAPITALIZED = 'Height';
-export const Y_CAPITALIZED = 'Y';
-export const X_CAPITALIZED = 'X';
+export const Y_UPPERCASE = 'Y';
+export const X_UPPERCASE = 'X';
 export const OFFSET_CAPITALIZED = 'Offset';
 export const TOP_CAPITALIZED = 'Top';
 export const LEFT_CAPITALIZED = 'Left';
 export const PAGE = 'page';
 export const CSS_VAR_PREFIX = HYPHEN + HYPHEN;
 
-// Common global event names
-export const EVENT_NAME_SCROLL = SCROLL;
-export const EVENT_NAME_RESIZE = 'resize';
-
 // Common global time values
 export const TIME_MS_DEBOUNCE_RESIZE = 250;
 export const TIME_MS_DEBOUNCE_SCROLL = 125;
 
 // Universal add/remove interfaces methods names
-export const METHOD_ADD = 'add';
-export const METHOD_REMOVE = 'remove';
+export const ADD = 'add';
+export const REMOVE = 'remove';
 
 // DOM constants
 export const DOM_BASE_NAME = SCROLL + HYPHEN + 'padlock';
@@ -33,7 +30,7 @@ export const DOM_DATA_ATTRIBUTE_NAME = 'data' + HYPHEN + DOM_BASE_NAME;
 
 /**
  * Turns a string lowercase
- * @param string The given string
+ * @param {string} The given string
  * @returns {String} The output lowercase string
  */
 const lowercase = string => string.toLowerCase();

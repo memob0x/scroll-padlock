@@ -50,13 +50,30 @@ beforeEach(async () => {
     await page.exposeFunction('constants', () => ({ TIME_MS_DEBOUNCE_SCROLL }));
 
     await page.evaluate(() => {
-        const expander = document.createElement('div');
+        const doc = document;
 
-        const { style } = expander;
+        const createDiv = () => doc.createElement('div');
+        
+        const { body } = doc;
 
-        style.width = style.height = '9999px';
+        const expander = createDiv();
 
-        document.body.append(expander);
+        const { style: expanderStyle } = expander;
+
+        expanderStyle.width = expanderStyle.height = '9999px';
+
+        body.append(expander);
+        
+        window.div = createDiv();
+
+        const { style: divStyle } = window.div;
+
+        divStyle.width = divStyle.height = '100px';
+        divStyle.overflow = 'scroll';
+
+        window.div.append(expander.cloneNode());
+
+        body.append(window.div);
     });
 
     await page.evaluate(() => window.expect = window.chai.expect);
@@ -72,17 +89,21 @@ after(async () => {
 
 describe('ScrollPadlock instance on page scroll', () => {
     it('should be able to get current scroll position', async () => await page.evaluate(async () => {
-        const instance = new window.ScrollPadlock();
+        const constants = await window.constants();
 
-        expect(instance.scroll).to.deep.equals({ top: 0, left: 0 });
-
-        const position = { top: 100, left: 200 };
+        let position = { top: 0, left: 0 };
 
         window.scrollTo(position);
 
-        await window.sleep(window.constants().TIME_MS_DEBOUNCE_SCROLL);
+        const instance = new window.ScrollPadlock();
 
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        expect(instance.scroll).to.deep.equals(position);
+
+        position = { top: 100, left: 200 };
+
+        window.scrollTo(position);
+
+        await window.sleep(constants.TIME_MS_DEBOUNCE_SCROLL + 5);
 
         expect(instance.scroll).to.deep.equals(position);
 
@@ -103,33 +124,27 @@ describe('ScrollPadlock instance on page scroll', () => {
 });
 
 describe('ScrollPadlock instance on a scrollable element', () => {
-    xit('should be able to get current scroll position', async () => { /*
-        const instance = new Padlock(element);
+    it('should be able to get current scroll position', async () => await page.evaluate(async () => {
+        const constants = await window.constants();
 
-        // Lcroll getter on initialization
-        let currentScrollPosition = getElementCurrentScrollPosition();
-        expect(instance.scroll.top).to.be.above(currentScrollPosition.top - 1).to.be.below(currentScrollPosition.top + 1);
-        expect(instance.scroll.left).to.be.above(currentScrollPosition.left - 1).to.be.below(currentScrollPosition.left + 1);
+        let position = { top: 0, left: 0 };
 
-        const newPosition = {
-            top: 10,
-            left: 20
-        };
+        window.div.scrollTo(position);
 
-        element.scrollTo(newPosition);
+        const instance = new window.ScrollPadlock(window.div);
 
-        await sleep(DEBOUNCE_TIMEOUT);
+        expect(instance.scroll).to.deep.equals(position);
 
-        // Lcroll getter after scrollTo call
-        expect(instance.scroll.top).to.be.above(newPosition.top - 1).to.be.below(newPosition.top + 1);
-        expect(instance.scroll.left).to.be.above(newPosition.left - 1).to.be.below(newPosition.left + 1);
+        position = { top: 100, left: 200 };
 
-        currentScrollPosition = getElementCurrentScrollPosition();
-        expect(instance.scroll.top).to.be.above(currentScrollPosition.top - 1).to.be.below(currentScrollPosition.top + 1);
-        expect(instance.scroll.left).to.be.above(currentScrollPosition.left - 1).to.be.below(currentScrollPosition.left + 1);
+        window.div.scrollTo(position);
 
-        instance.destroy(); */
-    });
+        await window.sleep(constants.TIME_MS_DEBOUNCE_SCROLL + 5);
+
+        expect(instance.scroll).to.deep.equals(position);
+
+        instance.destroy();
+    }));
 
     xit('should be able to set current scroll position', async () => { /*
         element.scrollTo(999, 999);

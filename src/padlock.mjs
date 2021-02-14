@@ -4,10 +4,10 @@ import {
     LEFT,
     TOP,
     DOM_BASE_NAME,
-    METHOD_ADD,
-    METHOD_REMOVE,
-    EVENT_NAME_RESIZE,
-    EVENT_NAME_SCROLL,
+    ADD,
+    REMOVE,
+    RESIZE,
+    SCROLL,
     TIME_MS_DEBOUNCE_RESIZE,
     TIME_MS_DEBOUNCE_SCROLL
 } from './constants.mjs';
@@ -96,10 +96,10 @@ export default class ScrollPadlock {
         this.#observeCssClass();
 
         // Attaches resize event listener
-        listener(METHOD_ADD, win, EVENT_NAME_RESIZE, this.#resizeHandler);
+        listener(ADD, win, RESIZE, this.#resizeHandler);
 
         // Attaches scroll event listener
-        listener(METHOD_ADD, this.#scroller, EVENT_NAME_SCROLL, this.#scrollHandler);
+        listener(ADD, this.#scroller, SCROLL, this.#scrollHandler);
     }
 
     /**
@@ -306,7 +306,7 @@ export default class ScrollPadlock {
      * Rewrites the css variables with current data
      * @returns {HTMLStyleElement} Styler element
      */
-    #applyStyles = () => styler(METHOD_ADD, this.#target, this.#styler, head, this.layout, this.scroll);
+    #applyStyles = () => styler(ADD, this.#target, this.#styler, head, this.layout, this.scroll);
 
     /**
      * Observes the element CSS class changes
@@ -350,13 +350,13 @@ export default class ScrollPadlock {
         this.#unobserveCssClass();
 
         // Removes the CSS variables, styler, styler selector...
-        styler(METHOD_REMOVE, this.#element, this.#styler);
+        styler(REMOVE, this.#element, this.#styler);
 
         // Detaches the scroll event listener
-        listener(METHOD_REMOVE, this.#scroller, EVENT_NAME_SCROLL, this.#scrollHandler);
+        listener(REMOVE, this.#scroller, SCROLL, this.#scrollHandler);
 
         // Detaches the resize event listener
-        listener(METHOD_REMOVE, win, EVENT_NAME_RESIZE, this.#resizeHandler);
+        listener(REMOVE, win, RESIZE, this.#resizeHandler);
 
         // Removes the instance from the instances collection
         instances.delete(this.#element);

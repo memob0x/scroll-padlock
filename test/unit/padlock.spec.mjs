@@ -6,10 +6,10 @@ import Padlock from '../../src/padlock.mjs';
 
 import {
     DOM_DATA_ATTRIBUTE_NAME,
-    EVENT_NAME_SCROLL,
+    SCROLL,
     OUTER_WIDTH,
     OUTER_HEIGHT,
-    EVENT_NAME_RESIZE,
+    RESIZE,
     TIME_MS_DEBOUNCE_RESIZE,
     TIME_MS_DEBOUNCE_SCROLL,
     TOP,
@@ -124,7 +124,7 @@ describe('padlock', () => {
             [LEFT]: scrollPosition.left
         });
 
-        window.dispatchEvent(new CustomEvent(EVENT_NAME_RESIZE));
+        window.dispatchEvent(new CustomEvent(RESIZE));
 
         await sleep(TIME_MS_DEBOUNCE_RESIZE);
         
@@ -142,7 +142,7 @@ describe('padlock', () => {
             height: 500
         };
 
-        div.dispatchEvent(new CustomEvent(EVENT_NAME_SCROLL));
+        div.dispatchEvent(new CustomEvent(SCROLL));
 
         await sleep(TIME_MS_DEBOUNCE_SCROLL);
 
@@ -305,11 +305,11 @@ describe('padlock', () => {
 
         window.addEventListener = div.addEventListener = type => {
             switch(type){
-                case EVENT_NAME_SCROLL:
+                case SCROLL:
                     scrollListened++;
                     break;
 
-                case EVENT_NAME_RESIZE:
+                case RESIZE:
                     resizeListened++;
                     break;
             }
@@ -317,11 +317,11 @@ describe('padlock', () => {
 
         window.removeEventListener = div.removeEventListener = type => {
             switch(type){
-                case EVENT_NAME_SCROLL:
+                case SCROLL:
                     scrollRemoved++;
                     break;
 
-                case EVENT_NAME_RESIZE:
+                case RESIZE:
                     resizeRemoved++;
                     break;
             }
@@ -357,11 +357,11 @@ describe('padlock', () => {
 
         expect(div.matches(`[${DOM_DATA_ATTRIBUTE_NAME}]`)).to.be.false;
 
-        div.dispatchEvent(new CustomEvent(EVENT_NAME_SCROLL));
+        div.dispatchEvent(new CustomEvent(SCROLL));
 
         expect(div.matches(`[${DOM_DATA_ATTRIBUTE_NAME}]`)).to.be.false;
 
-        div.dispatchEvent(new CustomEvent(EVENT_NAME_RESIZE));
+        div.dispatchEvent(new CustomEvent(RESIZE));
 
         expect(div.matches(`[${DOM_DATA_ATTRIBUTE_NAME}]`)).to.be.false;
 
