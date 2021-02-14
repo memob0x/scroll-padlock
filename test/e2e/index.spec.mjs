@@ -103,7 +103,7 @@ describe('ScrollPadlock instance on page scroll', () => {
 
         window.scrollTo(position);
 
-        await window.sleep(constants.TIME_MS_DEBOUNCE_SCROLL + 5);
+        await window.sleep(constants.TIME_MS_DEBOUNCE_SCROLL + 10);
 
         expect(instance.scroll).to.deep.equals(position);
 
@@ -139,7 +139,7 @@ describe('ScrollPadlock instance on a scrollable element', () => {
 
         window.div.scrollTo(position);
 
-        await window.sleep(constants.TIME_MS_DEBOUNCE_SCROLL + 5);
+        await window.sleep(constants.TIME_MS_DEBOUNCE_SCROLL + 10);
 
         expect(instance.scroll).to.deep.equals(position);
 
