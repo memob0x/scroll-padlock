@@ -38,7 +38,7 @@
         "lint": "./node_modules/.bin/eslint --ext .js --ext .mjs . --fix",
         "build": "node ./build.mjs",
         "test:unit": "./node_modules/.bin/mocha ./test/unit/*.spec.*",
-        "test:e2e": "./node_modules/.bin/mocha ./test/e2e/*.spec.*",
+        "test:e2e": "./node_modules/.bin/mocha  --timeout 12000 ./test/e2e/*.spec.* ",
         "test": "npm run test:unit && npm run test:e2e"
     },
     "devDependencies": {
