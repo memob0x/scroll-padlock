@@ -125,6 +125,7 @@ const unset = (element, styler) => {
  * @param {Object} scroll The scroll position to be set in css variables
  * @returns {HTMLStyleElement} Styler element
  */
+// Syntactic sugar, making a default export that looks like listener.mjs
 export default (method, element, styler, target, layout, scroll) => ({
     [ADD]: set,
     [REMOVE]: unset

@@ -1,12 +1,10 @@
 import { rollup } from 'rollup';
 import rollupBabelPackage from '@rollup/plugin-babel';
 import rollupGzip from 'rollup-plugin-gzip';
-import rollupUglifyPackage from 'rollup-plugin-uglify';
 import { terser as rollupTerser } from 'rollup-plugin-terser';
 import fs from 'fs/promises';
 
 const { getBabelOutputPlugin: rollupBabel } = rollupBabelPackage;
-const { uglify: rollupUglify } = rollupUglifyPackage;
 
 const root = '.';
 
@@ -32,7 +30,6 @@ const bundlesTypes = ['amd', 'iife', 'system', 'es', 'cjs', 'umd'];
     
     for( let bundlnesTypesIndex = 0, bundlesTypesLength = bundlesTypes.length; bundlnesTypesIndex < bundlesTypesLength; bundlnesTypesIndex++ ){
         const bundleType = bundlesTypes[bundlnesTypesIndex];
-        const isESMBundle = bundleType === 'es';
 
         for( let i = 0; i < 2; i++ ){
             const isMinBundle = i === 1;
@@ -44,7 +41,7 @@ const bundlesTypes = ['amd', 'iife', 'system', 'es', 'cjs', 'umd'];
             })];
 
             if( isMinBundle ){
-                plugins.push(isESMBundle ? rollupTerser() : rollupUglify());
+                plugins.push(rollupTerser());
             }
 
             plugins.push(rollupGzip());
