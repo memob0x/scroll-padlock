@@ -1,0 +1,42 @@
+<html>
+    <head>
+        <title>Test</title>
+
+        <style>
+            body {
+                font-size: 200px;
+                margin: 0;
+            }
+
+            body.locked {
+                position: fixed;
+                width: 100%;
+                top: calc(var(--scroll-padlock-scroll-top) * -1);
+                padding-right: var(--scroll-padlock-scrollbar-width);
+            }
+        </style>
+    </head>
+
+    <body>
+        <p>
+            Hello there, Lorem ipsum. How r u today?
+        </p>
+
+        <script src="../../dist/iife/scroll-padlock.js"></script>
+
+        <script>
+            window.cssClassNameBodyLocked = 'locked';
+
+            const { body } = document;
+            const { classList } = body;
+
+            window.scrollTo(0, 9999);
+
+            window.instance = new window.ScrollPadlock(body, cssClassNameBodyLocked)
+
+            window.lock = () => classList.add(cssClassNameBodyLocked);
+
+            window.unlock = () => classList.remove(cssClassNameBodyLocked);
+        </script>
+    </body>
+</html>

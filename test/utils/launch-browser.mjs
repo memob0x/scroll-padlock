@@ -1,7 +1,7 @@
 import puppeteer from 'puppeteer';
 
 export default async () => await puppeteer.launch({
-    headless: false,
+    headless: true,
     
     executablePath: puppeteer.executablePath(),
     
