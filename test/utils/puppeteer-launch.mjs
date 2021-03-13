@@ -1,12 +1,17 @@
 import puppeteer from 'puppeteer';
 
 export default async () => await puppeteer.launch({
-    headless: true,
+    headless: false,
+    
     executablePath: puppeteer.executablePath(),
+    
     defaultViewport: {
-        width: 1280,
-        height: 768
+        width: 640,
+
+        height: 480
     },
+    
     args: ['--disable-web-security'],
+    
     ignoreDefaultArgs: ['--hide-scrollbars']
 });

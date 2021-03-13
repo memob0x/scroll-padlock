@@ -29,7 +29,7 @@ export default () => {
     `, 1);
 
     sheet.insertRule(`
-        body.${LOCKED_CLASS_NAME} {
+        body.${window.LOCKED_CLASS_NAME} {
             position: fixed;
             width: 100%;
             top: calc(var(--scroll-padlock-scroll-top) * -1);

@@ -1,7 +1,11 @@
 import { mkdir } from 'fs/promises';
 
+import folderExists from './folder-exists.mjs';
+
 export default async path => {
-    try {
-        await mkdir(path);
-    } catch (e) { }
+    if( await folderExists(path) ){
+        return;
+    }
+
+    await mkdir(path);
 };
