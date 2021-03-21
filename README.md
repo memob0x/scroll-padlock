@@ -4,7 +4,7 @@
 [![scroll-padlock (latest)](https://img.shields.io/npm/v/scroll-padlock/latest.svg)](https://www.npmjs.com/package/scroll-padlock)
 [![scroll-padlock (downloads)](https://img.shields.io/npm/dy/scroll-padlock.svg)](https://www.npmjs.com/package/scroll-padlock)
 
-A small (~4K gzipped) unobtrusive script aimed to encourage a **CSS-first** approach when **locking html elements scroll** avoiding "contents jump" and iOS Safari quirkiness.
+A small (~4K gzipped) unobtrusive script aimed to encourage a **CSS-first** approach when **locking html elements scroll** reducing [cumulative layout shift](https://web.dev/cls/) and iOS Safari quirkiness.
 
 🙅 Without this library:
 
@@ -14,13 +14,13 @@ A small (~4K gzipped) unobtrusive script aimed to encourage a **CSS-first** appr
 
 ![with scrollbar gap compensation](https://github.com/memob0x/scroll-padlock/blob/master/docs/with-gap-compensation.gif?raw=true)
 
-## Try it out!
+## Try it out
 Here's some example projects for the most common setups:
 
-* Vanilla ([Preview](https://rgzrb.csb.app/) - [Browse](https://codesandbox.io/s/scroll-padlock-vanilla-rgzrb))
-* Angular ([Preview](https://xuudg.csb.app/) - [Browse](https://codesandbox.io/s/scroll-padlock-angular-xuudg))
 * React ([Preview](https://vouoz.csb.app/) - [Browse](https://codesandbox.io/s/scroll-padlock-react-vouoz))
+* Angular ([Preview](https://xuudg.csb.app/) - [Browse](https://codesandbox.io/s/scroll-padlock-angular-xuudg))
 * Vue ([Preview](https://6ewti.csb.app/) - [Browse](https://codesandbox.io/s/scroll-padlock-vue-6ewti))
+* Vanilla ([Preview](https://rgzrb.csb.app/) - [Browse](https://codesandbox.io/s/scroll-padlock-vanilla-rgzrb))
 
 ## Inclusion
 
@@ -31,6 +31,24 @@ $ npm install scroll-padlock
 ```
 
 The source code is entirely written in [standard ECMAScript](https://tc39.es/) with no dependencies, which means that any of its modules can be imported in any JavaScript project; the builded distribution includes transpiled [umd](https://github.com/umdjs/umd), [iife](https://developer.mozilla.org/en-US/docs/Glossary/IIFE), [amd](https://en.wikipedia.org/wiki/Asynchronous_module_definition), [cjs](https://en.wikipedia.org/wiki/CommonJS), [esm](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules) and [SystemJS](https://github.com/systemjs/systemjs) bundles.
+
+### Source code inclusion example:
+```html
+<script type="module">
+    import ScrollPadlock from './node_modules/scroll-padlock/src/padlock.mjs';
+
+    void new ScrollPadlock();
+</script>
+```
+
+### Distribution code inclusion example:
+```html
+<script src="./node_modules/scroll-padlock/dist/iife/scroll-padlock.min.js"></script>
+
+<script>
+    void new ScrollPadlock();
+</script>
+```
 
 ## Under the Hood
 
@@ -51,7 +69,7 @@ const { documentElement } = document;
 const instance = new ScrollPadlock(documentElement, SCROLL_LOCKED_CSS_CLASS_NAME);
 ```
 
-At this point, the lock state can be changed simply **toggling that CSS class**; since the CSS class change is internally observed, the class change itself can be done through native DOM API, a reactive framework virtual DOM, another library, etc...
+At this point, the lock state can be changed simply **toggling that CSS class**; since the CSS class change is internally observed, the class change itself can be done through native DOM API, a virtual DOM library, another DOM manipulation script, etc...
 
 ```javascript
 const { classList } = documentElement;
@@ -168,7 +186,7 @@ const {
 
 ## TL;TR: a body scroll overview
 
-🙅 `body { overflow: hidden; }` is the most common way to lock the scroll position on every browsers, unfortunately, unless user's browser has overlay scrollbars, that would cause the scrollbar to disappear, the body to expand and the contents to jump to the right;
+🙅 `body { overflow: hidden; }` is the most common way to lock the scroll position on every browsers, unfortunately, unless user's browser has overlay scrollbars, that would cause the scrollbar to disappear, the body to expand and the contents to jump to the right ([CLS](https://web.dev/cls/));
 to make things worse that technique just **doesn't work** on **iOS safari**: when set the user can still somehow scroll the page.
 
 🙅 `body { touch-action: none; }` can't help since Safari [doesn't seem to support it](https://bugs.webkit.org/show_bug.cgi?id=133112) anytime soon.
