@@ -16,10 +16,6 @@ export const LEFT_CAPITALIZED = 'Left';
 export const PAGE = 'page';
 export const CSS_VAR_PREFIX = HYPHEN + HYPHEN;
 
-// Common global time values
-export const TIME_MS_DEBOUNCE_RESIZE = 250;
-export const TIME_MS_DEBOUNCE_SCROLL = 125;
-
 // Universal add/remove interfaces methods names
 export const ADD = 'add';
 export const REMOVE = 'remove';

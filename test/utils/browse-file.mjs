@@ -3,5 +3,7 @@ export default async (browser, path) => {
 
     await page.goto(`file://${path}`, { waitUntil: 'domcontentloaded' });
 
+    page.on('console', msg => console.log(msg.text()));
+
     return page;
 };

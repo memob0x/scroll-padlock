@@ -7,9 +7,7 @@ import {
     ADD,
     REMOVE,
     RESIZE,
-    SCROLL,
-    TIME_MS_DEBOUNCE_RESIZE,
-    TIME_MS_DEBOUNCE_SCROLL
+    SCROLL
 } from './constants.mjs';
 
 import listener from './listener.mjs';
@@ -234,7 +232,7 @@ export default class ScrollPadlock {
 
         // Rewrites css variables
         this.#applyStyles();
-    }, TIME_MS_DEBOUNCE_RESIZE);
+    });
 
     /**
      * Element scroll event handler
@@ -245,7 +243,7 @@ export default class ScrollPadlock {
 
         // Rewrites css variables
         this.#applyStyles();
-    }, TIME_MS_DEBOUNCE_SCROLL);
+    });
 
     /**
      * Scrolls the given element to a given scroll position

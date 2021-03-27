@@ -1,16 +1,19 @@
+import { win } from './client.mjs';
+
+const clear = win.clearImmediate || win.clearTimeout;
+const set = win.setImmediate || win.setTimeout;
+
 /**
- * Debounces a given function to a given interval in milliseconds
+ * Debounces a given function
  * @param {Function} fn The function to be debounced
- * @param {Number} interval The debounce time
  * @returns {Function} The wrapped function
  */
-// Thanks to https://www.collegestash.com/debounce/
-export default (fn, interval) => {
+export default fn => {
     let timeout;
 
     return (...rest) => {
-        clearTimeout(timeout);
+        clear(timeout);
 
-        timeout = setTimeout(() => fn.apply(null, rest), interval);
+        timeout = set(() => fn.apply(null, rest));
     };
 };

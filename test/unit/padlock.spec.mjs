@@ -10,13 +10,9 @@ import {
     OUTER_WIDTH,
     OUTER_HEIGHT,
     RESIZE,
-    TIME_MS_DEBOUNCE_RESIZE,
-    TIME_MS_DEBOUNCE_SCROLL,
     TOP,
     LEFT
 } from '../../src/constants.mjs';
-
-import sleep from '../utils/sleep.mjs';
 
 const { expect } = chai;
 
@@ -125,8 +121,8 @@ describe('padlock', () => {
         });
 
         window.dispatchEvent(new CustomEvent(RESIZE));
-
-        await sleep(TIME_MS_DEBOUNCE_RESIZE);
+        
+        await new Promise(window.setTimeout);
         
         expect(instance.layout).to.include({
             [OUTER_WIDTH]: dimensions.width,
@@ -143,8 +139,8 @@ describe('padlock', () => {
         };
 
         div.dispatchEvent(new CustomEvent(SCROLL));
-
-        await sleep(TIME_MS_DEBOUNCE_SCROLL);
+        
+        await new Promise(window.setTimeout);
 
         expect(instance.layout).not.to.include({
             [OUTER_WIDTH]: dimensions.width,
@@ -257,7 +253,7 @@ describe('padlock', () => {
 
         div.classList.add(lockedStateCSSClassName);
 
-        await sleep(1);
+        await new Promise(window.setTimeout);
 
         instance.scroll = { top: 200, left: 300 };
 
@@ -267,7 +263,7 @@ describe('padlock', () => {
         // Tests automatic scroll restore on previously given scroll object (through scroll change attempt)
         div.classList.remove(lockedStateCSSClassName);
 
-        await sleep(1);
+        await new Promise(window.setTimeout);
 
         expect(scrollTop).not.to.equals(div.scrollTop);
         expect(scrollToCalls).to.equals(2);
