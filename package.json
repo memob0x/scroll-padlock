@@ -1,6 +1,11 @@
 {
     "name": "scroll-padlock",
-    "author": "Daniele Fioroni",
+    "type": "module",
+    "author": {
+        "name": "memob0x",
+        "email": "dfioroni91@gmail.com",
+        "url": "https://github.com/memob0x"
+    },
     "description": "Locks elements scroll handling scrollbar gaps and iOS Safari with CSS variables",
     "main": "dist/umd/scroll-padlock.min.js",
     "module": "dist/es/scroll-padlock.js",
@@ -35,27 +40,27 @@
         "tablet"
     ],
     "scripts": {
-        "lint": "./node_modules/.bin/eslint --ext .js --ext .mjs . --fix",
-        "build": "node ./build.mjs",
+        "lint": "./node_modules/.bin/eslint --ext .js --ext .js . --fix",
+        "build": "node ./build.js",
         "test:unit": "./node_modules/.bin/mocha ./test/unit/*.spec.*",
         "test:e2e": "./node_modules/.bin/mocha  --timeout 12000 ./test/e2e/*.spec.* ",
-        "test": "npm run test:unit && npm run test:e2e"
+        "test": "npm run test:unit"
     },
     "devDependencies": {
-        "@babel/core": "^7.13.13",
-        "@babel/eslint-parser": "^7.13.10",
-        "@babel/eslint-plugin": "^7.13.10",
+        "@babel/core": "^7.14.0",
+        "@babel/eslint-parser": "^7.13.14",
+        "@babel/eslint-plugin": "^7.13.16",
         "@babel/plugin-proposal-class-properties": "^7.13.0",
-        "@babel/preset-env": "^7.13.12",
+        "@babel/preset-env": "^7.14.1",
         "@rollup/plugin-babel": "^5.3.0",
         "chai": "^4.3.4",
-        "eslint": "^7.23.0",
-        "jsdom": "^16.5.1",
+        "eslint": "^7.26.0",
+        "jsdom": "^16.5.3",
         "jsdom-global": "^3.0.2",
-        "mocha": "^8.3.2",
-        "puppeteer": "^8.0.0",
+        "mocha": "^8.4.0",
+        "puppeteer": "^9.1.1",
         "resemblejs": "^3.2.5",
-        "rollup": "^2.43.0",
+        "rollup": "^2.47.0",
         "rollup-plugin-gzip": "^2.5.0",
         "rollup-plugin-terser": "^7.0.2"
     }

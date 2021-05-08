@@ -11,9 +11,9 @@ import {
     OUTER_HEIGHT,
     INNER_HEIGHT,
     SCROLL_HEIGHT
-} from '../../src/constants.mjs';
+} from '../../src/constants.js';
 
-import getLayout from '../../src/get-layout-dimensions.mjs';
+import getLayout from '../../src/get-layout-dimensions.js';
 
 const { expect } = chai;
 

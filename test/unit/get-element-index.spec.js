@@ -2,7 +2,7 @@ import 'jsdom-global/register.js';
 
 import chai from 'chai';
 
-import getElementIndex from '../../src/get-element-index.mjs';
+import getElementIndex from '../../src/get-element-index.js';
 
 const { expect } = chai;
 

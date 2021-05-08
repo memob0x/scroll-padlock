@@ -1,4 +1,4 @@
-import { win, doc, documentElement, body, head } from './client.mjs';
+import { win, doc, documentElement, body, head } from './client.js';
 
 import {
     LEFT,
@@ -8,17 +8,17 @@ import {
     REMOVE,
     RESIZE,
     SCROLL
-} from './constants.mjs';
+} from './constants.js';
 
-import listener from './listener.mjs';
+import listener from './listener.js';
 
-import debounce from './debounce.mjs';
+import debounce from './debounce.js';
 
-import getLayout from './get-layout-dimensions.mjs';
+import getLayout from './get-layout-dimensions.js';
 
-import getScroll from './get-scroll-position.mjs';
+import getScroll from './get-scroll-position.js';
 
-import styler from './styler.mjs';
+import styler from './styler.js';
 
 // Instances collection closure,
 // a weakmap is used in order to keep every instance associated with the scrollable element itself

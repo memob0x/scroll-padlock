@@ -35,7 +35,7 @@ The source code is entirely written in [standard ECMAScript](https://tc39.es/) w
 ### Source code inclusion example:
 ```html
 <script type="module">
-    import ScrollPadlock from './node_modules/scroll-padlock/src/padlock.mjs';
+    import ScrollPadlock from './node_modules/scroll-padlock/src/padlock.js';
 
     void new ScrollPadlock();
 </script>

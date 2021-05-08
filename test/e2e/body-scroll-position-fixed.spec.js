@@ -3,10 +3,10 @@ import 'jsdom-global/register.js';
 import { expect } from 'chai';
 import path from 'path';
 
-import launchBrowser from '../utils/launch-browser.mjs';
-import browseHtmlPlaygroundFile from '../utils/browse-file.mjs';
-import takeBrowserScreenshot from '../utils/take-browser-screenshot.mjs';
-import compareTwoImages from '../utils/compare-two-images.mjs';
+import launchBrowser from '../utils/launch-browser.js';
+import browseHtmlPlaygroundFile from '../utils/browse-file.js';
+import takeBrowserScreenshot from '../utils/take-browser-screenshot.js';
+import compareTwoImages from '../utils/compare-two-images.js';
 
 let browser;
 
@@ -24,9 +24,11 @@ after(async () => await browser.close());
 
         await page.evaluate(() => window.lock());
 
+        console.warn('lock');
+
         await page.evaluate(() => window.scrollTo(0, 0));
 
-        // await page.evaluate(() => window.instance.scroll = { top: 0, left: 0 }); // TODO: fix this
+        await page.evaluate(() => window.instance.scroll = { top: 0, left: 0 }); // TODO: fix this
 
         const secondImage = await takeBrowserScreenshot(page, `${playgroundFilename}-1`);
 

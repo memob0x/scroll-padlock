@@ -1,4 +1,4 @@
-import { win } from './client.mjs';
+import { win } from './client.js';
 
 const clear = win.clearImmediate || win.clearTimeout;
 const set = win.setImmediate || win.setTimeout;

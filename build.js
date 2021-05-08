@@ -20,7 +20,7 @@ const bundlesTypes = ['amd', 'iife', 'system', 'es', 'cjs', 'umd'];
         fs.readFile(`${root}/babel.config.json`),
 
         rollup({
-            input: `${root}/src/padlock.mjs`
+            input: `${root}/src/padlock.js`
         })
     ]);
 

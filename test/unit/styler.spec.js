@@ -2,12 +2,12 @@ import 'jsdom-global/register.js';
 
 import chai from 'chai';
 
-import { DOM_DATA_ATTRIBUTE_NAME, ADD, REMOVE } from '../../src/constants.mjs';
+import { DOM_DATA_ATTRIBUTE_NAME, ADD, REMOVE } from '../../src/constants.js';
 
-import styler from '../../src/styler.mjs';
+import styler from '../../src/styler.js';
 
-import getElementParentsLength from '../../src/get-element-parents-length.mjs';
-import getElementIndex from '../../src/get-element-index.mjs';
+import getElementParentsLength from '../../src/get-element-parents-length.js';
+import getElementIndex from '../../src/get-element-index.js';
 
 const { expect } = chai;
 

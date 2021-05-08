@@ -1,5 +1,5 @@
 import path from 'path';
-import ensureFolderExistence from './ensure-folder-existence.mjs';
+import ensureFolderExistence from './ensure-folder-existence.js';
 
 const screenshotsPath = path.resolve('./test/e2e/screenshots');
 

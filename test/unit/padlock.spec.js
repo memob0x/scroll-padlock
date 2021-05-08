@@ -2,7 +2,7 @@ import 'jsdom-global/register.js';
 
 import chai from 'chai';
 
-import Padlock from '../../src/padlock.mjs';
+import Padlock from '../../src/padlock.js';
 
 import {
     DOM_DATA_ATTRIBUTE_NAME,
@@ -12,7 +12,7 @@ import {
     RESIZE,
     TOP,
     LEFT
-} from '../../src/constants.mjs';
+} from '../../src/constants.js';
 
 const { expect } = chai;
 

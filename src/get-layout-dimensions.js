@@ -11,7 +11,7 @@ import {
     SCROLL_HEIGHT,
     SCROLLBAR_WIDTH,
     SCROLLBAR_HEIGHT
-} from './constants.mjs';
+} from './constants.js';
 
 /**
  * Gets a given element or browser dimensions

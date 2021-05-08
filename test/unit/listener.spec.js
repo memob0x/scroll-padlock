@@ -5,9 +5,9 @@ import chai from 'chai';
 import {
     ADD,
     REMOVE
-} from '../../src/constants.mjs';
+} from '../../src/constants.js';
 
-import listener from '../../src/listener.mjs';
+import listener from '../../src/listener.js';
 
 const { expect } = chai;
 

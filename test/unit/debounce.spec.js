@@ -2,7 +2,7 @@ import 'jsdom-global/register.js';
 
 import { expect } from 'chai';
 
-import debounce from '../../src/debounce.mjs';
+import debounce from '../../src/debounce.js';
 
 describe('debounce', () => {
     const debounceIntervalMs = 125;

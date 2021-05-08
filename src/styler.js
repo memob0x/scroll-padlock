@@ -23,11 +23,11 @@ import {
     SCROLL_HEIGHT,
     SCROLLBAR_WIDTH,
     SCROLLBAR_HEIGHT
-} from './constants.mjs';
+} from './constants.js';
 
-import getElementParentsLength from './get-element-parents-length.mjs';
+import getElementParentsLength from './get-element-parents-length.js';
 
-import getElementIndex from './get-element-index.mjs';
+import getElementIndex from './get-element-index.js';
 
 /**
  * Updates a given element css variables to a given styler element ensuring its presence in the given target element (usually head)
@@ -125,7 +125,7 @@ const unset = (element, styler) => {
  * @param {Object} scroll The scroll position to be set in css variables
  * @returns {HTMLStyleElement} Styler element
  */
-// Syntactic sugar, making a default export that looks like listener.mjs
+// Syntactic sugar, making a default export that looks like listener.js
 export default (method, element, styler, target, layout, scroll) => ({
     [ADD]: set,
     [REMOVE]: unset

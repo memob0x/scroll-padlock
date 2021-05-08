@@ -1,4 +1,4 @@
-import getElementParent from './get-element-parent.mjs';
+import getElementParent from './get-element-parent.js';
 
 /**
  * Gets the number of ancestors of a given element

@@ -1,4 +1,4 @@
-import getElementParent from './get-element-parent.mjs';
+import getElementParent from './get-element-parent.js';
 
 /**
  * Gets a given element position (index) in the DOM tree (where 0 is first-child, 1 is second etc...)

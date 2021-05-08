@@ -2,7 +2,7 @@ import 'jsdom-global/register.js';
 
 import chai from 'chai';
 
-import getScroll from '../../src/get-scroll-position.mjs';
+import getScroll from '../../src/get-scroll-position.js';
 
 const { expect } = chai;
 

@@ -8,7 +8,7 @@ import {
     OFFSET_CAPITALIZED,
     TOP_CAPITALIZED,
     LEFT_CAPITALIZED
-} from './constants.mjs';
+} from './constants.js';
 
 /**
  * Gets a given element or browser scroll position

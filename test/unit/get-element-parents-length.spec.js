@@ -2,7 +2,7 @@ import 'jsdom-global/register.js';
 
 import chai from 'chai';
 
-import getElementParentsLength from '../../src/get-element-parents-length.mjs';
+import getElementParentsLength from '../../src/get-element-parents-length.js';
 
 const { expect } = chai;
 
