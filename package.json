@@ -44,7 +44,7 @@
         "build": "node ./build.js",
         "test:unit": "./node_modules/.bin/mocha ./test/unit/*.spec.*",
         "test:e2e": "./node_modules/.bin/mocha  --timeout 12000 ./test/e2e/*.spec.* ",
-        "test": "npm run test:unit"
+        "test": "npm run test:unit && npm run test:e2e"
     },
     "devDependencies": {
         "@babel/core": "^7.14.3",

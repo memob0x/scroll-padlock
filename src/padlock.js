@@ -94,10 +94,10 @@ export default class ScrollPadlock {
         this.#observeCssClass();
 
         // Attaches resize event listener
-        listener(ADD, win, RESIZE, this.#resizeHandler);
+        this.#setListenerStateResize(ADD);
 
         // Attaches scroll event listener
-        listener(ADD, this.#scroller, SCROLL, this.#scrollHandler);
+        this.#setListenerStateScroll(ADD);
     }
 
     /**
@@ -224,9 +224,19 @@ export default class ScrollPadlock {
     #styler = doc.createElement('style');
 
     /**
+     * 
+     */
+    #listenerStateScroll = REMOVE;
+
+    /**
+     * 
+     */
+    #listenerStateResize = REMOVE;
+
+    /**
      * Window resize event handler
      */
-    #resizeHandler = debounce(() => {
+    #handleResize = debounce(() => {
         // Refresh layout
         this.#performUnlockedAction(this.#updateLayout);
 
@@ -237,7 +247,7 @@ export default class ScrollPadlock {
     /**
      * Element scroll event handler
      */
-    #scrollHandler = debounce(() => {
+    #handleScroll = debounce(() => {
         // Refresh scrollbars size
         this.#performUnlockedAction(this.#updateScrollCurrent);
 
@@ -340,6 +350,68 @@ export default class ScrollPadlock {
     };
 
     /**
+     * 
+     * @param {*} method 
+     * @returns {void} Nothing
+     */
+    #setListenerStateScroll = method => {
+        //
+        if( !this.#element || method === this.#listenerStateScroll ){
+            return;
+        }
+
+        //
+        this.#listenerStateScroll = method;
+
+        //
+        listener(method, this.#scroller, SCROLL, this.#handleScroll);
+    };
+
+    /**
+     * 
+     * @param {*} method 
+     * @returns {void} Nothing
+     */
+    #setListenerStateResize = method => {
+        //
+        if( !this.#element || method === this.#listenerStateResize ){
+            return;
+        }
+
+        //
+        this.#listenerStateResize = method;
+
+        //
+        listener(method, win, RESIZE, this.#handleResize);
+    };
+
+    #listeners = {
+        [RESIZE]: this.#setListenerStateResize,
+
+        [SCROLL]: this.#setListenerStateScroll
+    };
+
+    unlisten(type){
+        const op = this.#listeners[type];
+
+        if( !op ){
+            return;
+        }
+        
+        op(REMOVE);
+    }
+    
+    listen(type){
+        const op = this.#listeners[type];
+
+        if( !op ){
+            return;
+        }
+        
+        op(ADD);
+    }
+
+    /**
      * Effectively destroy the instance, detaching event listeners, removing styles, etc...
      * @returns {void} Nothing
      */
@@ -351,10 +423,10 @@ export default class ScrollPadlock {
         styler(REMOVE, this.#element, this.#styler);
 
         // Detaches the scroll event listener
-        listener(REMOVE, this.#scroller, SCROLL, this.#scrollHandler);
+        this.#setListenerStateScroll(REMOVE);
 
         // Detaches the resize event listener
-        listener(REMOVE, win, RESIZE, this.#resizeHandler);
+        this.#setListenerStateResize(REMOVE);
 
         // Removes the instance from the instances collection
         instances.delete(this.#element);
