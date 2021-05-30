@@ -94,10 +94,10 @@ export default class ScrollPadlock {
         this.#observeCssClass();
 
         // Attaches resize event listener
-        this.#setListenerStateResize(ADD);
+        this.#listener(RESIZE, ADD);
 
         // Attaches scroll event listener
-        this.#setListenerStateScroll(ADD);
+        this.#listener(SCROLL, ADD);
     }
 
     /**
@@ -224,16 +224,6 @@ export default class ScrollPadlock {
     #styler = doc.createElement('style');
 
     /**
-     * 
-     */
-    #listenerStateScroll = REMOVE;
-
-    /**
-     * 
-     */
-    #listenerStateResize = REMOVE;
-
-    /**
      * Window resize event handler
      */
     #handleResize = debounce(() => {
@@ -254,6 +244,38 @@ export default class ScrollPadlock {
         // Rewrites css variables
         this.#applyStyles();
     });
+
+    /**
+     * Event listeners states map,
+     * contains the last method called by event name (as key)
+     */
+    #listenersState = {
+        [RESIZE]: REMOVE,
+
+        [SCROLL]: REMOVE
+    };
+
+    /**
+     * Event listeners handlers map,
+     * contains the supported events handlers by event name (as key)
+     */
+    #listenersHandlers = {
+        [RESIZE]: this.#handleResize,
+
+        [SCROLL]: this.#handleScroll
+    };
+
+    /**
+     * Event listeners targets (elements) map,
+     * contains the event targets elements by event name (as key)
+     */
+    get #listenersTargets(){
+        return {
+            [RESIZE]: win,
+
+            [SCROLL]: this.#scroller
+        };
+    }
 
     /**
      * Scrolls the given element to a given scroll position
@@ -350,65 +372,60 @@ export default class ScrollPadlock {
     };
 
     /**
-     * 
-     * @param {*} method 
-     * @returns {void} Nothing
+     * Attaches or detaches a supported listener
+     * @param {String} type The event type (scroll, resize...)
+     * @param {String} method The event method (add, remove)
+     * @returns {Boolean} Whether the event attachment or detachment has been successful or not
      */
-    #setListenerStateScroll = method => {
-        //
-        if( !this.#element || method === this.#listenerStateScroll ){
-            return;
+    #listener = (type, method) => {
+        // Gets the last method for the given event
+        const state = this.#listenersState[type];
+
+        // Exit early...
+        if(
+            // ...if the main element is not set (probably the instance has been destroyed)
+            !this.#element
+            
+            ||
+            
+            // ...if a state for the given event doesn't exist (supplied event type is not supported)
+            !state 
+            
+            ||
+            
+            // ...if the former event method is the same as the current one
+            // avoids multiple event handlers attachment
+            state === method
+        ){
+            return false;
         }
 
-        //
-        this.#listenerStateScroll = method;
+        // Updates the state for the given event type
+        this.#listenersState[type] = method;
 
-        //
-        listener(method, this.#scroller, SCROLL, this.#handleScroll);
+        // Attaches or detaches the given event type
+        listener(method, this.#listenersTargets[type], type, this.#listenersHandlers[type]);
+        
+        // Ok
+        return true;
     };
 
     /**
-     * 
-     * @param {*} method 
-     * @returns {void} Nothing
+     * Detaches a supported listener
+     * @param {String} type The event type (scroll, resize...)
+     * @returns {Boolean} Whether the event attachment or detachment has been successful or not
      */
-    #setListenerStateResize = method => {
-        //
-        if( !this.#element || method === this.#listenerStateResize ){
-            return;
-        }
-
-        //
-        this.#listenerStateResize = method;
-
-        //
-        listener(method, win, RESIZE, this.#handleResize);
-    };
-
-    #listeners = {
-        [RESIZE]: this.#setListenerStateResize,
-
-        [SCROLL]: this.#setListenerStateScroll
-    };
-
     unlisten(type){
-        const op = this.#listeners[type];
-
-        if( !op ){
-            return;
-        }
-        
-        op(REMOVE);
+        this.#listener(type, REMOVE);
     }
     
+    /**
+     * Attaches a supported listener
+     * @param {String} type The event type (scroll, resize...)
+     * @returns {Boolean} Whether the event attachment or detachment has been successful or not
+     */
     listen(type){
-        const op = this.#listeners[type];
-
-        if( !op ){
-            return;
-        }
-        
-        op(ADD);
+        this.#listener(type, ADD);
     }
 
     /**
@@ -423,10 +440,10 @@ export default class ScrollPadlock {
         styler(REMOVE, this.#element, this.#styler);
 
         // Detaches the scroll event listener
-        this.#setListenerStateScroll(REMOVE);
+        this.#listener(RESIZE, REMOVE);
 
         // Detaches the resize event listener
-        this.#setListenerStateResize(REMOVE);
+        this.#listener(SCROLL, REMOVE);
 
         // Removes the instance from the instances collection
         instances.delete(this.#element);
