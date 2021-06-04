@@ -5,13 +5,10 @@ import { expect } from 'chai';
 import debounce from '../../src/debounce.js';
 
 describe('debounce', () => {
-    const debounceIntervalMs = 125;
-    
-
     it('should be able to make a debounced function off a given function', async () => {
         let calls = 0;
 
-        const fn = debounce(() => (calls++), debounceIntervalMs);
+        const fn = debounce(() => (calls++));
 
         // This call won't be detected because of debounce
         fn();

@@ -1,6 +1,6 @@
 import 'jsdom-global/register.js';
 
-import chai from 'chai';
+import { expect } from 'chai';
 
 import Padlock from '../../src/padlock.js';
 
@@ -13,8 +13,6 @@ import {
     TOP,
     LEFT
 } from '../../src/constants.js';
-
-const { expect } = chai;
 
 describe('padlock', () => {
     it('should be able to create an instance and throw if incorrect arguments are passed', () => {
