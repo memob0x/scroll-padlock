@@ -15,7 +15,7 @@ before(async () => (browser = await launchBrowser()));
 after(async () => await browser.close());
 
 (playgroundFilename => describe(playgroundFilename, () => {
-    it('should be able to ensure scroll position fixed approach', async () => {
+    it('should be able to ensure scroll position standard approach', async () => {
         const page = await browseHtmlPlaygroundFile(browser, path.resolve(`./test/e2e/${playgroundFilename}.html`));
 
         // puppeteer triggers resize event when taking screenshot
@@ -27,10 +27,6 @@ after(async () => await browser.close());
         const firstImage = await takeBrowserScreenshot(page, `${playgroundFilename}-0`);
 
         await page.evaluate(() => window.lock());
-
-        // NOTE: usually this would actually scroll the page (even with overflow: hidden; set)
-        // but with position: fixed; approach there should be nothing to scroll
-        await page.evaluate(() => window.scrollTo(0, 0));
 
         const secondImage = await takeBrowserScreenshot(page, `${playgroundFilename}-1`);
 
@@ -59,4 +55,4 @@ after(async () => await browser.close());
 
         await page.close();
     });
-}))('body-scroll-position-fixed');
+}))('body-scroll-standard');
