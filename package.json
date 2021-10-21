@@ -44,7 +44,8 @@
         "build": "node ./build.js",
         "test:unit": "./node_modules/.bin/mocha ./test/unit/*.spec.*",
         "test:e2e": "./node_modules/.bin/mocha  --timeout 12000 ./test/e2e/*.spec.* ",
-        "test": "npm run test:unit && npm run test:e2e"
+        "test": "npm run test:unit && npm run test:e2e",
+        "prepare": "husky install"
     },
     "devDependencies": {
         "@babel/core": "^7.15.0",
@@ -54,6 +55,7 @@
         "@rollup/plugin-babel": "^5.3.0",
         "chai": "^4.3.4",
         "eslint": "^7.32.0",
+        "husky": "^7.0.4",
         "jsdom": "^17.0.0",
         "jsdom-global": "^3.0.2",
         "mocha": "^9.1.1",
