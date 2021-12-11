@@ -3,4 +3,4 @@
  * @param {HTMLElement} element The given element
  * @returns {HTMLElement|null} The element first ancestor or null if not found
  */
-export default element => element?.parentElement ?? null;
+export default (element) => element?.parentElement ?? null;

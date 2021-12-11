@@ -1,18 +1,20 @@
-import getElementParent from './get-element-parent.js';
+import getElementParent from './get-element-parent';
 
 /**
  * Gets the number of ancestors of a given element
  * @param {HTMLElement} element The given element to be checked
  * @returns {Number} The number of ancestors of the given element
  */
-export default element => {
-    let count = -1;
+export default (element) => {
+  let count = -1;
 
-    while (element) {
-        count++;
+  let el = element;
 
-        element = getElementParent(element);
-    }
+  while (el) {
+    count += 1;
 
-    return count;
+    el = getElementParent(el);
+  }
+
+  return count;
 };

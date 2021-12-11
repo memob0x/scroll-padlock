@@ -1,14 +1,14 @@
-import path from 'path';
-import ensureFolderExistence from './ensure-folder-existence.js';
+import { resolve } from 'path';
+import ensureFolderExistence from './ensure-folder-existence';
 
-const screenshotsPath = path.resolve('./test/e2e/screenshots');
+const screenshotsPath = resolve('./test/e2e/screenshots');
 
 export default async (page, name) => {
-    await ensureFolderExistence(screenshotsPath);
+  await ensureFolderExistence(screenshotsPath);
 
-    const path = `${screenshotsPath}/${name}.jpg`;
+  const path = `${screenshotsPath}/${name}.jpg`;
 
-    await page.screenshot({ path, type: 'jpeg' });
+  await page.screenshot({ path, type: 'jpeg' });
 
-    return path;
+  return path;
 };

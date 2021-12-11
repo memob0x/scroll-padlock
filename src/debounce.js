@@ -1,4 +1,4 @@
-import { win } from './client.js';
+import { win } from './client';
 
 const clear = win.clearImmediate || win.clearTimeout;
 const set = win.setImmediate || win.setTimeout;
@@ -8,12 +8,12 @@ const set = win.setImmediate || win.setTimeout;
  * @param {Function} fn The function to be debounced
  * @returns {Function} The wrapped function
  */
-export default fn => {
-    let timeout;
+export default (fn) => {
+  let timeout;
 
-    return (...rest) => {
-        clear(timeout);
+  return (...rest) => {
+    clear(timeout);
 
-        timeout = set(() => fn.apply(null, rest));
-    };
+    timeout = set(() => fn(...rest));
+  };
 };

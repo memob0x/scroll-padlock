@@ -1,62 +1,30 @@
 {
-    "root": true,
-    "env": {
-        "browser": true,
-        "es2020": true,
-        "mocha": true,
-        "amd": true,
-        "node": true
-    },
-    "globals": {
-        "expect": true
-    },
-    "parser": "@babel/eslint-parser",
-    "extends": [
-        "eslint:recommended"
-    ],
-    "parserOptions": {
-        "sourceType": "module",
-        "ecmaVersion": 2020
-    },
-    "rules": {
-        "indent": [
-            "warn",
-            4,
-            {
-                "SwitchCase": 1,
-                "ignoredNodes": [
-                    "TemplateLiteral"
-                ]
-            }
-        ],
-        "no-multi-spaces": "warn",
-        "eqeqeq": "warn",
-        "curly": "warn",
-        "semi": [
-            "warn",
-            "always"
-        ],
-        "quotes": [
-            "warn",
-            "single"
-        ],
-        "eol-last": [
-            "warn",
-            "always"
-        ],
-        "comma-dangle": [
-            "warn",
-            {
-                "arrays": "never",
-                "objects": "never",
-                "imports": "never",
-                "exports": "never",
-                "functions": "never"
-            }
-        ],
-        "brace-style": [
-            "warn",
-            "1tbs"
-        ]
-    }
+  "env": {
+    "browser": true,
+    "es2021": true
+  },
+  "extends": [
+    "airbnb-base"
+  ],
+  "plugins": [
+    "jsdoc"
+  ],
+  "parserOptions": {
+    "ecmaVersion": 13,
+    "sourceType": "module"
+  },
+  "rules": {},
+  "overrides": [
+    {
+      "files": [
+        "*.spec.js"
+      ],
+      "env": {
+        "mocha": true
+      },
+      "rules": {
+        "no-unused-expressions": "off"
+      }
+    } 
+  ]
 }

@@ -1,11 +1,11 @@
 import { access } from 'fs/promises';
 
-export default async path => {
-    try {
-        await access(path);
+export default async (path) => {
+  try {
+    await access(path);
 
-        return true;
-    }catch(e){
-        return false;
-    }
+    return true;
+  } catch (e) {
+    return false;
+  }
 };

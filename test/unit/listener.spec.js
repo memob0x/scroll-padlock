@@ -1,38 +1,40 @@
-import 'jsdom-global/register.js';
+import 'jsdom-global/register';
 
 import chai from 'chai';
 
 import {
-    ADD,
-    REMOVE
-} from '../../src/constants.js';
+  ADD,
+  REMOVE,
+} from '../../src/constants';
 
-import listener from '../../src/listener.js';
+import listener from '../../src/listener';
 
 const { expect } = chai;
 
 describe('listener', () => {
-    const customEventName = 'foobar';
-    
-    const div = document.createElement('div');
-    
-    it('should be able to dispatch and remove events through shortcut functions', () => {
-        let customEventDispatchCount = 0;
+  const customEventName = 'foobar';
 
-        const customEventHandler = () => (customEventDispatchCount++);
+  const div = document.createElement('div');
 
-        listener(ADD, div, customEventName, customEventHandler);
+  it('should be able to dispatch and remove events through shortcut functions', () => {
+    let customEventDispatchCount = 0;
 
-        // This event is listened, from 0 to 1
-        div.dispatchEvent(new CustomEvent(customEventName));
+    const customEventHandler = () => {
+      customEventDispatchCount += 1;
+    };
 
-        expect(customEventDispatchCount).to.equals(1);
+    listener(ADD, div, customEventName, customEventHandler);
 
-        listener(REMOVE, div, customEventName, customEventHandler);
+    // This event is listened, from 0 to 1
+    div.dispatchEvent(new CustomEvent(customEventName));
 
-        // This event is not listened, still 1
-        div.dispatchEvent(new CustomEvent(customEventName));
+    expect(customEventDispatchCount).to.equals(1);
 
-        expect(customEventDispatchCount).to.equals(1);
-    });
+    listener(REMOVE, div, customEventName, customEventHandler);
+
+    // This event is not listened, still 1
+    div.dispatchEvent(new CustomEvent(customEventName));
+
+    expect(customEventDispatchCount).to.equals(1);
+  });
 });

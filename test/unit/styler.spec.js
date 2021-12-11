@@ -1,55 +1,57 @@
-import 'jsdom-global/register.js';
+import 'jsdom-global/register';
 
 import chai from 'chai';
 
-import { DOM_DATA_ATTRIBUTE_NAME, ADD, REMOVE } from '../../src/constants.js';
+import { DOM_DATA_ATTRIBUTE_NAME, ADD, REMOVE } from '../../src/constants';
 
-import styler from '../../src/styler.js';
+import styler from '../../src/styler';
 
-import getElementParentsLength from '../../src/get-element-parents-length.js';
-import getElementIndex from '../../src/get-element-index.js';
+import getElementParentsLength from '../../src/get-element-parents-length';
+import getElementIndex from '../../src/get-element-index';
 
 const { expect } = chai;
 
 describe('styler', () => {
-    it('should be able to append a style tag with css variables for given values targeting a given element', () => {
-        const style = document.createElement('style');
-        const div = document.createElement('div');
-        const holder = document.createElement('div');
+  it('should be able to append a style tag with css variables for given values targeting a given element', () => {
+    const style = document.createElement('style');
+    const div = document.createElement('div');
+    const holder = document.createElement('div');
 
-        holder.prepend(div);
+    holder.prepend(div);
 
-        expect(styler(ADD, div, style, document.head, {}, {})).to.equals(style);
-        expect(document.head.contains(style)).to.be.true;
-        expect(div.matches(`[${DOM_DATA_ATTRIBUTE_NAME}]`)).to.be.true;
+    expect(styler(ADD, div, style, document.head, {}, {})).to.equals(style);
+    expect(document.head.contains(style)).to.be.true;
+    expect(div.matches(`[${DOM_DATA_ATTRIBUTE_NAME}]`)).to.be.true;
 
-        let attrValue = div.getAttribute(DOM_DATA_ATTRIBUTE_NAME);
-        expect(attrValue).to.equals(`${getElementParentsLength(div)}-${getElementIndex(div)}`);
+    let attrValue = div.getAttribute(DOM_DATA_ATTRIBUTE_NAME);
+    expect(attrValue).to.equals(`${getElementParentsLength(div)}-${getElementIndex(div)}`);
 
-        let rules = style.sheet.cssRules[0];
-        expect(rules.selectorText).equals(`[${DOM_DATA_ATTRIBUTE_NAME}="${attrValue}"]`);
+    let rules = style.sheet.cssRules[0];
+    expect(rules.selectorText).equals(`[${DOM_DATA_ATTRIBUTE_NAME}="${attrValue}"]`);
 
-        expect(styler(REMOVE, div, style)).to.equals(style);
-        expect(document.head.contains(style)).to.be.false;
-        expect(div.matches(`[${DOM_DATA_ATTRIBUTE_NAME}]`)).to.be.false;
+    expect(styler(REMOVE, div, style)).to.equals(style);
+    expect(document.head.contains(style)).to.be.false;
+    expect(div.matches(`[${DOM_DATA_ATTRIBUTE_NAME}]`)).to.be.false;
 
-        const indexShifterDummyEl = document.createElement('div');
+    const indexShifterDummyEl = document.createElement('div');
 
-        holder.prepend(indexShifterDummyEl);
+    holder.prepend(indexShifterDummyEl);
 
-        styler(ADD, div, style, document.head, {}, {});
+    styler(ADD, div, style, document.head, {}, {});
 
-        let oldAttrValue = attrValue;
-        attrValue = div.getAttribute(DOM_DATA_ATTRIBUTE_NAME);
-        expect(attrValue).not.to.equals(oldAttrValue);
-        expect(attrValue).to.equals(`${getElementParentsLength(div)}-${getElementIndex(div)}`);
-        
-        rules = style.sheet.cssRules[0];
-        expect(rules.selectorText).equals(`[${DOM_DATA_ATTRIBUTE_NAME}="${attrValue}"]`);
+    const oldAttrValue = attrValue;
+    attrValue = div.getAttribute(DOM_DATA_ATTRIBUTE_NAME);
+    expect(attrValue).not.to.equals(oldAttrValue);
+    expect(attrValue).to.equals(`${getElementParentsLength(div)}-${getElementIndex(div)}`);
 
-        styler(REMOVE, div, style);
+    // eslint-disable-next-line prefer-destructuring
+    rules = style.sheet.cssRules[0];
 
-        indexShifterDummyEl.remove();
-        div.remove();
-    });
+    expect(rules.selectorText).equals(`[${DOM_DATA_ATTRIBUTE_NAME}="${attrValue}"]`);
+
+    styler(REMOVE, div, style);
+
+    indexShifterDummyEl.remove();
+    div.remove();
+  });
 });

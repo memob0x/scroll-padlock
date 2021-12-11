@@ -40,29 +40,34 @@
         "tablet"
     ],
     "scripts": {
-        "lint": "./node_modules/.bin/eslint --ext .js --ext .js . --fix",
-        "build": "node ./build.js",
-        "test:unit": "./node_modules/.bin/mocha ./test/unit/*.spec.*",
-        "test:e2e": "./node_modules/.bin/mocha  --timeout 12000 ./test/e2e/*.spec.* ",
+        "lint": "./node_modules/.bin/eslint --ext .js . --fix",
+        "build": "node --experimental-specifier-resolution=node ./build.js",
+        "test:unit": "./node_modules/.bin/mocha --experimental-specifier-resolution=node ./test/unit/*.spec.*",
+        "test:e2e": "./node_modules/.bin/mocha --experimental-specifier-resolution=node --timeout 12000 ./test/e2e/*.spec.* ",
         "test": "npm run test:unit && npm run test:e2e",
         "prepare": "husky install"
     },
-    "devDependencies": {
-        "@babel/core": "^7.15.8",
-        "@babel/eslint-parser": "^7.15.8",
+    "dependencies": {
+        "@babel/core": "^7.16.0",
+        "@babel/eslint-parser": "^7.16.3",
         "@babel/eslint-plugin": "^7.14.5",
-        "@babel/preset-env": "^7.15.8",
+        "@babel/preset-env": "^7.16.4",
         "@rollup/plugin-babel": "^5.3.0",
         "chai": "^4.3.4",
-        "eslint": "^8.0.1",
+        "eslint": "^8.4.1",
+        "eslint-config-airbnb-base": "^15.0.0",
+        "eslint-plugin-import": "^2.25.3",
         "husky": "^7.0.4",
-        "jsdom": "^18.0.0",
+        "jsdom": "^19.0.0",
         "jsdom-global": "^3.0.2",
         "mocha": "^9.1.3",
-        "puppeteer": "^10.4.0",
+        "puppeteer": "^13.0.0",
         "resemblejs": "^4.0.0",
-        "rollup": "^2.58.0",
-        "rollup-plugin-gzip": "^2.5.0",
+        "rollup": "^2.61.1",
+        "rollup-plugin-gzip": "^3.0.0",
         "rollup-plugin-terser": "^7.0.2"
+    },
+    "devDependencies": {
+        "eslint-plugin-jsdoc": "^37.2.0"
     }
 }
