@@ -31,23 +31,30 @@ $ npm install scroll-padlock
 ```
 
 The source code is entirely written in [standard ECMAScript](https://tc39.es/) with no dependencies.
-All major budle formats are supported, including [umd](https://github.com/umdjs/umd), [iife](https://developer.mozilla.org/en-US/docs/Glossary/IIFE), [amd](https://en.wikipedia.org/wiki/Asynchronous_module_definition), [cjs](https://en.wikipedia.org/wiki/CommonJS), [esm](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules) and [SystemJS](https://github.com/systemjs/systemjs); also, a transpiled version through babel is available for each of those.
+All major budle formats are supported, including [umd](https://github.com/umdjs/umd), [iife](https://developer.mozilla.org/en-US/docs/Glossary/IIFE), [amd](https://en.wikipedia.org/wiki/Asynchronous_module_definition), [cjs](https://en.wikipedia.org/wiki/CommonJS), [esm](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules) and [SystemJS](https://github.com/systemjs/systemjs); also, a minified version and a transpiled version through babel are available for each of those.
 
-### Source code inclusion example:
+### Node:
+```javascript
+import ScrollPadlock from 'scroll-padlock/dist/es/scroll-padlock.js';
+
+const scrollPadlock = new ScrollPadlock();
+```
+
+### Browser (modules):
 ```html
 <script type="module">
-    import ScrollPadlock from './node_modules/scroll-padlock/src/padlock.js';
+    import ScrollPadlock from 'path/to/scroll-padlock/dist/es/scroll-padlock.min.js';
 
-    void new ScrollPadlock();
+    const scrollPadlock = new ScrollPadlock();
 </script>
 ```
 
-### Distribution code inclusion example:
+### Browser (globals):
 ```html
-<script src="./node_modules/scroll-padlock/dist/iife/scroll-padlock.min.js"></script>
+<script src="path/to/scroll-padlock/dist/iife/scroll-padlock.min.js"></script>
 
 <script>
-    void new ScrollPadlock();
+    var scrollPadlock = new ScrollPadlock();
 </script>
 ```
 
