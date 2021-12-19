@@ -14,7 +14,19 @@
     "sourceType": "module"
   },
   "rules": {},
-  "overrides": [
+  "overrides": [{
+      "files": [
+        "./*.js"
+      ],
+      "env": {
+        "node": true
+      },
+      "settings": {
+        "import/resolver": {
+          "node": {},
+        },
+      }
+    },
     {
       "files": [
         "*.spec.js"
@@ -25,6 +37,6 @@
       "rules": {
         "no-unused-expressions": "off"
       }
-    } 
+    }
   ]
 }

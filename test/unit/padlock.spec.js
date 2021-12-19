@@ -20,8 +20,18 @@ describe('padlock', () => {
     expect(() => new Padlock(null)).to.throw(TypeError);
 
     // This instance has an invalid CSS class argument
+    expect(() => new Padlock(document.createElement('div'), null)).to.not.throw(TypeError);
+    expect(() => new Padlock(document.createElement('div'), [])).to.throw(TypeError);
+    expect(() => new Padlock(document.createElement('div'), {})).to.not.throw(TypeError);
     expect(() => new Padlock(document.createElement('div'), '')).to.throw(TypeError);
-    expect(() => new Padlock(document.createElement('div'), null)).to.throw(TypeError);
+    expect(() => new Padlock(document.createElement('div'), 0)).to.throw(TypeError);
+    expect(() => new Padlock(document.createElement('div'), 1)).to.throw(TypeError);
+    expect(() => new Padlock(document.createElement('div'), { cssClassName: null })).to.throw(TypeError);
+    expect(() => new Padlock(document.createElement('div'), { cssClassName: [] })).to.throw(TypeError);
+    expect(() => new Padlock(document.createElement('div'), { cssClassName: {} })).to.throw(TypeError);
+    expect(() => new Padlock(document.createElement('div'), { cssClassName: '' })).to.throw(TypeError);
+    expect(() => new Padlock(document.createElement('div'), { cssClassName: 0 })).to.throw(TypeError);
+    expect(() => new Padlock(document.createElement('div'), { cssClassName: 1 })).to.throw(TypeError);
 
     // These instances are created on the same element, an error has to be thrown
     expect(() => {
