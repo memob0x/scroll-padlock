@@ -60,7 +60,7 @@
         "husky": "^7.0.4",
         "jsdom": "^19.0.0",
         "jsdom-global": "^3.0.2",
-        "mocha": "^9.2.0",
+        "mocha": "^9.2.1",
         "puppeteer": "^13.3.2",
         "resemblejs": "^4.0.1",
         "rollup": "^2.67.3",
