@@ -6,7 +6,7 @@ import getScroll from '../../src/get-scroll-position';
 
 const { expect } = chai;
 
-describe('get-scroll-position', () => {
+describe('src/get-scroll-position', () => {
   it('should be able to get an element scroll position', () => {
     const div = document.createElement('div');
 

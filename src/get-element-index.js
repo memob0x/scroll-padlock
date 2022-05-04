@@ -1,17 +1,20 @@
-import getElementParent from './get-element-parent';
+import { STR_CAMEL_PARENT_ELEMENT } from './constants';
 
 /**
  * Gets a given element position (index) in the DOM tree
- * (where 0 is first-child, 1 is second etc...)
- * @param {HTMLElement} element The given element to be checked
- * @returns {Number} The position of the given element in the DOM tree
+ * (where 0 is first-child, 1 is second etc...).
+ *
+ * @param {HTMLElement} element - The given element to be checked.
+ * @returns {number} The position of the given element in the DOM tree.
  */
-export default (element) => {
-  const siblings = getElementParent(element)?.children ?? [];
+const getElementIndex = (element) => {
+  const siblings = element?.[STR_CAMEL_PARENT_ELEMENT]?.children;
 
   let count = 0;
 
-  for (let i = 0, j = siblings.length; i < j; i += 1) {
+  const { length = 0 } = siblings || [];
+
+  for (let i = 0; i < length; i += 1) {
     const sibling = siblings[i];
 
     if (sibling === element) {
@@ -23,3 +26,5 @@ export default (element) => {
 
   return count;
 };
+
+export default getElementIndex;

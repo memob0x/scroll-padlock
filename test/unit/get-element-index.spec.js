@@ -6,7 +6,7 @@ import getElementIndex from '../../src/get-element-index';
 
 const { expect } = chai;
 
-describe('get-element-index', () => {
+describe('src/get-element-index', () => {
   it('should be able to get a given element index in DOM tree', () => {
     const holder = document.createElement('div');
 
