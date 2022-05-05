@@ -11,6 +11,9 @@ export const STR_WORD_PAGE = 'page';
 export const STR_WORD_ADD = 'add';
 export const STR_WORD_SET = 'set';
 export const STR_WORD_REMOVE = 'remove';
+export const STR_WORD_STRING = 'string';
+export const STR_WORD_UNDEFINED = 'undefined';
+export const STR_WORD_FUNCTION = 'function';
 
 export const STR_WORD_CAP_OFFSET = 'Offset';
 export const STR_WORD_CAP_WIDTH = 'Width';
@@ -18,4 +21,5 @@ export const STR_WORD_CAP_HEIGHT = 'Height';
 export const STR_WORD_CAP_TOP = 'Top';
 export const STR_WORD_CAP_LEFT = 'Left';
 
+export const STR_CAMEL_CSS_CLASS_NAME = 'cssClassName';
 export const STR_CAMEL_PARENT_ELEMENT = 'parentElement';

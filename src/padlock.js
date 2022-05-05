@@ -13,6 +13,8 @@ import {
   STR_WORD_RESIZE,
   STR_WORD_SCROLL,
   STR_WORD_SET,
+  STR_CAMEL_CSS_CLASS_NAME,
+  STR_WORD_FUNCTION,
 } from './constants';
 
 import {
@@ -30,111 +32,13 @@ import getElementIndex from './get-element-index';
 import getCssRuleFromSchema from './get-css-rule-from-schema';
 import getLayoutDimensionsCssSchema from './get-layout-dimensions-css-schema';
 import getScrollPositionCssSchema from './get-scroll-position-css-schema';
+import isValidPadlockElement from './is-valid-padlock-element';
+import sanitizePadlockOptions from './sanitize-padlock-options';
 
-const STR_CAMEL_CSS_CLASS_NAME = 'cssClassName';
 const STR_CAMEL_RESIZE_HANDLER_WRAPPER = 'resizeHandlerWrapper';
 const STR_CAMEL_SCROLL_HANDLER_WRAPPER = 'scrollHandlerWrapper';
 
-const INT_OPTIONS_TYPE_KEY_UNKNOWN = 0;
-const INT_OPTIONS_TYPE_KEY_UNDEFINED = 1;
-const INT_OPTIONS_TYPE_KEY_OBJECT = 3;
-const INT_OPTIONS_TYPE_KEY_STRING = 4;
-
-const isUndefined = (variable) => typeof variable === 'undefined';
-const isObject = (variable) => typeof variable === 'object';
-const isString = (variable) => typeof variable === 'string';
-const isFunction = (variable) => typeof variable === 'function';
-const noop = (a) => a;
-
-const { isArray } = Array;
-
-const getOptionsTypeKey = (options) => {
-  if (isUndefined(options)) {
-    return INT_OPTIONS_TYPE_KEY_UNDEFINED;
-  }
-
-  if (isString(options)) {
-    return INT_OPTIONS_TYPE_KEY_STRING;
-  }
-
-  if (isArray(options)) {
-    return INT_OPTIONS_TYPE_KEY_UNKNOWN;
-  }
-
-  if (isObject(options)) {
-    return INT_OPTIONS_TYPE_KEY_OBJECT;
-  }
-
-  return INT_OPTIONS_TYPE_KEY_UNKNOWN;
-};
-
-const isElementAssignableToPadlockInstance = (element) => {
-  //
-  if (isUndefined(element)) {
-    //
-    return false;
-  }
-
-  // Window as element argument support
-  const isElementTheWindow = element === win;
-
-  // Scrollable html elements support
-  const isElementAnHtmlElement = element instanceof HTMLElement;
-
-  // If the given scrollable element is not supported (valid html element or page)
-  // there's nothing to do, but throwing an exception
-  if (!isElementTheWindow && !isElementAnHtmlElement) {
-    throw new TypeError(`Invalid "element" argument (${element}) provided to ScrollPadlock constructor`);
-  }
-
-  // Global page (window, html or body as element argument)
-  const isElementGlobalScroller = isElementTheWindow
-    || element === documentElement
-    || element === body;
-
-  //
-  return !isElementGlobalScroller;
-};
-
-const getOptionsParsed = (options) => {
-  //
-  const optionsTypeKey = getOptionsTypeKey(options);
-
-  // No class name, nothing to do, but throwing an exception
-  if (optionsTypeKey === INT_OPTIONS_TYPE_KEY_UNKNOWN) {
-    throw new TypeError(`Invalid "options" argument (${options}) provided to ScrollPadlock constructor`);
-  }
-
-  //
-  const optionsObject = !!options && optionsTypeKey === INT_OPTIONS_TYPE_KEY_OBJECT
-    ? options
-    : {};
-
-  //
-  const cssClassName = optionsTypeKey === INT_OPTIONS_TYPE_KEY_STRING
-    ? options
-    : optionsObject[STR_CAMEL_CSS_CLASS_NAME];
-
-  //
-  const isCssClassNameTruthyString = !!cssClassName && isString(cssClassName);
-
-  // No class name, nothing to do, but throwing an exception
-  if (
-    // if is defined (because undefined is allowed)...
-    !isUndefined(cssClassName)
-
-    // ...and is an invalid argument
-    && !isCssClassNameTruthyString
-  ) {
-    throw new TypeError('Invalid CSS class name provided to constructor');
-  }
-
-  //
-  optionsObject[STR_CAMEL_CSS_CLASS_NAME] = cssClassName;
-
-  //
-  return optionsObject;
-};
+const noopHandlerWrapper = (a) => a;
 
 // Instances collection,
 // a weakmap is used in order to keep every instance associated with the scrollable element itself
@@ -151,8 +55,10 @@ class ScrollPadlock {
    * or the given scrollable element whose scroll needs to be controlled.
    */
   constructor(element, options) {
-    // then replace "element" and "scroller" private members with that element
-    if (isElementAssignableToPadlockInstance(element)) {
+    // checks whether the given element is assignable to padlock instance
+    if (isValidPadlockElement(element)) {
+      // then replace "element" and "scroller" private members with that element
+
       //
       this.#element = element;
 
@@ -182,7 +88,7 @@ class ScrollPadlock {
       [STR_CAMEL_RESIZE_HANDLER_WRAPPER]: resizeHandlerWrapper,
 
       [STR_CAMEL_SCROLL_HANDLER_WRAPPER]: scrollHandlerWrapper,
-    } = getOptionsParsed(options) || {};
+    } = sanitizePadlockOptions(options) || {};
 
     // Stores the class name as a private member
     if (cssClassName) {
@@ -190,12 +96,14 @@ class ScrollPadlock {
     }
 
     //
-    if (isFunction(resizeHandlerWrapper)) {
+    // eslint-disable-next-line valid-typeof
+    if (typeof resizeHandlerWrapper === STR_WORD_FUNCTION) {
       this.#resizeHandlerWrapper = resizeHandlerWrapper;
     }
 
     //
-    if (isFunction(scrollHandlerWrapper)) {
+    // eslint-disable-next-line valid-typeof
+    if (typeof scrollHandlerWrapper === STR_WORD_FUNCTION) {
       this.#scrollHandlerWrapper = scrollHandlerWrapper;
     }
 
@@ -399,7 +307,7 @@ class ScrollPadlock {
   /**
    *
    */
-  #resizeHandlerWrapper = noop;
+  #resizeHandlerWrapper = noopHandlerWrapper;
 
   /**
    *
@@ -422,7 +330,7 @@ class ScrollPadlock {
   /**
    *
    */
-  #scrollHandlerWrapper = noop;
+  #scrollHandlerWrapper = noopHandlerWrapper;
 
   /**
    *
