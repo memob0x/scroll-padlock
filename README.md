@@ -15,12 +15,13 @@ A small (~4K gzipped) unobtrusive script aimed to encourage a **CSS-first** appr
 ![with scrollbar gap compensation](https://github.com/memob0x/scroll-padlock/blob/master/docs/with-gap-compensation.gif?raw=true)
 
 ## Try it out
+
 Here's some example projects for the most common setups:
 
-* React ([Preview](https://vouoz.csb.app/) - [Browse](https://codesandbox.io/s/scroll-padlock-react-vouoz))
-* Angular ([Preview](https://xuudg.csb.app/) - [Browse](https://codesandbox.io/s/scroll-padlock-angular-xuudg))
-* Vue ([Preview](https://6ewti.csb.app/) - [Browse](https://codesandbox.io/s/scroll-padlock-vue-6ewti))
-* Vanilla ([Preview](https://rgzrb.csb.app/) - [Browse](https://codesandbox.io/s/scroll-padlock-vanilla-rgzrb))
+- React ([Preview](https://vouoz.csb.app/) - [Browse](https://codesandbox.io/s/scroll-padlock-react-vouoz))
+- Angular ([Preview](https://xuudg.csb.app/) - [Browse](https://codesandbox.io/s/scroll-padlock-angular-xuudg))
+- Vue ([Preview](https://6ewti.csb.app/) - [Browse](https://codesandbox.io/s/scroll-padlock-vue-6ewti))
+- Vanilla ([Preview](https://rgzrb.csb.app/) - [Browse](https://codesandbox.io/s/scroll-padlock-vanilla-rgzrb))
 
 ## Inclusion
 
@@ -34,27 +35,30 @@ The source code is entirely written in [standard ECMAScript](https://tc39.es/) w
 All major budle formats are supported, including [umd](https://github.com/umdjs/umd), [iife](https://developer.mozilla.org/en-US/docs/Glossary/IIFE), [amd](https://en.wikipedia.org/wiki/Asynchronous_module_definition), [cjs](https://en.wikipedia.org/wiki/CommonJS), [esm](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules) and [SystemJS](https://github.com/systemjs/systemjs); also, a minified version and a transpiled version through babel are available for each of those.
 
 ### Node:
+
 ```javascript
-import ScrollPadlock from 'scroll-padlock/dist/es/scroll-padlock.js';
+import ScrollPadlock from "scroll-padlock/dist/es/scroll-padlock.js";
 
 const scrollPadlock = new ScrollPadlock();
 ```
 
 ### Browser (modules):
+
 ```html
 <script type="module">
-    import ScrollPadlock from 'path/to/scroll-padlock/dist/es/scroll-padlock.min.js';
+  import ScrollPadlock from "path/to/scroll-padlock/dist/es/scroll-padlock.min.js";
 
-    const scrollPadlock = new ScrollPadlock();
+  const scrollPadlock = new ScrollPadlock();
 </script>
 ```
 
 ### Browser (globals):
+
 ```html
 <script src="path/to/scroll-padlock/dist/iife/scroll-padlock.min.js"></script>
 
 <script>
-    var scrollPadlock = new ScrollPadlock();
+  var scrollPadlock = new ScrollPadlock();
 </script>
 ```
 
@@ -68,13 +72,16 @@ An instance requires the **html element** which scroll needs to be controlled an
 
 ```javascript
 // The css class with the rules that would lock the page scroll
-const SCROLL_LOCKED_CSS_CLASS_NAME = 'your-locked-class';
+const SCROLL_LOCKED_CSS_CLASS_NAME = "your-locked-class";
 
 // The element which scroll state needs to be controlled
 const { documentElement } = document;
 
 // Creates the instance
-const instance = new ScrollPadlock(documentElement, SCROLL_LOCKED_CSS_CLASS_NAME);
+const instance = new ScrollPadlock(
+  documentElement,
+  SCROLL_LOCKED_CSS_CLASS_NAME
+);
 ```
 
 At this point, the lock state can be changed simply **toggling that CSS class**; since the CSS class change is internally observed, the class change itself can be done through native DOM API, a virtual DOM library, another DOM manipulation script, etc...
@@ -88,21 +95,22 @@ classList.add(SCROLL_LOCKED_CSS_CLASS_NAME);
 // Unlocks the body scroll
 classList.remove(SCROLL_LOCKED_CSS_CLASS_NAME);
 ```
+
 ## CSS Rules Examples
 
 The following ruleset alone is enough to ensure a cross-browser body scroll lock for a standard vertical-scroll page:
 
 ```css
 html.your-locked-class {
-    /* Position-fixed hack, locks iOS too */
-    position: fixed;
-    width: 100%;
+  /* Position-fixed hack, locks iOS too */
+  position: fixed;
+  width: 100%;
 
-    /* Avoids scroll to top */
-    top: calc(var(--scroll-padlock-scroll-top) * -1);
+  /* Avoids scroll to top */
+  top: calc(var(--scroll-padlock-scroll-top) * -1);
 
-    /* Reserves space for scrollbar */
-    padding-right: var(--scroll-padlock-scrollbar-width);
+  /* Reserves space for scrollbar */
+  padding-right: var(--scroll-padlock-scrollbar-width);
 }
 ```
 
@@ -111,25 +119,25 @@ Some [browser recognition logic](https://gist.github.com/memob0x/0869e759887441b
 ```css
 /* iOS only */
 html.your-locked-class.ios {
-    /* iOS fixed position hack */
-    position: fixed;
-    width: 100%;
+  /* iOS fixed position hack */
+  position: fixed;
+  width: 100%;
 
-    /* Avoids scroll to top */
-    top: calc(var(--scroll-padlock-scroll-top) * -1);
+  /* Avoids scroll to top */
+  top: calc(var(--scroll-padlock-scroll-top) * -1);
 }
 
 /* Standard browsers only */
 html.your-locked-class.not-ios,
 html.your-locked-class.not-ios body {
-    /* Standard way to lock scroll */
-    overflow: hidden;
+  /* Standard way to lock scroll */
+  overflow: hidden;
 }
 
 html.your-locked-class.not-ios body {
-    /* Reserves space for scrollbar */
-    /* (iOS has overlay scrollbars, this rule would have no effect there anyway) */
-    padding-right: var(--scroll-padlock-scrollbar-width);
+  /* Reserves space for scrollbar */
+  /* (iOS has overlay scrollbars, this rule would have no effect there anyway) */
+  padding-right: var(--scroll-padlock-scrollbar-width);
 }
 ```
 
@@ -137,16 +145,16 @@ html.your-locked-class.not-ios body {
 
 This is the complete list of CSS variables set by this library on the given elements.
 
-* `--scroll-padlock-scroll-top`: the number of pixels that the target is scrolled vertically.
-* `--scroll-padlock-scroll-left`: the number of pixels that the target is scrolled horizontally.
-* `--scroll-padlock-scrollbar-width`: the target's vertical scrollbar size.
-* `--scroll-padlock-scrollbar-height`: the target's horizontal scrollbar size.
-* `--scroll-padlock-outer-width`: the target's width including the scrollbar size.
-* `--scroll-padlock-outer-height`: the target's height including the scrollbar size.
-* `--scroll-padlock-inner-width`: the target's width without the scrollbar size.
-* `--scroll-padlock-inner-height`: the target's height without the scrollbar size.
-* `--scroll-padlock-scroll-width`: the target's content width.
-* `--scroll-padlock-scroll-height`: the target's content height.
+- `--scroll-padlock-scroll-top`: the number of pixels that the target is scrolled vertically.
+- `--scroll-padlock-scroll-left`: the number of pixels that the target is scrolled horizontally.
+- `--scroll-padlock-scrollbar-width`: the target's vertical scrollbar size.
+- `--scroll-padlock-scrollbar-height`: the target's horizontal scrollbar size.
+- `--scroll-padlock-outer-width`: the target's width including the scrollbar size.
+- `--scroll-padlock-outer-height`: the target's height including the scrollbar size.
+- `--scroll-padlock-inner-width`: the target's width without the scrollbar size.
+- `--scroll-padlock-inner-height`: the target's height without the scrollbar size.
+- `--scroll-padlock-scroll-width`: the target's content width.
+- `--scroll-padlock-scroll-height`: the target's content height.
 
 ## API
 
@@ -174,21 +182,21 @@ instance.scroll = { top, left };
 
 // Gets the current instance element layout sizes
 const {
-    // The target's width and height including the scrollbar size
-    outerWidth,
-    outerHeight,
+  // The target's width and height including the scrollbar size
+  outerWidth,
+  outerHeight,
 
-    // The target's width and height without the scrollbar size
-    innerWidth,
-    innerHeight,
+  // The target's width and height without the scrollbar size
+  innerWidth,
+  innerHeight,
 
-    // The target's content width and height
-    scrollWidth,
-    scrollHeight,
+  // The target's content width and height
+  scrollWidth,
+  scrollHeight,
 
-    // The target's vertical and horizontal scrollbar size
-    scrollbarWidth,
-    scrollbarHeight
+  // The target's vertical and horizontal scrollbar size
+  scrollbarWidth,
+  scrollbarHeight,
 } = instanse.layout;
 ```
 
@@ -212,20 +220,20 @@ If positioned elements "jumps" on a parent lock state change, the same CSS varia
 ```css
 /* A right-positioned child */
 .positioned-element {
-    position: fixed;
-    right: 0;
+  position: fixed;
+  right: 0;
 }
 
 /* The same right-positioned element, */
 /* not affected by its own container scrollbars disappearance */
 .your-locked-class .positioned-element {
-    right: var(--scroll-padlock-scrollbar-width);
+  right: var(--scroll-padlock-scrollbar-width);
 }
 ```
 
 ## iOS Bars and Keyboard Tray
 
-There might still be an iOS edge case when locking body scroll with _position: fixed_ technique. 
+There might still be an iOS edge case when locking body scroll with _position: fixed_ technique.
 
 When the page is scrolled the **system bars** become smaller; at that point, when focusing an input element programmatically, the keyboard tray is triggered and the bars become larger again; that, probably when some animations are taking place, can cause the following visual artifacts.
 
@@ -243,12 +251,13 @@ const isIOS = someWayToDetectAppleIOS();
 // on an a form field make the keyboard tray to show
 // and that triggers, along with the visual artifact itself, a "resize" event
 window.addEventListener("resize", () => {
-    if (isIOS && classList.contains(SCROLL_LOCKED_CSS_CLASS_NAME)) {
-        // "Re-aligns" the iOS keyboard sub-window
-        window.scrollTo(0, 0);
-    }
+  if (isIOS && classList.contains(SCROLL_LOCKED_CSS_CLASS_NAME)) {
+    // "Re-aligns" the iOS keyboard sub-window
+    window.scrollTo(0, 0);
+  }
 });
 ```
+
 The problem should be solved at this point.
 
 ![ios bug](https://github.com/memob0x/scroll-padlock/blob/master/docs/ios-fix.gif?raw=true)

@@ -6,7 +6,7 @@ import getElementParentsLength from '../../src/get-element-parents-length';
 
 const { expect } = chai;
 
-describe('get-element-parents-length', () => {
+describe('src/get-element-parents-length', () => {
   it('should be able to count a given element parents', () => {
     // Expects html element to have no parents
     expect(getElementParentsLength(document.documentElement)).to.equals(0);

@@ -1,0 +1,72 @@
+import {
+  STR_KEBAB_DOUBLE_HYPHEN_PREFIX_OUTER_WIDTH,
+  STR_KEBAB_DOUBLE_HYPHEN_PREFIX_OUTER_HEIGHT,
+  STR_KEBAB_DOUBLE_HYPHEN_PREFIX_INNER_WIDTH,
+  STR_KEBAB_DOUBLE_HYPHEN_PREFIX_INNER_HEIGHT,
+  STR_KEBAB_DOUBLE_HYPHEN_PREFIX_SCROLL_WIDTH,
+  STR_KEBAB_DOUBLE_HYPHEN_PREFIX_SCROLL_HEIGHT,
+  STR_KEBAB_DOUBLE_HYPHEN_PREFIX_SCROLLBAR_WIDTH,
+  STR_KEBAB_DOUBLE_HYPHEN_PREFIX_SCROLLBAR_HEIGHT,
+  STR_CAMEL_OUTER_WIDTH,
+  STR_CAMEL_OUTER_HEIGHT,
+  STR_CAMEL_INNER_WIDTH,
+  STR_CAMEL_INNER_HEIGHT,
+  STR_CAMEL_SCROLL_WIDTH,
+  STR_CAMEL_SCROLL_HEIGHT,
+  STR_CAMEL_SCROLLBAR_WIDTH,
+  STR_CAMEL_SCROLLBAR_HEIGHT,
+} from './constants-computed';
+
+/**
+ * Gets the given layout dimensions object as css rules schema.
+ *
+ * @example getLayoutDimensionsCssSchema({ width: 10, height: 20 }); // --> [
+ * //  ['--outer-width', 10],
+ * //  ['--outer-height', 20]
+ * // ]).
+ * @param {object} layout - The layout dimensions objects to be set in css variables.
+ * @returns {Array} The styling rule css schema.
+ */
+const getLayoutDimensionsCssSchema = (layout) => [
+  [
+    STR_KEBAB_DOUBLE_HYPHEN_PREFIX_OUTER_WIDTH,
+    layout[STR_CAMEL_OUTER_WIDTH],
+  ],
+
+  [
+    STR_KEBAB_DOUBLE_HYPHEN_PREFIX_OUTER_HEIGHT,
+    layout[STR_CAMEL_OUTER_HEIGHT],
+  ],
+
+  [
+    STR_KEBAB_DOUBLE_HYPHEN_PREFIX_INNER_WIDTH,
+    layout[STR_CAMEL_INNER_WIDTH],
+  ],
+
+  [
+    STR_KEBAB_DOUBLE_HYPHEN_PREFIX_INNER_HEIGHT,
+    layout[STR_CAMEL_INNER_HEIGHT],
+  ],
+
+  [
+    STR_KEBAB_DOUBLE_HYPHEN_PREFIX_SCROLL_WIDTH,
+    layout[STR_CAMEL_SCROLL_WIDTH],
+  ],
+
+  [
+    STR_KEBAB_DOUBLE_HYPHEN_PREFIX_SCROLL_HEIGHT,
+    layout[STR_CAMEL_SCROLL_HEIGHT],
+  ],
+
+  [
+    STR_KEBAB_DOUBLE_HYPHEN_PREFIX_SCROLLBAR_WIDTH,
+    layout[STR_CAMEL_SCROLLBAR_WIDTH],
+  ],
+
+  [
+    STR_KEBAB_DOUBLE_HYPHEN_PREFIX_SCROLLBAR_HEIGHT,
+    layout[STR_CAMEL_SCROLLBAR_HEIGHT],
+  ],
+];
+
+export default getLayoutDimensionsCssSchema;
