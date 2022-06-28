@@ -1,18 +1,22 @@
-import {
-  win,
-  documentElement,
-  body,
-} from './client';
+import * as globalClient from './client';
 
 import { STR_WORD_UNDEFINED } from './constants';
 
-const isValidPadlockElement = (element) => {
+const isValidPadlockElement = (element, client = globalClient) => {
   //
   // eslint-disable-next-line valid-typeof
   if (typeof element === STR_WORD_UNDEFINED) {
     //
     return false;
   }
+
+  const {
+    win,
+
+    documentElement,
+
+    body,
+  } = client || {};
 
   // Window as element argument support
   const isElementTheWindow = element === win;
