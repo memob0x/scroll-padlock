@@ -48,7 +48,7 @@ class ScrollPadlock {
   /**
    * Creates the scroll padlock class instance on a given scrollable element.
    *
-   * @throws TODO: doc.
+   * @throws Throws when an instance is already attached to the given dom element.
    * @param {Window|HTMLElement} [element] - The given scrollable element
    * whose scroll needs to be controlled.
    * @param {string | object} [options] - An options object
@@ -59,29 +59,31 @@ class ScrollPadlock {
     if (isValidPadlockElement(element)) {
       // then replace "element" and "scroller" private members with that element
 
-      //
+      // Stores the given DOM element reference as main element
       this.#element = element;
 
-      //
+      // Stores the given DOM element reference as scroller element
       this.#scroller = element;
 
-      //
+      // Stores the given DOM element reference as scroller element,
+      // the one provided to the class constructor
       this.#target = element;
 
       // Stores the given element class list reference
       this.#classList = this.#getClassList();
 
-      //
+      // The element data attribute name
       this.#cssSelectorAttributeName = STR_KEBAB_DATA_SCROLL_PADLOCK;
 
-      //
+      // The element data attribute value
       this.#cssSelectorAttributeValue = this.#getCssSelectorAttributeValue();
 
-      //
+      // The element css selector
       this.#cssSelector = this.#getCssSelector();
     }
 
-    //
+    // Sanitized the given class constructor options adding the defaults
+    // values when no value is given or replacing the invalid ones
     const {
       [STR_CAMEL_CSS_CLASS_NAME]: cssClassName,
 
@@ -95,15 +97,17 @@ class ScrollPadlock {
       this.#cssClassName = cssClassName;
     }
 
-    //
+    // if the given resize handler is a function...
     // eslint-disable-next-line valid-typeof
     if (typeof resizeHandlerWrapper === STR_WORD_FUNCTION) {
+      // ...then stores it
       this.#resizeHandlerWrapper = resizeHandlerWrapper;
     }
 
-    //
+    // if the given scroll handler is a function...
     // eslint-disable-next-line valid-typeof
     if (typeof scrollHandlerWrapper === STR_WORD_FUNCTION) {
+      // ...then stores it
       this.#scrollHandlerWrapper = scrollHandlerWrapper;
     }
 
@@ -114,7 +118,7 @@ class ScrollPadlock {
       throw new Error(`An instance has already been initialized on ${this.#element}`);
     }
 
-    //
+    // Applies the css rules to the given element with the corresponding attribute selector
     this.#applyCssSelectorAttribute(STR_WORD_SET);
 
     // Instance is not registered ad this point,
@@ -183,22 +187,22 @@ class ScrollPadlock {
   #scrollSaving = this.#scrollCurrent;
 
   /**
-   *
+   * The element data attribute name.
    */
   #cssSelectorAttributeName = STR_KEBAB_DATA_SCROLL_PADLOCK;
 
   /**
-   *
+   * The element data attribute value.
    */
   #cssSelectorAttributeValue = this.#getCssSelectorAttributeValue();
 
   /**
-   *
+   * The element css selector.
    */
   #cssSelector = this.#getCssSelector();
 
   /**
-   * TODO: write.
+   * Gets the currently set css selector.
    *
    * @returns {string} The css selector.
    */
@@ -261,7 +265,7 @@ class ScrollPadlock {
   #observerState = false;
 
   /**
-   * TODO: write doc.
+   * Handles the element mutation observation.
    *
    * @returns {void} Nothing.
    */
@@ -385,18 +389,18 @@ class ScrollPadlock {
   }
 
   /**
-   * TODO:.
+   * Gets the given element class list reference.
    *
-   * @returns {DOMTokenList} TODO:.
+   * @returns {DOMTokenList} The given element class list reference.
    */
   #getClassList() {
     return this.#target.classList;
   }
 
   /**
-   * TODO:.
+   * Getsthe element data attribute value.
    *
-   * @returns {string} TODO:.
+   * @returns {string} The element data attribute value.
    */
   #getCssSelectorAttributeValue() {
     return getElementParentsLength(this.#target)
@@ -405,36 +409,36 @@ class ScrollPadlock {
   }
 
   /**
-   * TODO:.
+   * Gets the element css selector.
    *
-   * @returns {string} TODO.
+   * @returns {string} The element css selector.
    */
   #getCssSelector() {
     return `[${this.#cssSelectorAttributeName}="${this.#cssSelectorAttributeValue}"]`;
   }
 
   /**
-   * TODO:.
+   * Gets the scroll lock state.
    *
-   * @returns {boolean} TODO:.
+   * @returns {boolean} The scroll lock state.
    */
   #getState() {
     return !!this.#classList?.contains(this.#cssClassName);
   }
 
   /**
-   * TODO: docs.
+   * Gets the layout object.
    *
-   * @returns {object} TODO:.
+   * @returns {object} The layout object.
    */
   #getLayout() {
     return getLayoutDimensions(this.#element, this.#scroller);
   }
 
   /**
-   * TODO: docs.
+   * Gets the current scroll position.
    *
-   * @returns {object} TODO:.
+   * @returns {object} The current scroll position.
    */
   #getScrollCurrent() {
     return getScrollPosition(this.#scroller);
@@ -515,17 +519,17 @@ class ScrollPadlock {
    * @returns {object} The current scroll position object.
    */
   #updateScrollCurrent() {
-    //
+    // Updates the current scroll position.
     this.#scrollCurrent = this.#getScrollCurrent();
 
-    //
+    // Returns the current scroll position.
     return this.#scrollCurrent;
   }
 
   /**
-   * TODO:.
+   * Applies the css rules.
    *
-   * @returns {HTMLStyleElement} TODO:.
+   * @returns {HTMLStyleElement} The styler element.
    */
   #setStylerCssRule() {
     const schema = [
@@ -540,9 +544,9 @@ class ScrollPadlock {
   }
 
   /**
-   * TODO:.
+   * Ensures the styler element is in head.
    *
-   * @returns {HTMLStyleElement} TODO:.
+   * @returns {HTMLStyleElement} The styler element.
    */
   #ensureStylerPresenceInHead() {
     // Ensures style tag dom presence, StyleSheet API throws otherwise
@@ -554,9 +558,9 @@ class ScrollPadlock {
   }
 
   /**
-   * TODO:.
+   * Removes the CSS variables, styler, styler selector...
    *
-   * @returns {HTMLStyleElement} TODO:.
+   * @returns {HTMLStyleElement} The styler element.
    */
   #removeStyler() {
     this.#styler?.remove();
@@ -565,9 +569,9 @@ class ScrollPadlock {
   }
 
   /**
-   * TODO: doc.
+   * Applies the css rules to the given element with the corresponding attribute selector.
    *
-   * @param {string} method - TODO:.
+   * @param {string} method - The action to be performed, can be "remove" or "add".
    */
   #applyCssSelectorAttribute(method) {
     this.#target?.[`${method}Attribute`](
@@ -583,10 +587,10 @@ class ScrollPadlock {
    * @returns {HTMLStyleElement} Styler element.
    */
   #applyStyles() {
-    //
+    // Ensures the styler element is in head
     this.#ensureStylerPresenceInHead();
 
-    //
+    // Applies the styler css rules and returns the styler element itself
     return this.#setStylerCssRule();
   }
 
