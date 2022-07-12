@@ -5,6 +5,9 @@ const INT_CSS_RULE_UNIQUE_INDEX = 0;
  * Updates a given element css variables to a given styler element
  * ensuring its presence in the given target element (usually head).
  *
+ * @public
+ * @example
+ * setUniqueCssRule(document.querySelector('style#my-styles'), '.el { color: blue; }');
  * @param {HTMLStyleElement} styler - The styler element where the css variables are written.
  * @param {string} rule - The styling rule css string.
  * @returns {HTMLStyleElement} The given styler element.

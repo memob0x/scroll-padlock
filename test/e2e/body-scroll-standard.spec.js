@@ -1,5 +1,3 @@
-import 'jsdom-global/register';
-
 import { expect } from 'chai';
 import { resolve } from 'path';
 

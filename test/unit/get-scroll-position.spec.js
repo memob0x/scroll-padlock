@@ -1,14 +1,15 @@
-import 'jsdom-global/register';
-
 import chai from 'chai';
 
 import getScroll from '../../src/get-scroll-position';
+import getJsdomWindow from '../utils/get-jsdom-window';
 
 const { expect } = chai;
 
 describe('src/get-scroll-position', () => {
+  const window = getJsdomWindow();
+
   it('should be able to get an element scroll position', () => {
-    const div = document.createElement('div');
+    const div = window.document.createElement('div');
 
     div.scrollTop = 10;
     div.scrollLeft = 20;

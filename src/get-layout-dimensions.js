@@ -16,6 +16,9 @@ import {
 /**
  * Gets a given element or browser dimensions.
  *
+ * @public
+ * @example
+ * getLayoutDimensions(document.querySelector('div')) // --> { outerHeight: 123, ... }
  * @param {HTMLElement} element - The given element whose dimensions need to be retrieved.
  * @param {Window|HTMLElement} scroller - The given scrollable used to retrieve some
  * dimensions when the given element is global (page).

@@ -3,6 +3,11 @@ import { STR_CAMEL_PARENT_ELEMENT } from './constants';
 /**
  * Gets the number of ancestors of a given element.
  *
+ * @public
+ * @example
+ * getElementParentsLength(document.documentElement); // --> 0
+ * getElementParentsLength(document.head); // --> 1
+ * getElementParentsLength(document.body); // --> 1
  * @param {HTMLElement} element - The given element to be checked.
  * @returns {number} The number of ancestors of the given element.
  */

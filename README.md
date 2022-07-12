@@ -158,6 +158,8 @@ This is the complete list of CSS variables set by this library on the given elem
 
 ## API
 
+* [Documentation](https://github.com/memob0x/scroll-padlock/blob/master/documentation.md#ScrollPadlock)
+
 The `destroy` method is particularly important when using **reactive frameworks** (such as React, Vue, Angular, etc...) which components lifecycle might generate memory leaks: **call `destroy` method when the component in which scroll-padlock is used gets unmounted**.
 
 ```javascript

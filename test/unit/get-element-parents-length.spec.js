@@ -1,28 +1,29 @@
-import 'jsdom-global/register';
-
 import chai from 'chai';
 
 import getElementParentsLength from '../../src/get-element-parents-length';
+import getJsdomWindow from '../utils/get-jsdom-window';
 
 const { expect } = chai;
 
 describe('src/get-element-parents-length', () => {
   it('should be able to count a given element parents', () => {
+    const window = getJsdomWindow();
+
     // Expects html element to have no parents
-    expect(getElementParentsLength(document.documentElement)).to.equals(0);
+    expect(getElementParentsLength(window.document.documentElement)).to.equals(0);
 
     // Expects body element to have one parent (html element)
-    expect(getElementParentsLength(document.body)).to.equals(1);
+    expect(getElementParentsLength(window.document.body)).to.equals(1);
 
     // Creates parent div
-    const holder = document.createElement('div');
+    const holder = window.document.createElement('div');
 
     // Expects holder to have no parents (since it's not part of the DOM)
     expect(getElementParentsLength(holder)).to.equals(0);
 
     // Creates children divs
-    const div1 = document.createElement('div');
-    const div2 = document.createElement('div');
+    const div1 = window.document.createElement('div');
+    const div2 = window.document.createElement('div');
 
     // Ensures the following structure: holder > div1 > div2
     div1.prepend(div2);

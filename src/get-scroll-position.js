@@ -16,6 +16,9 @@ import {
 /**
  * Gets a given element or browser scroll position.
  *
+ * @public
+ * @example
+ * getScrollPosition(document.queryselector('div')); // --> { top: 123, left: 345 }
  * @param {Window|HTMLElement} element - The given element whose scroll
  * position needs to be retrieved.
  * @returns {object} The given element scroll position as an object ({ top, left }).

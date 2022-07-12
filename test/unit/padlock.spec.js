@@ -1,5 +1,3 @@
-import 'jsdom-global/register';
-
 import { expect } from 'chai';
 
 import Padlock from '../../src/padlock';
@@ -19,10 +17,13 @@ import {
 
 import getElementParentsLength from '../../src/get-element-parents-length';
 import getElementIndex from '../../src/get-element-index';
+import getJsdomWindow from '../utils/get-jsdom-window';
 
-const createDiv = () => document.createElement('div');
+const window = getJsdomWindow();
 
-const createInstance = (el, opts) => new Padlock(el, opts);
+const createDiv = () => window.document.createElement('div');
+
+const createInstance = (el, opts) => new Padlock(el, opts, window);
 
 const createInstanceMomentary = (el, opts) => createInstance(el, opts).destroy();
 
@@ -97,14 +98,14 @@ describe('src/padlock', () => {
       // then the default one is page scroller (<html> element)
       let instance = createInstance();
 
-      expect(document.documentElement.matches(`[${STR_KEBAB_DATA_SCROLL_PADLOCK}]`));
+      expect(window.document.documentElement.matches(`[${STR_KEBAB_DATA_SCROLL_PADLOCK}]`));
 
       instance.destroy();
 
       // If <body> is given as an argument, then it's a global scroller (still <html> element)
-      instance = createInstance(document.body);
+      instance = createInstance(window.document.body);
 
-      expect(document.documentElement.matches(`[${STR_KEBAB_DATA_SCROLL_PADLOCK}]`));
+      expect(window.document.documentElement.matches(`[${STR_KEBAB_DATA_SCROLL_PADLOCK}]`));
 
       instance.destroy();
     }).to.not.throw(Error);
@@ -159,7 +160,7 @@ describe('src/padlock', () => {
       [STR_WORD_LEFT]: scrollPosition.left,
     });
 
-    window.dispatchEvent(new CustomEvent(STR_WORD_RESIZE));
+    window.dispatchEvent(new window.CustomEvent(STR_WORD_RESIZE));
 
     await new Promise(window.setTimeout);
 
@@ -177,7 +178,7 @@ describe('src/padlock', () => {
       height: 500,
     };
 
-    div.dispatchEvent(new CustomEvent(STR_WORD_SCROLL));
+    div.dispatchEvent(new window.CustomEvent(STR_WORD_SCROLL));
 
     await new Promise(window.setTimeout);
 
@@ -315,7 +316,7 @@ describe('src/padlock', () => {
   it('should avoid further computations or DOM changes after "destroy" method call', () => {
     const div = createDiv();
 
-    const getStylesheetsCount = () => document.head.querySelectorAll('style').length;
+    const getStylesheetsCount = () => window.document.head.querySelectorAll('style').length;
 
     const stylesheetsCountBeforeInit = getStylesheetsCount();
 
@@ -417,11 +418,11 @@ describe('src/padlock', () => {
 
     expect(div.matches(`[${STR_KEBAB_DATA_SCROLL_PADLOCK}]`)).to.be.false;
 
-    div.dispatchEvent(new CustomEvent(STR_WORD_SCROLL));
+    div.dispatchEvent(new window.CustomEvent(STR_WORD_SCROLL));
 
     expect(div.matches(`[${STR_KEBAB_DATA_SCROLL_PADLOCK}]`)).to.be.false;
 
-    div.dispatchEvent(new CustomEvent(STR_WORD_RESIZE));
+    div.dispatchEvent(new window.CustomEvent(STR_WORD_RESIZE));
 
     expect(div.matches(`[${STR_KEBAB_DATA_SCROLL_PADLOCK}]`)).to.be.false;
 
@@ -450,19 +451,19 @@ describe('src/padlock', () => {
 
     holder.prepend(div);
 
-    let styles = document.head.querySelectorAll('style');
+    let styles = window.document.head.querySelectorAll('style');
 
     expect(styles).to.be.lengthOf(0);
 
     let instance = createInstance(div);
 
-    styles = document.head.querySelectorAll('style');
+    styles = window.document.head.querySelectorAll('style');
 
     expect(styles).to.be.lengthOf(1);
 
     let [style] = styles || [];
 
-    expect(document.head.contains(style)).to.be.true;
+    expect(window.document.head.contains(style)).to.be.true;
     expect(div.matches(`[${STR_KEBAB_DATA_SCROLL_PADLOCK}]`)).to.be.true;
 
     let attrValue = div.getAttribute(STR_KEBAB_DATA_SCROLL_PADLOCK);
@@ -473,11 +474,11 @@ describe('src/padlock', () => {
 
     instance.destroy();
 
-    styles = document.head.querySelectorAll('style');
+    styles = window.document.head.querySelectorAll('style');
 
     expect(styles).to.be.lengthOf(0);
 
-    expect(document.head.contains(style)).to.be.false;
+    expect(window.document.head.contains(style)).to.be.false;
     expect(div.matches(`[${STR_KEBAB_DATA_SCROLL_PADLOCK}]`)).to.be.false;
 
     const indexShifterDummyEl = createDiv();
@@ -486,13 +487,13 @@ describe('src/padlock', () => {
 
     instance = createInstance(div);
 
-    styles = document.head.querySelectorAll('style');
+    styles = window.document.head.querySelectorAll('style');
 
     expect(styles).to.be.lengthOf(1);
 
     ([style] = styles || []);
 
-    expect(document.head.contains(style)).to.be.true;
+    expect(window.document.head.contains(style)).to.be.true;
 
     const oldAttrValue = attrValue;
     attrValue = div.getAttribute(STR_KEBAB_DATA_SCROLL_PADLOCK);

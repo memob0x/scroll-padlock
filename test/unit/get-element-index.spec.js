@@ -1,22 +1,23 @@
-import 'jsdom-global/register';
-
 import chai from 'chai';
 
 import getElementIndex from '../../src/get-element-index';
+import getJsdomWindow from '../utils/get-jsdom-window';
 
 const { expect } = chai;
 
 describe('src/get-element-index', () => {
   it('should be able to get a given element index in DOM tree', () => {
-    const holder = document.createElement('div');
+    const window = getJsdomWindow();
 
-    const div1 = document.createElement('div');
+    const holder = window.document.createElement('div');
 
-    const div2 = document.createElement('div');
+    const div1 = window.document.createElement('div');
 
-    const div3 = document.createElement('div');
+    const div2 = window.document.createElement('div');
 
-    expect(getElementIndex(document.documentElement)).to.equals(0);
+    const div3 = window.document.createElement('div');
+
+    expect(getElementIndex(window.document.documentElement)).to.equals(0);
 
     expect(getElementIndex(holder)).to.equals(0);
 

@@ -1,12 +1,4 @@
 import {
-  win,
-  doc,
-  documentElement,
-  body,
-  head,
-} from './client';
-
-import {
   STR_CHAR_HYPHEN,
   STR_WORD_ADD,
   STR_WORD_REMOVE,
@@ -44,19 +36,58 @@ const noopHandlerWrapper = (a) => a;
 // a weakmap is used in order to keep every instance associated with the scrollable element itself
 const instances = new WeakMap();
 
+/**
+ * Creates the scroll padlock class instance on a given scrollable element.
+ *
+ * @example
+ * void new ScrollPadlock(window, 'locked-state-css-class');
+ * @public
+ * @throws {TypeError} Throws when the given (first) argument is not
+ * a valid DOM scroll padlock element (a div, etc...)
+ * nor a global element (window, body, document).
+ * @throws {Error} Throws when an instance is already attached to the given dom element.
+ * @param {Window|HTMLElement} [element] - The given scrollable element
+ * whose scroll needs to be controlled.
+ * @param {string | object} [options] - An options object
+ * or the given scrollable element whose scroll needs to be controlled.
+ * @param {object} [client] - An object with the client environment (window).
+ */
 class ScrollPadlock {
-  /**
-   * Creates the scroll padlock class instance on a given scrollable element.
-   *
-   * @throws Throws when an instance is already attached to the given dom element.
-   * @param {Window|HTMLElement} [element] - The given scrollable element
-   * whose scroll needs to be controlled.
-   * @param {string | object} [options] - An options object
-   * or the given scrollable element whose scroll needs to be controlled.
-   */
-  constructor(element, options) {
+  constructor(element, options, client = globalThis) {
+    //
+    const {
+      document,
+
+      MutationObserver = function MutationObserver() {},
+    } = client || {};
+
+    //
+    const {
+      documentElement,
+
+      body,
+    } = document || {};
+
+    //
+    this.#window = client;
+
+    //
+    this.#document = document;
+
+    //
+    this.#element = documentElement;
+
+    //
+    this.#target = body;
+
+    //
+    this.#scroller = this.#window;
+
+    //
+    this.#observer = new MutationObserver(this.#handleObservation.bind(this));
+
     // checks whether the given element is assignable to padlock instance
-    if (isValidPadlockElement(element)) {
+    if (isValidPadlockElement(element, this.#window)) {
       // then replace "element" and "scroller" private members with that element
 
       // Stores the given DOM element reference as main element
@@ -68,19 +99,19 @@ class ScrollPadlock {
       // Stores the given DOM element reference as scroller element,
       // the one provided to the class constructor
       this.#target = element;
-
-      // Stores the given element class list reference
-      this.#classList = this.#getClassList();
-
-      // The element data attribute name
-      this.#cssSelectorAttributeName = STR_KEBAB_DATA_SCROLL_PADLOCK;
-
-      // The element data attribute value
-      this.#cssSelectorAttributeValue = this.#getCssSelectorAttributeValue();
-
-      // The element css selector
-      this.#cssSelector = this.#getCssSelector();
     }
+
+    //
+    this.#styler = this.#document.createElement('style');
+
+    // Stores the given element class list reference
+    this.#classList = this.#getClassList();
+
+    // The element data attribute value
+    this.#cssSelectorAttributeValue = this.#getCssSelectorAttributeValue();
+
+    // The element css selector
+    this.#cssSelector = this.#getCssSelector();
 
     // Sanitized the given class constructor options adding the defaults
     // values when no value is given or replacing the invalid ones
@@ -139,71 +170,171 @@ class ScrollPadlock {
     this.#listener(STR_WORD_SCROLL, STR_WORD_ADD);
   }
 
+  // #region properties
+
+  /**
+   *
+   * @private
+   * @memberof ScrollPadlock
+   */
+  #window = null;
+
+  /**
+   *
+   * @private
+   * @memberof ScrollPadlock
+   */
+  #document = null;
+
   /**
    * The lock state element target, usually the scrollable element.
+   *
+   * @private
+   * @memberof ScrollPadlock
    */
-  #element = documentElement;
+  #element = null;
 
   /**
    * The original given element (the one provided to the class constructor).
+   *
+   * @private
+   * @memberof ScrollPadlock
    */
-  #target = body;
+  #target = null;
 
   /**
    * The actual scrollable element (the element that can perform and listen to scroll event)
    * Usually coincides with "element", but when "element"
    * is document.documentElement, "scroller" is window.
+   *
+   * @private
+   * @memberof ScrollPadlock
    */
-  #scroller = window;
+  #scroller = null;
 
   /**
    * The styler, css variables holder.
+   *
+   * @private
+   * @memberof ScrollPadlock
    */
-  #styler = doc.createElement('style');
+  #styler = null;
 
   /**
    * The original given element CSS class list.
+   *
+   * @private
+   * @memberof ScrollPadlock
    */
-  #classList = this.#getClassList();
-
-  /**
-   * The lock state CSS class name.
-   */
-  #cssClassName = `${STR_KEBAB_SCROLL_PADLOCK}-locked`;
-
-  /**
-   * The scroll lock state.
-   */
-  #state = this.#getState();
+  #classList = null;
 
   /**
    * The current scroll position.
+   *
+   * @private
+   * @memberof ScrollPadlock
    */
-  #scrollCurrent = this.#getScrollCurrent();
+  #scrollCurrent = null;
 
   /**
    * The scroll position saving, the scroll position stored for later use.
+   *
+   * @private
+   * @memberof ScrollPadlock
    */
-  #scrollSaving = this.#scrollCurrent;
+  #scrollSaving = null;
+
+  /**
+   * State MutationObserver object,
+   * registers the callback fired on CSS class change.
+   *
+   * @private
+   * @memberof ScrollPadlock
+   */
+  #observer = null;
+
+  /**
+   * Event listeners states map,
+   * contains the last method called by event name (as key).
+   *
+   * @private
+   * @memberof ScrollPadlock
+   */
+  #listenersState = {
+    [STR_WORD_RESIZE]: STR_WORD_REMOVE,
+
+    [STR_WORD_SCROLL]: STR_WORD_REMOVE,
+  };
+
+  /**
+   * The layout dimensions.
+   *
+   * @private
+   * @memberof ScrollPadlock
+   */
+  #layout = null;
+
+  /**
+   * The scroll lock state.
+   *
+   * @private
+   * @memberof ScrollPadlock
+   */
+  #state = false;
+
+  /**
+   * The current css class observer state
+   * True if observing, false if not.
+   *
+   * @private
+   * @memberof ScrollPadlock
+   */
+  #observerState = false;
+
+  /**
+   * The element data attribute value.
+   *
+   * @private
+   * @memberof ScrollPadlock
+   */
+  #cssSelectorAttributeValue = '';
+
+  /**
+   * The element css selector.
+   *
+   * @private
+   * @memberof ScrollPadlock
+   */
+  #cssSelector = '';
 
   /**
    * The element data attribute name.
+   *
+   * @private
+   * @memberof ScrollPadlock
    */
   #cssSelectorAttributeName = STR_KEBAB_DATA_SCROLL_PADLOCK;
 
   /**
-   * The element data attribute value.
+   * The lock state CSS class name.
+   *
+   * @private
+   * @memberof ScrollPadlock
    */
-  #cssSelectorAttributeValue = this.#getCssSelectorAttributeValue();
+  #cssClassName = `${STR_KEBAB_SCROLL_PADLOCK}-locked`;
 
-  /**
-   * The element css selector.
-   */
-  #cssSelector = this.#getCssSelector();
+  // #endregion
+
+  // #region accessors
 
   /**
    * Gets the currently set css selector.
    *
+   * @public
+   * @example
+   * const padlock = new ScrollPadlock();
+   *
+   * padlock.cssSelector // --> "[data-scroll-padlock="1-1"]"
    * @returns {string} The css selector.
    */
   get cssSelector() {
@@ -214,6 +345,11 @@ class ScrollPadlock {
    * Returns the current scroll position, if on a locked state it
    * returns the currently saved scroll position object.
    *
+   * @public
+   * @example
+   * const padlock = new ScrollPadlock();
+   *
+   * padlock.scroll // --> { top: 123, left: 345 }
    * @returns {object} The current scroll position object or the
    * scroll position previously saved if on a locked state.
    */
@@ -227,6 +363,11 @@ class ScrollPadlock {
    * Sets a new scroll position, if on a locked state it saves that
    * given scroll position for a future scroll restoration.
    *
+   * @public
+   * @example
+   * const padlock = new ScrollPadlock();
+   *
+   * padlock.scroll = { top: 123, left: 345 }
    * @param {object} position - The scroll position to be set or saved if on a locked state.
    */
   set scroll(position) {
@@ -245,28 +386,28 @@ class ScrollPadlock {
   }
 
   /**
-   * The layout dimensions.
-   */
-  #layout = this.#getLayout();
-
-  /**
    * Gets the layout dimensions, such as widths, heights, scrollbars etc...
    *
+   * @public
+   * @example
+   * const padlock = new ScrollPadlock();
+   *
+   * padlock.layout // --> { outerHeight: 123, outerWidth: 345, innerWidth: 123, ... }
    * @returns {object} The layout object.
    */
   get layout() {
     return this.#layout;
   }
 
-  /**
-   * The current css class observer state
-   * True if observing, false if not.
-   */
-  #observerState = false;
+  // #endregion
+
+  // #region methods
 
   /**
    * Handles the element mutation observation.
    *
+   * @private
+   * @memberof ScrollPadlock
    * @returns {void} Nothing.
    */
   #handleObservation() {
@@ -297,24 +438,18 @@ class ScrollPadlock {
   }
 
   /**
-   * State MutationObserver object,
-   * registers the callback fired on CSS class change.
-   */
-  #observer = (
-    (implementationName) => (
-      implementationName in win ? new win[implementationName](
-        this.#handleObservation.bind(this),
-      ) : null
-    )
-  )('MutationObserver');
-
-  /**
    *
+   * @private
+   * @memberof ScrollPadlock
+   * @returns {any} Anything the given function returns is returned.
    */
   #resizeHandlerWrapper = noopHandlerWrapper;
 
   /**
    *
+   * @private
+   * @memberof ScrollPadlock
+   * @returns {void} Nothing.
    */
   #resizeHandler() {
     // Refresh layout
@@ -326,6 +461,10 @@ class ScrollPadlock {
 
   /**
    * Window resize event handler.
+   *
+   * @private
+   * @memberof ScrollPadlock
+   * @returns {void} Nothing.
    */
   #handleResize = this.#resizeHandlerWrapper(
     this.#resizeHandler.bind(this),
@@ -333,11 +472,17 @@ class ScrollPadlock {
 
   /**
    *
+   * @private
+   * @memberof ScrollPadlock
+   * @returns {any} Anything the given function returns is returned.
    */
   #scrollHandlerWrapper = noopHandlerWrapper;
 
   /**
    *
+   * @private
+   * @memberof ScrollPadlock
+   * @returns {void} Nothing.
    */
   #scrollHandler() {
     // Refresh scrollbars size
@@ -349,24 +494,21 @@ class ScrollPadlock {
 
   /**
    * Element scroll event handler.
+   *
+   * @private
+   * @memberof ScrollPadlock
+   * @returns {any} Anything the given function returns is returned.
    */
   #handleScroll = this.#scrollHandlerWrapper(
     this.#scrollHandler.bind(this),
   );
 
   /**
-   * Event listeners states map,
-   * contains the last method called by event name (as key).
-   */
-  #listenersState = {
-    [STR_WORD_RESIZE]: STR_WORD_REMOVE,
-
-    [STR_WORD_SCROLL]: STR_WORD_REMOVE,
-  };
-
-  /**
    * Event listeners handlers map,
    * contains the supported events handlers by event name (as key).
+   *
+   * @private
+   * @memberof ScrollPadlock
    */
   #listenersHandlers = {
     [STR_WORD_RESIZE]: this.#handleResize,
@@ -378,11 +520,13 @@ class ScrollPadlock {
    * Event listeners targets (elements) map,
    * contains the event targets elements by event name (as key).
    *
+   * @private
+   * @memberof ScrollPadlock
    * @returns {object} The listener targets.
    */
   get #listenersTargets() {
     return {
-      [STR_WORD_RESIZE]: win,
+      [STR_WORD_RESIZE]: this.#window,
 
       [STR_WORD_SCROLL]: this.#scroller,
     };
@@ -391,15 +535,19 @@ class ScrollPadlock {
   /**
    * Gets the given element class list reference.
    *
+   * @private
+   * @memberof ScrollPadlock
    * @returns {DOMTokenList} The given element class list reference.
    */
   #getClassList() {
-    return this.#target.classList;
+    return this.#target?.classList;
   }
 
   /**
    * Getsthe element data attribute value.
    *
+   * @private
+   * @memberof ScrollPadlock
    * @returns {string} The element data attribute value.
    */
   #getCssSelectorAttributeValue() {
@@ -411,6 +559,8 @@ class ScrollPadlock {
   /**
    * Gets the element css selector.
    *
+   * @private
+   * @memberof ScrollPadlock
    * @returns {string} The element css selector.
    */
   #getCssSelector() {
@@ -420,6 +570,8 @@ class ScrollPadlock {
   /**
    * Gets the scroll lock state.
    *
+   * @private
+   * @memberof ScrollPadlock
    * @returns {boolean} The scroll lock state.
    */
   #getState() {
@@ -429,6 +581,8 @@ class ScrollPadlock {
   /**
    * Gets the layout object.
    *
+   * @private
+   * @memberof ScrollPadlock
    * @returns {object} The layout object.
    */
   #getLayout() {
@@ -438,6 +592,8 @@ class ScrollPadlock {
   /**
    * Gets the current scroll position.
    *
+   * @private
+   * @memberof ScrollPadlock
    * @returns {object} The current scroll position.
    */
   #getScrollCurrent() {
@@ -447,6 +603,8 @@ class ScrollPadlock {
   /**
    * Scrolls the given element to a given scroll position.
    *
+   * @private
+   * @memberof ScrollPadlock
    * @param {object} position - The scroll position to be set.
    * @returns {void} Nothing.
    */
@@ -459,6 +617,8 @@ class ScrollPadlock {
   /**
    * Updates the scroll state.
    *
+   * @private
+   * @memberof ScrollPadlock
    * @returns {boolean} The scroll state.
    */
   #updateState() {
@@ -472,6 +632,8 @@ class ScrollPadlock {
   /**
    * Fires a given function at a unlocked scroll state.
    *
+   * @private
+   * @memberof ScrollPadlock
    * @param {Function} action - The given function to be fired at unlocked scroll state.
    * @returns {any} Anything the given function returns is returned.
    */
@@ -503,6 +665,8 @@ class ScrollPadlock {
   /**
    * Updates the layout object.
    *
+   * @private
+   * @memberof ScrollPadlock
    * @returns {object} The layout object.
    */
   #updateLayout() {
@@ -516,6 +680,8 @@ class ScrollPadlock {
   /**
    * Refresh the scroll position at a (temporarly) unlocked state.
    *
+   * @private
+   * @memberof ScrollPadlock
    * @returns {object} The current scroll position object.
    */
   #updateScrollCurrent() {
@@ -529,6 +695,8 @@ class ScrollPadlock {
   /**
    * Applies the css rules.
    *
+   * @private
+   * @memberof ScrollPadlock
    * @returns {HTMLStyleElement} The styler element.
    */
   #setStylerCssRule() {
@@ -546,12 +714,14 @@ class ScrollPadlock {
   /**
    * Ensures the styler element is in head.
    *
+   * @private
+   * @memberof ScrollPadlock
    * @returns {HTMLStyleElement} The styler element.
    */
   #ensureStylerPresenceInHead() {
     // Ensures style tag dom presence, StyleSheet API throws otherwise
-    if (this.#styler && !head?.contains(this.#styler)) {
-      head.appendChild(this.#styler);
+    if (this.#styler && !this.#document?.head?.contains(this.#styler)) {
+      this.#document?.head.appendChild(this.#styler);
     }
 
     return this.#styler;
@@ -560,6 +730,8 @@ class ScrollPadlock {
   /**
    * Removes the CSS variables, styler, styler selector...
    *
+   * @private
+   * @memberof ScrollPadlock
    * @returns {HTMLStyleElement} The styler element.
    */
   #removeStyler() {
@@ -571,7 +743,10 @@ class ScrollPadlock {
   /**
    * Applies the css rules to the given element with the corresponding attribute selector.
    *
+   * @private
+   * @memberof ScrollPadlock
    * @param {string} method - The action to be performed, can be "remove" or "add".
+   * @returns {void} Nothing.
    */
   #applyCssSelectorAttribute(method) {
     this.#target?.[`${method}Attribute`](
@@ -584,6 +759,8 @@ class ScrollPadlock {
   /**
    * Rewrites the css variables with current data.
    *
+   * @private
+   * @memberof ScrollPadlock
    * @returns {HTMLStyleElement} Styler element.
    */
   #applyStyles() {
@@ -597,6 +774,8 @@ class ScrollPadlock {
   /**
    * Observes the element CSS class changes.
    *
+   * @private
+   * @memberof ScrollPadlock
    * @returns {boolean} The css class observer state.
    */
   #observeCssClass() {
@@ -624,6 +803,8 @@ class ScrollPadlock {
   /**
    * Unobserves the element CSS class changes.
    *
+   * @private
+   * @memberof ScrollPadlock
    * @returns {boolean} The css class observer state.
    */
   #unobserveCssClass() {
@@ -645,6 +826,9 @@ class ScrollPadlock {
 
   /**
    *
+   * @private
+   * @memberof ScrollPadlock
+   * @returns {void} Nothing.
    */
   #refresh() {
     // Refresh layout
@@ -657,6 +841,8 @@ class ScrollPadlock {
   /**
    * Attaches or detaches a supported listener.
    *
+   * @private
+   * @memberof ScrollPadlock
    * @param {string} type - The event type (scroll, resize...).
    * @param {string} method - The event method (add, remove).
    * @returns {boolean} Whether the event attachment or detachment has been successful or not.
@@ -698,6 +884,13 @@ class ScrollPadlock {
   /**
    * Detaches a supported listener.
    *
+   * @public
+   * @example
+   * const padlock = new ScrollPadlock();
+   *
+   * padlock.unlisten('scroll'); // pauses scroll handler
+   * padlock.unlisten('resize'); // pauses resize handler
+   * @memberof ScrollPadlock
    * @param {string} type - The event type (scroll, resize...).
    * @returns {boolean} Whether the event attachment or detachment has been successful or not.
    */
@@ -708,6 +901,13 @@ class ScrollPadlock {
   /**
    * Attaches a supported listener.
    *
+   * @public
+   * @example
+   * const padlock = new ScrollPadlock();
+   *
+   * padlock.listen('scroll'); // resumes scroll handler
+   * padlock.listen('resize'); // resumes resize handler
+   * @memberof ScrollPadlock
    * @param {string} type - The event type (scroll, resize...).
    * @returns {boolean} Whether the event attachment or detachment has been successful or not.
    */
@@ -718,6 +918,12 @@ class ScrollPadlock {
   /**
    * Effectively destroy the instance, detaching event listeners, removing styles, etc...
    *
+   * @public
+   * @example
+   * const padlock = new ScrollPadlock();
+   *
+   * padlock.destroy(); // completely removes the padlock listeners, dom modifications etc...
+   * @memberof ScrollPadlock
    * @returns {void} Nothing.
    */
   destroy() {
@@ -740,6 +946,10 @@ class ScrollPadlock {
     instances.delete(this.#element);
 
     // Removes references
+    this.#window = null;
+
+    this.#document = null;
+
     this.#element = null;
 
     this.#target = null;
@@ -756,6 +966,12 @@ class ScrollPadlock {
   /**
    * Re-evaluates dimensions and such, updates css variables to the current state...
    *
+   * @public
+   * @example
+   * const padlock = new ScrollPadlock();
+   *
+   * padlock.update(); // programmaticaly updates the current padlock state in its environment
+   * @memberof ScrollPadlock
    * @returns {void} Nothing.
    */
   update() {
@@ -768,6 +984,7 @@ class ScrollPadlock {
     // Rewrites css variables
     this.#applyStyles();
   }
+  // #endregion
 }
 
 // eslint-disable-next-line import/no-unused-modules

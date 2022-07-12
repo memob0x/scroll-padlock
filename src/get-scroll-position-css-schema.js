@@ -8,6 +8,7 @@ import {
 /**
  * Gets the given scroll position object as css rules schema.
  *
+ * @public
  * @example getScrollPositionCssSchema({ top: 10, left: 20 }); // --> [
  * //  ['--position-top', 10],
  * //  ['--position-left', 20]

@@ -20,6 +20,7 @@ import {
 /**
  * Gets the given layout dimensions object as css rules schema.
  *
+ * @public
  * @example getLayoutDimensionsCssSchema({ width: 10, height: 20 }); // --> [
  * //  ['--outer-width', 10],
  * //  ['--outer-height', 20]

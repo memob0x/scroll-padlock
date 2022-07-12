@@ -1,16 +1,18 @@
 import { expect } from 'chai';
-import 'jsdom-global/register';
 import setUniqueCssRule from '../../src/set-unique-css-rule';
+import getJsdomWindow from '../utils/get-jsdom-window';
 
 describe('src/set-unique-css-rule', () => {
   it('should be able to append a unique css rule to a given dom style tag', () => {
-    const styler = document.createElement('style');
+    const window = getJsdomWindow();
+
+    const styler = window.document.createElement('style');
 
     setUniqueCssRule(styler, '.color { color: red; }');
 
     expect(styler.sheet).to.be.null;
 
-    document.body.append(styler);
+    window.document.body.append(styler);
 
     expect(styler.sheet).to.not.be.null;
 

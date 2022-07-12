@@ -9,6 +9,13 @@ const INT_OPTIONS_TYPE_KEY_STRING = 4;
 
 const { isArray } = Array;
 
+/**
+ * Gets the given scroll padlock options type.
+ *
+ * @private
+ * @param {object|string} [options] - The options raw argument to be formatted into object.
+ * @returns {number} The options raw argument type.
+ */
 const getOptionsTypeKey = (options) => {
   const type = typeof options;
 
@@ -31,6 +38,18 @@ const getOptionsTypeKey = (options) => {
   return INT_OPTIONS_TYPE_KEY_UNKNOWN;
 };
 
+/**
+ * Formats the given scroll padlock options to a valid options object.
+ *
+ * @public
+ * @example
+ * sanitizePadlockOptions('foobar'); // --> { cssClassName: 'foobar' }
+ * sanitizePadlockOptions({ b: 'c' }); // --> { cssClassName: undefined, b: 'c' }
+ * sanitizePadlockOptions({ cssClassName: 'a', b: 'c' }); // --> { cssClassName: 'a', b: 'c' }
+ * @throws {TypeError} Throws when a given argument is not a valid padlock options type.
+ * @param {object|string} [options] - The options raw argument to be formatted into object.
+ * @returns {object} The options object formatted.
+ */
 const sanitizePadlockOptions = (options) => {
   //
   const optionsTypeKey = getOptionsTypeKey(options);
