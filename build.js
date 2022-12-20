@@ -1,9 +1,24 @@
 import { rollup } from 'rollup';
-import rollupBabelPackage from '@rollup/plugin-babel';
+import { getBabelOutputPlugin as rollupBabel } from '@rollup/plugin-babel';
 import rollupGzip from 'rollup-plugin-gzip';
-import { terser as rollupTerser } from 'rollup-plugin-terser';
+import rollupTerser from '@rollup/plugin-terser';
 import fs from 'fs/promises';
 import { resolve } from 'path';
+
+// NOTE: temp fix till https://github.com/rollup/plugins/issues/1366 is closed
+import { fileURLToPath } from 'url';
+
+const errorStackMatchFileUrlRegexp = /^.+?\((.+?):\d+:\d+\)$/;
+
+Object.defineProperty(global, '__filename', {
+  get: () => fileURLToPath(
+    new Error()
+      .stack
+      .split('\n')
+      .at(2)
+      .replace(errorStackMatchFileUrlRegexp, '$1'),
+  ),
+});
 
 const BUNDLES_PRESETS = [
   { format: 'amd' },
@@ -36,8 +51,6 @@ const BUNDLES_PRESETS = [
   { format: 'umd', min: true },
   { format: 'umd', min: true, babel: true },
 ];
-
-const { getBabelOutputPlugin: rollupBabel } = rollupBabelPackage;
 
 const pathRoot = resolve('.');
 

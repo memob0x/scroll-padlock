@@ -43,7 +43,9 @@ after(async () => {
     } = await compareTwoImages(firstImage, secondImage);
 
     expect(isSameDimensions).to.be.true;
-    expect(rawMisMatchPercentage).to.equals(0);
+    // can't expect to be 0 since new puppeteer renders scrollbars in screenshots
+    // mismatch percentage should be ~11%
+    expect(rawMisMatchPercentage).to.be.greaterThanOrEqual(0).and.lessThan(12);
 
     await page.evaluate(() => {
       window.instance.scroll = { top: 0, left: 0 };
@@ -54,7 +56,9 @@ after(async () => {
     ({ isSameDimensions, rawMisMatchPercentage } = await compareTwoImages(firstImage, thirdImage));
 
     expect(isSameDimensions).to.be.true;
-    expect(rawMisMatchPercentage).to.equals(0);
+    // can't expect to be 0 since new puppeteer renders scrollbars in screenshots
+    // mismatch percentage should be ~11%
+    expect(rawMisMatchPercentage).to.be.greaterThanOrEqual(0).and.lessThan(12);
 
     await page.evaluate(() => window.unlock());
 
@@ -66,7 +70,7 @@ after(async () => {
     } = await compareTwoImages(secondImage, fourthImage));
 
     expect(isSameDimensions).to.be.true;
-    expect(rawMisMatchPercentage).to.be.greaterThan(0);
+    expect(rawMisMatchPercentage).to.be.greaterThan(12);
 
     await page.close();
   });
