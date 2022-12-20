@@ -1,24 +1,10 @@
 import { rollup } from 'rollup';
 import { getBabelOutputPlugin as rollupBabel } from '@rollup/plugin-babel';
 import rollupGzip from 'rollup-plugin-gzip';
-import rollupTerser from '@rollup/plugin-terser';
+// NOTE: temporarily removed terser till https://github.com/rollup/plugins/issues/1366 is closed
+// import rollupTerser from '@rollup/plugin-terser';
 import fs from 'fs/promises';
 import { resolve } from 'path';
-
-// NOTE: temp fix till https://github.com/rollup/plugins/issues/1366 is closed
-import { fileURLToPath } from 'url';
-
-const errorStackMatchFileUrlRegexp = /^.+?\((.+?):\d+:\d+\)$/;
-
-Object.defineProperty(global, '__filename', {
-  get: () => fileURLToPath(
-    new Error()
-      .stack
-      .split('\n')
-      .at(2)
-      .replace(errorStackMatchFileUrlRegexp, '$1'),
-  ),
-});
 
 const BUNDLES_PRESETS = [
   { format: 'amd' },
@@ -73,9 +59,10 @@ const pathRoot = resolve('.');
   return Promise.all(BUNDLES_PRESETS.reduce((accumulator, { format, min, babel }) => {
     const plugins = [];
 
-    if (min) {
-      plugins.push(rollupTerser());
-    }
+    // NOTE: temporarily removed terser till https://github.com/rollup/plugins/issues/1366 is closed
+    // if (min) {
+    // plugins.push(rollupTerser());
+    // }
 
     if (babel) {
       plugins.push(rollupBabel({
