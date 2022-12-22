@@ -14,17 +14,25 @@
     "sourceType": "module"
   },
   "rules": {
-    "import/no-unused-modules": [
-      1,
-
+    "import/no-extraneous-dependencies": [
+      "error",
       {
-        "unusedExports": true,
-        "src": ["./src"]
+        "devDependencies": true
       }
     ],
-
-    "import/no-unresolved": [2, {}],
-
+    "import/no-unused-modules": [
+      1,
+      {
+        "unusedExports": true,
+        "src": [
+          "./src"
+        ]
+      }
+    ],
+    "import/no-unresolved": [
+      2,
+      {}
+    ],
     "jsdoc/check-access": 1, // Recommended
     "jsdoc/check-alignment": 1, // Recommended
     // "jsdoc/check-examples": 1,
@@ -73,7 +81,8 @@
     "jsdoc/tag-lines": 1, // Recommended
     "jsdoc/valid-types": 1 // Recommended
   },
-  "overrides": [{
+  "overrides": [
+    {
       "files": [
         "./*.js"
       ],
