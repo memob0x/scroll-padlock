@@ -49,25 +49,25 @@
     "prepare": "husky install"
   },
   "devDependencies": {
-    "@babel/core": "^7.20.7",
+    "@babel/core": "^7.20.12",
     "@babel/eslint-parser": "^7.19.1",
     "@babel/eslint-plugin": "^7.19.1",
     "@babel/preset-env": "^7.20.2",
     "@rollup/plugin-babel": "^6.0.3",
     "chai": "^4.3.7",
-    "eslint": "^8.30.0",
+    "eslint": "^8.32.0",
     "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-plugin-import": "^2.26.0",
-    "eslint-plugin-jsdoc": "^39.6.4",
-    "husky": "^8.0.2",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-jsdoc": "^39.6.8",
+    "husky": "^8.0.3",
     "jsdoc": "^4.0.0",
     "jsdoc-to-markdown": "^8.0.0",
-    "jsdom": "^20.0.3",
+    "jsdom": "^21.1.0",
     "mocha": "^10.2.0",
-    "puppeteer": "^19.4.1",
+    "puppeteer": "^19.6.0",
     "resemblejs": "^4.1.0",
-    "rollup": "^3.8.0",
+    "rollup": "^3.10.1",
     "rollup-plugin-gzip": "^3.1.0",
-    "@rollup/plugin-terser": "^0.2.1"
+    "@rollup/plugin-terser": "^0.4.0"
   }
 }
