@@ -66,7 +66,34 @@ const scrollPadlock = new ScrollPadlock();
 
 Some [CSS variables](#css-variables), addressing a given html element **data attribute** (dinamically set), are set through a `style` appended in `head`, a given **CSS class** is **[observed](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver)** to determine current state while **[window resize](https://developer.mozilla.org/en-US/docs/Web/API/Window/resize_event) and [scroll](https://developer.mozilla.org/en-US/docs/Web/API/Element/scroll_event) events** are listened in order to update CSS variables; no other DOM modifications besides that.
 
-## Usage
+## Usage (basic)
+
+By default, a padlock instance addresses a `scroll-padlock-locked` css class and the default browser scrollable element.
+
+```css
+/* common scroll-locking css rules */
+.scroll-padlock-locked {
+  overflow: hidden;
+
+  padding-right: var(--scroll-padlock-scrollbar-width);
+}
+```
+
+```javascript
+// addresses the default browser scrollable element
+void new ScrollPadlock();
+
+document.body.classList.add('scroll-padlock-locked');
+
+// addresses a custom scrollable element
+const customScroller = document.querySelector('#custom-scroller');
+
+void new ScrollPadlock(customScroller);
+
+customScroller.classList.add('scroll-padlock-locked');
+```
+
+## Usage (advanced)
 
 An instance requires the **html element** which scroll needs to be controlled and the [CSS class](#CSS-Rules-Examples) that would lock it.
 
@@ -213,7 +240,7 @@ to make things worse that technique just **doesn't work** on **iOS safari**: whe
 
 🙅 `body { position: fixed; }` alone can force iOS to lock the scroll, but when applied the scroll position would eventually jump to the top of the page.
 
-💁 This library sets some **css variables** and **css classes** in order to allow the developer to choose their preferred [CSS-only approach](#usage-pt1-css), while the class instance exposes a quite granular API in order to implement some JS strategies too.
+💁 This library sets some **css variables** and **css classes** in order to allow the developer to choose their preferred [CSS-only approach](#css-rules-examples), while the class instance exposes a quite granular API in order to implement some JS strategies too.
 
 ## Positioned Elements
 

@@ -510,4 +510,35 @@ describe('src/padlock', () => {
 
     instance.destroy();
   });
+
+  it('should throw an error if an "element" argument is passed and it\'s nor an html element nor a global element (window, body...)', () => {
+    expect(() => createInstance()).to.not.throw(TypeError);
+
+    expect(() => createInstance(null)).to.throw(TypeError);
+
+    expect(() => createInstance(window.document.createElement('div'))).to.not.throw(TypeError);
+
+    const {
+      document,
+    } = window || {};
+
+    const {
+      body,
+
+      documentElement,
+    } = document || {};
+
+    expect(() => createInstance({ ...window })).to.throw();
+
+    expect(() => createInstance(window)).to.not.throw(TypeError);
+
+    expect(() => createInstance(document)).to.not.throw(TypeError);
+
+    expect(() => createInstance(documentElement)).to.not.throw(TypeError);
+
+    expect(() => createInstance(body)).to.not.throw(TypeError);
+  });
+
+  // TODO: should check that element / scroller / target members
+  // are effectively set by passing "element" argument to constructor
 });

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Test</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-size: 200px;
+            margin: 0;
+        }
+
+        html.locked {
+            overflow: hidden;
+            padding-right: var(--scroll-padlock-scrollbar-width);
+        }
+    </style>
+</head>
+
+<body>
+    <p>
+        Hello there, Lorem ipsum. How r u today?
+    </p>
+
+    <script src="../../dist/iife/scroll-padlock.js"></script>
+
+    <script>
+        window.cssClassNameHtmlLocked = 'locked';
+
+        const { documentElement } = document;
+
+        const { classList } = documentElement;
+
+        window.instance = new window.ScrollPadlock(documentElement, cssClassNameHtmlLocked)
+
+        window.lock = () => classList.add(cssClassNameHtmlLocked);
+
+        window.unlock = () => classList.remove(cssClassNameHtmlLocked);
+    </script>
+</body>
+
+</html>

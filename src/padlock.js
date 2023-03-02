@@ -7,6 +7,7 @@ import {
   STR_WORD_SET,
   STR_CAMEL_CSS_CLASS_NAME,
   STR_WORD_FUNCTION,
+  STR_WORD_UNDEFINED,
 } from './constants';
 
 import {
@@ -24,7 +25,6 @@ import getElementIndex from './get-element-index';
 import getCssRuleFromSchema from './get-css-rule-from-schema';
 import getLayoutDimensionsCssSchema from './get-layout-dimensions-css-schema';
 import getScrollPositionCssSchema from './get-scroll-position-css-schema';
-import isValidPadlockElement from './is-valid-padlock-element';
 import sanitizePadlockOptions from './sanitize-padlock-options';
 
 const STR_CAMEL_RESIZE_HANDLER_WRAPPER = 'resizeHandlerWrapper';
@@ -58,6 +58,8 @@ class ScrollPadlock {
     const {
       document,
 
+      HTMLElement,
+
       MutationObserver = function MutationObserver() {},
     } = client || {};
 
@@ -86,8 +88,34 @@ class ScrollPadlock {
     //
     this.#observer = new MutationObserver(this.#handleObservation.bind(this));
 
+    const isElementBodyOrHtml = element === documentElement || element === body;
+
+    const isElementWindowOrDocument = element === this.#window || element === this.#document;
+
+    // Global page (window, html or body as element argument)
+    const isElementGlobalScroller = isElementBodyOrHtml || isElementWindowOrDocument;
+
+    const isElementAnHtmlElement = element instanceof HTMLElement;
+
+    // eslint-disable-next-line valid-typeof
+    const isElementUndefined = typeof element === STR_WORD_UNDEFINED;
+
+    const isElementDefinedAndNotGlobal = !isElementUndefined && !isElementGlobalScroller;
+
+    // If the given scrollable element is not supported (valid html element or page)
+    // there's nothing to do, but throwing an exception
+    if (isElementDefinedAndNotGlobal && !isElementAnHtmlElement) {
+      throw new TypeError(`Invalid "element" argument (${element}) provided to ScrollPadlock constructor`);
+    }
+
+    if (isElementBodyOrHtml || isElementDefinedAndNotGlobal) {
+      // Stores the given DOM element reference as scroller element,
+      // the one provided to the class constructor
+      this.#target = element;
+    }
+
     // checks whether the given element is assignable to padlock instance
-    if (isValidPadlockElement(element, this.#window)) {
+    if (isElementDefinedAndNotGlobal) {
       // then replace "element" and "scroller" private members with that element
 
       // Stores the given DOM element reference as main element
@@ -95,10 +123,6 @@ class ScrollPadlock {
 
       // Stores the given DOM element reference as scroller element
       this.#scroller = element;
-
-      // Stores the given DOM element reference as scroller element,
-      // the one provided to the class constructor
-      this.#target = element;
     }
 
     //
