@@ -14,7 +14,7 @@
             margin: 0;
         }
 
-        html.scroll-padlock-locked {
+        .scroll-padlock-locked {
             overflow: hidden;
             padding-right: var(--scroll-padlock-scrollbar-width);
         }
@@ -29,9 +29,9 @@
     <script src="../../dist/iife/scroll-padlock.js"></script>
 
     <script>
-        const { documentElement } = document;
+        const { scrollingElement } = document;
 
-        const { classList } = documentElement;
+        const { classList } = scrollingElement;
 
         window.instance = new window.ScrollPadlock()
 
