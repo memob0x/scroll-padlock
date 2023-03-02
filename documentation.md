@@ -32,13 +32,6 @@ ensuring its presence in the given target element (usually head).</p>
 <dt><a href="#getScrollPosition">getScrollPosition(element)</a> ⇒ <code>object</code></dt>
 <dd><p>Gets a given element or browser scroll position.</p>
 </dd>
-<dt><a href="#isValidPadlockElement">isValidPadlockElement(element, [window])</a> ⇒ <code>boolean</code></dt>
-<dd><p>Gets whether the given (first) argument is a valid DOM scroll padlock element
-(a div, etc...) or not.</p>
-</dd>
-<dt><a href="#sanitizePadlockOptions">sanitizePadlockOptions([options])</a> ⇒ <code>object</code></dt>
-<dd><p>Formats the given scroll padlock options to a valid options object.</p>
-</dd>
 <dt><a href="#setUniqueCssRule">setUniqueCssRule(styler, rule)</a> ⇒ <code>HTMLStyleElement</code></dt>
 <dd><p>Updates a given element css variables to a given styler element
 ensuring its presence in the given target element (usually head).</p>
@@ -54,7 +47,7 @@ Creates the scroll padlock class instance on a given scrollable element.
 **Access**: public  
 
 * [ScrollPadlock](#ScrollPadlock)
-    * [new ScrollPadlock([element], [options], [client])](#new_ScrollPadlock_new)
+    * [new ScrollPadlock([scrollingElementArgument], [cssClassNameArgument], [clientArgument])](#new_ScrollPadlock_new)
     * [.cssSelector](#ScrollPadlock+cssSelector) ⇒ <code>string</code>
     * [.scroll](#ScrollPadlock+scroll) ⇒ <code>object</code>
     * [.scroll](#ScrollPadlock+scroll)
@@ -66,24 +59,66 @@ Creates the scroll padlock class instance on a given scrollable element.
 
 <a name="new_ScrollPadlock_new"></a>
 
-### new ScrollPadlock([element], [options], [client])
+### new ScrollPadlock([scrollingElementArgument], [cssClassNameArgument], [clientArgument])
 **Throws**:
 
-- <code>TypeError</code> Throws when the given (first) argument is not
-a valid DOM scroll padlock element (a div, etc...)
-nor a global element (window, body, document).
+- <code>TypeError</code> Throws when the given constructor arguments are invalid.
 - <code>Error</code> Throws when an instance is already attached to the given dom element.
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| [element] | <code>Window</code> \| <code>HTMLElement</code> | The given scrollable element whose scroll needs to be controlled. |
-| [options] | <code>string</code> \| <code>object</code> | An options object or the given scrollable element whose scroll needs to be controlled. |
-| [client] | <code>object</code> | An object with the client environment (window). |
+| [scrollingElementArgument] | <code>HTMLElement</code> \| <code>object</code> | The given scrollable element whose scroll needs to be controlled or an options object. |
+| [cssClassNameArgument] | <code>string</code> | The locked-state css class or an options object. |
+| [clientArgument] | <code>Window</code> | The client environment object (window). |
 
 **Example**  
 ```js
-void new ScrollPadlock(window, 'locked-state-css-class');
+void new ScrollPadlock();
+
+void new ScrollPadlock(
+ document.scrollingElement,
+
+ 'locked-state-css-class'
+);
+
+void new ScrollPadlock({
+ cssClassName: 'locked-state-css-class'
+});
+
+void new ScrollPadlock(
+ document.querySelector('#custom-scrolling-element'),
+);
+
+void new ScrollPadlock({
+ scrollingElement: document.querySelector('#custom-scrolling-element'),
+});
+
+void new ScrollPadlock(
+ document.querySelector('#custom-scrolling-element'),
+
+ 'locked-state-css-class',
+
+ window,
+);
+
+void new ScrollPadlock({
+ client: window,
+});
+
+void new ScrollPadlock({
+ scrollingElement: document.querySelector('#custom-scrolling-element'),
+
+ scrollEventElement: window,
+
+ cssClassName: 'locked-state-css-class',
+
+ resizeHandlerWrapper: debounce,
+
+ scrollHandlerWrapper: throttle,
+
+ client: window,
+});
 ```
 <a name="ScrollPadlock+cssSelector"></a>
 
@@ -348,62 +383,6 @@ Gets a given element or browser scroll position.
 **Example**  
 ```js
 getScrollPosition(document.queryselector('div')); // --> { top: 123, left: 345 }
-```
-<a name="isValidPadlockElement"></a>
-
-## isValidPadlockElement(element, [window]) ⇒ <code>boolean</code>
-Gets whether the given (first) argument is a valid DOM scroll padlock element
-(a div, etc...) or not.
-
-**Kind**: global function  
-**Returns**: <code>boolean</code> - Whether the given (first) argument is a valid
-custom scroll padlock element or not.  
-**Throws**:
-
-- <code>TypeError</code> Throws when the given (first) argument is not
-a valid DOM scroll padlock element (a div, etc...)
-nor a global element (window, body, document).
-
-**Access**: public  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| element | <code>Window</code> \| <code>Document</code> \| <code>HTMLElement</code> | The given argument to be checked for its validity as custom scroll padlock element. |
-| [window] | <code>Window</code> | The environment client global object. |
-
-**Example**  
-```js
-isValidPadlockElement(); // --> throws, not an HTMLElement...
-isValidPadlockElement(null); // --> throws, not an HTMLElement...
-isValidPadlockElement({}); // --> throws, not an HTMLElement...
-isValidPadlockElement(window); // --> false
-isValidPadlockElement(document); // --> false
-isValidPadlockElement(document.body); // --> false
-isValidPadlockElement(document.documentElement); // --> false
-isValidPadlockElement(document.querySelector('div#my-scrollable-div')); // --> true
-```
-<a name="sanitizePadlockOptions"></a>
-
-## sanitizePadlockOptions([options]) ⇒ <code>object</code>
-Formats the given scroll padlock options to a valid options object.
-
-**Kind**: global function  
-**Returns**: <code>object</code> - The options object formatted.  
-**Throws**:
-
-- <code>TypeError</code> Throws when a given argument is not a valid padlock options type.
-
-**Access**: public  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| [options] | <code>object</code> \| <code>string</code> | The options raw argument to be formatted into object. |
-
-**Example**  
-```js
-sanitizePadlockOptions('foobar'); // --> { cssClassName: 'foobar' }
-sanitizePadlockOptions({ b: 'c' }); // --> { cssClassName: undefined, b: 'c' }
-sanitizePadlockOptions({ cssClassName: 'a', b: 'c' }); // --> { cssClassName: 'a', b: 'c' }
 ```
 <a name="setUniqueCssRule"></a>
 

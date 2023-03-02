@@ -1,10 +1,3 @@
-import {
-  STR_KEBAB_DOUBLE_HYPHEN_PREFIX_POSITION_TOP,
-  STR_KEBAB_DOUBLE_HYPHEN_PREFIX_POSITION_LEFT,
-  STR_WORD_TOP,
-  STR_WORD_LEFT,
-} from './constants-computed';
-
 /**
  * Gets the given scroll position object as css rules schema.
  *
@@ -18,13 +11,13 @@ import {
  */
 const getScrollPositionCssSchema = (scroll) => [
   [
-    STR_KEBAB_DOUBLE_HYPHEN_PREFIX_POSITION_TOP,
-    scroll[STR_WORD_TOP],
+    '--scroll-padlock-scroll-top',
+    scroll.top,
   ],
 
   [
-    STR_KEBAB_DOUBLE_HYPHEN_PREFIX_POSITION_LEFT,
-    scroll[STR_WORD_LEFT],
+    '--scroll-padlock-scroll-left',
+    scroll.left,
   ],
 ];
 

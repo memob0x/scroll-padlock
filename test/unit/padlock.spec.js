@@ -2,21 +2,6 @@ import { expect } from 'chai';
 
 import Padlock from '../../src/padlock';
 
-import {
-  STR_WORD_SCROLL,
-  STR_WORD_RESIZE,
-} from '../../src/constants';
-
-import {
-  STR_KEBAB_DATA_SCROLL_PADLOCK,
-  STR_CAMEL_OUTER_WIDTH,
-  STR_CAMEL_OUTER_HEIGHT,
-  STR_WORD_TOP,
-  STR_WORD_LEFT,
-} from '../../src/constants-computed';
-
-import getElementParentsLength from '../../src/get-element-parents-length';
-import getElementIndex from '../../src/get-element-index';
 import getJsdomWindow from '../utils/get-jsdom-window';
 
 const window = getJsdomWindow();
@@ -35,9 +20,9 @@ describe('src/padlock', () => {
 
     // This instances have an invalid CSS class argument or options argument
     expect(createInstanceMomentary.bind(this, createDiv(), null))
-      .to.not.throw(TypeError);
+      .to.throw(TypeError);
     expect(createInstanceMomentary.bind(this, createDiv(), {}))
-      .to.not.throw(TypeError);
+      .to.throw(TypeError);
     expect(createInstanceMomentary.bind(this, createDiv(), []))
       .to.throw(TypeError);
     expect(createInstanceMomentary.bind(this, createDiv(), ''))
@@ -46,20 +31,24 @@ describe('src/padlock', () => {
       .to.throw(TypeError);
     expect(createInstanceMomentary.bind(this, createDiv(), 1))
       .to.throw(TypeError);
+    expect(createInstanceMomentary.bind(this, createDiv(), '1'))
+      .to.not.throw(TypeError);
 
     // This instances have an invalid CSS class argument in a valid options argument
-    expect(createInstanceMomentary.bind(this, createDiv(), { cssClassName: null }))
+    expect(createInstanceMomentary.bind(this, { cssClassName: null }))
       .to.throw(TypeError);
-    expect(createInstanceMomentary.bind(this, createDiv(), { cssClassName: [] }))
+    expect(createInstanceMomentary.bind(this, { cssClassName: [] }))
       .to.throw(TypeError);
-    expect(createInstanceMomentary.bind(this, createDiv(), { cssClassName: {} }))
+    expect(createInstanceMomentary.bind(this, { cssClassName: {} }))
       .to.throw(TypeError);
-    expect(createInstanceMomentary.bind(this, createDiv(), { cssClassName: '' }))
+    expect(createInstanceMomentary.bind(this, { cssClassName: '' }))
       .to.throw(TypeError);
-    expect(createInstanceMomentary.bind(this, createDiv(), { cssClassName: 0 }))
+    expect(createInstanceMomentary.bind(this, { cssClassName: 0 }))
       .to.throw(TypeError);
-    expect(createInstanceMomentary.bind(this, createDiv(), { cssClassName: 1 }))
+    expect(createInstanceMomentary.bind(this, { cssClassName: 1 }))
       .to.throw(TypeError);
+    expect(createInstanceMomentary.bind(this, { cssClassName: '1' }))
+      .to.not.throw(TypeError);
 
     // These instances are created on the same element, an error has to be thrown
     expect(() => {
@@ -98,17 +87,43 @@ describe('src/padlock', () => {
       // then the default one is page scroller (<html> element)
       let instance = createInstance();
 
-      expect(window.document.documentElement.matches(`[${STR_KEBAB_DATA_SCROLL_PADLOCK}]`));
+      expect(window.document.documentElement.matches('[data-scroll-padlock]'));
 
       instance.destroy();
 
       // If <body> is given as an argument, then it's a global scroller (still <html> element)
       instance = createInstance(window.document.body);
 
-      expect(window.document.documentElement.matches(`[${STR_KEBAB_DATA_SCROLL_PADLOCK}]`));
+      expect(window.document.documentElement.matches('[data-scroll-padlock]'));
 
       instance.destroy();
     }).to.not.throw(Error);
+
+    expect(() => createInstanceMomentary()).to.not.throw(TypeError);
+
+    expect(() => createInstanceMomentary(null)).to.throw(TypeError);
+
+    expect(() => createInstanceMomentary(window.document.createElement('div'))).to.not.throw(TypeError);
+
+    const {
+      document,
+    } = window || {};
+
+    const {
+      body,
+
+      documentElement,
+    } = document || {};
+
+    expect(() => createInstanceMomentary({ ...window })).to.not.throw();
+
+    expect(() => createInstanceMomentary(window)).to.throw(TypeError);
+
+    expect(() => createInstanceMomentary(document)).to.throw(TypeError);
+
+    expect(() => createInstanceMomentary(documentElement)).to.not.throw(TypeError);
+
+    expect(() => createInstanceMomentary(body)).to.not.throw(TypeError);
   });
 
   it('should update instance "layout" object only on resize and "scroll" object only on scroll', async () => {
@@ -130,12 +145,12 @@ describe('src/padlock', () => {
     const instance = createInstance(div);
 
     expect(instance.layout).to.include({
-      [STR_CAMEL_OUTER_WIDTH]: dimensions.width,
-      [STR_CAMEL_OUTER_HEIGHT]: dimensions.height,
+      outerWidth: dimensions.width,
+      outerHeight: dimensions.height,
     });
     expect(instance.scroll).to.include({
-      [STR_WORD_TOP]: scrollPosition.top,
-      [STR_WORD_LEFT]: scrollPosition.left,
+      top: scrollPosition.top,
+      left: scrollPosition.left,
     });
 
     dimensions = {
@@ -152,25 +167,25 @@ describe('src/padlock', () => {
     div.scrollLeft = scrollPosition.left;
 
     expect(instance.layout).to.not.include({
-      [STR_CAMEL_OUTER_WIDTH]: dimensions.width,
-      [STR_CAMEL_OUTER_HEIGHT]: dimensions.height,
+      outerWidth: dimensions.width,
+      outerHeight: dimensions.height,
     });
     expect(instance.scroll).to.not.include({
-      [STR_WORD_TOP]: scrollPosition.top,
-      [STR_WORD_LEFT]: scrollPosition.left,
+      top: scrollPosition.top,
+      left: scrollPosition.left,
     });
 
-    window.dispatchEvent(new window.CustomEvent(STR_WORD_RESIZE));
+    window.dispatchEvent(new window.CustomEvent('resize'));
 
     await new Promise(window.setTimeout);
 
     expect(instance.layout).to.include({
-      [STR_CAMEL_OUTER_WIDTH]: dimensions.width,
-      [STR_CAMEL_OUTER_HEIGHT]: dimensions.height,
+      outerWidth: dimensions.width,
+      outerHeight: dimensions.height,
     });
     expect(instance.scroll).to.not.include({
-      [STR_WORD_TOP]: scrollPosition.top,
-      [STR_WORD_LEFT]: scrollPosition.left,
+      top: scrollPosition.top,
+      left: scrollPosition.left,
     });
 
     dimensions = {
@@ -178,17 +193,17 @@ describe('src/padlock', () => {
       height: 500,
     };
 
-    div.dispatchEvent(new window.CustomEvent(STR_WORD_SCROLL));
+    div.dispatchEvent(new window.CustomEvent('scroll'));
 
     await new Promise(window.setTimeout);
 
     expect(instance.layout).not.to.include({
-      [STR_CAMEL_OUTER_WIDTH]: dimensions.width,
-      [STR_CAMEL_OUTER_HEIGHT]: dimensions.height,
+      outerWidth: dimensions.width,
+      outerHeight: dimensions.height,
     });
     expect(instance.scroll).to.include({
-      [STR_WORD_TOP]: scrollPosition.top,
-      [STR_WORD_LEFT]: scrollPosition.left,
+      top: scrollPosition.top,
+      left: scrollPosition.left,
     });
 
     instance.destroy();
@@ -213,12 +228,12 @@ describe('src/padlock', () => {
     const instance = createInstance(div);
 
     expect(instance.layout).to.include({
-      [STR_CAMEL_OUTER_WIDTH]: dimensions.width,
-      [STR_CAMEL_OUTER_HEIGHT]: dimensions.height,
+      outerWidth: dimensions.width,
+      outerHeight: dimensions.height,
     });
     expect(instance.scroll).to.include({
-      [STR_WORD_TOP]: scrollPosition.top,
-      [STR_WORD_LEFT]: scrollPosition.left,
+      top: scrollPosition.top,
+      left: scrollPosition.left,
     });
 
     dimensions = {
@@ -235,23 +250,23 @@ describe('src/padlock', () => {
     div.scrollLeft = scrollPosition.left;
 
     expect(instance.layout).to.not.include({
-      [STR_CAMEL_OUTER_WIDTH]: dimensions.width,
-      [STR_CAMEL_OUTER_HEIGHT]: dimensions.height,
+      outerWidth: dimensions.width,
+      outerHeight: dimensions.height,
     });
     expect(instance.scroll).to.not.include({
-      [STR_WORD_TOP]: scrollPosition.top,
-      [STR_WORD_LEFT]: scrollPosition.left,
+      top: scrollPosition.top,
+      left: scrollPosition.left,
     });
 
     instance.update();
 
     expect(instance.layout).to.include({
-      [STR_CAMEL_OUTER_WIDTH]: dimensions.width,
-      [STR_CAMEL_OUTER_HEIGHT]: dimensions.height,
+      outerWidth: dimensions.width,
+      outerHeight: dimensions.height,
     });
     expect(instance.scroll).to.include({
-      [STR_WORD_TOP]: scrollPosition.top,
-      [STR_WORD_LEFT]: scrollPosition.left,
+      top: scrollPosition.top,
+      left: scrollPosition.left,
     });
 
     instance.destroy();
@@ -354,11 +369,11 @@ describe('src/padlock', () => {
 
     const attachListener = (type) => {
       switch (type) {
-        case STR_WORD_SCROLL:
+        case 'scroll':
           scrollListened += 1;
           break;
 
-        case STR_WORD_RESIZE:
+        case 'resize':
           resizeListened += 1;
           break;
 
@@ -372,11 +387,11 @@ describe('src/padlock', () => {
 
     const detachListener = (type) => {
       switch (type) {
-        case STR_WORD_SCROLL:
+        case 'scroll':
           scrollRemoved += 1;
           break;
 
-        case STR_WORD_RESIZE:
+        case 'resize':
           resizeRemoved += 1;
           break;
 
@@ -410,25 +425,25 @@ describe('src/padlock', () => {
     expect(resizeRemoved).to.equals(0);
     expect(scrollRemoved).to.equals(0);
 
-    expect(div.matches(`[${STR_KEBAB_DATA_SCROLL_PADLOCK}]`)).to.be.true;
+    expect(div.matches('[data-scroll-padlock]')).to.be.true;
 
     instance.destroy();
 
     expect(getStylesheetsCount()).to.equals(stylesheetsCountBeforeInit);
 
-    expect(div.matches(`[${STR_KEBAB_DATA_SCROLL_PADLOCK}]`)).to.be.false;
+    expect(div.matches('[data-scroll-padlock]')).to.be.false;
 
-    div.dispatchEvent(new window.CustomEvent(STR_WORD_SCROLL));
+    div.dispatchEvent(new window.CustomEvent('scroll'));
 
-    expect(div.matches(`[${STR_KEBAB_DATA_SCROLL_PADLOCK}]`)).to.be.false;
+    expect(div.matches('[data-scroll-padlock]')).to.be.false;
 
-    div.dispatchEvent(new window.CustomEvent(STR_WORD_RESIZE));
+    div.dispatchEvent(new window.CustomEvent('resize'));
 
-    expect(div.matches(`[${STR_KEBAB_DATA_SCROLL_PADLOCK}]`)).to.be.false;
+    expect(div.matches('[data-scroll-padlock]')).to.be.false;
 
     instance.update();
 
-    expect(div.matches(`[${STR_KEBAB_DATA_SCROLL_PADLOCK}]`)).to.be.false;
+    expect(div.matches('[data-scroll-padlock]')).to.be.false;
 
     expect(observed).to.equals(1);
     expect(unobserved).to.equals(0);
@@ -464,13 +479,13 @@ describe('src/padlock', () => {
     let [style] = styles || [];
 
     expect(window.document.head.contains(style)).to.be.true;
-    expect(div.matches(`[${STR_KEBAB_DATA_SCROLL_PADLOCK}]`)).to.be.true;
+    expect(div.matches('[data-scroll-padlock]')).to.be.true;
 
-    let attrValue = div.getAttribute(STR_KEBAB_DATA_SCROLL_PADLOCK);
-    expect(attrValue).to.equals(`${getElementParentsLength(div)}-${getElementIndex(div)}`);
+    let attrValue = div.getAttribute('data-scroll-padlock');
+    expect(parseInt(attrValue, 10)).to.a('number');
 
     let rules = style.sheet.cssRules[0];
-    expect(rules.selectorText).equals(`[${STR_KEBAB_DATA_SCROLL_PADLOCK}="${attrValue}"]`);
+    expect(rules.selectorText).equals(`[data-scroll-padlock="${attrValue}"]`);
 
     instance.destroy();
 
@@ -479,7 +494,7 @@ describe('src/padlock', () => {
     expect(styles).to.be.lengthOf(0);
 
     expect(window.document.head.contains(style)).to.be.false;
-    expect(div.matches(`[${STR_KEBAB_DATA_SCROLL_PADLOCK}]`)).to.be.false;
+    expect(div.matches('[data-scroll-padlock]')).to.be.false;
 
     const indexShifterDummyEl = createDiv();
 
@@ -496,49 +511,18 @@ describe('src/padlock', () => {
     expect(window.document.head.contains(style)).to.be.true;
 
     const oldAttrValue = attrValue;
-    attrValue = div.getAttribute(STR_KEBAB_DATA_SCROLL_PADLOCK);
+    attrValue = div.getAttribute('data-scroll-padlock');
     expect(attrValue).not.to.equals(oldAttrValue);
-    expect(attrValue).to.equals(`${getElementParentsLength(div)}-${getElementIndex(div)}`);
+    expect(parseInt(attrValue, 10)).to.be.a('number');
 
     // eslint-disable-next-line prefer-destructuring
     rules = style.sheet.cssRules[0];
 
-    expect(rules.selectorText).equals(`[${STR_KEBAB_DATA_SCROLL_PADLOCK}="${attrValue}"]`);
+    expect(rules.selectorText).equals(`[data-scroll-padlock="${attrValue}"]`);
 
     indexShifterDummyEl.remove();
     div.remove();
 
     instance.destroy();
   });
-
-  it('should throw an error if an "element" argument is passed and it\'s nor an html element nor a global element (window, body...)', () => {
-    expect(() => createInstance()).to.not.throw(TypeError);
-
-    expect(() => createInstance(null)).to.throw(TypeError);
-
-    expect(() => createInstance(window.document.createElement('div'))).to.not.throw(TypeError);
-
-    const {
-      document,
-    } = window || {};
-
-    const {
-      body,
-
-      documentElement,
-    } = document || {};
-
-    expect(() => createInstance({ ...window })).to.throw();
-
-    expect(() => createInstance(window)).to.not.throw(TypeError);
-
-    expect(() => createInstance(document)).to.not.throw(TypeError);
-
-    expect(() => createInstance(documentElement)).to.not.throw(TypeError);
-
-    expect(() => createInstance(body)).to.not.throw(TypeError);
-  });
-
-  // TODO: should check that element / scroller / target members
-  // are effectively set by passing "element" argument to constructor
 });

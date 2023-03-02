@@ -1,22 +1,3 @@
-import {
-  STR_KEBAB_DOUBLE_HYPHEN_PREFIX_OUTER_WIDTH,
-  STR_KEBAB_DOUBLE_HYPHEN_PREFIX_OUTER_HEIGHT,
-  STR_KEBAB_DOUBLE_HYPHEN_PREFIX_INNER_WIDTH,
-  STR_KEBAB_DOUBLE_HYPHEN_PREFIX_INNER_HEIGHT,
-  STR_KEBAB_DOUBLE_HYPHEN_PREFIX_SCROLL_WIDTH,
-  STR_KEBAB_DOUBLE_HYPHEN_PREFIX_SCROLL_HEIGHT,
-  STR_KEBAB_DOUBLE_HYPHEN_PREFIX_SCROLLBAR_WIDTH,
-  STR_KEBAB_DOUBLE_HYPHEN_PREFIX_SCROLLBAR_HEIGHT,
-  STR_CAMEL_OUTER_WIDTH,
-  STR_CAMEL_OUTER_HEIGHT,
-  STR_CAMEL_INNER_WIDTH,
-  STR_CAMEL_INNER_HEIGHT,
-  STR_CAMEL_SCROLL_WIDTH,
-  STR_CAMEL_SCROLL_HEIGHT,
-  STR_CAMEL_SCROLLBAR_WIDTH,
-  STR_CAMEL_SCROLLBAR_HEIGHT,
-} from './constants-computed';
-
 /**
  * Gets the given layout dimensions object as css rules schema.
  *
@@ -30,43 +11,43 @@ import {
  */
 const getLayoutDimensionsCssSchema = (layout) => [
   [
-    STR_KEBAB_DOUBLE_HYPHEN_PREFIX_OUTER_WIDTH,
-    layout[STR_CAMEL_OUTER_WIDTH],
+    '--scroll-padlock-outer-width',
+    layout.outerWidth,
   ],
 
   [
-    STR_KEBAB_DOUBLE_HYPHEN_PREFIX_OUTER_HEIGHT,
-    layout[STR_CAMEL_OUTER_HEIGHT],
+    '--scroll-padlock-outer-height',
+    layout.outerHeight,
   ],
 
   [
-    STR_KEBAB_DOUBLE_HYPHEN_PREFIX_INNER_WIDTH,
-    layout[STR_CAMEL_INNER_WIDTH],
+    '--scroll-padlock-inner-width',
+    layout.innerWidth,
   ],
 
   [
-    STR_KEBAB_DOUBLE_HYPHEN_PREFIX_INNER_HEIGHT,
-    layout[STR_CAMEL_INNER_HEIGHT],
+    '--scroll-padlock-inner-height',
+    layout.innerHeight,
   ],
 
   [
-    STR_KEBAB_DOUBLE_HYPHEN_PREFIX_SCROLL_WIDTH,
-    layout[STR_CAMEL_SCROLL_WIDTH],
+    '--scroll-padlock-scroll-width',
+    layout.scrollWidth,
   ],
 
   [
-    STR_KEBAB_DOUBLE_HYPHEN_PREFIX_SCROLL_HEIGHT,
-    layout[STR_CAMEL_SCROLL_HEIGHT],
+    '--scroll-padlock-scroll-height',
+    layout.scrollHeight,
   ],
 
   [
-    STR_KEBAB_DOUBLE_HYPHEN_PREFIX_SCROLLBAR_WIDTH,
-    layout[STR_CAMEL_SCROLLBAR_WIDTH],
+    '--scroll-padlock-scrollbar-width',
+    layout.scrollbarWidth,
   ],
 
   [
-    STR_KEBAB_DOUBLE_HYPHEN_PREFIX_SCROLLBAR_HEIGHT,
-    layout[STR_CAMEL_SCROLLBAR_HEIGHT],
+    '--scroll-padlock-scrollbar-height',
+    layout.scrollbarHeight,
   ],
 ];
 

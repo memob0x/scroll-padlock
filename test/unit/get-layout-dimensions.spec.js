@@ -1,16 +1,5 @@
 import chai from 'chai';
 
-import {
-  STR_CAMEL_SCROLLBAR_WIDTH,
-  STR_CAMEL_SCROLLBAR_HEIGHT,
-  STR_CAMEL_OUTER_WIDTH,
-  STR_CAMEL_INNER_WIDTH,
-  STR_CAMEL_SCROLL_WIDTH,
-  STR_CAMEL_OUTER_HEIGHT,
-  STR_CAMEL_INNER_HEIGHT,
-  STR_CAMEL_SCROLL_HEIGHT,
-} from '../../src/constants-computed';
-
 import getLayout from '../../src/get-layout-dimensions';
 
 const { expect } = chai;
@@ -30,18 +19,18 @@ describe('src/get-layout-dimensions', () => {
     };
 
     expect(getLayout(mockedDiv, mockedDiv)).to.deep.equals({
-      [STR_CAMEL_OUTER_WIDTH]: mockedDiv.getBoundingClientRect().width,
-      [STR_CAMEL_OUTER_HEIGHT]: mockedDiv.getBoundingClientRect().height,
+      outerWidth: mockedDiv.getBoundingClientRect().width,
+      outerHeight: mockedDiv.getBoundingClientRect().height,
 
-      [STR_CAMEL_INNER_WIDTH]: mockedDiv.clientWidth,
-      [STR_CAMEL_INNER_HEIGHT]: mockedDiv.clientHeight,
+      innerWidth: mockedDiv.clientWidth,
+      innerHeight: mockedDiv.clientHeight,
 
-      [STR_CAMEL_SCROLL_WIDTH]: mockedDiv.scrollWidth,
-      [STR_CAMEL_SCROLL_HEIGHT]: mockedDiv.scrollHeight,
+      scrollWidth: mockedDiv.scrollWidth,
+      scrollHeight: mockedDiv.scrollHeight,
 
-      [STR_CAMEL_SCROLLBAR_WIDTH]: mockedDiv.getBoundingClientRect().width
+      scrollbarWidth: mockedDiv.getBoundingClientRect().width
         - mockedDiv.clientWidth,
-      [STR_CAMEL_SCROLLBAR_HEIGHT]: mockedDiv.getBoundingClientRect().height
+      scrollbarHeight: mockedDiv.getBoundingClientRect().height
         - mockedDiv.clientHeight,
     });
   });
@@ -60,17 +49,17 @@ describe('src/get-layout-dimensions', () => {
     };
 
     expect(getLayout(mockedDocumentElement, mockedWindow)).to.deep.equals({
-      [STR_CAMEL_OUTER_WIDTH]: mockedWindow.innerWidth,
-      [STR_CAMEL_OUTER_HEIGHT]: mockedWindow.innerHeight,
+      outerWidth: mockedWindow.innerWidth,
+      outerHeight: mockedWindow.innerHeight,
 
-      [STR_CAMEL_INNER_WIDTH]: mockedDocumentElement.clientWidth,
-      [STR_CAMEL_INNER_HEIGHT]: mockedDocumentElement.clientHeight,
+      innerWidth: mockedDocumentElement.clientWidth,
+      innerHeight: mockedDocumentElement.clientHeight,
 
-      [STR_CAMEL_SCROLL_WIDTH]: mockedDocumentElement.scrollWidth,
-      [STR_CAMEL_SCROLL_HEIGHT]: mockedDocumentElement.scrollHeight,
+      scrollWidth: mockedDocumentElement.scrollWidth,
+      scrollHeight: mockedDocumentElement.scrollHeight,
 
-      [STR_CAMEL_SCROLLBAR_WIDTH]: mockedWindow.innerWidth - mockedDocumentElement.clientWidth,
-      [STR_CAMEL_SCROLLBAR_HEIGHT]: mockedWindow.innerHeight - mockedDocumentElement.clientHeight,
+      scrollbarWidth: mockedWindow.innerWidth - mockedDocumentElement.clientWidth,
+      scrollbarHeight: mockedWindow.innerHeight - mockedDocumentElement.clientHeight,
     });
   });
 });

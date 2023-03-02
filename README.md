@@ -68,10 +68,9 @@ Some [CSS variables](#css-variables), addressing a given html element **data att
 
 ## Usage (basic)
 
-By default, a padlock instance addresses a `scroll-padlock-locked` css class and the [default browser scrollable element](https://developer.mozilla.org/en-US/docs/Web/API/document/scrollingElement).
+By default, a padlock instance addresses  the [default browser scrollable element](https://developer.mozilla.org/en-US/docs/Web/API/document/scrollingElement) and a `scroll-padlock-locked` css class.
 
 ```css
-/* common scroll-locking css rules */
 .scroll-padlock-locked {
   overflow: hidden;
 
@@ -80,40 +79,58 @@ By default, a padlock instance addresses a `scroll-padlock-locked` css class and
 ```
 
 ```javascript
-// addresses the default browser scrollable element
 const instance = new ScrollPadlock();
-
-document.scrollingElement.classList.add('scroll-padlock-locked');
-```
-
-## Usage (advanced)
-
-A custom instance requires the **html element** which scroll needs to be controlled and the [CSS class](#CSS-Rules-Examples) that would lock it.
-
-```javascript
-// The css class with the rules that would lock the page scroll
-const SCROLL_LOCKED_CSS_CLASS_NAME = "your-locked-class";
-
-// The element which scroll state needs to be controlled
-const { documentElement } = document;
-
-// Creates the instance
-const instance = new ScrollPadlock(
-  documentElement,
-  SCROLL_LOCKED_CSS_CLASS_NAME
-);
 ```
 
 At this point, the lock state can be changed simply **toggling that CSS class**; since the CSS class change is internally observed, the class change itself can be done through native DOM API, a virtual DOM library, another DOM manipulation script, etc...
 
 ```javascript
-const { classList } = documentElement;
+document.scrollingElement.classList.add('scroll-padlock-locked');
 
-// Locks the body scroll
-classList.add(SCROLL_LOCKED_CSS_CLASS_NAME);
+document.scrollingElement.classList.remove('scroll-padlock-locked');
+```
 
-// Unlocks the body scroll
-classList.remove(SCROLL_LOCKED_CSS_CLASS_NAME);
+## Usage (advanced)
+
+A custom scrolling element and a custom css class name are both supported.
+
+```javascript
+const customScrollingElement = document.querySelector('#custom-scrolling-element');
+
+const instance = new ScrollPadlock(
+  customScrollingElement,
+
+  "custom-scrolling-element-scroll-locked",
+
+  // useful in test environment scenarios
+  window,
+);
+
+customScrollingElement.classList.add("custom-scrolling-element-scroll-locked");
+
+customScrollingElement.classList.remove("custom-scrolling-element-scroll-locked");
+```
+
+The first constructor argument can be a single object of options.
+
+```javascript
+const instance = new ScrollPadlock({
+  // the html element which scrolls
+  scrollingElement: document.scrollingElement,
+
+  // the element which trigger scroll event
+  scrollEventElement: window,
+
+  cssClassName: 'locked-state-css-class',
+
+  // useful in order to debounce the resize handler, etc...
+  resizeHandlerWrapper: x => x,
+
+  // useful in order to throttle the scroll handler, etc...
+  scrollHandlerWrapper: x => x,
+
+  client: window,
+});
 ```
 
 ## CSS Rules Examples
@@ -121,7 +138,7 @@ classList.remove(SCROLL_LOCKED_CSS_CLASS_NAME);
 The following ruleset alone is enough to ensure a cross-browser body scroll lock for a standard vertical-scroll page:
 
 ```css
-html.your-locked-class {
+html.scroll-padlock-locked {
   /* Position-fixed hack, locks iOS too */
   position: fixed;
   width: 100%;
@@ -138,7 +155,7 @@ Some [browser recognition logic](https://gist.github.com/memob0x/0869e759887441b
 
 ```css
 /* iOS only */
-html.your-locked-class.ios {
+html.scroll-padlock-locked.ios {
   /* iOS fixed position hack */
   position: fixed;
   width: 100%;
@@ -148,13 +165,13 @@ html.your-locked-class.ios {
 }
 
 /* Standard browsers only */
-html.your-locked-class.not-ios,
-html.your-locked-class.not-ios body {
+html.scroll-padlock-locked.not-ios
+html.scroll-padlock-locked.not-ios body {
   /* Standard way to lock scroll */
   overflow: hidden;
 }
 
-html.your-locked-class.not-ios body {
+html.scroll-padlock-locked.not-ios body {
   /* Reserves space for scrollbar */
   /* (iOS has overlay scrollbars, this rule would have no effect there anyway) */
   padding-right: var(--scroll-padlock-scrollbar-width);
@@ -248,7 +265,7 @@ If positioned elements "jumps" on a parent lock state change, the same CSS varia
 
 /* The same right-positioned element, */
 /* not affected by its own container scrollbars disappearance */
-.your-locked-class .positioned-element {
+.scroll-padlock-locked .positioned-element {
   right: var(--scroll-padlock-scrollbar-width);
 }
 ```
