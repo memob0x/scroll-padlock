@@ -67,6 +67,8 @@ class ScrollPadlock {
     const {
       documentElement,
 
+      scrollingElement,
+
       body,
     } = document || {};
 
@@ -77,13 +79,13 @@ class ScrollPadlock {
     this.#document = document;
 
     //
-    this.#element = documentElement;
+    this.#elementDomTarget = scrollingElement || documentElement;
 
     //
-    this.#target = body;
+    this.#elementUniqueInstance = this.#elementDomTarget;
 
     //
-    this.#scroller = this.#window;
+    this.#elementScrollEvent = this.#window;
 
     //
     this.#observer = new MutationObserver(this.#handleObservation.bind(this));
@@ -111,7 +113,7 @@ class ScrollPadlock {
     if (isElementBodyOrHtml || isElementDefinedAndNotGlobal) {
       // Stores the given DOM element reference as scroller element,
       // the one provided to the class constructor
-      this.#target = element;
+      this.#elementDomTarget = element;
     }
 
     // checks whether the given element is assignable to padlock instance
@@ -119,10 +121,10 @@ class ScrollPadlock {
       // then replace "element" and "scroller" private members with that element
 
       // Stores the given DOM element reference as main element
-      this.#element = element;
+      this.#elementUniqueInstance = element;
 
       // Stores the given DOM element reference as scroller element
-      this.#scroller = element;
+      this.#elementScrollEvent = element;
     }
 
     //
@@ -169,8 +171,8 @@ class ScrollPadlock {
     // If an instance has already been initialized on this very element,
     // there could be conflicts in events handling etc,
     // throws an exception in this case
-    if (instances.has(this.#element)) {
-      throw new Error(`An instance has already been initialized on ${this.#element}`);
+    if (instances.has(this.#elementUniqueInstance)) {
+      throw new Error(`An instance has already been initialized on ${this.#elementUniqueInstance}`);
     }
 
     // Applies the css rules to the given element with the corresponding attribute selector
@@ -178,7 +180,7 @@ class ScrollPadlock {
 
     // Instance is not registered ad this point,
     // so this one is added to the instances collection
-    instances.set(this.#element, this);
+    instances.set(this.#elementUniqueInstance, this);
 
     // Fires the public update method to initialize everything;
     // computes scroll position, scrollbars sizes and writes css variables
@@ -216,7 +218,7 @@ class ScrollPadlock {
    * @private
    * @memberof ScrollPadlock
    */
-  #element = null;
+  #elementUniqueInstance = null;
 
   /**
    * The original given element (the one provided to the class constructor).
@@ -224,7 +226,7 @@ class ScrollPadlock {
    * @private
    * @memberof ScrollPadlock
    */
-  #target = null;
+  #elementDomTarget = null;
 
   /**
    * The actual scrollable element (the element that can perform and listen to scroll event)
@@ -234,7 +236,7 @@ class ScrollPadlock {
    * @private
    * @memberof ScrollPadlock
    */
-  #scroller = null;
+  #elementScrollEvent = null;
 
   /**
    * The styler, css variables holder.
@@ -552,7 +554,7 @@ class ScrollPadlock {
     return {
       [STR_WORD_RESIZE]: this.#window,
 
-      [STR_WORD_SCROLL]: this.#scroller,
+      [STR_WORD_SCROLL]: this.#elementScrollEvent,
     };
   }
 
@@ -564,7 +566,7 @@ class ScrollPadlock {
    * @returns {DOMTokenList} The given element class list reference.
    */
   #getClassList() {
-    return this.#target?.classList;
+    return this.#elementDomTarget?.classList;
   }
 
   /**
@@ -575,9 +577,9 @@ class ScrollPadlock {
    * @returns {string} The element data attribute value.
    */
   #getCssSelectorAttributeValue() {
-    return getElementParentsLength(this.#target)
+    return getElementParentsLength(this.#elementDomTarget)
       + STR_CHAR_HYPHEN
-      + getElementIndex(this.#target);
+      + getElementIndex(this.#elementDomTarget);
   }
 
   /**
@@ -610,7 +612,7 @@ class ScrollPadlock {
    * @returns {object} The layout object.
    */
   #getLayout() {
-    return getLayoutDimensions(this.#element, this.#scroller);
+    return getLayoutDimensions(this.#elementDomTarget, this.#elementScrollEvent);
   }
 
   /**
@@ -621,7 +623,7 @@ class ScrollPadlock {
    * @returns {object} The current scroll position.
    */
   #getScrollCurrent() {
-    return getScrollPosition(this.#scroller);
+    return getScrollPosition(this.#elementScrollEvent);
   }
 
   /**
@@ -632,7 +634,7 @@ class ScrollPadlock {
    * @param {object} position - The scroll position to be set.
    * @returns {void} Nothing.
    */
-  #scrollTo = (position) => this.#scroller.scrollTo(
+  #scrollTo = (position) => this.#elementScrollEvent.scrollTo(
     position[STR_WORD_LEFT],
 
     position[STR_WORD_TOP],
@@ -773,7 +775,7 @@ class ScrollPadlock {
    * @returns {void} Nothing.
    */
   #applyCssSelectorAttribute(method) {
-    this.#target?.[`${method}Attribute`](
+    this.#elementDomTarget?.[`${method}Attribute`](
       this.#cssSelectorAttributeName,
 
       this.#cssSelectorAttributeValue,
@@ -810,7 +812,7 @@ class ScrollPadlock {
     }
 
     //
-    this.#observer?.observe(this.#target, {
+    this.#observer?.observe(this.#elementDomTarget, {
       attributes: true,
       attributeFilter: ['class'],
       childList: false,
@@ -878,7 +880,7 @@ class ScrollPadlock {
     // Exit early...
     if (
       // ...if the main element is not set (probably the instance has been destroyed)
-      !this.#element
+      !this.#elementUniqueInstance
 
       // ...if a state for the given event doesn't exist
       // (supplied event type is not supported)
@@ -967,18 +969,18 @@ class ScrollPadlock {
     this.#listener(STR_WORD_SCROLL, STR_WORD_REMOVE);
 
     // Removes the instance from the instances collection
-    instances.delete(this.#element);
+    instances.delete(this.#elementUniqueInstance);
 
     // Removes references
     this.#window = null;
 
     this.#document = null;
 
-    this.#element = null;
+    this.#elementUniqueInstance = null;
 
-    this.#target = null;
+    this.#elementDomTarget = null;
 
-    this.#scroller = null;
+    this.#elementScrollEvent = null;
 
     this.#observer = null;
 

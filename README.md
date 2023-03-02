@@ -68,7 +68,7 @@ Some [CSS variables](#css-variables), addressing a given html element **data att
 
 ## Usage (basic)
 
-By default, a padlock instance addresses a `scroll-padlock-locked` css class and the default browser scrollable element.
+By default, a padlock instance addresses a `scroll-padlock-locked` css class and the [default browser scrollable element](https://developer.mozilla.org/en-US/docs/Web/API/document/scrollingElement).
 
 ```css
 /* common scroll-locking css rules */
@@ -81,21 +81,14 @@ By default, a padlock instance addresses a `scroll-padlock-locked` css class and
 
 ```javascript
 // addresses the default browser scrollable element
-void new ScrollPadlock();
+const instance = new ScrollPadlock();
 
-document.body.classList.add('scroll-padlock-locked');
-
-// addresses a custom scrollable element
-const customScroller = document.querySelector('#custom-scroller');
-
-void new ScrollPadlock(customScroller);
-
-customScroller.classList.add('scroll-padlock-locked');
+document.scrollingElement.classList.add('scroll-padlock-locked');
 ```
 
 ## Usage (advanced)
 
-An instance requires the **html element** which scroll needs to be controlled and the [CSS class](#CSS-Rules-Examples) that would lock it.
+A custom instance requires the **html element** which scroll needs to be controlled and the [CSS class](#CSS-Rules-Examples) that would lock it.
 
 ```javascript
 // The css class with the rules that would lock the page scroll
