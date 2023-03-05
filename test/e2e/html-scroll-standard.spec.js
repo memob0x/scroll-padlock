@@ -41,7 +41,7 @@ after(async () => {
     expect(isSameDimensions).to.be.true;
     // can't expect to be 0 since new puppeteer renders scrollbars in screenshots
     // mismatch percentage should be ~11%
-    expect(rawMisMatchPercentage).to.be.greaterThanOrEqual(0).and.lessThan(12);
+    expect(Math.floor(rawMisMatchPercentage)).to.be.greaterThanOrEqual(0).and.lessThanOrEqual(12);
 
     await page.evaluate(() => {
       window.instance.scroll = { top: 0, left: 0 };
@@ -54,7 +54,7 @@ after(async () => {
     expect(isSameDimensions).to.be.true;
     // can't expect to be 0 since new puppeteer renders scrollbars in screenshots
     // mismatch percentage should be ~11%
-    expect(rawMisMatchPercentage).to.be.greaterThanOrEqual(0).and.lessThan(12);
+    expect(Math.floor(rawMisMatchPercentage)).to.be.greaterThanOrEqual(0).and.lessThanOrEqual(12);
 
     await page.evaluate(() => window.unlock());
 

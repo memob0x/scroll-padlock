@@ -2,7 +2,7 @@
 
 <dl>
 <dt><a href="#ScrollPadlock">ScrollPadlock</a></dt>
-<dd><p>Creates the scroll padlock class instance on a given scrollable element.</p>
+<dd><p>Creates the scroll padlock class instance on body scroll or on a given scrollable element.</p>
 </dd>
 </dl>
 
@@ -12,13 +12,6 @@
 <dt><a href="#getCssRuleFromSchema">getCssRuleFromSchema(selector, schema)</a> ⇒ <code>string</code></dt>
 <dd><p>Updates a given element css variables to a given styler element
 ensuring its presence in the given target element (usually head).</p>
-</dd>
-<dt><a href="#getElementIndex">getElementIndex(element)</a> ⇒ <code>number</code></dt>
-<dd><p>Gets a given element position (index) in the DOM tree
-(where 0 is first-child, 1 is second etc...).</p>
-</dd>
-<dt><a href="#getElementParentsLength">getElementParentsLength(element)</a> ⇒ <code>number</code></dt>
-<dd><p>Gets the number of ancestors of a given element.</p>
 </dd>
 <dt><a href="#getLayoutDimensionsCssSchema">getLayoutDimensionsCssSchema(layout)</a> ⇒ <code>Array</code></dt>
 <dd><p>Gets the given layout dimensions object as css rules schema.</p>
@@ -41,7 +34,7 @@ ensuring its presence in the given target element (usually head).</p>
 <a name="ScrollPadlock"></a>
 
 ## ScrollPadlock
-Creates the scroll padlock class instance on a given scrollable element.
+Creates the scroll padlock class instance on body scroll or on a given scrollable element.
 
 **Kind**: global class  
 **Access**: public  
@@ -269,45 +262,6 @@ ensuring its presence in the given target element (usually head).
 **Example**  
 ```js
 getCssRuleFromSchema([['top', 1], ['right', 2]]); // --> { 'top': '1px', 'right': '2px' }
-```
-<a name="getElementIndex"></a>
-
-## getElementIndex(element) ⇒ <code>number</code>
-Gets a given element position (index) in the DOM tree
-(where 0 is first-child, 1 is second etc...).
-
-**Kind**: global function  
-**Returns**: <code>number</code> - The position of the given element in the DOM tree.  
-**Access**: public  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| element | <code>HTMLElement</code> | The given element to be checked. |
-
-**Example**  
-```js
-getElementIndex(document.documentElement); // --> 0
-getElementIndex(document.head); // --> 0
-getElementIndex(document.body); // --> 1
-```
-<a name="getElementParentsLength"></a>
-
-## getElementParentsLength(element) ⇒ <code>number</code>
-Gets the number of ancestors of a given element.
-
-**Kind**: global function  
-**Returns**: <code>number</code> - The number of ancestors of the given element.  
-**Access**: public  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| element | <code>HTMLElement</code> | The given element to be checked. |
-
-**Example**  
-```js
-getElementParentsLength(document.documentElement); // --> 0
-getElementParentsLength(document.head); // --> 1
-getElementParentsLength(document.body); // --> 1
 ```
 <a name="getLayoutDimensionsCssSchema"></a>
 
