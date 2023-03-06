@@ -46,10 +46,6 @@ const pathRoot = resolve('.');
   return Promise.all(BUNDLES_PRESETS.reduce((accumulator, { format, min, babel }) => {
     const plugins = [];
 
-    if (min) {
-      plugins.push(rollupTerser());
-    }
-
     if (babel) {
       plugins.push(rollupBabel({
         presets: [
@@ -62,6 +58,10 @@ const pathRoot = resolve('.');
       }));
     }
 
+    if (min) {
+      plugins.push(rollupTerser());
+    }
+
     plugins.push(rollupGzip());
 
     accumulator.push(rollupResult.write({
@@ -71,7 +71,7 @@ const pathRoot = resolve('.');
 
       name: 'ScrollPadlock',
 
-      file: `${pathRoot}/dist/${format}/scroll-padlock${min ? '.min' : ''}${babel ? '.babel' : ''}.js`,
+      file: `${pathRoot}/dist/${format}/scroll-padlock${babel ? '.babel' : ''}${min ? '.min' : ''}.js`,
 
       exports: 'default',
 

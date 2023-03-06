@@ -34,9 +34,19 @@ $ npm install scroll-padlock
 The source code is entirely written in [standard ECMAScript](https://tc39.es/) with no dependencies.
 All major budle formats are supported, including [umd](https://github.com/umdjs/umd), [iife](https://developer.mozilla.org/en-US/docs/Glossary/IIFE), [amd](https://en.wikipedia.org/wiki/Asynchronous_module_definition), [cjs](https://en.wikipedia.org/wiki/CommonJS), [esm](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules) and [SystemJS](https://github.com/systemjs/systemjs); also, a minified version and a transpiled version through babel are available for each of those.
 
-### Node:
+### Node (basic):
 
 ```javascript
+// umd minified version
+import ScrollPadlock from "scroll-padlock";
+
+const scrollPadlock = new ScrollPadlock();
+```
+
+### Node (advanced):
+
+```javascript
+// es modules version
 import ScrollPadlock from "scroll-padlock/dist/es/scroll-padlock.js";
 
 const scrollPadlock = new ScrollPadlock();
@@ -46,6 +56,7 @@ const scrollPadlock = new ScrollPadlock();
 
 ```html
 <script type="module">
+  // es modules minified version
   import ScrollPadlock from "path/to/scroll-padlock/dist/es/scroll-padlock.min.js";
 
   const scrollPadlock = new ScrollPadlock();
@@ -55,7 +66,8 @@ const scrollPadlock = new ScrollPadlock();
 ### Browser (globals):
 
 ```html
-<script src="path/to/scroll-padlock/dist/iife/scroll-padlock.min.js"></script>
+<!-- iife babel transpiled minified version -->
+<script src="path/to/scroll-padlock/dist/iife/scroll-padlock.babel.min.js"></script>
 
 <script>
   var scrollPadlock = new ScrollPadlock();
@@ -68,7 +80,7 @@ Some [CSS variables](#css-variables), addressing a given html element **data att
 
 ## Usage (basic)
 
-By default, a padlock instance addresses  the [default browser scrollable element](https://developer.mozilla.org/en-US/docs/Web/API/document/scrollingElement) and a `scroll-padlock-locked` css class.
+By default, a padlock instance addresses  the [default browser scrolling element](https://developer.mozilla.org/en-US/docs/Web/API/document/scrollingElement) and a `scroll-padlock-locked` css class.
 
 ```css
 .scroll-padlock-locked {
@@ -129,6 +141,7 @@ const instance = new ScrollPadlock({
   // useful in order to throttle the scroll handler, etc...
   scrollHandlerWrapper: x => x,
 
+  // useful in test environment scenarios
   client: window,
 });
 ```

@@ -5,13 +5,13 @@ import getCssRuleFromSchema from './get-css-rule-from-schema';
 import getLayoutDimensionsCssSchema from './get-layout-dimensions-css-schema';
 import getScrollPositionCssSchema from './get-scroll-position-css-schema';
 
-//
+// Handlers no-op function, default value
 const defaultHandlerWrapper = (a) => a;
 
-//
+// Padlock instances global id reference
 let instanceId = 0;
 
-// Instances collection,
+// Padlock instances gobal collection,
 // a weakmap is used in order to keep every instance associated with the scrollable element itself
 const instances = new WeakMap();
 
@@ -74,23 +74,24 @@ const instances = new WeakMap();
  */
 class ScrollPadlock {
   constructor(scrollingElementArgument, cssClassNameArgument, clientArgument = globalThis) {
-    //
+    // Whether the scrolling element constructor argument is an object or not
     const isScrollingElementArgumentObject = typeof scrollingElementArgument === 'object';
 
-    //
+    // The html element type from the client argument
     const { HTMLElement } = clientArgument;
 
-    //
+    // Whether the scrolling element constructor argument is an html element or not
     const isScrollingElementArgumentHtmlElement = (
       scrollingElementArgument instanceof HTMLElement
     );
 
-    //
+    // Whether the scrolling element constructor argument is an object of options
     const isScrollingElementArgumentOptionsObject = (
       isScrollingElementArgumentObject && !isScrollingElementArgumentHtmlElement
     );
 
-    //
+    // Seamless object of options reference
+    // (if the first argument is an object of options) or declaration
     const options = isScrollingElementArgumentOptionsObject ? scrollingElementArgument : {
       scrollingElement: scrollingElementArgument,
 
@@ -99,7 +100,7 @@ class ScrollPadlock {
       client: clientArgument,
     };
 
-    //
+    // Object of options deconstruction
     const {
       scrollingElement: optionScrollingElement,
 
@@ -114,25 +115,26 @@ class ScrollPadlock {
       client: optionClient,
     } = options || {};
 
-    //
+    // The client "window" object reference
     this.#window = optionClient || clientArgument;
 
-    //
+    // The client "window" object deconstruction
     const { document } = this.#window || {};
 
-    //
+    // The client "document" object deconstruction
     this.#document = document;
 
-    //
+    // Constructor scrolling element argument type check validity check...
     if (
       scrollingElementArgument === null
-       || scrollingElementArgument === this.#window
-       || scrollingElementArgument === this.#document
+      || scrollingElementArgument === this.#window
+      || scrollingElementArgument === this.#document
     ) {
-      throw new TypeError('errrr1');
+      // ...throws error if invalid
+      throw new TypeError('The Padlock constructor "scrolling element" argument is invalid.');
     }
 
-    //
+    // The client "document" object deconstruction
     const {
       body,
 
@@ -141,88 +143,99 @@ class ScrollPadlock {
       scrollingElement: documentScrollingElement,
     } = this.#document || {};
 
-    //
+    // The browser default scrolling element
     const defaultScrollingElement = documentScrollingElement || documentElement;
 
-    //
+    // The Padlock instance scrolling element
     this.#scrollingElement = optionScrollingElement || defaultScrollingElement;
 
-    if (!(this.#scrollingElement instanceof HTMLElement)) {
-      throw new TypeError('errrr2');
+    // Whether the scrolling element Padlock instance member is an html element or not
+    const isScrollingElementHtmlElement = this.#scrollingElement instanceof HTMLElement;
+
+    // Padlock instance scrolling element validity check...
+    if (!isScrollingElementHtmlElement) {
+      // ...throws error if invalid
+      throw new TypeError('The Padlock instance scrolling element is invalid.');
     }
 
-    //
+    // The default element which trigger "scroll" event
     let defaultScrollEventElement = optionScrollingElement || this.#window;
 
-    //
+    // The default element which trigger "scroll" event, based on "scrolling element" option
     defaultScrollEventElement = (
       optionScrollingElement === body || optionScrollingElement === documentElement
         ? this.#window
         : defaultScrollEventElement
     );
 
-    //
+    // Padlock instance element which trigger "scroll" event member reference
     this.#scrollEventElement = optionScrollEventElement || defaultScrollEventElement;
 
-    //
-    if (
-      !(this.#scrollEventElement instanceof HTMLElement)
-       && this.#scrollEventElement !== this.#window
-    ) {
-      throw new TypeError('errrr3');
+    // Whether the scrolling element Padlock instance member is an html element or not
+    const isScrollEventHtmlElement = this.#scrollEventElement instanceof HTMLElement;
+
+    // Padlock instance scroll event element validity check...
+    if (!isScrollEventHtmlElement && this.#scrollEventElement !== this.#window) {
+      // ...throws error if invalid
+      throw new TypeError('The Padlock instance scroll event element is invalid.');
     }
 
-    //
-    this.#elementUniqueInstance = this.#scrollEventElement;
+    // The Padlock css class option type
+    const optionCssClassNameTypeString = typeof optionCssClassName;
 
-    //
-    const optionCssClassNameTypeof = typeof optionCssClassName;
+    // Whether the Padlock css class option is set, but it's not of type "string"
+    const isOptionsCssClassNameSetButNotString = (
+      optionCssClassNameTypeString !== 'undefined' && optionCssClassNameTypeString !== 'string'
+    );
 
-    //
-    if (
-      (optionCssClassNameTypeof !== 'undefined' && optionCssClassNameTypeof !== 'string')
-      || optionCssClassName === ''
-    ) {
-      throw new TypeError('errrr1');
+    // The css class to be observed validity check...
+    if (isOptionsCssClassNameSetButNotString || optionCssClassName === '') {
+      // ...throws error if invalid
+      throw new TypeError('The Padlock CSS class to be observed is invalid.');
     }
 
-    // Stores the class name as a private member
+    // Stores the css class name to be observer or a default value
     this.#cssClassName = optionCssClassName || 'scroll-padlock-locked';
 
-    //
+    // Stores a resize event handler function wrapper
     this.#resizeHandlerWrapper = optionResizeHandlerWrapper || defaultHandlerWrapper;
 
-    //
+    // Stores a scroll event handler function wrapper
     this.#scrollHandlerWrapper = optionScrollHandlerWrapper || defaultHandlerWrapper;
 
+    // Stores the element used as unique identifier (key) in the map of instances.
+    this.#elementUniqueInstance = this.#scrollEventElement;
+
     // If an instance has already been initialized on this very element,
-    // there could be conflicts in events handling etc,
-    // throws an exception in this case
+    // there could be conflicts in events handling etc...
     if (instances.has(this.#elementUniqueInstance)) {
+      // ...throws an exception in this case
       throw new Error(`An instance has already been initialized on ${this.#elementUniqueInstance}`);
     }
 
-    // Instance is not registered ad this point,
+    // (Pesumably) error-free area from this point on...
+
+    // ...also, the instance is not registered ad this point,
     // so this one is added to the instances collection
     instances.set(this.#elementUniqueInstance, this);
 
-    //
-    const { MutationObserver = function MutationObserver() {} } = this.#window || {};
-
-    //
-    this.#observer = new MutationObserver(this.#handleObservation.bind(this));
-
-    //
-    this.#styler = this.#document.createElement('style');
-
-    // Stores the given element class list reference
-    this.#classList = this.#getClassList();
-
-    //
+    // Increments the global id reference in order to set a unique one to the current instance
     instanceId += 1;
 
     // The element data attribute value
     this.#id = instanceId;
+
+    // The client "window" object deconstruction
+    const { MutationObserver = function MutationObserver() {} } = this.#window || {};
+
+    // Handles the Padlock DOM observation through MutationObserver API
+    this.#observer = new MutationObserver(this.#handleObservation.bind(this));
+
+    // The Padlock instance unique styler, a <style /> element
+    this.#styler = this.#document.createElement('style');
+
+    // Stores the given element class list reference
+    this.#classList = this.#getClassList();
 
     // The element css selector
     this.#cssSelector = this.#getCssSelector();
@@ -247,6 +260,7 @@ class ScrollPadlock {
   // #region properties
 
   /**
+   * The Padlock instance unique identifier.
    *
    * @private
    * @memberof ScrollPadlock
@@ -254,7 +268,7 @@ class ScrollPadlock {
   #id = 0;
 
   /**
-   * A reference to the client window object.
+   * A reference to the client "window" object.
    *
    * @private
    * @memberof ScrollPadlock
@@ -262,7 +276,7 @@ class ScrollPadlock {
   #window = null;
 
   /**
-   * A reference to the client document object.
+   * A reference to the client "document" object.
    *
    * @private
    * @memberof ScrollPadlock
@@ -331,6 +345,7 @@ class ScrollPadlock {
    * State MutationObserver object,
    * registers the callback fired on CSS class change.
    *
+   * @type {MutationObserver}
    * @private
    * @memberof ScrollPadlock
    */
@@ -513,6 +528,7 @@ class ScrollPadlock {
   }
 
   /**
+   * The resize event handler function wrapper.
    *
    * @private
    * @memberof ScrollPadlock
@@ -521,6 +537,7 @@ class ScrollPadlock {
   #resizeHandlerWrapper = defaultHandlerWrapper;
 
   /**
+   * Window resize event handler.
    *
    * @private
    * @memberof ScrollPadlock
@@ -535,7 +552,7 @@ class ScrollPadlock {
   }
 
   /**
-   * Window resize event handler.
+   * Window resize event handler, bound with the wrapper function.
    *
    * @private
    * @memberof ScrollPadlock
@@ -546,6 +563,7 @@ class ScrollPadlock {
   );
 
   /**
+   * The scroll event handler function wrapper.
    *
    * @private
    * @memberof ScrollPadlock
@@ -554,6 +572,7 @@ class ScrollPadlock {
   #scrollHandlerWrapper = defaultHandlerWrapper;
 
   /**
+   * Element scroll event handler.
    *
    * @private
    * @memberof ScrollPadlock
@@ -568,7 +587,7 @@ class ScrollPadlock {
   }
 
   /**
-   * Element scroll event handler.
+   * Element scroll event handler, bound with the wrapper function.
    *
    * @private
    * @memberof ScrollPadlock
@@ -684,10 +703,10 @@ class ScrollPadlock {
    * @returns {boolean} The scroll state.
    */
   #updateState() {
-    //
+    // Updates the instance scroll state...
     this.#state = this.#getState();
 
-    //
+    // ...then returns it.
     return this.#state;
   }
 
@@ -732,10 +751,10 @@ class ScrollPadlock {
    * @returns {object} The layout object.
    */
   #updateLayout() {
-    //
+    // Updates the instance layout state...
     this.#layout = this.#getLayout();
 
-    //
+    // ...then returns it.
     return this.#layout;
   }
 
@@ -762,18 +781,21 @@ class ScrollPadlock {
    * @returns {HTMLStyleElement} The styler element.
    */
   #setStylerCssRule() {
-    //
+    // Builds the the CSS rules schema object
     const schema = [
       ...getLayoutDimensionsCssSchema(this.layout),
 
       ...getScrollPositionCssSchema(this.scroll),
     ];
 
-    //
+    // Gets the CSS rules schema object converted to a single CSS declaration string
     const rule = getCssRuleFromSchema(this.#cssSelector, schema);
 
-    //
-    return setUniqueCssRule(this.#styler, rule);
+    // Sets the CSS string rule to the instance styler
+    const styler = setUniqueCssRule(this.#styler, rule);
+
+    // Returns the styler which CSS rule is applied to
+    return styler;
   }
 
   /**
@@ -784,13 +806,14 @@ class ScrollPadlock {
    * @returns {HTMLStyleElement} The styler element.
    */
   #ensureStylerPresenceInHead() {
-    // Ensures style tag dom presence, StyleSheet API throws otherwise
+    // Ensures style tag dom presence, StyleSheet API throws otherwise,
+    // if instance styler element is set, but is not inside the <head /> element...
     if (this.#styler && !this.#document?.head?.contains(this.#styler)) {
-      //
+      // ...then it is inserted.
       this.#document?.head.appendChild(this.#styler);
     }
 
-    //
+    // Returns the instance styler element
     return this.#styler;
   }
 
@@ -802,10 +825,10 @@ class ScrollPadlock {
    * @returns {HTMLStyleElement} The styler element.
    */
   #removeStyler() {
-    //
+    // Removes the instance <style /> element from DOM...
     this.#styler?.remove();
 
-    //
+    // ...then returns its reference.
     return this.#styler;
   }
 
@@ -848,13 +871,13 @@ class ScrollPadlock {
    * @returns {boolean} The css class observer state.
    */
   #observeCssClass() {
-    //
+    // if instance observer is already observing...
     if (this.#observerState) {
-      //
+      // ...then exits early, nothing to do, returns the observer state.
       return this.#observerState;
     }
 
-    //
+    // Attaches the observer, starts observing.
     this.#observer?.observe(this.#scrollingElement, {
       attributes: true,
       attributeFilter: ['class'],
@@ -862,10 +885,10 @@ class ScrollPadlock {
       characterData: false,
     });
 
-    //
+    // Updates (toggles) the instance observer state.
     this.#observerState = !!this.#observer;
 
-    //
+    // Returns the instance observer state.
     return this.#observerState;
   }
 
@@ -877,23 +900,24 @@ class ScrollPadlock {
    * @returns {boolean} The css class observer state.
    */
   #unobserveCssClass() {
-    //
+    // if instance observer is already disconnected...
     if (!this.#observerState) {
-      //
+      // ...then exits early, nothing to do, returns the observer state.
       return this.#observerState;
     }
 
-    //
+    // Disconnects the observer, stops observing.
     this.#observer?.disconnect();
 
-    //
+    // Updates the instance observer state.
     this.#observerState = false;
 
-    //
+    // Returns the instance observer state.
     return this.#observerState;
   }
 
   /**
+   * Refreshes instance DOM-related states.
    *
    * @private
    * @memberof ScrollPadlock
