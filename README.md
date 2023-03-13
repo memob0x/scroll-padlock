@@ -135,11 +135,11 @@ const instance = new ScrollPadlock({
 
   cssClassName: 'locked-state-css-class',
 
-  // useful in order to debounce the resize handler, etc...
-  resizeHandlerWrapper: x => x,
+  // useful in order to debounce the original resize handler execution, etc...
+  resizeHandlerWrapper: handler => handler(),
 
-  // useful in order to throttle the scroll handler, etc...
-  scrollHandlerWrapper: x => x,
+  // useful in order to throttle the original scroll handler execution, etc...
+  scrollHandlerWrapper: handler => handler(),
 
   // useful in test environment scenarios
   client: window,

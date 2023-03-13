@@ -1,3 +1,5 @@
+import './typedef';
+
 /**
  * Gets the given layout dimensions object as css rules schema.
  *
@@ -6,48 +8,48 @@
  * //  ['--outer-width', 10],
  * //  ['--outer-height', 20]
  * // ]).
- * @param {object} layout - The layout dimensions objects to be set in css variables.
- * @returns {Array} The styling rule css schema.
+ * @param {Layout} layout - The layout dimensions objects to be set in css variables.
+ * @returns {CssRulesSchema} The styling rule css schema.
  */
 const getLayoutDimensionsCssSchema = (layout) => [
   [
     '--scroll-padlock-outer-width',
-    layout.outerWidth,
+    layout?.outerWidth || 0,
   ],
 
   [
     '--scroll-padlock-outer-height',
-    layout.outerHeight,
+    layout?.outerHeight || 0,
   ],
 
   [
     '--scroll-padlock-inner-width',
-    layout.innerWidth,
+    layout?.innerWidth || 0,
   ],
 
   [
     '--scroll-padlock-inner-height',
-    layout.innerHeight,
+    layout?.innerHeight || 0,
   ],
 
   [
     '--scroll-padlock-scroll-width',
-    layout.scrollWidth,
+    layout?.scrollWidth || 0,
   ],
 
   [
     '--scroll-padlock-scroll-height',
-    layout.scrollHeight,
+    layout?.scrollHeight || 0,
   ],
 
   [
     '--scroll-padlock-scrollbar-width',
-    layout.scrollbarWidth,
+    layout?.scrollbarWidth || 0,
   ],
 
   [
     '--scroll-padlock-scrollbar-height',
-    layout.scrollbarHeight,
+    layout?.scrollbarHeight || 0,
   ],
 ];
 

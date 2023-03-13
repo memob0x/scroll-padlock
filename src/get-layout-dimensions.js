@@ -1,3 +1,5 @@
+import './typedef';
+
 /**
  * Gets a given element or browser dimensions.
  *
@@ -7,7 +9,7 @@
  * @param {HTMLElement} element - The given element whose dimensions need to be retrieved.
  * @param {Window|HTMLElement} scroller - The given scrollable used to retrieve some
  * dimensions when the given element is global (page).
- * @returns {object} The given element dimensions as an object ({ top, left }).
+ * @returns {Layout} The given element dimensions as an object ({ top, left }).
  */
 const getLayoutDimensions = (element, scroller) => {
   // Implying global (page) element...

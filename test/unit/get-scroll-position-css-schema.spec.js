@@ -3,6 +3,14 @@ import getScrollPositionCssSchema from '../../src/get-scroll-position-css-schema
 
 describe('src/get-scroll-position-css-schema', () => {
   it('should be able to format a scroll object as a css rules schema', () => {
+    expect(getScrollPositionCssSchema())
+      .to.deep.equals(getScrollPositionCssSchema(null))
+      .to.deep.equals(getScrollPositionCssSchema({}))
+      .to.deep.equals([
+        ['--scroll-padlock-scroll-top', 0],
+        ['--scroll-padlock-scroll-left', 0],
+      ]);
+
     expect(getScrollPositionCssSchema({
       top: 10,
       left: 20,

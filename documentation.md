@@ -13,22 +13,33 @@
 <dd><p>Updates a given element css variables to a given styler element
 ensuring its presence in the given target element (usually head).</p>
 </dd>
-<dt><a href="#getLayoutDimensionsCssSchema">getLayoutDimensionsCssSchema(layout)</a> ⇒ <code>Array</code></dt>
+<dt><a href="#getLayoutDimensionsCssSchema">getLayoutDimensionsCssSchema(layout)</a> ⇒ <code><a href="#CssRulesSchema">CssRulesSchema</a></code></dt>
 <dd><p>Gets the given layout dimensions object as css rules schema.</p>
 </dd>
-<dt><a href="#getLayoutDimensions">getLayoutDimensions(element, scroller)</a> ⇒ <code>object</code></dt>
+<dt><a href="#getLayoutDimensions">getLayoutDimensions(element, scroller)</a> ⇒ <code><a href="#Layout">Layout</a></code></dt>
 <dd><p>Gets a given element or browser dimensions.</p>
 </dd>
-<dt><a href="#getScrollPositionCssSchema">getScrollPositionCssSchema(scroll)</a> ⇒ <code>Array</code></dt>
+<dt><a href="#getScrollPositionCssSchema">getScrollPositionCssSchema(scroll)</a> ⇒ <code><a href="#CssRulesSchema">CssRulesSchema</a></code></dt>
 <dd><p>Gets the given scroll position object as css rules schema.</p>
 </dd>
-<dt><a href="#getScrollPosition">getScrollPosition(element)</a> ⇒ <code>object</code></dt>
+<dt><a href="#getScrollPosition">getScrollPosition(element)</a> ⇒ <code><a href="#ScrollPosition">ScrollPosition</a></code></dt>
 <dd><p>Gets a given element or browser scroll position.</p>
 </dd>
 <dt><a href="#setUniqueCssRule">setUniqueCssRule(styler, rule)</a> ⇒ <code>HTMLStyleElement</code></dt>
 <dd><p>Updates a given element css variables to a given styler element
 ensuring its presence in the given target element (usually head).</p>
 </dd>
+</dl>
+
+## Typedefs
+
+<dl>
+<dt><a href="#ScrollPosition">ScrollPosition</a></dt>
+<dd></dd>
+<dt><a href="#Layout">Layout</a></dt>
+<dd></dd>
+<dt><a href="#CssRulesSchema">CssRulesSchema</a> : <code>Array.&lt;Array.&lt;(string|number)&gt;&gt;</code></dt>
+<dd></dd>
 </dl>
 
 <a name="ScrollPadlock"></a>
@@ -42,9 +53,9 @@ Creates the scroll padlock class instance on body scroll or on a given scrollabl
 * [ScrollPadlock](#ScrollPadlock)
     * [new ScrollPadlock([scrollingElementArgument], [cssClassNameArgument], [clientArgument])](#new_ScrollPadlock_new)
     * [.cssSelector](#ScrollPadlock+cssSelector) ⇒ <code>string</code>
-    * [.scroll](#ScrollPadlock+scroll) ⇒ <code>object</code>
+    * [.scroll](#ScrollPadlock+scroll) ⇒ <code>Types.ScrollPosition</code>
     * [.scroll](#ScrollPadlock+scroll)
-    * [.layout](#ScrollPadlock+layout) ⇒ <code>object</code>
+    * [.layout](#ScrollPadlock+layout) ⇒ <code>Types.Layout</code>
     * [.unlisten(type)](#ScrollPadlock+unlisten) ⇒ <code>boolean</code>
     * [.listen(type)](#ScrollPadlock+listen) ⇒ <code>boolean</code>
     * [.destroy()](#ScrollPadlock+destroy) ⇒ <code>void</code>
@@ -125,16 +136,16 @@ Gets the currently set css selector.
 ```js
 const padlock = new ScrollPadlock();
 
-padlock.cssSelector // --> "[data-scroll-padlock="1-1"]"
+padlock.cssSelector // --> "[data-scroll-padlock="1"]"
 ```
 <a name="ScrollPadlock+scroll"></a>
 
-### scrollPadlock.scroll ⇒ <code>object</code>
+### scrollPadlock.scroll ⇒ <code>Types.ScrollPosition</code>
 Returns the current scroll position, if on a locked state it
 returns the currently saved scroll position object.
 
 **Kind**: instance property of [<code>ScrollPadlock</code>](#ScrollPadlock)  
-**Returns**: <code>object</code> - The current scroll position object or the
+**Returns**: <code>Types.ScrollPosition</code> - The current scroll position object or the
 scroll position previously saved if on a locked state.  
 **Access**: public  
 **Example**  
@@ -154,7 +165,7 @@ given scroll position for a future scroll restoration.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| position | <code>object</code> | The scroll position to be set or saved if on a locked state. |
+| position | <code>Types.ScrollPosition</code> | The scroll position to be set or saved if on a locked state. |
 
 **Example**  
 ```js
@@ -164,11 +175,11 @@ padlock.scroll = { top: 123, left: 345 }
 ```
 <a name="ScrollPadlock+layout"></a>
 
-### scrollPadlock.layout ⇒ <code>object</code>
+### scrollPadlock.layout ⇒ <code>Types.Layout</code>
 Gets the layout dimensions, such as widths, heights, scrollbars etc...
 
 **Kind**: instance property of [<code>ScrollPadlock</code>](#ScrollPadlock)  
-**Returns**: <code>object</code> - The layout object.  
+**Returns**: <code>Types.Layout</code> - The layout object.  
 **Access**: public  
 **Example**  
 ```js
@@ -257,7 +268,7 @@ ensuring its presence in the given target element (usually head).
 | Param | Type | Description |
 | --- | --- | --- |
 | selector | <code>string</code> | The styling rules css selector. |
-| schema | <code>Array</code> | The css rules js schema. |
+| schema | [<code>CssRulesSchema</code>](#CssRulesSchema) | The css rules js schema. |
 
 **Example**  
 ```js
@@ -265,16 +276,16 @@ getCssRuleFromSchema([['top', 1], ['right', 2]]); // --> { 'top': '1px', 'right'
 ```
 <a name="getLayoutDimensionsCssSchema"></a>
 
-## getLayoutDimensionsCssSchema(layout) ⇒ <code>Array</code>
+## getLayoutDimensionsCssSchema(layout) ⇒ [<code>CssRulesSchema</code>](#CssRulesSchema)
 Gets the given layout dimensions object as css rules schema.
 
 **Kind**: global function  
-**Returns**: <code>Array</code> - The styling rule css schema.  
+**Returns**: [<code>CssRulesSchema</code>](#CssRulesSchema) - The styling rule css schema.  
 **Access**: public  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| layout | <code>object</code> | The layout dimensions objects to be set in css variables. |
+| layout | [<code>Layout</code>](#Layout) | The layout dimensions objects to be set in css variables. |
 
 **Example**  
 ```js
@@ -285,11 +296,11 @@ getLayoutDimensionsCssSchema({ width: 10, height: 20 }); // --> [
 ```
 <a name="getLayoutDimensions"></a>
 
-## getLayoutDimensions(element, scroller) ⇒ <code>object</code>
+## getLayoutDimensions(element, scroller) ⇒ [<code>Layout</code>](#Layout)
 Gets a given element or browser dimensions.
 
 **Kind**: global function  
-**Returns**: <code>object</code> - The given element dimensions as an object ({ top, left }).  
+**Returns**: [<code>Layout</code>](#Layout) - The given element dimensions as an object ({ top, left }).  
 **Access**: public  
 
 | Param | Type | Description |
@@ -303,16 +314,16 @@ getLayoutDimensions(document.querySelector('div')) // --> { outerHeight: 123, ..
 ```
 <a name="getScrollPositionCssSchema"></a>
 
-## getScrollPositionCssSchema(scroll) ⇒ <code>Array</code>
+## getScrollPositionCssSchema(scroll) ⇒ [<code>CssRulesSchema</code>](#CssRulesSchema)
 Gets the given scroll position object as css rules schema.
 
 **Kind**: global function  
-**Returns**: <code>Array</code> - The styling rule css string.  
+**Returns**: [<code>CssRulesSchema</code>](#CssRulesSchema) - The styling rule css string.  
 **Access**: public  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| scroll | <code>object</code> | The scroll position to be set in css variables. |
+| scroll | [<code>ScrollPosition</code>](#ScrollPosition) | The scroll position to be set in css variables. |
 
 **Example**  
 ```js
@@ -323,11 +334,12 @@ getScrollPositionCssSchema({ top: 10, left: 20 }); // --> [
 ```
 <a name="getScrollPosition"></a>
 
-## getScrollPosition(element) ⇒ <code>object</code>
+## getScrollPosition(element) ⇒ [<code>ScrollPosition</code>](#ScrollPosition)
 Gets a given element or browser scroll position.
 
 **Kind**: global function  
-**Returns**: <code>object</code> - The given element scroll position as an object ({ top, left }).  
+**Returns**: [<code>ScrollPosition</code>](#ScrollPosition) - The given element scroll position
+as an object ({ top, left }).  
 **Access**: public  
 
 | Param | Type | Description |
@@ -357,3 +369,35 @@ ensuring its presence in the given target element (usually head).
 ```js
 setUniqueCssRule(document.querySelector('style#my-styles'), '.el { color: blue; }');
 ```
+<a name="ScrollPosition"></a>
+
+## ScrollPosition
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| top | <code>number</code> | The current scroll position from parent's top. |
+| left | <code>number</code> | The current scroll position from parent's left. |
+
+<a name="Layout"></a>
+
+## Layout
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| outerWidth | <code>number</code> | Element width including vertical scrollbar width. |
+| outerHeight | <code>number</code> | Element height including horizontal scrollbar height. |
+| innerWidth | <code>number</code> | Element width not including vertical scrollbar width. |
+| innerHeight | <code>number</code> | Element height not including horizontal scrollbar height. |
+| scrollWidth | <code>number</code> | Contents width. |
+| scrollHeight | <code>number</code> | Contents height. |
+| scrollbarWidth | <code>number</code> | Vertical scrollbar width. |
+| scrollbarHeight | <code>number</code> | Horizontal scrollbar height. |
+
+<a name="CssRulesSchema"></a>
+
+## CssRulesSchema : <code>Array.&lt;Array.&lt;(string\|number)&gt;&gt;</code>
+**Kind**: global typedef  

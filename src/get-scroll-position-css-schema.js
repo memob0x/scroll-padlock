@@ -1,3 +1,5 @@
+import './typedef';
+
 /**
  * Gets the given scroll position object as css rules schema.
  *
@@ -6,18 +8,19 @@
  * //  ['--position-top', 10],
  * //  ['--position-left', 20]
  * // ]).
- * @param {object} scroll - The scroll position to be set in css variables.
- * @returns {Array} The styling rule css string.
+ * @param {ScrollPosition} scroll - The scroll position
+ * to be set in css variables.
+ * @returns {CssRulesSchema} The styling rule css string.
  */
 const getScrollPositionCssSchema = (scroll) => [
   [
     '--scroll-padlock-scroll-top',
-    scroll.top,
+    scroll?.top || 0,
   ],
 
   [
     '--scroll-padlock-scroll-left',
-    scroll.left,
+    scroll?.left || 0,
   ],
 ];
 

@@ -3,6 +3,20 @@ import getLayoutDimensionsCssSchema from '../../src/get-layout-dimensions-css-sc
 
 describe('src/get-layout-dimensions-css-schema', () => {
   it('should be able to format a layout object as a css rules schema', () => {
+    expect(getLayoutDimensionsCssSchema())
+      .to.deep.equals(getLayoutDimensionsCssSchema(null))
+      .to.deep.equals(getLayoutDimensionsCssSchema({}))
+      .to.deep.equals([
+        ['--scroll-padlock-outer-width', 0],
+        ['--scroll-padlock-outer-height', 0],
+        ['--scroll-padlock-inner-width', 0],
+        ['--scroll-padlock-inner-height', 0],
+        ['--scroll-padlock-scroll-width', 0],
+        ['--scroll-padlock-scroll-height', 0],
+        ['--scroll-padlock-scrollbar-width', 0],
+        ['--scroll-padlock-scrollbar-height', 0],
+      ]);
+
     expect(getLayoutDimensionsCssSchema({
       outerWidth: 1,
       outerHeight: 2,
