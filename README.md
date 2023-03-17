@@ -303,7 +303,7 @@ const isIOS = someWayToDetectAppleIOS();
 // on an a form field make the keyboard tray to show
 // and that triggers, along with the visual artifact itself, a "resize" event
 window.addEventListener("resize", () => {
-  if (isIOS && classList.contains(SCROLL_LOCKED_CSS_CLASS_NAME)) {
+  if (isIOS && document.scrollingElement.contains("scroll-padlock-locked")) {
     // "Re-aligns" the iOS keyboard sub-window
     window.scrollTo(0, 0);
   }
