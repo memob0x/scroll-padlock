@@ -9,7 +9,7 @@
   "description": "Locks elements scroll handling scrollbar gaps and iOS Safari with CSS variables",
   "main": "dist/umd/scroll-padlock.min.js",
   "module": "dist/es/scroll-padlock.js",
-  "version": "2.4.0",
+  "version": "2.4.1",
   "license": "MIT",
   "repository": "https://github.com/memob0x/scroll-padlock.git",
   "keywords": [
@@ -54,6 +54,7 @@
     "@babel/eslint-plugin": "^7.19.1",
     "@babel/preset-env": "^7.20.2",
     "@rollup/plugin-babel": "^6.0.3",
+    "@rollup/plugin-terser": "^0.4.0",
     "chai": "^4.3.7",
     "eslint": "^8.36.0",
     "eslint-config-airbnb-base": "^15.0.0",
@@ -64,10 +65,10 @@
     "jsdoc-to-markdown": "^8.0.0",
     "jsdom": "^21.1.1",
     "mocha": "^10.2.0",
-    "puppeteer": "^19.7.5",
+    "puppeteer": "^19.8.0",
     "resemblejs": "^4.1.0",
-    "rollup": "^3.20.0",
+    "rollup": "^3.20.2",
     "rollup-plugin-gzip": "^3.1.0",
-    "@rollup/plugin-terser": "^0.4.0"
+    "sinon": "^15.0.2"
   }
 }

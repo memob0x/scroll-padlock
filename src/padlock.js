@@ -3,9 +3,8 @@ import './typedef';
 import getLayoutDimensions from './get-layout-dimensions';
 import getScrollPosition from './get-scroll-position';
 import setUniqueCssRule from './set-unique-css-rule';
-import getCssRuleFromSchema from './get-css-rule-from-schema';
-import getLayoutDimensionsCssSchema from './get-layout-dimensions-css-schema';
-import getScrollPositionCssSchema from './get-scroll-position-css-schema';
+import getLayoutDimensionsCssRules from './get-layout-dimensions-css-rules';
+import getScrollPositionCssRules from './get-scroll-position-css-rules';
 
 // The element data attribute name
 const CSS_SELECTOR_ATTR_NAME = 'data-scroll-padlock';
@@ -69,21 +68,37 @@ const instances = new WeakMap();
  *
  *  client: window,
  * });
- * @public
- * @throws {TypeError} Throws when the given constructor arguments are invalid.
- * @throws {Error} Throws when an instance is already attached to the given dom element.
- * @param {HTMLElement | object} [scrollingElementArgument] - The given scrollable element
- * whose scroll needs to be controlled or an options object.
- * @param {string} [cssClassNameArgument] - The locked-state css class or an options object.
- * @param {Window} [clientArgument] - The client environment object (window).
  */
 class ScrollPadlock {
+  /**
+   * @public
+   * @throws {TypeError} Throws when the given constructor arguments are invalid.
+   * @throws {Error} Throws when an instance is already attached to the given dom element.
+   * @param {HTMLElement | object} [scrollingElementArgument] - The given scrollable element
+   * whose scroll needs to be controlled or an options object.
+   * @param {string} [cssClassNameArgument] - The locked-state css class or an options object.
+   * @param {Window} [clientArgument] - The client environment object (window).
+   */
   constructor(scrollingElementArgument, cssClassNameArgument, clientArgument = globalThis) {
+    // The Padlock first argument type
+    const scrollingElementArgumentTypeString = typeof scrollingElementArgument;
+
     // Whether the scrolling element constructor argument is an object or not
-    const isScrollingElementArgumentObject = typeof scrollingElementArgument === 'object';
+    const isScrollingElementArgumentObject = scrollingElementArgumentTypeString === 'object';
+
+    // Whether the scrolling element constructor argument is an object, but not an array
+    const isScrollingElementArgumentObjectButNotArray = (
+      isScrollingElementArgumentObject && !Array.isArray(scrollingElementArgument)
+    );
+
+    const {
+      client: clientOptionObject,
+    } = isScrollingElementArgumentObjectButNotArray ? scrollingElementArgument : {};
+
+    const possiblyClient = clientOptionObject || clientArgument;
 
     // The html element type from the client argument
-    const { HTMLElement } = clientArgument;
+    const { HTMLElement } = possiblyClient || {};
 
     // Whether the scrolling element constructor argument is an html element or not
     const isScrollingElementArgumentHtmlElement = (
@@ -92,7 +107,7 @@ class ScrollPadlock {
 
     // Whether the scrolling element constructor argument is an object of options
     const isScrollingElementArgumentOptionsObject = (
-      isScrollingElementArgumentObject && !isScrollingElementArgumentHtmlElement
+      isScrollingElementArgumentObjectButNotArray && !isScrollingElementArgumentHtmlElement
     );
 
     // Seamless object of options reference
@@ -102,7 +117,7 @@ class ScrollPadlock {
 
       cssClassName: cssClassNameArgument,
 
-      client: clientArgument,
+      client: possiblyClient,
     };
 
     // Object of options deconstruction
@@ -133,9 +148,15 @@ class ScrollPadlock {
     // The client "document" object deconstruction
     this.#document = document;
 
+    //
+    const isScrollingElementArgumentObjectOrNotSet = (
+      isScrollingElementArgumentObject || scrollingElementArgumentTypeString === 'undefined'
+    );
+
     // Constructor scrolling element argument type check validity check...
     if (
-      scrollingElementArgument === null
+      // (is set, but not an object)
+      !isScrollingElementArgumentObjectOrNotSet
       || scrollingElementArgument === this.#window
       || scrollingElementArgument === this.#document
     ) {
@@ -300,6 +321,17 @@ class ScrollPadlock {
   #scrollingElement = null;
 
   /**
+   * The html element that can perform the scrolling action.
+   *
+   * @type {HTMLElement}
+   * @public
+   * @memberof ScrollPadlock
+   */
+  get scrollingElement() {
+    return this.#scrollingElement;
+  }
+
+  /**
    * The element that can perform and listen to scroll event.
    * Usually coincides with the scrolling element, but when the scrolling element
    * is document.documentElement or document.body, "scroller" is window.
@@ -309,6 +341,19 @@ class ScrollPadlock {
    * @memberof ScrollPadlock
    */
   #scrollEventElement = null;
+
+  /**
+   * The element that can listen to scroll event.
+   * Usually coincides with the scrolling element, but when the scrolling element
+   * is document.documentElement or document.body, "scroller" is window.
+   *
+   * @type {HTMLElement|Window}
+   * @public
+   * @memberof ScrollPadlock
+   */
+  get scrollEventElement() {
+    return this.#scrollEventElement;
+  }
 
   /**
    * The element used as unique identifier (key) in the map of instances.
@@ -419,23 +464,20 @@ class ScrollPadlock {
    */
   #cssClassName = '';
 
+  /**
+   * The lock state CSS class name.
+   *
+   * @type {string}
+   * @public
+   * @memberof ScrollPadlock
+   */
+  get cssClassName() {
+    return this.#cssClassName;
+  }
+
   // #endregion
 
   // #region accessors
-
-  /**
-   * Gets the currently set css selector.
-   *
-   * @public
-   * @example
-   * const padlock = new ScrollPadlock();
-   *
-   * padlock.cssSelector // --> "[data-scroll-padlock="1"]"
-   * @returns {string} The css selector.
-   */
-  get cssSelector() {
-    return this.#cssSelector;
-  }
 
   /**
    * Returns the current scroll position, if on a locked state it
@@ -710,65 +752,6 @@ class ScrollPadlock {
   }
 
   /**
-   * Applies the css rules.
-   *
-   * @private
-   * @memberof ScrollPadlock
-   * @returns {HTMLStyleElement} The styler element.
-   */
-  #setStylerCssRule() {
-    // Builds the the CSS rules schema object
-    const schema = [
-      ...getLayoutDimensionsCssSchema(this.layout),
-
-      ...getScrollPositionCssSchema(this.scroll),
-    ];
-
-    // Gets the CSS rules schema object converted to a single CSS declaration string
-    const rule = getCssRuleFromSchema(this.#cssSelector, schema);
-
-    // Sets the CSS string rule to the instance styler
-    const styler = setUniqueCssRule(this.#styler, rule);
-
-    // Returns the styler which CSS rule is applied to
-    return styler;
-  }
-
-  /**
-   * Ensures the styler element is in head.
-   *
-   * @private
-   * @memberof ScrollPadlock
-   * @returns {HTMLStyleElement} The styler element.
-   */
-  #ensureStylerPresenceInHead() {
-    // Ensures style tag dom presence, StyleSheet API throws otherwise,
-    // if instance styler element is set, but is not inside the <head /> element...
-    if (this.#styler && !this.#document?.head?.contains(this.#styler)) {
-      // ...then it is inserted.
-      this.#document?.head.appendChild(this.#styler);
-    }
-
-    // Returns the instance styler element
-    return this.#styler;
-  }
-
-  /**
-   * Removes the CSS variables, styler, styler selector...
-   *
-   * @private
-   * @memberof ScrollPadlock
-   * @returns {HTMLStyleElement} The styler element.
-   */
-  #removeStyler() {
-    // Removes the instance <style /> element from DOM...
-    this.#styler?.remove();
-
-    // ...then returns its reference.
-    return this.#styler;
-  }
-
-  /**
    * Sets or removes the attribute selector to/from the scrolling element.
    *
    * @private
@@ -792,11 +775,23 @@ class ScrollPadlock {
    * @returns {HTMLStyleElement} Styler element.
    */
   #applyStyles() {
-    // Ensures the styler element is in head
-    this.#ensureStylerPresenceInHead();
+    // Ensures style tag dom presence, StyleSheet API throws otherwise,
+    // if instance styler element is set, but is not inside the <head /> element...
+    if (this.#styler && !this.#document?.head?.contains(this.#styler)) {
+      // ...then it is inserted.
+      this.#document?.head.appendChild(this.#styler);
+    }
 
-    // Applies the styler css rules and returns the styler element itself
-    return this.#setStylerCssRule();
+    // Inserts the CSS string rule into the instance styler, then returns it
+    return setUniqueCssRule(
+      this.#styler,
+
+      `${this.#cssSelector} { ${
+        getLayoutDimensionsCssRules(this.layout)
+      } ${
+        getScrollPositionCssRules(this.scroll)
+      } }`,
+    );
   }
 
   /**
@@ -967,8 +962,8 @@ class ScrollPadlock {
     // Unobserves the CSS class change
     this.#unobserveCssClass();
 
-    // Removes the CSS variables, styler, styler selector...
-    this.#removeStyler();
+    // Removes the instance <style /> element from DOM...
+    this.#styler?.remove();
 
     // Removes the css attribute selector from the scrolling element
     this.#applyCssSelectorAttribute('remove');

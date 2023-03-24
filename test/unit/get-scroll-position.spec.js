@@ -6,10 +6,18 @@ import getJsdomWindow from '../utils/get-jsdom-window';
 const { expect } = chai;
 
 describe('src/get-scroll-position', () => {
-  const window = getJsdomWindow();
+  let window;
+
+  let document;
+
+  beforeEach(() => {
+    window = getJsdomWindow();
+
+    ({ document } = window);
+  });
 
   it('should be able to get an element scroll position', () => {
-    const div = window.document.createElement('div');
+    const div = document.createElement('div');
 
     div.scrollTop = 10;
     div.scrollLeft = 20;

@@ -249,7 +249,30 @@ const {
   // The target's vertical and horizontal scrollbar size
   scrollbarWidth,
   scrollbarHeight,
-} = instanse.layout;
+} = instance.layout;
+
+const {
+  // The lock state CSS class name
+  cssClassName,
+
+  // The html element that can perform the scrolling action
+  scrollingElement,
+
+  // The element that can listen to scroll event
+  scrollEventElement,
+} = instance;
+
+// Pauses the instance "resize" event listener
+instance.unlisten('resize');
+
+// Pauses the instance "scroll" event listener
+instance.unlisten('scroll');
+
+// Resumes the instance "resize" event listener
+instance.listen('resize');
+
+// Resumes the instance "scroll" event listener
+instance.listen('scroll');
 ```
 
 ## TL;TR: a body scroll overview
