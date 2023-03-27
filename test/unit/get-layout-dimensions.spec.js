@@ -5,6 +5,25 @@ import getLayout from '../../src/get-layout-dimensions';
 const { expect } = chai;
 
 describe('src/get-layout-dimensions', () => {
+  it('should not throw with given invalid arguments', () => {
+    expect(getLayout())
+      .to.deep.equals(getLayout(null))
+      .to.deep.equals(getLayout(null, null))
+      .to.deep.equals({
+        outerWidth: 0,
+        outerHeight: 0,
+
+        innerWidth: 0,
+        innerHeight: 0,
+
+        scrollWidth: 0,
+        scrollHeight: 0,
+
+        scrollbarWidth: 0,
+        scrollbarHeight: 0,
+      });
+  });
+
   it('should be able to retrieve html elements dimensions', () => {
     const mockedDiv = {
       clientWidth: 10,

@@ -13,7 +13,7 @@ const CSS_SELECTOR_ATTR_NAME = 'data-scroll-padlock';
 const defaultHandlerWrapper = (a) => a;
 
 // Padlock instances global id reference
-let instanceId = 0;
+let instanceId = -1;
 
 // Padlock instances gobal collection,
 // a weakmap is used in order to keep every instance associated with the scrollable element itself
@@ -98,7 +98,7 @@ class ScrollPadlock {
     const possiblyClient = clientOptionObject || clientArgument;
 
     // The html element type from the client argument
-    const { HTMLElement } = possiblyClient || {};
+    const { HTMLElement } = possiblyClient;
 
     // Whether the scrolling element constructor argument is an html element or not
     const isScrollingElementArgumentHtmlElement = (
@@ -133,7 +133,7 @@ class ScrollPadlock {
       scrollHandlerWrapper: optionScrollHandlerWrapper,
 
       client: optionClient,
-    } = options || {};
+    } = options;
 
     // The client "window" object reference
     this.#window = optionClient || clientArgument;
@@ -143,7 +143,7 @@ class ScrollPadlock {
       document,
 
       MutationObserver,
-    } = this.#window || {};
+    } = this.#window;
 
     // The client "document" object deconstruction
     this.#document = document;
@@ -171,13 +171,13 @@ class ScrollPadlock {
       documentElement,
 
       scrollingElement: documentScrollingElement,
-    } = this.#document || {};
+    } = this.#document;
 
     // The browser default scrolling element
     const defaultScrollingElement = documentScrollingElement || documentElement;
 
     // The Padlock instance scrolling element
-    this.#scrollingElement = optionScrollingElement || defaultScrollingElement;
+    this.#scrollingElement = typeof optionScrollingElement !== 'undefined' ? optionScrollingElement : defaultScrollingElement;
 
     // Whether the scrolling element Padlock instance member is an html element or not
     const isScrollingElementHtmlElement = this.#scrollingElement instanceof HTMLElement;
@@ -202,7 +202,7 @@ class ScrollPadlock {
     );
 
     // Padlock instance element which trigger "scroll" event member reference
-    this.#scrollEventElement = optionScrollEventElement || defaultScrollEventElement;
+    this.#scrollEventElement = typeof optionScrollEventElement !== 'undefined' ? optionScrollEventElement : defaultScrollEventElement;
 
     // Whether the scrolling element Padlock instance member is an html element or not
     const isScrollEventHtmlElement = this.#scrollEventElement instanceof HTMLElement;
@@ -667,7 +667,7 @@ class ScrollPadlock {
    * @param {Types.ScrollPosition} position - The scroll position to be set.
    * @returns {void} Nothing.
    */
-  #scrollTo = (position) => this.#scrollEventElement.scrollTo(
+  #scrollTo = (position) => this.#scrollEventElement?.scrollTo(
     position.left,
 
     position.top,
@@ -729,8 +729,11 @@ class ScrollPadlock {
    * @returns {Types.ScrollPosition} The layout object.
    */
   #updateLayout() {
+    // If the elements involved are set (if not the instance has been probably destroyed)
+    if (this.#scrollingElement && this.#scrollEventElement) {
     // Updates the instance layout state...
-    this.#layout = getLayoutDimensions(this.#scrollingElement, this.#scrollEventElement);
+      this.#layout = getLayoutDimensions(this.#scrollingElement, this.#scrollEventElement);
+    }
 
     // ...then returns it.
     return this.#layout;
@@ -744,8 +747,11 @@ class ScrollPadlock {
    * @returns {Types.ScrollPosition} The current scroll position object.
    */
   #updateScrollCurrent() {
-    // Updates the current scroll position.
-    this.#scrollCurrent = getScrollPosition(this.#scrollEventElement);
+    // If the involved element is set (if not the instance has been probably destroyed)
+    if (this.#scrollEventElement) {
+      // Updates the current scroll position.
+      this.#scrollCurrent = getScrollPosition(this.#scrollEventElement);
+    }
 
     // Returns the current scroll position.
     return this.#scrollCurrent;
@@ -875,10 +881,21 @@ class ScrollPadlock {
     // Gets the last method for the given event
     const state = this.#listenersState[type];
 
+    // Event listeners targets (elements) map,
+    // contains the event targets elements by event name (as key).
+    const listenersTargets = {
+      resize: this.#window,
+
+      scroll: this.#scrollEventElement,
+    };
+
+    //
+    const target = listenersTargets[type];
+
     // Exit early...
     if (
       // ...if the main element is not set (probably the instance has been destroyed)
-      !this.#elementUniqueInstance
+      !target
 
       // ...if a state for the given event doesn't exist
       // (supplied event type is not supported)
@@ -894,16 +911,8 @@ class ScrollPadlock {
     // Updates the state for the given event type
     this.#listenersState[type] = method;
 
-    // Event listeners targets (elements) map,
-    // contains the event targets elements by event name (as key).
-    const listenersTargets = {
-      resize: this.#window,
-
-      scroll: this.#scrollEventElement,
-    };
-
     // Attaches or detaches the given event type
-    listenersTargets[type][`${method}EventListener`](
+    target[`${method}EventListener`](
       type,
 
       this.#listenersHandlers[type],
@@ -993,6 +1002,14 @@ class ScrollPadlock {
     this.#styler = null;
 
     this.#scrollingElementClassList = null;
+
+    this.#scrollCurrent = null;
+
+    this.#scrollSaving = null;
+
+    this.#layout = null;
+
+    this.#cssClassName = '';
   }
 
   /**

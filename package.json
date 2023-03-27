@@ -43,8 +43,10 @@
     "lint": "./node_modules/.bin/eslint --ext .js . --fix",
     "build": "node --experimental-specifier-resolution=node ./build.js",
     "test:unit": "./node_modules/.bin/mocha --experimental-specifier-resolution=node ./test/unit/*.spec.js",
+    "test:coverage": "./node_modules/.bin/c8 -r html npm run test:unit",
+    "test:coverage:check": "./node_modules/.bin/c8 check-coverage --100 npm run test:unit",
     "test:e2e": "npm run build && ./node_modules/.bin/mocha --experimental-specifier-resolution=node ./test/e2e/*.spec.js",
-    "test": "npm run test:unit && npm run test:e2e",
+    "test": "npm run test:coverage && npm run test:coverage:check && npm run test:e2e",
     "docs": "node --experimental-specifier-resolution=node ./build-docs.js",
     "prepare": "husky install"
   },
@@ -69,6 +71,7 @@
     "resemblejs": "^4.1.0",
     "rollup": "^3.20.2",
     "rollup-plugin-gzip": "^3.1.0",
-    "sinon": "^15.0.2"
+    "sinon": "^15.0.3",
+    "c8": "^7.13.0"
   }
 }

@@ -16,6 +16,15 @@ describe('src/get-scroll-position', () => {
     ({ document } = window);
   });
 
+  it('should not throw with given invalid arguments', () => {
+    expect(getScroll())
+      .to.deep.equals(getScroll(null))
+      .to.deep.equals({
+        top: 0,
+        left: 0,
+      });
+  });
+
   it('should be able to get an element scroll position', () => {
     const div = document.createElement('div');
 

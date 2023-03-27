@@ -10,12 +10,18 @@ describe('src/padlock', () => {
 
   let document;
 
+  let head;
+
+  let body;
+
   const sinonSandbox = sinon.createSandbox();
 
   beforeEach(() => {
     window = getJsdomWindow();
 
     ({ document } = window);
+
+    ({ head, body } = document);
   });
 
   afterEach(() => {
@@ -62,41 +68,81 @@ describe('src/padlock', () => {
     });
 
     it('should create an instance when valid first argument is passed to constructor', () => {
-      expect(
-        () => new Padlock(undefined, undefined, window).destroy(),
-      ).to.not.throw(TypeError);
+      let instance;
 
-      // TODO: test what is set in instance here (instance.scrollingElement)
+      const a = () => {
+        instance = new Padlock(undefined, undefined, window);
+      };
 
-      expect(
-        () => new Padlock({}, undefined, window).destroy(),
-      ).to.not.throw(TypeError);
+      expect(a).to.not.throw(TypeError);
 
-      // TODO: test what is set in instance here (instance.scrollingElement)
+      expect(instance.scrollingElement).to.equal(document.documentElement);
 
-      expect(
-        () => new Padlock(document.createElement('div'), undefined, window).destroy(),
-      ).to.not.throw(TypeError);
+      expect(instance.scrollEventElement).to.equal(window);
 
-      // TODO: test what is set in instance here (instance.scrollingElement)
+      instance.destroy();
 
-      expect(
-        () => new Padlock({ ...window, client: window }).destroy(),
-      ).to.not.throw(TypeError);
+      const b = () => {
+        instance = new Padlock({}, undefined, window);
+      };
 
-      // TODO: test what is set in instance here (instance.scrollingElement)
+      expect(b).to.not.throw(TypeError);
 
-      expect(
-        () => new Padlock(document.documentElement, undefined, window).destroy(),
-      ).to.not.throw(TypeError);
+      expect(instance.scrollingElement).to.equal(document.documentElement);
 
-      // TODO: test what is set in instance here (instance.scrollingElement)
+      expect(instance.scrollEventElement).to.equal(window);
 
-      expect(
-        () => new Padlock(document.body, undefined, window).destroy(),
-      ).to.not.throw(TypeError);
+      instance.destroy();
 
-      // TODO: test what is set in instance here (instance.scrollingElement)
+      const div = document.createElement('div');
+
+      const c = () => {
+        instance = new Padlock(div, undefined, window);
+      };
+
+      expect(c).to.not.throw(TypeError);
+
+      expect(instance.scrollingElement).to.equal(div);
+
+      expect(instance.scrollEventElement).to.equal(div);
+
+      instance.destroy();
+
+      const d = () => {
+        instance = new Padlock({ ...window, client: window });
+      };
+
+      expect(d).to.not.throw(TypeError);
+
+      expect(instance.scrollingElement).to.equal(document.documentElement);
+
+      expect(instance.scrollEventElement).to.equal(window);
+
+      instance.destroy();
+
+      const e = () => {
+        instance = new Padlock(document.documentElement, undefined, window);
+      };
+
+      expect(e).to.not.throw(TypeError);
+
+      expect(instance.scrollingElement).to.equal(document.documentElement);
+
+      expect(instance.scrollEventElement).to.equal(window);
+
+      instance.destroy();
+
+      const f = () => {
+        instance = new Padlock(body, undefined, window);
+      };
+
+      expect(f).to.not.throw(TypeError);
+
+      expect(instance.scrollingElement).to.equal(body);
+
+      expect(instance.scrollEventElement).to.equal(window);
+
+      instance.destroy();
     });
 
     it('should throw if incorrect second argument is passed to constructor', () => {
@@ -134,17 +180,27 @@ describe('src/padlock', () => {
     });
 
     it('should create an instance when valid second argument is passed to constructor', () => {
-      expect(
-        () => new Padlock(document.createElement('div'), undefined, window),
-      ).to.not.throw(TypeError);
+      let instance;
 
-      // TODO: test what is set in instance here (instance.cssClassName)
+      const a = () => {
+        instance = new Padlock(document.createElement('div'), undefined, window);
+      };
 
-      expect(
-        () => new Padlock(document.createElement('div'), '1', window).destroy(),
-      ).to.not.throw(TypeError);
+      expect(a).to.not.throw(TypeError);
 
-      // TODO: test what is set in instance here (instance.cssClassName)
+      expect(instance.cssClassName).to.equal('scroll-padlock-locked');
+
+      instance.destroy();
+
+      const b = () => {
+        instance = new Padlock(document.createElement('div'), '1', window);
+      };
+
+      expect(b).to.not.throw(TypeError);
+
+      expect(instance.cssClassName).to.equal('1');
+
+      instance.destroy();
     });
 
     it('should throw if first argument option object with invalid css class name property is passed', () => {
@@ -182,33 +238,307 @@ describe('src/padlock', () => {
     });
 
     it('should create an instance when first argument option object with valid css class name property is passed', () => {
-      expect(
-        () => new Padlock({ cssClassName: undefined, client: window }).destroy(),
-      ).to.not.throw(TypeError);
+      let instance;
 
-      // TODO: test what is set in instance here (instance.cssClassName)
+      const a = () => {
+        instance = new Padlock({ cssClassName: undefined, client: window });
+      };
 
-      expect(
-        () => new Padlock({ cssClassName: '1', client: window }).destroy(),
-      ).to.not.throw(TypeError);
+      expect(a).to.not.throw(TypeError);
 
-      // TODO: test what is set in instance here (instance.cssClassName)
+      expect(instance.cssClassName).to.equal('scroll-padlock-locked');
+
+      instance.destroy();
+
+      const b = () => {
+        instance = new Padlock({ cssClassName: '1', client: window });
+      };
+
+      expect(b).to.not.throw(TypeError);
+
+      expect(instance.cssClassName).to.equal('1');
+
+      instance.destroy();
     });
 
     it('should throw if first argument option object with invalid scrolling element property is passed', () => {
-      // TODO:
+      expect(
+        () => new Padlock({
+          scrollingElement: null,
+
+          client: window,
+        }),
+      ).to.throw(TypeError);
+
+      expect(
+        () => new Padlock({
+          scrollingElement: [],
+
+          client: window,
+        }),
+      ).to.throw(TypeError);
+
+      expect(
+        () => new Padlock({
+          scrollingElement: {},
+
+          client: window,
+        }),
+      ).to.throw(TypeError);
+
+      expect(
+        () => new Padlock({
+          scrollingElement: '',
+
+          client: window,
+        }),
+      ).to.throw(TypeError);
+
+      expect(
+        () => new Padlock({
+          scrollingElement: 0,
+
+          client: window,
+        }),
+      ).to.throw(TypeError);
+
+      expect(
+        () => new Padlock({
+          scrollingElement: 1,
+
+          client: window,
+        }),
+      ).to.throw(TypeError);
+
+      expect(
+        () => new Padlock({
+          scrollingElement: NaN,
+
+          client: window,
+        }),
+      ).to.throw(TypeError);
+
+      expect(
+        () => new Padlock({
+          scrollingElement: Infinity,
+
+          client: window,
+        }),
+      ).to.throw(TypeError);
+
+      expect(
+        () => new Padlock({
+          scrollingElement: window,
+
+          client: window,
+        }),
+      ).to.throw(TypeError);
+
+      expect(
+        () => new Padlock({
+          scrollingElement: document,
+
+          client: window,
+        }),
+      ).to.throw(TypeError);
     });
 
     it('should create an instance when first argument option object with valid scrolling element property is passed', () => {
-      // TODO:
+      let instance;
+
+      const a = () => {
+        instance = new Padlock({
+          scrollingElement: undefined,
+
+          client: window,
+        });
+      };
+
+      expect(a).to.not.throw(TypeError);
+
+      expect(instance.scrollingElement).to.equal(document.documentElement);
+
+      expect(instance.scrollEventElement).to.equal(window);
+
+      instance.destroy();
+
+      const div = document.createElement('div');
+
+      const c = () => {
+        instance = new Padlock({
+          scrollingElement: div,
+
+          client: window,
+        });
+      };
+
+      expect(c).to.not.throw(TypeError);
+
+      expect(instance.scrollingElement).to.equal(div);
+
+      expect(instance.scrollEventElement).to.equal(div);
+
+      instance.destroy();
+
+      const e = () => {
+        instance = new Padlock({
+          scrollingElement: document.documentElement,
+
+          client: window,
+        });
+      };
+
+      expect(e).to.not.throw(TypeError);
+
+      expect(instance.scrollingElement).to.equal(document.documentElement);
+
+      expect(instance.scrollEventElement).to.equal(window);
+
+      instance.destroy();
+
+      const f = () => {
+        instance = new Padlock({
+          scrollingElement: body,
+
+          client: window,
+        });
+      };
+
+      expect(f).to.not.throw(TypeError);
+
+      expect(instance.scrollingElement).to.equal(body);
+
+      expect(instance.scrollEventElement).to.equal(window);
+
+      instance.destroy();
     });
 
     it('should throw if first argument option object with invalid scrolling event element property is passed', () => {
-      // TODO:
+      expect(
+        () => new Padlock({
+          scrollEventElement: null,
+
+          client: window,
+        }),
+      ).to.throw(TypeError);
+
+      expect(
+        () => new Padlock({
+          scrollEventElement: [],
+
+          client: window,
+        }),
+      ).to.throw(TypeError);
+
+      expect(
+        () => new Padlock({
+          scrollEventElement: {},
+
+          client: window,
+        }),
+      ).to.throw(TypeError);
+
+      expect(
+        () => new Padlock({
+          scrollEventElement: '',
+
+          client: window,
+        }),
+      ).to.throw(TypeError);
+
+      expect(
+        () => new Padlock({
+          scrollEventElement: 0,
+
+          client: window,
+        }),
+      ).to.throw(TypeError);
+
+      expect(
+        () => new Padlock({
+          scrollEventElement: 1,
+
+          client: window,
+        }),
+      ).to.throw(TypeError);
+
+      expect(
+        () => new Padlock({
+          scrollEventElement: NaN,
+
+          client: window,
+        }),
+      ).to.throw(TypeError);
+
+      expect(
+        () => new Padlock({
+          scrollEventElement: Infinity,
+
+          client: window,
+        }),
+      ).to.throw(TypeError);
+
+      expect(
+        () => new Padlock({
+          scrollEventElement: document,
+
+          client: window,
+        }),
+      ).to.throw(TypeError);
     });
 
     it('should create an instance when first argument option object with valid scrolling event element property is passed', () => {
-      // TODO:
+      let instance;
+
+      const a = () => {
+        instance = new Padlock({
+          scrollEventElement: undefined,
+
+          client: window,
+        });
+      };
+
+      expect(a).to.not.throw(TypeError);
+
+      expect(instance.scrollingElement).to.equal(document.documentElement);
+
+      expect(instance.scrollEventElement).to.equal(window);
+
+      instance.destroy();
+
+      const div = document.createElement('div');
+
+      const c = () => {
+        instance = new Padlock({
+          scrollEventElement: div,
+
+          client: window,
+        });
+      };
+
+      expect(c).to.not.throw(TypeError);
+
+      expect(instance.scrollingElement).to.equal(document.documentElement);
+
+      expect(instance.scrollEventElement).to.equal(div);
+
+      instance.destroy();
+
+      const e = () => {
+        instance = new Padlock({
+          scrollEventElement: window,
+
+          client: window,
+        });
+      };
+
+      expect(e).to.not.throw(TypeError);
+
+      expect(instance.scrollingElement).to.equal(document.documentElement);
+
+      expect(instance.scrollEventElement).to.equal(window);
+
+      instance.destroy();
     });
 
     it('should throw if an element has already an instance attached to it', () => {
@@ -246,7 +576,7 @@ describe('src/padlock', () => {
       // but it's still the global scroller element,
       // an error has to be thrown
       expect(() => {
-        let instance = new Padlock(document.body, undefined, window);
+        let instance = new Padlock(body, undefined, window);
 
         try {
           instance = new Padlock(document.documentElement, undefined, window);
@@ -288,122 +618,125 @@ describe('src/padlock', () => {
   });
 
   describe('dom effects', () => {
-    // TODO: split into granular test cases
-    it('should be able to append a style tag with css variables for given values targeting a given element', () => {
+    it('should add a data attribute value to the scrolling element on instance creation', () => {
       const div = document.createElement('div');
-      const holder = document.createElement('div');
 
-      holder.prepend(div);
+      expect(div.matches('[data-scroll-padlock]')).to.be.false;
 
-      let styles = document.head.querySelectorAll('style');
+      const instance = new Padlock(div, undefined, window);
 
-      expect(styles).to.be.lengthOf(0);
-
-      let instance = new Padlock(div, undefined, window);
-
-      styles = document.head.querySelectorAll('style');
-
-      expect(styles).to.be.lengthOf(1);
-
-      let [style] = styles || [];
-
-      expect(document.head.contains(style)).to.be.true;
       expect(div.matches('[data-scroll-padlock]')).to.be.true;
 
-      let attrValue = div.getAttribute('data-scroll-padlock');
-      expect(parseInt(attrValue, 10)).to.a('number').and.to.not.be.NaN;
+      expect(div.getAttribute('data-scroll-padlock')).to.be.a('string').which.matches(/^\d+$/);
 
-      let rules = style.sheet.cssRules[0];
-      expect(rules.selectorText).equals(`[data-scroll-padlock="${attrValue}"]`);
+      instance.destroy();
+    });
+
+    it('should remove a data attribute value to the scrolling element on instance destruction', () => {
+      const div = document.createElement('div');
+
+      const instance = new Padlock(div, undefined, window);
+
+      expect(div.matches('[data-scroll-padlock]')).to.be.true;
 
       instance.destroy();
 
-      styles = document.head.querySelectorAll('style');
-
-      expect(styles).to.be.lengthOf(0);
-
-      expect(document.head.contains(style)).to.be.false;
       expect(div.matches('[data-scroll-padlock]')).to.be.false;
+    });
 
-      const indexShifterDummyEl = document.createElement('div');
+    it('should renew scrolling element data attribute value on instance creation', () => {
+      const div = document.createElement('div');
 
-      holder.prepend(indexShifterDummyEl);
+      let instance = new Padlock(div, undefined, window);
+
+      const firstInstanceAttrValue = div.getAttribute('data-scroll-padlock');
+
+      instance.destroy();
 
       instance = new Padlock(div, undefined, window);
 
-      styles = document.head.querySelectorAll('style');
+      const secondInstanceAttrValue = div.getAttribute('data-scroll-padlock');
+
+      expect(!!secondInstanceAttrValue).to.be.true;
+
+      expect(secondInstanceAttrValue).not.to.equals(firstInstanceAttrValue);
+
+      instance.destroy();
+    });
+
+    it('should append a style tag on instance creation', () => {
+      let styles = head.querySelectorAll('style');
+
+      expect(styles).to.be.lengthOf(0);
+
+      const instance = new Padlock(document.createElement('div'), undefined, window);
+
+      styles = head.querySelectorAll('style');
 
       expect(styles).to.be.lengthOf(1);
 
-      ([style] = styles || []);
+      instance.destroy();
+    });
 
-      expect(document.head.contains(style)).to.be.true;
+    it('should remove the appended style tag on instance destruction', () => {
+      const instance = new Padlock(document.createElement('div'), undefined, window);
 
-      const oldAttrValue = attrValue;
-      attrValue = div.getAttribute('data-scroll-padlock');
-      expect(attrValue).not.to.equals(oldAttrValue);
-      expect(parseInt(attrValue, 10)).to.be.a('number').and.to.not.be.NaN;
+      const style = head.querySelector('style');
 
-      [rules] = style.sheet.cssRules;
+      expect(head.contains(style)).to.be.true;
 
-      expect(rules.selectorText).equals(`[data-scroll-padlock="${attrValue}"]`);
+      instance.destroy();
 
-      indexShifterDummyEl.remove();
-      div.remove();
+      expect(head.contains(style)).to.be.false;
+    });
+
+    it('should style the applied css selector attribute', () => {
+      const div = document.createElement('div');
+
+      const instance = new Padlock(div, undefined, window);
+
+      const style = head.querySelector('style');
+
+      const attrValue = div.getAttribute('data-scroll-padlock');
+
+      expect(style.sheet.cssRules).to.have.lengthOf(1);
+
+      expect(style.sheet.cssRules[0].selectorText).equals(`[data-scroll-padlock="${attrValue}"]`);
 
       instance.destroy();
     });
   });
 
   describe('objects computation', () => {
-    // TODO: split into granular test cases
-    it('should update instance "layout" object only on resize and "scroll" object only on scroll', async () => {
+    it('should update instance "layout" object on "resize"', async () => {
       const div = document.createElement('div');
 
-      let dimensions = {
-        width: 100,
-        height: 200,
-      };
-      let scrollPosition = {
-        top: 1000,
-        left: 2000,
-      };
+      const stub = sinonSandbox.stub(div, 'getBoundingClientRect');
 
-      div.getBoundingClientRect = () => dimensions;
-      div.scrollTop = scrollPosition.top;
-      div.scrollLeft = scrollPosition.left;
+      stub.returns({
+        width: 100,
+
+        height: 200,
+      });
 
       const instance = new Padlock(div, undefined, window);
 
       expect(instance.layout).to.include({
-        outerWidth: dimensions.width,
-        outerHeight: dimensions.height,
-      });
-      expect(instance.scroll).to.include({
-        top: scrollPosition.top,
-        left: scrollPosition.left,
+        outerWidth: 100,
+
+        outerHeight: 200,
       });
 
-      dimensions = {
-        width: 300,
-        height: 400,
-      };
-      scrollPosition = {
-        top: 2000,
-        left: 3000,
-      };
+      stub.returns({
+        width: 200,
 
-      div.getBoundingClientRect = () => dimensions;
-      div.scrollTop = scrollPosition.top;
-      div.scrollLeft = scrollPosition.left;
-
-      expect(instance.layout).to.not.include({
-        outerWidth: dimensions.width,
-        outerHeight: dimensions.height,
+        height: 300,
       });
-      expect(instance.scroll).to.not.include({
-        top: scrollPosition.top,
-        left: scrollPosition.left,
+
+      expect(instance.layout).to.include({
+        outerWidth: 100,
+
+        outerHeight: 200,
       });
 
       window.dispatchEvent(new window.CustomEvent('resize'));
@@ -411,94 +744,157 @@ describe('src/padlock', () => {
       await new Promise(window.setTimeout);
 
       expect(instance.layout).to.include({
-        outerWidth: dimensions.width,
-        outerHeight: dimensions.height,
-      });
-      expect(instance.scroll).to.not.include({
-        top: scrollPosition.top,
-        left: scrollPosition.left,
+        outerWidth: 200,
+
+        outerHeight: 300,
       });
 
-      dimensions = {
+      stub.returns({
         width: 400,
+
         height: 500,
-      };
+      });
 
       div.dispatchEvent(new window.CustomEvent('scroll'));
 
       await new Promise(window.setTimeout);
 
-      expect(instance.layout).not.to.include({
-        outerWidth: dimensions.width,
-        outerHeight: dimensions.height,
-      });
-      expect(instance.scroll).to.include({
-        top: scrollPosition.top,
-        left: scrollPosition.left,
+      expect(instance.layout).to.include({
+        outerWidth: 200,
+
+        outerHeight: 300,
       });
 
       instance.destroy();
     });
 
-    // TODO: split into granular test cases
-    it('should update instance "scroll" object and "layout" object on "update" method call', () => {
+    it('should update instance "scroll" object on "scroll"', async () => {
       const div = document.createElement('div');
 
-      let dimensions = {
-        width: 100,
-        height: 200,
-      };
-      let scrollPosition = {
-        top: 1000,
-        left: 2000,
-      };
+      div.scrollTop = 1000;
 
-      div.getBoundingClientRect = () => dimensions;
-      div.scrollTop = scrollPosition.top;
-      div.scrollLeft = scrollPosition.left;
+      div.scrollLeft = 2000;
+
+      const instance = new Padlock(div, undefined, window);
+
+      expect(instance.scroll).deep.equals({
+        top: 1000,
+
+        left: 2000,
+      });
+
+      div.scrollTop = 2000;
+
+      div.scrollLeft = 3000;
+
+      expect(instance.scroll).deep.equals({
+        top: 1000,
+
+        left: 2000,
+      });
+
+      window.dispatchEvent(new window.CustomEvent('resize'));
+
+      await new Promise(window.setTimeout);
+
+      expect(instance.scroll).to.not.include({
+        top: 2000,
+
+        left: 3000,
+      });
+
+      div.dispatchEvent(new window.CustomEvent('scroll'));
+
+      await new Promise(window.setTimeout);
+
+      expect(instance.scroll).deep.equals({
+        top: 2000,
+
+        left: 3000,
+      });
+
+      instance.destroy();
+    });
+
+    it('should update instance "layout" object on "update" method call', () => {
+      const div = document.createElement('div');
+
+      const stub = sinonSandbox.stub(div, 'getBoundingClientRect');
+
+      stub.returns({
+        width: 100,
+
+        height: 200,
+      });
 
       const instance = new Padlock(div, undefined, window);
 
       expect(instance.layout).to.include({
-        outerWidth: dimensions.width,
-        outerHeight: dimensions.height,
-      });
-      expect(instance.scroll).to.include({
-        top: scrollPosition.top,
-        left: scrollPosition.left,
+        outerWidth: 100,
+
+        outerHeight: 200,
       });
 
-      dimensions = {
+      stub.returns({
         width: 300,
+
         height: 400,
-      };
-      scrollPosition = {
-        top: 2000,
-        left: 3000,
-      };
-
-      div.getBoundingClientRect = () => dimensions;
-      div.scrollTop = scrollPosition.top;
-      div.scrollLeft = scrollPosition.left;
-
-      expect(instance.layout).to.not.include({
-        outerWidth: dimensions.width,
-        outerHeight: dimensions.height,
       });
-      expect(instance.scroll).to.not.include({
-        top: scrollPosition.top,
-        left: scrollPosition.left,
+
+      expect(instance.layout).to.include({
+        outerWidth: 100,
+
+        outerHeight: 200,
       });
 
       instance.update();
 
       expect(instance.layout).to.include({
-        outerWidth: dimensions.width,
-        outerHeight: dimensions.height,
+        outerWidth: 300,
+
+        outerHeight: 400,
       });
-      expect(instance.scroll).to.include({
-        top: scrollPosition.top,
-        left: scrollPosition.left,
+
+      instance.destroy();
+    });
+
+    it('should update instance "scroll" object on "update" method call', () => {
+      const div = document.createElement('div');
+
+      const stub = sinonSandbox.stub(div, 'getBoundingClientRect');
+
+      stub.returns({
+        width: 100,
+
+        height: 200,
+      });
+
+      const instance = new Padlock(div, undefined, window);
+
+      expect(instance.layout).to.include({
+        outerWidth: 100,
+
+        outerHeight: 200,
+      });
+
+      stub.returns({
+        width: 300,
+
+        height: 400,
+      });
+
+      expect(instance.layout).to.include({
+        outerWidth: 100,
+
+        outerHeight: 200,
+      });
+
+      instance.update();
+
+      expect(instance.layout).to.include({
+        outerWidth: 300,
+
+        outerHeight: 400,
       });
 
       instance.destroy();
@@ -506,213 +902,650 @@ describe('src/padlock', () => {
   });
 
   describe('scroll setter effects', () => {
-    // TODO: split into granular test cases
-    // TODO: use sinon stubs/spies instead of methods override
-    it('should scroll the element through "scroll" setter when unlocked state, save it for later when locked, restore saved scroll on unlock', async () => {
+    it('should trigger scroll when setting new values to "scroll" instance setter when in "unlocked" state', async () => {
       const div = document.createElement('div');
 
-      const lockedStateCSSClassName = 'loooocked';
+      div.scrollTo = div.scrollTo || (() => {});
 
-      let scrollToCalls = 0;
+      sinonSandbox.spy(div, 'scrollTo');
 
-      div.scrollTo = (arg) => {
-        scrollToCalls += 1;
+      const cssClassName = 'locked';
 
-        if (typeof arg === 'object') {
-          div.scrollTop = arg?.top;
-        }
-
-        if (typeof arg === 'number') {
-          div.scrollTop = arg;
-        }
-      };
-
-      const instance = new Padlock(div, lockedStateCSSClassName, window);
-
-      // Tests programmatic scroll change through instance
-      let { scrollTop } = div;
+      const instance = new Padlock(div, cssClassName, window);
 
       instance.scroll = { top: 100, left: 200 };
 
-      expect(scrollTop).not.to.equals(div.scrollTop);
-      expect(scrollToCalls).to.equals(1);
+      expect(div.scrollTo.getCalls()).to.have.lengthOf(1);
 
-      scrollTop = instance.scroll.top;
-
-      // Tests programmatic scroll change attempt through
-      // instance on locked state (given scroll object is saved for later)
-      ({ scrollTop } = div);
-
-      div.classList.add(lockedStateCSSClassName);
+      div.classList.add(cssClassName);
 
       await new Promise(window.setTimeout);
 
       instance.scroll = { top: 200, left: 300 };
 
-      expect(scrollTop).to.equals(div.scrollTop);
-      expect(scrollToCalls).to.equals(1);
+      let calls = div.scrollTo.getCalls();
 
-      // Tests automatic scroll restore on previously
-      // given scroll object (through scroll change attempt)
-      div.classList.remove(lockedStateCSSClassName);
+      expect(calls).to.have.lengthOf(1);
+
+      expect(calls[0].args).to.deep.equals([200, 100]);
+
+      instance.destroy();
+
+      calls = div.scrollTo.getCalls();
+
+      expect(calls).to.have.lengthOf(1);
+    });
+
+    it('should register scroll requests when in locked state, forbid it, and then fires it on scroll unlock', async () => {
+      const div = document.createElement('div');
+
+      div.scrollTo = div.scrollTo || (() => {});
+
+      sinonSandbox.spy(div, 'scrollTo');
+
+      const cssClassName = 'locked';
+
+      const instance = new Padlock(div, cssClassName, window);
+
+      div.classList.add(cssClassName);
 
       await new Promise(window.setTimeout);
 
-      expect(scrollTop).not.to.equals(div.scrollTop);
-      expect(scrollToCalls).to.equals(2);
+      instance.scroll = { top: 200, left: 300 };
+
+      expect(div.scrollTo.getCalls()).to.have.lengthOf(0);
+
+      div.classList.remove(cssClassName);
+
+      await new Promise(window.setTimeout);
+
+      const calls = div.scrollTo.getCalls();
+
+      expect(calls).to.have.lengthOf(1);
+
+      expect(calls[0].args).to.deep.equals([300, 200]);
+
+      instance.destroy();
+    });
+
+    it('should update "scroll" instance object on scroll when in "unlocked" state', async () => {
+      const div = document.createElement('div');
+
+      div.scrollTo = div.scrollTo || (() => {});
+
+      sinonSandbox.spy(div, 'scrollTo');
+
+      const cssClassName = 'locked';
+
+      const instance = new Padlock(div, cssClassName, window);
+
+      expect(div.scrollTo.getCalls()).to.have.lengthOf(0);
+
+      instance.scroll = { top: 100, left: 200 };
+
+      let calls = div.scrollTo.getCalls();
+
+      expect(calls).to.have.lengthOf(1);
+
+      expect(calls[0].args).to.deep.equals([200, 100]);
+
+      div.classList.add(cssClassName);
+
+      await new Promise(window.setTimeout);
+
+      calls = div.scrollTo.getCalls();
+
+      expect(calls).to.have.lengthOf(1);
+
+      instance.scroll = { top: 300, left: 400 };
+
+      expect(calls).to.have.lengthOf(1);
+
+      instance.destroy();
+    });
+
+    it('should register scroll requests when in locked state, forbid it, and then fires it on scroll unlock updating scroll object', async () => {
+      const div = document.createElement('div');
+
+      div.scrollTo = div.scrollTo || (() => {});
+
+      sinonSandbox.spy(div, 'scrollTo');
+
+      const cssClassName = 'locked';
+
+      const instance = new Padlock(div, cssClassName, window);
+
+      expect(div.scrollTo.getCalls()).to.have.lengthOf(0);
+
+      div.classList.add(cssClassName);
+
+      await new Promise(window.setTimeout);
+
+      expect(div.scrollTo.getCalls()).to.have.lengthOf(0);
+
+      instance.scroll = { top: 300, left: 400 };
+
+      expect(div.scrollTo.getCalls()).to.have.lengthOf(0);
+
+      div.classList.remove(cssClassName);
+
+      await new Promise(window.setTimeout);
+
+      const calls = div.scrollTo.getCalls();
+
+      expect(calls).to.have.lengthOf(1);
+
+      expect(calls[0].args).to.deep.equals([400, 300]);
+
+      instance.destroy();
+    });
+
+    it('should not react to extraneous css class names being set', async () => {
+      const div = document.createElement('div');
+
+      div.scrollTo = div.scrollTo || (() => {});
+
+      sinonSandbox.spy(div, 'scrollTo');
+
+      const cssClassName = 'locked';
+
+      const instance = new Padlock(div, cssClassName, window);
+
+      div.classList.add(cssClassName);
+
+      await new Promise(window.setTimeout);
+
+      instance.scroll = { top: 200, left: 300 };
+
+      expect(div.scrollTo.getCalls()).to.have.lengthOf(0);
+
+      div.classList.add('another-css-class-name');
+
+      await new Promise(window.setTimeout);
+
+      expect(div.scrollTo.getCalls()).to.have.lengthOf(0);
+
+      instance.scrollingElement.classList.remove(cssClassName);
+
+      await new Promise(window.setTimeout);
+
+      const calls = instance.scrollEventElement.scrollTo.getCalls();
+
+      expect(calls).to.have.lengthOf(1);
+
+      expect(calls[0].args).to.deep.equals([300, 200]);
+
+      instance.destroy();
+    });
+
+    it('should not react to "update" method calls or "scroll" setter calls when locked state', async () => {
+      const cssClassName = 'locked';
+
+      const instance = new Padlock(undefined, cssClassName, window);
+
+      sinonSandbox.stub(instance.scrollEventElement, 'scrollTo');
+
+      instance.scrollingElement.classList.add(cssClassName);
+
+      await new Promise(window.setTimeout);
+
+      expect(instance.scrollEventElement.scrollTo.getCalls()).to.have.lengthOf(0);
+
+      instance.scroll = { top: 100, left: 200 };
+
+      expect(instance.scrollEventElement.scrollTo.getCalls()).to.have.lengthOf(0);
+
+      instance.update();
+
+      expect(instance.scrollEventElement.scrollTo.getCalls()).to.have.lengthOf(0);
+
+      instance.scrollingElement.classList.remove(cssClassName);
+
+      await new Promise(window.setTimeout);
+
+      const calls = instance.scrollEventElement.scrollTo.getCalls();
+
+      expect(calls).to.have.lengthOf(1);
+
+      expect(calls[0].args).to.deep.equals([200, 100]);
 
       instance.destroy();
     });
   });
 
   describe('destruction', () => {
-    // TODO: split into granular test cases
-    // TODO: use sinon stubs/spies instead of methods override
-    it('should avoid further computations or DOM changes after "destroy" method call', () => {
-      const div = document.createElement('div');
+    it('should be able to set instance members references to initial state on destroy', () => {
+      const instance = new Padlock(undefined, undefined, window);
 
-      const getStylesheetsCount = () => document.head.querySelectorAll('style').length;
+      const { scrollingElement } = instance;
 
-      const stylesheetsCountBeforeInit = getStylesheetsCount();
+      expect(instance.scrollingElement).to.be.an.instanceOf(window.HTMLElement).which.is.not.null;
 
-      const {
-        MutationObserver: windowMutationObserverBackup,
-        addEventListener: windowAddEventListenerBackup,
-        removeEventListener: windowRemoveEventListenerBackup,
-      } = window;
+      expect(instance.scrollEventElement).to.equals(window);
 
-      let observed = 0;
-      let unobserved = 0;
-      let disconnect = 0;
+      expect(instance.cssClassName).to.be.a('string').which.is.not.empty;
 
-      let resizeListened = 0;
-      let scrollListened = 0;
-      let scrollRemoved = 0;
-      let resizeRemoved = 0;
+      expect(instance.scroll).to.be.an('object').which.is.not.null;
 
-      window.MutationObserver = function MutationObserverStub() {
-        this.observe = () => {
-          observed += 1;
-        };
-
-        this.unobserve = () => {
-          unobserved += 1;
-        };
-
-        this.disconnect = () => {
-          disconnect += 1;
-        };
-      };
-
-      const attachListener = (type) => {
-        switch (type) {
-          case 'scroll':
-            scrollListened += 1;
-            break;
-
-          case 'resize':
-            resizeListened += 1;
-            break;
-
-          default:
-            break;
-        }
-      };
-
-      window.addEventListener = attachListener;
-      div.addEventListener = attachListener;
-
-      const detachListener = (type) => {
-        switch (type) {
-          case 'scroll':
-            scrollRemoved += 1;
-            break;
-
-          case 'resize':
-            resizeRemoved += 1;
-            break;
-
-          default:
-            break;
-        }
-      };
-
-      window.removeEventListener = detachListener;
-      div.removeEventListener = detachListener;
-
-      expect(observed).to.equals(0);
-      expect(unobserved).to.equals(0);
-      expect(disconnect).to.equals(0);
-      expect(resizeListened).to.equals(0);
-      expect(scrollListened).to.equals(0);
-      expect(resizeRemoved).to.equals(0);
-      expect(scrollRemoved).to.equals(0);
-
-      expect(getStylesheetsCount()).to.equals(stylesheetsCountBeforeInit);
-
-      const instance = new Padlock(div, undefined, window);
-
-      expect(getStylesheetsCount()).to.not.equals(stylesheetsCountBeforeInit);
-
-      expect(observed).to.equals(1);
-      expect(unobserved).to.equals(0);
-      expect(disconnect).to.equals(0);
-      expect(resizeListened).to.equals(1);
-      expect(scrollListened).to.equals(1);
-      expect(resizeRemoved).to.equals(0);
-      expect(scrollRemoved).to.equals(0);
-
-      expect(div.matches('[data-scroll-padlock]')).to.be.true;
+      expect(instance.layout).to.be.an('object').which.is.not.null;
 
       instance.destroy();
 
-      expect(getStylesheetsCount()).to.equals(stylesheetsCountBeforeInit);
+      expect(instance.scrollingElement).to.be.null;
 
-      expect(div.matches('[data-scroll-padlock]')).to.be.false;
+      expect(instance.scrollEventElement).to.be.null;
 
-      div.dispatchEvent(new window.CustomEvent('scroll'));
+      expect(instance.cssClassName).to.empty;
 
-      expect(div.matches('[data-scroll-padlock]')).to.be.false;
+      expect(instance.scroll).to.be.null;
 
-      div.dispatchEvent(new window.CustomEvent('resize'));
+      expect(instance.layout).to.be.null;
 
-      expect(div.matches('[data-scroll-padlock]')).to.be.false;
+      scrollingElement.dispatchEvent(new window.CustomEvent('scroll'));
+
+      expect(instance.scrollingElement).to.be.null;
+
+      expect(instance.scrollEventElement).to.be.null;
+
+      expect(instance.cssClassName).to.empty;
+
+      expect(instance.scroll).to.be.null;
+
+      expect(instance.layout).to.be.null;
+
+      scrollingElement.dispatchEvent(new window.CustomEvent('resize'));
+
+      expect(instance.scrollingElement).to.be.null;
+
+      expect(instance.scrollEventElement).to.be.null;
+
+      expect(instance.cssClassName).to.empty;
+
+      expect(instance.scroll).to.be.null;
+
+      expect(instance.layout).to.be.null;
 
       instance.update();
 
-      expect(div.matches('[data-scroll-padlock]')).to.be.false;
+      expect(instance.scrollingElement).to.be.null;
 
-      expect(observed).to.equals(1);
-      expect(unobserved).to.equals(0);
-      expect(disconnect).to.equals(1);
-      expect(resizeListened).to.equals(1);
-      expect(scrollListened).to.equals(1);
-      expect(resizeRemoved).to.equals(1);
-      expect(scrollRemoved).to.equals(1);
+      expect(instance.scrollEventElement).to.be.null;
 
-      window.addEventListener = windowAddEventListenerBackup;
-      window.removeEventListener = windowRemoveEventListenerBackup;
-      window.MutationObserver = windowMutationObserverBackup;
+      expect(instance.cssClassName).to.empty;
+
+      expect(instance.scroll).to.be.null;
+
+      expect(instance.layout).to.be.null;
+
+      instance.scroll = { top: 1, left: 2 };
+
+      expect(instance.scrollingElement).to.be.null;
+
+      expect(instance.scrollEventElement).to.be.null;
+
+      expect(instance.cssClassName).to.empty;
+
+      expect(instance.scroll).to.be.null;
+
+      expect(instance.layout).to.be.null;
+    });
+
+    it('should stop observing to dom changes after destruction', () => {
+      sinonSandbox.spy(window.MutationObserver.prototype, 'observe');
+
+      sinonSandbox.spy(window.MutationObserver.prototype, 'disconnect');
+
+      expect(window.MutationObserver.prototype.observe.getCalls()).to.have.lengthOf(0);
+
+      expect(window.MutationObserver.prototype.disconnect.getCalls()).to.have.lengthOf(0);
+
+      const instance = new Padlock(undefined, undefined, window);
+
+      expect(window.MutationObserver.prototype.observe.getCalls()).to.have.lengthOf(1);
+
+      expect(window.MutationObserver.prototype.disconnect.getCalls()).to.have.lengthOf(0);
+
+      const { scrollingElement } = instance;
 
       instance.destroy();
+
+      expect(window.MutationObserver.prototype.observe.getCalls()).to.have.lengthOf(1);
+
+      expect(window.MutationObserver.prototype.disconnect.getCalls()).to.have.lengthOf(1);
+
+      scrollingElement.dispatchEvent(new window.CustomEvent('scroll'));
+
+      expect(window.MutationObserver.prototype.observe.getCalls()).to.have.lengthOf(1);
+
+      expect(window.MutationObserver.prototype.disconnect.getCalls()).to.have.lengthOf(1);
+
+      scrollingElement.dispatchEvent(new window.CustomEvent('resize'));
+
+      expect(window.MutationObserver.prototype.observe.getCalls()).to.have.lengthOf(1);
+
+      expect(window.MutationObserver.prototype.disconnect.getCalls()).to.have.lengthOf(1);
+
+      instance.update();
+
+      expect(window.MutationObserver.prototype.observe.getCalls()).to.have.lengthOf(1);
+
+      expect(window.MutationObserver.prototype.disconnect.getCalls()).to.have.lengthOf(1);
+
+      instance.scroll = { top: 1, left: 2 };
+
+      expect(window.MutationObserver.prototype.observe.getCalls()).to.have.lengthOf(1);
+
+      expect(window.MutationObserver.prototype.disconnect.getCalls()).to.have.lengthOf(1);
+    });
+
+    it('should stop listening to resize event after destruction', () => {
+      sinonSandbox.spy(window, 'addEventListener');
+
+      sinonSandbox.spy(window, 'removeEventListener');
+
+      expect(window.addEventListener.getCalls().filter((x) => x.args[0] === 'scroll')).to.have.lengthOf(0);
+
+      expect(window.removeEventListener.getCalls().filter((x) => x.args[0] === 'scroll')).to.have.lengthOf(0);
+
+      expect(window.removeEventListener.getCalls()).to.have.lengthOf(0);
+
+      const instance = new Padlock(undefined, undefined, window);
+
+      const { scrollingElement } = instance;
+
+      sinonSandbox.spy(scrollingElement, 'addEventListener');
+
+      sinonSandbox.spy(scrollingElement, 'removeEventListener');
+
+      expect(window.addEventListener.getCalls().filter((x) => x.args[0] === 'scroll')).to.have.lengthOf(1);
+
+      expect(scrollingElement.addEventListener.getCalls().filter((x) => x.args[0] === 'scroll')).to.have.lengthOf(0);
+
+      expect(window.removeEventListener.getCalls().filter((x) => x.args[0] === 'scroll')).to.have.lengthOf(0);
+
+      expect(scrollingElement.removeEventListener.getCalls().filter((x) => x.args[0] === 'scroll')).to.have.lengthOf(0);
+
+      instance.destroy();
+
+      expect(window.addEventListener.getCalls().filter((x) => x.args[0] === 'scroll')).to.have.lengthOf(1);
+
+      expect(scrollingElement.addEventListener.getCalls().filter((x) => x.args[0] === 'scroll')).to.have.lengthOf(0);
+
+      expect(window.removeEventListener.getCalls().filter((x) => x.args[0] === 'scroll')).to.have.lengthOf(1);
+
+      expect(scrollingElement.removeEventListener.getCalls().filter((x) => x.args[0] === 'scroll')).to.have.lengthOf(0);
+
+      scrollingElement.dispatchEvent(new window.CustomEvent('scroll'));
+
+      expect(window.addEventListener.getCalls().filter((x) => x.args[0] === 'scroll')).to.have.lengthOf(1);
+
+      expect(scrollingElement.addEventListener.getCalls().filter((x) => x.args[0] === 'scroll')).to.have.lengthOf(0);
+
+      expect(window.removeEventListener.getCalls().filter((x) => x.args[0] === 'scroll')).to.have.lengthOf(1);
+
+      expect(scrollingElement.removeEventListener.getCalls().filter((x) => x.args[0] === 'scroll')).to.have.lengthOf(0);
+
+      instance.update();
+
+      expect(window.addEventListener.getCalls().filter((x) => x.args[0] === 'scroll')).to.have.lengthOf(1);
+
+      expect(scrollingElement.addEventListener.getCalls().filter((x) => x.args[0] === 'scroll')).to.have.lengthOf(0);
+
+      expect(window.removeEventListener.getCalls().filter((x) => x.args[0] === 'scroll')).to.have.lengthOf(1);
+
+      expect(scrollingElement.removeEventListener.getCalls().filter((x) => x.args[0] === 'scroll')).to.have.lengthOf(0);
+
+      instance.scroll = { top: 0, left: 1 };
+
+      expect(window.addEventListener.getCalls().filter((x) => x.args[0] === 'scroll')).to.have.lengthOf(1);
+
+      expect(scrollingElement.addEventListener.getCalls().filter((x) => x.args[0] === 'scroll')).to.have.lengthOf(0);
+
+      expect(window.removeEventListener.getCalls().filter((x) => x.args[0] === 'scroll')).to.have.lengthOf(1);
+
+      expect(scrollingElement.removeEventListener.getCalls().filter((x) => x.args[0] === 'scroll')).to.have.lengthOf(0);
+    });
+
+    it('should stop listening to scroll event after destruction', () => {
+      sinonSandbox.spy(window, 'addEventListener');
+
+      sinonSandbox.spy(window, 'removeEventListener');
+
+      expect(window.addEventListener.getCalls().filter((x) => x.args[0] === 'resize')).to.have.lengthOf(0);
+
+      expect(window.removeEventListener.getCalls().filter((x) => x.args[0] === 'resize')).to.have.lengthOf(0);
+
+      expect(window.removeEventListener.getCalls()).to.have.lengthOf(0);
+
+      const instance = new Padlock(undefined, undefined, window);
+
+      const { scrollingElement } = instance;
+
+      sinonSandbox.spy(scrollingElement, 'addEventListener');
+
+      sinonSandbox.spy(scrollingElement, 'removeEventListener');
+
+      expect(window.addEventListener.getCalls().filter((x) => x.args[0] === 'resize')).to.have.lengthOf(1);
+
+      expect(scrollingElement.addEventListener.getCalls().filter((x) => x.args[0] === 'resize')).to.have.lengthOf(0);
+
+      expect(window.removeEventListener.getCalls().filter((x) => x.args[0] === 'resize')).to.have.lengthOf(0);
+
+      expect(scrollingElement.removeEventListener.getCalls().filter((x) => x.args[0] === 'resize')).to.have.lengthOf(0);
+
+      instance.destroy();
+
+      expect(window.addEventListener.getCalls().filter((x) => x.args[0] === 'resize')).to.have.lengthOf(1);
+
+      expect(scrollingElement.addEventListener.getCalls().filter((x) => x.args[0] === 'resize')).to.have.lengthOf(0);
+
+      expect(window.removeEventListener.getCalls().filter((x) => x.args[0] === 'resize')).to.have.lengthOf(1);
+
+      expect(scrollingElement.removeEventListener.getCalls().filter((x) => x.args[0] === 'resize')).to.have.lengthOf(0);
+
+      scrollingElement.dispatchEvent(new window.CustomEvent('resize'));
+
+      expect(window.addEventListener.getCalls().filter((x) => x.args[0] === 'resize')).to.have.lengthOf(1);
+
+      expect(scrollingElement.addEventListener.getCalls().filter((x) => x.args[0] === 'resize')).to.have.lengthOf(0);
+
+      expect(window.removeEventListener.getCalls().filter((x) => x.args[0] === 'resize')).to.have.lengthOf(1);
+
+      expect(scrollingElement.removeEventListener.getCalls().filter((x) => x.args[0] === 'resize')).to.have.lengthOf(0);
+
+      instance.update();
+
+      expect(window.addEventListener.getCalls().filter((x) => x.args[0] === 'resize')).to.have.lengthOf(1);
+
+      expect(scrollingElement.addEventListener.getCalls().filter((x) => x.args[0] === 'resize')).to.have.lengthOf(0);
+
+      expect(window.removeEventListener.getCalls().filter((x) => x.args[0] === 'resize')).to.have.lengthOf(1);
+
+      expect(scrollingElement.removeEventListener.getCalls().filter((x) => x.args[0] === 'resize')).to.have.lengthOf(0);
+
+      instance.scroll = { top: 0, left: 2 };
+
+      expect(window.addEventListener.getCalls().filter((x) => x.args[0] === 'resize')).to.have.lengthOf(1);
+
+      expect(scrollingElement.addEventListener.getCalls().filter((x) => x.args[0] === 'resize')).to.have.lengthOf(0);
+
+      expect(window.removeEventListener.getCalls().filter((x) => x.args[0] === 'resize')).to.have.lengthOf(1);
+
+      expect(scrollingElement.removeEventListener.getCalls().filter((x) => x.args[0] === 'resize')).to.have.lengthOf(0);
     });
   });
 
   describe('listeners', () => {
     it('should be able to pause scroll event listener', () => {
-      // TODO:
+      sinonSandbox.spy(window, 'addEventListener');
+
+      sinonSandbox.spy(window, 'removeEventListener');
+
+      expect(window.addEventListener.getCalls().filter((x) => x.args[0] === 'scroll')).to.have.lengthOf(0);
+
+      expect(window.removeEventListener.getCalls().filter((x) => x.args[0] === 'scroll')).to.have.lengthOf(0);
+
+      const instance = new Padlock(undefined, undefined, window);
+
+      expect(window.addEventListener.getCalls().filter((x) => x.args[0] === 'scroll')).to.have.lengthOf(1);
+
+      expect(window.removeEventListener.getCalls().filter((x) => x.args[0] === 'scroll')).to.have.lengthOf(0);
+
+      instance.unlisten('scroll');
+
+      expect(window.addEventListener.getCalls().filter((x) => x.args[0] === 'scroll')).to.have.lengthOf(1);
+
+      expect(window.removeEventListener.getCalls().filter((x) => x.args[0] === 'scroll')).to.have.lengthOf(1);
+
+      instance.destroy();
+
+      expect(window.addEventListener.getCalls().filter((x) => x.args[0] === 'scroll')).to.have.lengthOf(1);
+
+      expect(window.removeEventListener.getCalls().filter((x) => x.args[0] === 'scroll')).to.have.lengthOf(1);
     });
 
     it('should be able to resume scroll event listener', () => {
-      // TODO:
+      sinonSandbox.spy(window, 'addEventListener');
+
+      sinonSandbox.spy(window, 'removeEventListener');
+
+      expect(window.addEventListener.getCalls().filter((x) => x.args[0] === 'scroll')).to.have.lengthOf(0);
+
+      expect(window.removeEventListener.getCalls().filter((x) => x.args[0] === 'scroll')).to.have.lengthOf(0);
+
+      const instance = new Padlock(undefined, undefined, window);
+
+      expect(window.addEventListener.getCalls().filter((x) => x.args[0] === 'scroll')).to.have.lengthOf(1);
+
+      expect(window.removeEventListener.getCalls().filter((x) => x.args[0] === 'scroll')).to.have.lengthOf(0);
+
+      instance.unlisten('scroll');
+
+      expect(window.addEventListener.getCalls().filter((x) => x.args[0] === 'scroll')).to.have.lengthOf(1);
+
+      expect(window.removeEventListener.getCalls().filter((x) => x.args[0] === 'scroll')).to.have.lengthOf(1);
+
+      instance.listen('scroll');
+
+      expect(window.addEventListener.getCalls().filter((x) => x.args[0] === 'scroll')).to.have.lengthOf(2);
+
+      expect(window.removeEventListener.getCalls().filter((x) => x.args[0] === 'scroll')).to.have.lengthOf(1);
+
+      instance.destroy();
+    });
+
+    it('should not be able to resume scroll event listener after destruction', () => {
+      sinonSandbox.spy(window, 'addEventListener');
+
+      sinonSandbox.spy(window, 'removeEventListener');
+
+      expect(window.addEventListener.getCalls().filter((x) => x.args[0] === 'scroll')).to.have.lengthOf(0);
+
+      expect(window.removeEventListener.getCalls().filter((x) => x.args[0] === 'scroll')).to.have.lengthOf(0);
+
+      const instance = new Padlock(undefined, undefined, window);
+
+      expect(window.addEventListener.getCalls().filter((x) => x.args[0] === 'scroll')).to.have.lengthOf(1);
+
+      expect(window.removeEventListener.getCalls().filter((x) => x.args[0] === 'scroll')).to.have.lengthOf(0);
+
+      instance.destroy();
+
+      expect(window.addEventListener.getCalls().filter((x) => x.args[0] === 'scroll')).to.have.lengthOf(1);
+
+      expect(window.removeEventListener.getCalls().filter((x) => x.args[0] === 'scroll')).to.have.lengthOf(1);
+
+      instance.listen('scroll');
+
+      expect(window.addEventListener.getCalls().filter((x) => x.args[0] === 'scroll')).to.have.lengthOf(1);
+
+      expect(window.removeEventListener.getCalls().filter((x) => x.args[0] === 'scroll')).to.have.lengthOf(1);
     });
 
     it('should be able to pause resize event listener', () => {
-      // TODO:
+      sinonSandbox.spy(window, 'addEventListener');
+
+      sinonSandbox.spy(window, 'removeEventListener');
+
+      expect(window.addEventListener.getCalls().filter((x) => x.args[0] === 'resize')).to.have.lengthOf(0);
+
+      expect(window.removeEventListener.getCalls().filter((x) => x.args[0] === 'resize')).to.have.lengthOf(0);
+
+      const instance = new Padlock(undefined, undefined, window);
+
+      expect(window.addEventListener.getCalls().filter((x) => x.args[0] === 'resize')).to.have.lengthOf(1);
+
+      expect(window.removeEventListener.getCalls().filter((x) => x.args[0] === 'resize')).to.have.lengthOf(0);
+
+      instance.unlisten('resize');
+
+      expect(window.addEventListener.getCalls().filter((x) => x.args[0] === 'resize')).to.have.lengthOf(1);
+
+      expect(window.removeEventListener.getCalls().filter((x) => x.args[0] === 'resize')).to.have.lengthOf(1);
+
+      instance.destroy();
+
+      expect(window.addEventListener.getCalls().filter((x) => x.args[0] === 'resize')).to.have.lengthOf(1);
+
+      expect(window.removeEventListener.getCalls().filter((x) => x.args[0] === 'resize')).to.have.lengthOf(1);
     });
 
     it('should be able to resume resize event listener', () => {
-      // TODO:
+      sinonSandbox.spy(window, 'addEventListener');
+
+      sinonSandbox.spy(window, 'removeEventListener');
+
+      expect(window.addEventListener.getCalls().filter((x) => x.args[0] === 'resize')).to.have.lengthOf(0);
+
+      expect(window.removeEventListener.getCalls().filter((x) => x.args[0] === 'resize')).to.have.lengthOf(0);
+
+      const instance = new Padlock(undefined, undefined, window);
+
+      expect(window.addEventListener.getCalls().filter((x) => x.args[0] === 'resize')).to.have.lengthOf(1);
+
+      expect(window.removeEventListener.getCalls().filter((x) => x.args[0] === 'resize')).to.have.lengthOf(0);
+
+      instance.unlisten('resize');
+
+      expect(window.addEventListener.getCalls().filter((x) => x.args[0] === 'resize')).to.have.lengthOf(1);
+
+      expect(window.removeEventListener.getCalls().filter((x) => x.args[0] === 'resize')).to.have.lengthOf(1);
+
+      instance.listen('resize');
+
+      expect(window.addEventListener.getCalls().filter((x) => x.args[0] === 'resize')).to.have.lengthOf(2);
+
+      expect(window.removeEventListener.getCalls().filter((x) => x.args[0] === 'resize')).to.have.lengthOf(1);
+
+      instance.destroy();
+    });
+
+    it('should not be able to resume resize event listener after destruction', () => {
+      sinonSandbox.spy(window, 'addEventListener');
+
+      sinonSandbox.spy(window, 'removeEventListener');
+
+      expect(window.addEventListener.getCalls().filter((x) => x.args[0] === 'resize')).to.have.lengthOf(0);
+
+      expect(window.removeEventListener.getCalls().filter((x) => x.args[0] === 'resize')).to.have.lengthOf(0);
+
+      const instance = new Padlock(undefined, undefined, window);
+
+      expect(window.addEventListener.getCalls().filter((x) => x.args[0] === 'resize')).to.have.lengthOf(1);
+
+      expect(window.removeEventListener.getCalls().filter((x) => x.args[0] === 'resize')).to.have.lengthOf(0);
+
+      instance.destroy();
+
+      expect(window.addEventListener.getCalls().filter((x) => x.args[0] === 'resize')).to.have.lengthOf(1);
+
+      expect(window.removeEventListener.getCalls().filter((x) => x.args[0] === 'resize')).to.have.lengthOf(1);
+
+      instance.listen('resize');
+
+      expect(window.addEventListener.getCalls().filter((x) => x.args[0] === 'resize')).to.have.lengthOf(1);
+
+      expect(window.removeEventListener.getCalls().filter((x) => x.args[0] === 'resize')).to.have.lengthOf(1);
     });
   });
 });
