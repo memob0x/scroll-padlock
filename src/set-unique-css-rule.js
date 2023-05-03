@@ -4,7 +4,6 @@ const INT_CSS_RULE_UNIQUE_INDEX = 0;
 /**
  * Updates a given element css variables to a given styler element
  * ensuring its presence in the given target element (usually head).
- *
  * @public
  * @example
  * setUniqueCssRule(document.querySelector('style#my-styles'), '.el { color: blue; }');

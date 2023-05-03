@@ -2,7 +2,6 @@ import './typedef';
 
 /**
  * Gets the given scroll position object as css rules.
- *
  * @public
  * @example
  * getScrollPositionCssRules({ top: 10 }); // --> `

@@ -1,7 +1,7 @@
 import puppeteer from 'puppeteer';
 
 export default () => puppeteer.launch({
-  headless: true,
+  headless: 'new',
 
   executablePath: puppeteer.executablePath(),
 

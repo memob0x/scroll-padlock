@@ -2,7 +2,6 @@ import './typedef';
 
 /**
  * Gets a given element or browser dimensions.
- *
  * @public
  * @example
  * getLayoutDimensions(document.querySelector('div')) // --> { outerHeight: 123, ... }

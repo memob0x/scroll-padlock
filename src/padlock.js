@@ -21,7 +21,6 @@ const instances = new WeakMap();
 
 /**
  * Creates the scroll padlock class instance on body scroll or on a given scrollable element.
- *
  * @example
  * void new ScrollPadlock();
  *
@@ -287,7 +286,6 @@ class ScrollPadlock {
 
   /**
    * The Padlock instance unique identifier.
-   *
    * @private
    * @memberof ScrollPadlock
    */
@@ -295,7 +293,6 @@ class ScrollPadlock {
 
   /**
    * A reference to the client "window" object.
-   *
    * @private
    * @type {Window}
    * @memberof ScrollPadlock
@@ -304,7 +301,6 @@ class ScrollPadlock {
 
   /**
    * A reference to the client "document" object.
-   *
    * @type {Document}
    * @private
    * @memberof ScrollPadlock
@@ -313,7 +309,6 @@ class ScrollPadlock {
 
   /**
    * The html element that can perform the scrolling action.
-   *
    * @type {HTMLElement}
    * @private
    * @memberof ScrollPadlock
@@ -322,7 +317,6 @@ class ScrollPadlock {
 
   /**
    * The html element that can perform the scrolling action.
-   *
    * @type {HTMLElement}
    * @public
    * @memberof ScrollPadlock
@@ -335,7 +329,6 @@ class ScrollPadlock {
    * The element that can perform and listen to scroll event.
    * Usually coincides with the scrolling element, but when the scrolling element
    * is document.documentElement or document.body, "scroller" is window.
-   *
    * @type {HTMLElement|Window}
    * @private
    * @memberof ScrollPadlock
@@ -346,7 +339,6 @@ class ScrollPadlock {
    * The element that can listen to scroll event.
    * Usually coincides with the scrolling element, but when the scrolling element
    * is document.documentElement or document.body, "scroller" is window.
-   *
    * @type {HTMLElement|Window}
    * @public
    * @memberof ScrollPadlock
@@ -357,7 +349,6 @@ class ScrollPadlock {
 
   /**
    * The element used as unique identifier (key) in the map of instances.
-   *
    * @type {HTMLElement|Window}
    * @private
    * @memberof ScrollPadlock
@@ -366,7 +357,6 @@ class ScrollPadlock {
 
   /**
    * The styler, css variables holder.
-   *
    * @type {HTMLStyleElement}
    * @private
    * @memberof ScrollPadlock
@@ -375,7 +365,6 @@ class ScrollPadlock {
 
   /**
    * The original given element CSS class list.
-   *
    * @type {DOMTokenList}
    * @private
    * @memberof ScrollPadlock
@@ -384,7 +373,6 @@ class ScrollPadlock {
 
   /**
    * The current scroll position.
-   *
    * @type {Types.ScrollPosition}
    * @private
    * @memberof ScrollPadlock
@@ -393,7 +381,6 @@ class ScrollPadlock {
 
   /**
    * The scroll position saving, the scroll position stored for later use.
-   *
    * @type {Types.ScrollPosition}
    * @private
    * @memberof ScrollPadlock
@@ -403,7 +390,6 @@ class ScrollPadlock {
   /**
    * State MutationObserver object,
    * registers the callback fired on CSS class change.
-   *
    * @type {MutationObserver}
    * @private
    * @memberof ScrollPadlock
@@ -413,7 +399,6 @@ class ScrollPadlock {
   /**
    * Event listeners states map,
    * contains the last method called by event name (as key).
-   *
    * @private
    * @memberof ScrollPadlock
    */
@@ -425,7 +410,6 @@ class ScrollPadlock {
 
   /**
    * The layout dimensions.
-   *
    * @private
    * @memberof ScrollPadlock
    */
@@ -433,7 +417,6 @@ class ScrollPadlock {
 
   /**
    * The scroll lock state.
-   *
    * @private
    * @memberof ScrollPadlock
    */
@@ -442,7 +425,6 @@ class ScrollPadlock {
   /**
    * The current css class observer state
    * True if observing, false if not.
-   *
    * @private
    * @memberof ScrollPadlock
    */
@@ -450,7 +432,6 @@ class ScrollPadlock {
 
   /**
    * The element css selector.
-   *
    * @private
    * @memberof ScrollPadlock
    */
@@ -458,7 +439,6 @@ class ScrollPadlock {
 
   /**
    * The lock state CSS class name.
-   *
    * @private
    * @memberof ScrollPadlock
    */
@@ -466,7 +446,6 @@ class ScrollPadlock {
 
   /**
    * The lock state CSS class name.
-   *
    * @type {string}
    * @public
    * @memberof ScrollPadlock
@@ -482,7 +461,6 @@ class ScrollPadlock {
   /**
    * Returns the current scroll position, if on a locked state it
    * returns the currently saved scroll position object.
-   *
    * @public
    * @example
    * const padlock = new ScrollPadlock();
@@ -500,7 +478,6 @@ class ScrollPadlock {
   /**
    * Sets a new scroll position, if on a locked state it saves that
    * given scroll position for a future scroll restoration.
-   *
    * @public
    * @example
    * const padlock = new ScrollPadlock();
@@ -526,7 +503,6 @@ class ScrollPadlock {
 
   /**
    * Gets the layout dimensions, such as widths, heights, scrollbars etc...
-   *
    * @public
    * @example
    * const padlock = new ScrollPadlock();
@@ -544,7 +520,6 @@ class ScrollPadlock {
 
   /**
    * Handles the element mutation observation.
-   *
    * @private
    * @memberof ScrollPadlock
    * @returns {void} Nothing.
@@ -578,7 +553,6 @@ class ScrollPadlock {
 
   /**
    * The resize event handler function wrapper.
-   *
    * @private
    * @memberof ScrollPadlock
    * @returns {any} Anything the given function returns is returned.
@@ -587,7 +561,6 @@ class ScrollPadlock {
 
   /**
    * Window resize event handler.
-   *
    * @private
    * @memberof ScrollPadlock
    * @returns {void} Nothing.
@@ -602,7 +575,6 @@ class ScrollPadlock {
 
   /**
    * Window resize event handler, bound with the wrapper function.
-   *
    * @private
    * @memberof ScrollPadlock
    * @returns {void} Nothing.
@@ -613,7 +585,6 @@ class ScrollPadlock {
 
   /**
    * The scroll event handler function wrapper.
-   *
    * @private
    * @memberof ScrollPadlock
    * @returns {any} Anything the given function returns is returned.
@@ -622,7 +593,6 @@ class ScrollPadlock {
 
   /**
    * Element scroll event handler.
-   *
    * @private
    * @memberof ScrollPadlock
    * @returns {void} Nothing.
@@ -637,7 +607,6 @@ class ScrollPadlock {
 
   /**
    * Element scroll event handler, bound with the wrapper function.
-   *
    * @private
    * @memberof ScrollPadlock
    * @returns {any} Anything the given function returns is returned.
@@ -649,7 +618,6 @@ class ScrollPadlock {
   /**
    * Event listeners handlers map,
    * contains the supported events handlers by event name (as key).
-   *
    * @private
    * @memberof ScrollPadlock
    */
@@ -661,7 +629,6 @@ class ScrollPadlock {
 
   /**
    * Scrolls the given element to a given scroll position.
-   *
    * @private
    * @memberof ScrollPadlock
    * @param {Types.ScrollPosition} position - The scroll position to be set.
@@ -675,7 +642,6 @@ class ScrollPadlock {
 
   /**
    * Updates the scroll state.
-   *
    * @private
    * @memberof ScrollPadlock
    * @returns {boolean} The scroll state.
@@ -690,7 +656,6 @@ class ScrollPadlock {
 
   /**
    * Fires a given function at a unlocked scroll state.
-   *
    * @private
    * @memberof ScrollPadlock
    * @param {Function} action - The given function to be fired at unlocked scroll state.
@@ -723,7 +688,6 @@ class ScrollPadlock {
 
   /**
    * Updates the layout object.
-   *
    * @private
    * @memberof ScrollPadlock
    * @returns {Types.ScrollPosition} The layout object.
@@ -741,7 +705,6 @@ class ScrollPadlock {
 
   /**
    * Refresh the scroll position at a (temporarly) unlocked state.
-   *
    * @private
    * @memberof ScrollPadlock
    * @returns {Types.ScrollPosition} The current scroll position object.
@@ -759,7 +722,6 @@ class ScrollPadlock {
 
   /**
    * Sets or removes the attribute selector to/from the scrolling element.
-   *
    * @private
    * @memberof ScrollPadlock
    * @param {string} method - The action to be performed, can be "remove" or "add".
@@ -775,7 +737,6 @@ class ScrollPadlock {
 
   /**
    * Rewrites the css variables with current data.
-   *
    * @private
    * @memberof ScrollPadlock
    * @returns {HTMLStyleElement} Styler element.
@@ -802,7 +763,6 @@ class ScrollPadlock {
 
   /**
    * Observes the element CSS class changes.
-   *
    * @private
    * @memberof ScrollPadlock
    * @returns {boolean} The css class observer state.
@@ -831,7 +791,6 @@ class ScrollPadlock {
 
   /**
    * Unobserves the element CSS class changes.
-   *
    * @private
    * @memberof ScrollPadlock
    * @returns {boolean} The css class observer state.
@@ -855,7 +814,6 @@ class ScrollPadlock {
 
   /**
    * Refreshes instance DOM-related states.
-   *
    * @private
    * @memberof ScrollPadlock
    * @returns {void} Nothing.
@@ -870,7 +828,6 @@ class ScrollPadlock {
 
   /**
    * Attaches or detaches a supported listener.
-   *
    * @private
    * @memberof ScrollPadlock
    * @param {string} type - The event type (scroll, resize...).
@@ -924,7 +881,6 @@ class ScrollPadlock {
 
   /**
    * Detaches a supported listener.
-   *
    * @public
    * @example
    * const padlock = new ScrollPadlock();
@@ -941,7 +897,6 @@ class ScrollPadlock {
 
   /**
    * Attaches a supported listener.
-   *
    * @public
    * @example
    * const padlock = new ScrollPadlock();
@@ -958,7 +913,6 @@ class ScrollPadlock {
 
   /**
    * Effectively destroy the instance, detaching event listeners, removing styles, etc...
-   *
    * @public
    * @example
    * const padlock = new ScrollPadlock();
@@ -1014,7 +968,6 @@ class ScrollPadlock {
 
   /**
    * Re-evaluates dimensions and such, updates css variables to the current state...
-   *
    * @public
    * @example
    * const padlock = new ScrollPadlock();

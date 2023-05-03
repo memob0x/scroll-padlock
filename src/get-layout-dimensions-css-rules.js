@@ -2,7 +2,6 @@ import './typedef';
 
 /**
  * Gets the given layout dimensions object as css rules.
- *
  * @public
  * @example
  * getLayoutDimensionsCssRules({ outerWidth: 10 }); // --> `

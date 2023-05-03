@@ -48,7 +48,6 @@
     "jsdoc/implements-on-classes": 1, // Recommended
     "jsdoc/match-description": 1,
     "jsdoc/multiline-blocks": 1, // Recommended
-    "jsdoc/newline-after-description": 1, // Recommended
     "jsdoc/no-bad-blocks": 1,
     "jsdoc/no-defaults": 1,
     // "jsdoc/no-missing-syntax": 1,

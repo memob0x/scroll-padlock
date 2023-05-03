@@ -2,7 +2,6 @@ import './typedef';
 
 /**
  * Gets a given element or browser scroll position.
- *
  * @public
  * @example
  * getScrollPosition(document.queryselector('div')); // --> { top: 123, left: 345 }

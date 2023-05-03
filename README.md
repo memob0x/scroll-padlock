@@ -85,8 +85,10 @@ By default, a padlock instance addresses  the [default browser scrolling element
 
 ```css
 .scroll-padlock-locked {
+  /* Standard way to lock scroll */
   overflow: hidden;
 
+  /* Reserves space for scrollbar */
   padding-right: var(--scroll-padlock-scrollbar-width);
 }
 ```
@@ -147,48 +149,26 @@ const instance = new ScrollPadlock({
 });
 ```
 
-## CSS Rules Examples
-
-The following ruleset alone is enough to ensure a cross-browser body scroll lock for a standard vertical-scroll page:
+The following ruleset alone is enough to ensure a cross-browser page scroll lock for a standard vertical-scroll page:
 
 ```css
-html.scroll-padlock-locked {
-  /* Position-fixed hack, locks iOS too */
-  position: fixed;
-  width: 100%;
+.scroll-padlock-locked {
+  /* non-iOS browsers scroll lock */
 
-  /* Avoids scroll to top */
-  top: calc(var(--scroll-padlock-scroll-top) * -1);
-
-  /* Reserves space for scrollbar */
-  padding-right: var(--scroll-padlock-scrollbar-width);
-}
-```
-
-Some [browser recognition logic](https://gist.github.com/memob0x/0869e759887441b1349fdfe6bf5a188d) can be applied in order to address iOS more specifically, keeping the standard overflow approach for the browsers that respects it:
-
-```css
-/* iOS only */
-html.scroll-padlock-locked.ios {
-  /* iOS fixed position hack */
-  position: fixed;
-  width: 100%;
-
-  /* Avoids scroll to top */
-  top: calc(var(--scroll-padlock-scroll-top) * -1);
-}
-
-/* Standard browsers only */
-html.scroll-padlock-locked.not-ios
-html.scroll-padlock-locked.not-ios body {
   /* Standard way to lock scroll */
   overflow: hidden;
-}
 
-html.scroll-padlock-locked.not-ios body {
   /* Reserves space for scrollbar */
-  /* (iOS has overlay scrollbars, this rule would have no effect there anyway) */
   padding-right: var(--scroll-padlock-scrollbar-width);
+
+  /* iOS only page scroll lock */
+
+  /* iOS page scroll lock hack */
+  position: fixed;
+  width: 100%;
+
+  /* Avoids scroll to top for iOS page scroll lock hack */
+  top: calc(var(--scroll-padlock-scroll-top) * -1);
 }
 ```
 
@@ -196,20 +176,18 @@ html.scroll-padlock-locked.not-ios body {
 
 This is the complete list of CSS variables set by this library on the given elements.
 
-- `--scroll-padlock-scroll-top`: the number of pixels that the target is scrolled vertically.
-- `--scroll-padlock-scroll-left`: the number of pixels that the target is scrolled horizontally.
-- `--scroll-padlock-scrollbar-width`: the target's vertical scrollbar size.
-- `--scroll-padlock-scrollbar-height`: the target's horizontal scrollbar size.
-- `--scroll-padlock-outer-width`: the target's width including the scrollbar size.
-- `--scroll-padlock-outer-height`: the target's height including the scrollbar size.
-- `--scroll-padlock-inner-width`: the target's width without the scrollbar size.
-- `--scroll-padlock-inner-height`: the target's height without the scrollbar size.
-- `--scroll-padlock-scroll-width`: the target's content width.
-- `--scroll-padlock-scroll-height`: the target's content height.
+- `--scroll-padlock-scroll-top`: the number of pixels that the scrolling element is scrolled vertically.
+- `--scroll-padlock-scroll-left`: the number of pixels that the scrolling element is scrolled horizontally.
+- `--scroll-padlock-scrollbar-width`: the scrolling element's vertical scrollbar size.
+- `--scroll-padlock-scrollbar-height`: the scrolling element's horizontal scrollbar size.
+- `--scroll-padlock-outer-width`: the scrolling element's width including the scrollbar size.
+- `--scroll-padlock-outer-height`: the scrolling element's height including the scrollbar size.
+- `--scroll-padlock-inner-width`: the scrolling element's width without the scrollbar size.
+- `--scroll-padlock-inner-height`: the scrolling element's height without the scrollbar size.
+- `--scroll-padlock-scroll-width`: the scrolling element's content width.
+- `--scroll-padlock-scroll-height`: the scrolling element's content height.
 
 ## API
-
-* [Full source code documentation](https://github.com/memob0x/scroll-padlock/blob/master/documentation.md#scrollpadlock)
 
 The `destroy` method is particularly important when using **reactive frameworks** (such as React, Vue, Angular, etc...) which components lifecycle might generate memory leaks: **call `destroy` method when the component in which scroll-padlock is used gets unmounted**.
 
@@ -276,16 +254,18 @@ instance.listen('resize');
 instance.listen('scroll');
 ```
 
-## TL;TR: a body scroll overview
+* [Full source code documentation](https://github.com/memob0x/scroll-padlock/blob/master/documentation.md#scrollpadlock)
 
-🙅 `body { overflow: hidden; }` is the most common way to lock the scroll position on every browsers, unfortunately, unless user's browser has overlay scrollbars, that would cause the scrollbar to disappear, the body to expand and the contents to jump to the right ([CLS](https://web.dev/cls/));
+## TL;TR: a page scroll lock overview
+
+🙅 `overflow: hidden` is the most common way to lock the scroll position on every browsers, unfortunately, unless user's browser has overlay scrollbars, that would cause the scrollbar to disappear, the body to expand and the contents to jump to the right ([CLS](https://web.dev/cls/));
 to make things worse that technique just **doesn't work** on **iOS safari**: when set the user can still somehow scroll the page.
 
-🙅 `body { touch-action: none; }` can't help since Safari [doesn't seem to support it](https://bugs.webkit.org/show_bug.cgi?id=133112) anytime soon.
+🙅 `touch-action: none` can't help since Safari [doesn't seem to support it](https://bugs.webkit.org/show_bug.cgi?id=133112) anytime soon.
 
 🤷 Some libraries propose to solve this preventing `touchmove` events, which might work out very well in many cases; unfortunately some **issues** with some **`viewport` configurations** or **pinch to zoom** might still be encountered, also **iOS navigation bars** might end up covering some layout elements.
 
-🙅 `body { position: fixed; }` alone can force iOS to lock the scroll, but when applied the scroll position would eventually jump to the top of the page.
+🙅 `position: fixed` alone can force iOS to lock the scroll, but when applied the scroll position would eventually jump to the top of the page.
 
 💁 This library sets some **css variables** and **css classes** in order to allow the developer to choose their preferred [CSS-only approach](#css-rules-examples), while the class instance exposes a quite granular API in order to implement some JS strategies too.
 
@@ -309,7 +289,7 @@ If positioned elements "jumps" on a parent lock state change, the same CSS varia
 
 ## iOS Bars and Keyboard Tray
 
-There might still be an iOS edge case when locking body scroll with _position: fixed_ technique.
+There might still be an iOS edge case when locking page scroll with _position: fixed_ technique.
 
 When the page is scrolled the **system bars** become smaller; at that point, when focusing an input element programmatically, the keyboard tray is triggered and the bars become larger again; that, probably when some animations are taking place, can cause the following visual artifacts.
 
@@ -320,14 +300,12 @@ iOS forces a scroll to the focused element (still out of canvas) in an already "
 To overcome this problem the native `resize` event can be listened to programmatically scroll to top that ios-keyboard-sub-window-thing.
 
 ```javascript
-const isIOS = someWayToDetectAppleIOS();
-
 // Addressing the "ios-keyboard-sub-window-thing offset" bug:
-// body scroll lock along with a programmatic focus
+// page scroll lock along with a programmatic focus
 // on an a form field make the keyboard tray to show
 // and that triggers, along with the visual artifact itself, a "resize" event
 window.addEventListener("resize", () => {
-  if (isIOS && document.scrollingElement.contains("scroll-padlock-locked")) {
+  if (document.scrollingElement.contains("scroll-padlock-locked")) {
     // "Re-aligns" the iOS keyboard sub-window
     window.scrollTo(0, 0);
   }
