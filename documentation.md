@@ -48,6 +48,7 @@ Creates the scroll padlock class instance on body scroll or on a given scrollabl
     * [new ScrollPadlock([scrollingElementArgument], [cssClassNameArgument], [clientArgument])](#new_ScrollPadlock_new)
     * [.scrollingElement](#ScrollPadlock+scrollingElement) : <code>HTMLElement</code>
     * [.scrollEventElement](#ScrollPadlock+scrollEventElement) : <code>HTMLElement</code> \| <code>Window</code>
+    * [.cssClassName](#ScrollPadlock+cssClassName) : <code>string</code>
     * [.scroll](#ScrollPadlock+scroll) ⇒ <code>Types.ScrollPosition</code>
     * [.scroll](#ScrollPadlock+scroll)
     * [.layout](#ScrollPadlock+layout) ⇒ <code>Types.Layout</code>
@@ -129,9 +130,16 @@ The html element that can perform the scrolling action.
 <a name="ScrollPadlock+scrollEventElement"></a>
 
 ### scrollPadlock.scrollEventElement : <code>HTMLElement</code> \| <code>Window</code>
-The element that can perform and listen to scroll event.
+The element that can listen to scroll event.
 Usually coincides with the scrolling element, but when the scrolling element
 is document.documentElement or document.body, "scroller" is window.
+
+**Kind**: instance property of [<code>ScrollPadlock</code>](#ScrollPadlock)  
+**Access**: public  
+<a name="ScrollPadlock+cssClassName"></a>
+
+### scrollPadlock.cssClassName : <code>string</code>
+The lock state CSS class name.
 
 **Kind**: instance property of [<code>ScrollPadlock</code>](#ScrollPadlock)  
 **Access**: public  

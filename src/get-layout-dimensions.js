@@ -1,5 +1,23 @@
 import './typedef';
 
+const getLayoutOuterDimensions = (element, scroller) => {
+  // Implying global (page) element...
+  const innerWidth = scroller?.innerWidth || 0;
+
+  const innerHeight = scroller?.innerHeight || 0;
+
+  if (innerWidth || innerHeight) {
+    return {
+      width: innerWidth,
+
+      height: innerHeight,
+    };
+  }
+
+  // ...falling back to html element
+  return element?.getBoundingClientRect() || {};
+};
+
 /**
  * Gets a given element or browser dimensions.
  * @public
@@ -11,20 +29,11 @@ import './typedef';
  * @returns {LayoutDimensions} The given element dimensions as an object ({ top, left }).
  */
 const getLayoutDimensions = (element, scroller) => {
-  // Implying global (page) element...
-  let outer = {
-    width: scroller?.innerWidth,
-    height: scroller?.innerHeight,
-  };
-
-  // ...falling back to html element
-  if (!outer.width && !outer.height) {
-    outer = element?.getBoundingClientRect() || {};
-  }
+  const outerDimensions = getLayoutOuterDimensions(element, scroller);
 
   // Element area with scrollbars
-  const outerWidth = outer?.width || 0;
-  const outerHeight = outer?.height || 0;
+  const outerWidth = outerDimensions?.width || 0;
+  const outerHeight = outerDimensions?.height || 0;
 
   // Element area without scrollbars
   const innerWidth = element?.clientWidth || 0;

@@ -6,19 +6,19 @@ import browseHtmlPlaygroundFile from '../utils/browse-file';
 import takeBrowserScreenshot from '../utils/take-browser-screenshot';
 import compareTwoImages from '../utils/compare-two-images';
 
-let browser;
+describe('default-scrolling-element-scroll-position-fixed', () => {
+  let browser;
 
-before(async () => {
-  browser = await launchBrowser();
-});
+  beforeEach(async () => {
+    browser = await launchBrowser();
+  });
 
-after(async () => {
-  await browser.close();
-});
+  afterEach(async () => {
+    await browser.close();
+  });
 
-((playgroundFilename) => describe(playgroundFilename, () => {
   it('should be able to ensure scroll position fixed approach', async () => {
-    const page = await browseHtmlPlaygroundFile(browser, resolve(`./test/e2e/${playgroundFilename}.html`));
+    const page = await browseHtmlPlaygroundFile(browser, resolve('./test/e2e/default-scrolling-element-scroll-position-fixed.html'));
 
     // puppeteer triggers resize event when taking screenshot
     // so event resize listener needs to be paused...
@@ -26,7 +26,7 @@ after(async () => {
 
     await page.evaluate(() => window.scrollTo(0, 9999));
 
-    const firstImage = await takeBrowserScreenshot(page, `${playgroundFilename}-0`);
+    const firstImage = await takeBrowserScreenshot(page, 'default-scrolling-element-scroll-position-fixed-0');
 
     await page.evaluate(() => window.lock());
 
@@ -34,7 +34,7 @@ after(async () => {
     // but with position: fixed; approach there should be nothing to scroll
     await page.evaluate(() => window.scrollTo(0, 0));
 
-    const secondImage = await takeBrowserScreenshot(page, `${playgroundFilename}-1`);
+    const secondImage = await takeBrowserScreenshot(page, 'default-scrolling-element-scroll-position-fixed-1');
 
     let {
       isSameDimensions,
@@ -51,7 +51,7 @@ after(async () => {
       window.instance.scroll = { top: 0, left: 0 };
     });
 
-    const thirdImage = await takeBrowserScreenshot(page, `${playgroundFilename}-2`);
+    const thirdImage = await takeBrowserScreenshot(page, 'default-scrolling-element-scroll-position-fixed-2');
 
     ({ isSameDimensions, rawMisMatchPercentage } = await compareTwoImages(firstImage, thirdImage));
 
@@ -62,7 +62,7 @@ after(async () => {
 
     await page.evaluate(() => window.unlock());
 
-    const fourthImage = await takeBrowserScreenshot(page, `${playgroundFilename}-3`);
+    const fourthImage = await takeBrowserScreenshot(page, 'default-scrolling-element-scroll-position-fixed-3');
 
     ({
       isSameDimensions,
@@ -74,4 +74,4 @@ after(async () => {
 
     await page.close();
   });
-}))('default-scrolling-element-scroll-position-fixed');
+});
