@@ -1,6 +1,7 @@
+import { describe, it, beforeEach } from 'node:test';
 import { expect } from 'chai';
-import setUniqueCssRule from '../../src/set-unique-css-rule';
-import getJsdomWindow from '../utils/get-jsdom-window';
+import setUniqueCssRule from '../../src/set-unique-css-rule.js';
+import getJsdomWindow from '../utils/get-jsdom-window.js';
 
 describe('src/set-unique-css-rule', () => {
   let window;

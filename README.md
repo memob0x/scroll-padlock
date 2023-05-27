@@ -321,3 +321,7 @@ The problem should be solved at this point.
 All [modern browsers](https://teamtreehouse.com/community/what-is-a-modern-browser) have been tested.
 
 The library doesn't provide a fallback for those browsers which don't support [CSS variables](https://caniuse.com/css-variables) (mainly Internet Explorer 11); since these browsers tipically support _overflow: hidden_, the [JS API](#API) can be used to implement the scrollbars-gaps compensation normally achievable through CSS by standard browsers (a graceful degradation approach is highly suggested though).
+
+## Development
+
+Node version 20.2.0 or higher is required in order to compile source code or launch tests.

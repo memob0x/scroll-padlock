@@ -1,6 +1,7 @@
+import { describe, it } from 'node:test';
 import chai from 'chai';
 
-import getLayout from '../../src/get-layout-dimensions';
+import getLayout from '../../src/get-layout-dimensions.js';
 
 const { expect } = chai;
 

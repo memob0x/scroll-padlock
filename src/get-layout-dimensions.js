@@ -1,4 +1,4 @@
-import './typedef';
+import './typedef.js';
 
 const getLayoutOuterDimensions = (element, scroller) => {
   // Implying global (page) element...

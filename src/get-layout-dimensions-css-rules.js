@@ -1,4 +1,4 @@
-import './typedef';
+import './typedef.js';
 
 /**
  * Gets the given layout dimensions object as css rules.

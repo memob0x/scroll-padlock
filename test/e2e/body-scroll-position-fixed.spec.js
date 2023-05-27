@@ -1,10 +1,13 @@
+import {
+  describe, it, beforeEach, afterEach,
+} from 'node:test';
 import { expect } from 'chai';
 import { resolve } from 'path';
 
-import launchBrowser from '../utils/launch-browser';
-import browseHtmlPlaygroundFile from '../utils/browse-file';
-import takeBrowserScreenshot from '../utils/take-browser-screenshot';
-import compareTwoImages from '../utils/compare-two-images';
+import launchBrowser from '../utils/launch-browser.js';
+import browseHtmlPlaygroundFile from '../utils/browse-file.js';
+import takeBrowserScreenshot from '../utils/take-browser-screenshot.js';
+import compareTwoImages from '../utils/compare-two-images.js';
 
 describe('body-scroll-position-fixed', () => {
   let browser;

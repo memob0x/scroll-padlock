@@ -1,4 +1,4 @@
-import './typedef';
+import './typedef.js';
 
 /**
  * Gets a given element or browser scroll position.

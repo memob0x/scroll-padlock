@@ -1,7 +1,8 @@
+import { describe, it, beforeEach } from 'node:test';
 import chai from 'chai';
 
-import getScroll from '../../src/get-scroll-position';
-import getJsdomWindow from '../utils/get-jsdom-window';
+import getScroll from '../../src/get-scroll-position.js';
+import getJsdomWindow from '../utils/get-jsdom-window.js';
 
 const { expect } = chai;
 

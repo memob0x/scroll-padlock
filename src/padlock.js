@@ -1,10 +1,10 @@
-import './typedef';
+import './typedef.js';
 
-import getLayoutDimensions from './get-layout-dimensions';
-import getScrollPosition from './get-scroll-position';
-import setUniqueCssRule from './set-unique-css-rule';
-import getLayoutDimensionsCssRules from './get-layout-dimensions-css-rules';
-import getScrollPositionCssRules from './get-scroll-position-css-rules';
+import getLayoutDimensions from './get-layout-dimensions.js';
+import getScrollPosition from './get-scroll-position.js';
+import setUniqueCssRule from './set-unique-css-rule.js';
+import getLayoutDimensionsCssRules from './get-layout-dimensions-css-rules.js';
+import getScrollPositionCssRules from './get-scroll-position-css-rules.js';
 
 // The element data attribute name
 const CSS_SELECTOR_ATTR_NAME = 'data-scroll-padlock';

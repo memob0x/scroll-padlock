@@ -1,5 +1,6 @@
+import { describe, it } from 'node:test';
 import { expect } from 'chai';
-import getScrollPositionCssRules from '../../src/get-scroll-position-css-rules';
+import getScrollPositionCssRules from '../../src/get-scroll-position-css-rules.js';
 
 describe('src/get-scroll-position-css-rules', () => {
   it('should be able to format a scroll object as a css rules string', () => {

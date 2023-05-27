@@ -14,6 +14,7 @@
     "sourceType": "module"
   },
   "rules": {
+    "import/extensions": "off",
     "import/no-extraneous-dependencies": [
       "error",
       {
@@ -98,9 +99,6 @@
       "files": [
         "*.spec.js"
       ],
-      "env": {
-        "mocha": true
-      },
       "rules": {
         "no-unused-expressions": "off"
       }

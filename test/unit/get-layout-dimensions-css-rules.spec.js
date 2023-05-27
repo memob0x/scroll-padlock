@@ -1,5 +1,6 @@
+import { describe, it } from 'node:test';
 import { expect } from 'chai';
-import getLayoutDimensionsCssRules from '../../src/get-layout-dimensions-css-rules';
+import getLayoutDimensionsCssRules from '../../src/get-layout-dimensions-css-rules.js';
 
 describe('src/get-layout-dimensions-css-rules', () => {
   it('should be able to format a layout object as a css rules string', () => {

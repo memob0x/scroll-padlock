@@ -1,4 +1,4 @@
-import './typedef';
+import './typedef.js';
 
 /**
  * Gets the given scroll position object as css rules.

@@ -1,9 +1,12 @@
+import {
+  describe, it, beforeEach, afterEach,
+} from 'node:test';
 import { expect } from 'chai';
 import sinon from 'sinon';
 
-import Padlock from '../../src/padlock';
+import Padlock from '../../src/padlock.js';
 
-import getJsdomWindow from '../utils/get-jsdom-window';
+import getJsdomWindow from '../utils/get-jsdom-window.js';
 
 describe('src/padlock', () => {
   let window;
@@ -905,7 +908,7 @@ describe('src/padlock', () => {
     it('should trigger scroll when setting new values to "scroll" instance setter when in "unlocked" state', async () => {
       const div = document.createElement('div');
 
-      div.scrollTo = div.scrollTo || (() => {});
+      div.scrollTo = div.scrollTo || (() => { });
 
       sinonSandbox.spy(div, 'scrollTo');
 
@@ -939,7 +942,7 @@ describe('src/padlock', () => {
     it('should register scroll requests when in locked state, forbid it, and then fires it on scroll unlock', async () => {
       const div = document.createElement('div');
 
-      div.scrollTo = div.scrollTo || (() => {});
+      div.scrollTo = div.scrollTo || (() => { });
 
       sinonSandbox.spy(div, 'scrollTo');
 
@@ -971,7 +974,7 @@ describe('src/padlock', () => {
     it('should update "scroll" instance object on scroll when in "unlocked" state', async () => {
       const div = document.createElement('div');
 
-      div.scrollTo = div.scrollTo || (() => {});
+      div.scrollTo = div.scrollTo || (() => { });
 
       sinonSandbox.spy(div, 'scrollTo');
 
@@ -1007,7 +1010,7 @@ describe('src/padlock', () => {
     it('should register scroll requests when in locked state, forbid it, and then fires it on scroll unlock updating scroll object', async () => {
       const div = document.createElement('div');
 
-      div.scrollTo = div.scrollTo || (() => {});
+      div.scrollTo = div.scrollTo || (() => { });
 
       sinonSandbox.spy(div, 'scrollTo');
 
@@ -1043,7 +1046,7 @@ describe('src/padlock', () => {
     it('should not react to extraneous css class names being set', async () => {
       const div = document.createElement('div');
 
-      div.scrollTo = div.scrollTo || (() => {});
+      div.scrollTo = div.scrollTo || (() => { });
 
       sinonSandbox.spy(div, 'scrollTo');
 
