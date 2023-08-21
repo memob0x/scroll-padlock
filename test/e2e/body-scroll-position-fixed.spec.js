@@ -1,8 +1,8 @@
 import {
   describe, it, beforeEach, afterEach,
 } from 'node:test';
-import { expect } from 'chai';
-import { resolve } from 'path';
+import assert from 'node:assert';
+import { resolve } from 'node:path';
 
 import launchBrowser from '../utils/launch-browser.js';
 import browseHtmlPlaygroundFile from '../utils/browse-file.js';
@@ -45,10 +45,14 @@ describe('body-scroll-position-fixed', () => {
       rawMisMatchPercentage,
     } = await compareTwoImages(firstImage, secondImage);
 
-    expect(isSameDimensions).to.be.true;
+    assert.equal(isSameDimensions, true);
+
+    let rawMisMatchPercentageFloor = Math.floor(rawMisMatchPercentage);
+
     // can't expect to be 0 since new puppeteer renders scrollbars in screenshots
     // mismatch percentage should be ~11%
-    expect(Math.floor(rawMisMatchPercentage)).to.be.greaterThanOrEqual(0).and.lessThanOrEqual(12);
+    assert.equal(rawMisMatchPercentageFloor >= 0, true);
+    assert.equal(rawMisMatchPercentageFloor <= 12, true);
 
     await page.evaluate(() => {
       window.instance.scroll = { top: 0, left: 0 };
@@ -58,10 +62,14 @@ describe('body-scroll-position-fixed', () => {
 
     ({ isSameDimensions, rawMisMatchPercentage } = await compareTwoImages(firstImage, thirdImage));
 
-    expect(isSameDimensions).to.be.true;
+    assert.equal(isSameDimensions, true);
+
+    rawMisMatchPercentageFloor = Math.floor(rawMisMatchPercentage);
+
     // can't expect to be 0 since new puppeteer renders scrollbars in screenshots
     // mismatch percentage should be ~11%
-    expect(Math.floor(rawMisMatchPercentage)).to.be.greaterThanOrEqual(0).and.lessThanOrEqual(12);
+    assert.equal(rawMisMatchPercentageFloor >= 0, true);
+    assert.equal(rawMisMatchPercentageFloor <= 12, true);
 
     await page.evaluate(() => window.unlock());
 
@@ -72,8 +80,8 @@ describe('body-scroll-position-fixed', () => {
       rawMisMatchPercentage,
     } = await compareTwoImages(secondImage, fourthImage));
 
-    expect(isSameDimensions).to.be.true;
-    expect(rawMisMatchPercentage).to.be.greaterThan(12);
+    assert.equal(isSameDimensions, true);
+    assert.equal(rawMisMatchPercentage > 12, true);
 
     await page.close();
   });

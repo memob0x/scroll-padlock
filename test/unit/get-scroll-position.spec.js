@@ -1,10 +1,8 @@
 import { describe, it, beforeEach } from 'node:test';
-import chai from 'chai';
+import assert from 'node:assert';
 
 import getScroll from '../../src/get-scroll-position.js';
 import getJsdomWindow from '../utils/get-jsdom-window.js';
-
-const { expect } = chai;
 
 describe('src/get-scroll-position', () => {
   let window;
@@ -18,12 +16,12 @@ describe('src/get-scroll-position', () => {
   });
 
   it('should not throw with given invalid arguments', () => {
-    expect(getScroll())
-      .to.deep.equals(getScroll(null))
-      .to.deep.equals({
-        top: 0,
-        left: 0,
-      });
+    assert.deepEqual(getScroll(), getScroll(null));
+
+    assert.deepEqual(getScroll(), {
+      top: 0,
+      left: 0,
+    });
   });
 
   it('should be able to get an element scroll position', () => {
@@ -32,7 +30,7 @@ describe('src/get-scroll-position', () => {
     div.scrollTop = 10;
     div.scrollLeft = 20;
 
-    expect(getScroll(div)).to.deep.equals({ top: 10, left: 20 });
+    assert.deepEqual(getScroll(div), { top: 10, left: 20 });
   });
 
   it('should be able to get the page scroll position', () => {
@@ -46,7 +44,7 @@ describe('src/get-scroll-position', () => {
     window.scrollY = position.top;
     window.scrollX = position.left;
 
-    expect(getScroll(window)).to.deep.equals(position);
+    assert.deepEqual(getScroll(window), position);
 
     // Mocks an old browser
     window.scrollY = null;
@@ -56,7 +54,7 @@ describe('src/get-scroll-position', () => {
     window.pageYOffset = position.top;
     window.pageXOffset = position.left;
 
-    expect(getScroll(window)).to.deep.equals(position);
+    assert.deepEqual(getScroll(window), position);
 
     // Restores original values
     window.scrollY = scrollY;

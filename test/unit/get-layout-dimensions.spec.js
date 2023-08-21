@@ -1,28 +1,27 @@
 import { describe, it } from 'node:test';
-import chai from 'chai';
+import assert from 'node:assert';
 
 import getLayout from '../../src/get-layout-dimensions.js';
 
-const { expect } = chai;
-
 describe('src/get-layout-dimensions', () => {
   it('should not throw with given invalid arguments', () => {
-    expect(getLayout())
-      .to.deep.equals(getLayout(null))
-      .to.deep.equals(getLayout(null, null))
-      .to.deep.equals({
-        outerWidth: 0,
-        outerHeight: 0,
+    assert.deepEqual(getLayout(), getLayout(null));
 
-        innerWidth: 0,
-        innerHeight: 0,
+    assert.deepEqual(getLayout(), getLayout(null, null));
 
-        scrollWidth: 0,
-        scrollHeight: 0,
+    assert.deepEqual(getLayout(), {
+      outerWidth: 0,
+      outerHeight: 0,
 
-        scrollbarWidth: 0,
-        scrollbarHeight: 0,
-      });
+      innerWidth: 0,
+      innerHeight: 0,
+
+      scrollWidth: 0,
+      scrollHeight: 0,
+
+      scrollbarWidth: 0,
+      scrollbarHeight: 0,
+    });
   });
 
   it('should be able to retrieve html elements dimensions', () => {
@@ -38,7 +37,7 @@ describe('src/get-layout-dimensions', () => {
       }),
     };
 
-    expect(getLayout(mockedDiv, mockedDiv)).to.deep.equals({
+    assert.deepEqual(getLayout(mockedDiv, mockedDiv), {
       outerWidth: mockedDiv.getBoundingClientRect().width,
       outerHeight: mockedDiv.getBoundingClientRect().height,
 
@@ -68,7 +67,7 @@ describe('src/get-layout-dimensions', () => {
       scrollHeight: 60,
     };
 
-    expect(getLayout(mockedDocumentElement, mockedWindow)).to.deep.equals({
+    assert.deepEqual(getLayout(mockedDocumentElement, mockedWindow), {
       outerWidth: mockedWindow.innerWidth,
       outerHeight: mockedWindow.innerHeight,
 

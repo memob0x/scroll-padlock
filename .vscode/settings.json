@@ -1,9 +1,13 @@
 {
-  "eslint.validate": ["javascript"],
   "editor.formatOnSave": true,
-  "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true
-  },
   "eslint.format.enable": true,
-  "eslint.alwaysShowStatus": true,
+  "eslint.validate": [
+    "javascript"
+  ],
+  "[javascript]": {
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": true
+    },
+  }
 }
