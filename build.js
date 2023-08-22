@@ -1,83 +1,63 @@
+import { resolve } from 'node:path';
+
 import { rollup } from 'rollup';
-import { getBabelOutputPlugin as rollupBabel } from '@rollup/plugin-babel';
 import rollupGzip from 'rollup-plugin-gzip';
 import rollupTerser from '@rollup/plugin-terser';
-import { resolve } from 'path';
-
-const BUNDLES_PRESETS = [
-  { format: 'amd' },
-  { format: 'amd', babel: true },
-  { format: 'amd', min: true },
-  { format: 'amd', min: true, babel: true },
-
-  { format: 'iife' },
-  { format: 'iife', babel: true },
-  { format: 'iife', min: true },
-  { format: 'iife', min: true, babel: true },
-
-  { format: 'system' },
-  { format: 'system', babel: true },
-  { format: 'system', min: true },
-  { format: 'system', min: true, babel: true },
-
-  { format: 'es' },
-  { format: 'es', babel: true },
-  { format: 'es', min: true },
-  { format: 'es', min: true, babel: true },
-
-  { format: 'cjs' },
-  { format: 'cjs', babel: true },
-  { format: 'cjs', min: true },
-  { format: 'cjs', min: true, babel: true },
-
-  { format: 'umd' },
-  { format: 'umd', babel: true },
-  { format: 'umd', min: true },
-  { format: 'umd', min: true, babel: true },
-];
 
 const pathRoot = resolve('.');
 
-(async () => {
-  const rollupResult = await rollup({
-    input: `${pathRoot}/src/padlock.js`,
-  });
+const formats = [
+  'umd',
 
-  return Promise.all(BUNDLES_PRESETS.reduce((accumulator, { format, min, babel }) => {
+  'amd',
+
+  'cjs',
+
+  'iife',
+
+  'es',
+
+  'system',
+];
+
+const rollupResult = await rollup({
+  input: `${pathRoot}/src/padlock.js`,
+});
+
+const tasks = [];
+
+for (let formatIndex = 0, { length } = formats; formatIndex < length; formatIndex += 1) {
+  const format = formats[formatIndex];
+
+  const folder = `dist/${format}`;
+
+  for (let versionIndex = 0; versionIndex < 2; versionIndex += 1) {
     const plugins = [];
 
-    if (babel) {
-      plugins.push(rollupBabel({
-        presets: [
-          '@babel/preset-env',
-        ],
+    let suffixes = '';
 
-        comments: false,
-
-        allowAllFormats: true,
-      }));
-    }
-
-    if (min) {
+    if (versionIndex % 2 === 0) {
       plugins.push(rollupTerser());
+
+      suffixes += '.min';
     }
 
     plugins.push(rollupGzip());
 
-    accumulator.push(rollupResult.write({
+    tasks.push(rollupResult.write({
       sourcemap: true,
 
       format,
 
       name: 'ScrollPadlock',
 
-      file: `${pathRoot}/dist/${format}/scroll-padlock${babel ? '.babel' : ''}${min ? '.min' : ''}.js`,
+      file: `${pathRoot}/${folder}/scroll-padlock${suffixes}.js`,
 
       exports: 'default',
 
       plugins,
     }));
+  }
+}
 
-    return accumulator;
-  }, []));
-})();
+await Promise.all(tasks);
