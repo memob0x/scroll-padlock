@@ -51,20 +51,19 @@
     "prepare": "husky install"
   },
   "devDependencies": {
-    "@rollup/plugin-terser": "^0.4.3",
+    "@rollup/plugin-terser": "^0.4.4",
     "c8": "^8.0.1",
-    "eslint": "^8.47.0",
+    "eslint": "^8.51.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.28.1",
-    "eslint-plugin-jsdoc": "^46.5.0",
+    "eslint-plugin-jsdoc": "^46.8.2",
     "husky": "^8.0.3",
     "jsdoc": "^4.0.2",
     "jsdoc-to-markdown": "^8.0.0",
     "jsdom": "^22.1.0",
-    "puppeteer": "^21.1.0",
+    "puppeteer": "^21.3.8",
     "resemblejs": "^5.0.0",
-    "rollup": "^3.28.1",
-    "rollup-plugin-gzip": "^3.1.0",
-    "sinon": "^15.2.0"
+    "rollup": "^4.1.4",
+    "rollup-plugin-gzip": "^3.1.0"
   }
 }
