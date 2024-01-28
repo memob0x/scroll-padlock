@@ -2,12 +2,10 @@ import {
   describe, it, beforeEach, mock,
 } from 'node:test';
 import assert from 'node:assert';
-
-import Padlock from '../../src/padlock.js';
-
+import Padlock from '../../src/scroll-padlock.js';
 import getJsdomWindow from '../utils/get-jsdom-window.js';
 
-describe('src/padlock', () => {
+describe(Padlock.name, () => {
   let window;
 
   let document;
@@ -825,11 +823,7 @@ describe('src/padlock', () => {
 
       assert.equal(instance.layout.outerHeight, 300);
 
-      mock.method(div, 'getBoundingClientRect', () => ({
-        width: 400,
-
-        height: 500,
-      }));
+      mock.method(div, 'getBoundingClientRect');
 
       div.dispatchEvent(new window.CustomEvent('scroll'));
 
@@ -838,6 +832,8 @@ describe('src/padlock', () => {
       assert.equal(instance.layout.outerWidth, 200);
 
       assert.equal(instance.layout.outerHeight, 300);
+
+      assert.equal(div.getBoundingClientRect.mock.calls.length, 0);
 
       instance.destroy();
     });
@@ -963,7 +959,7 @@ describe('src/padlock', () => {
 
       div.scrollTo = div.scrollTo || (() => { });
 
-      mock.method(div, 'scrollTo', () => {});
+      mock.method(div, 'scrollTo');
 
       const cssClassName = 'locked';
 
@@ -1305,10 +1301,6 @@ describe('src/padlock', () => {
 
       mock.method(window, 'removeEventListener');
 
-      assert.equal(window.addEventListener.mock.calls.filter((x) => x.arguments[0] === 'scroll').length, 0);
-
-      assert.equal(window.removeEventListener.mock.calls.filter((x) => x.arguments[0] === 'scroll').length, 0);
-
       assert.equal(window.removeEventListener.mock.calls.length, 0);
 
       const instance = new Padlock(undefined, undefined, window);
@@ -1321,51 +1313,51 @@ describe('src/padlock', () => {
 
       assert.equal(window.addEventListener.mock.calls.filter((x) => x.arguments[0] === 'scroll').length, 1);
 
-      assert.equal(scrollingElement.addEventListener.mock.calls.filter((x) => x.arguments[0] === 'scroll').length, 0);
+      assert.equal(scrollingElement.addEventListener.mock.calls.length, 0);
 
-      assert.equal(window.removeEventListener.mock.calls.filter((x) => x.arguments[0] === 'scroll').length, 0);
+      assert.equal(window.removeEventListener.mock.calls.length, 0);
 
-      assert.equal(scrollingElement.removeEventListener.mock.calls.filter((x) => x.arguments[0] === 'scroll').length, 0);
+      assert.equal(scrollingElement.removeEventListener.mock.calls.length, 0);
 
       instance.destroy();
 
       assert.equal(window.addEventListener.mock.calls.filter((x) => x.arguments[0] === 'scroll').length, 1);
 
-      assert.equal(scrollingElement.addEventListener.mock.calls.filter((x) => x.arguments[0] === 'scroll').length, 0);
+      assert.equal(scrollingElement.addEventListener.mock.calls.length, 0);
 
       assert.equal(window.removeEventListener.mock.calls.filter((x) => x.arguments[0] === 'scroll').length, 1);
 
-      assert.equal(scrollingElement.removeEventListener.mock.calls.filter((x) => x.arguments[0] === 'scroll').length, 0);
+      assert.equal(scrollingElement.removeEventListener.mock.calls.length, 0);
 
       scrollingElement.dispatchEvent(new window.CustomEvent('scroll'));
 
       assert.equal(window.addEventListener.mock.calls.filter((x) => x.arguments[0] === 'scroll').length, 1);
 
-      assert.equal(scrollingElement.addEventListener.mock.calls.filter((x) => x.arguments[0] === 'scroll').length, 0);
+      assert.equal(scrollingElement.addEventListener.mock.calls.length, 0);
 
       assert.equal(window.removeEventListener.mock.calls.filter((x) => x.arguments[0] === 'scroll').length, 1);
 
-      assert.equal(scrollingElement.removeEventListener.mock.calls.filter((x) => x.arguments[0] === 'scroll').length, 0);
+      assert.equal(scrollingElement.removeEventListener.mock.calls.length, 0);
 
       instance.update();
 
       assert.equal(window.addEventListener.mock.calls.filter((x) => x.arguments[0] === 'scroll').length, 1);
 
-      assert.equal(scrollingElement.addEventListener.mock.calls.filter((x) => x.arguments[0] === 'scroll').length, 0);
+      assert.equal(scrollingElement.addEventListener.mock.calls.length, 0);
 
       assert.equal(window.removeEventListener.mock.calls.filter((x) => x.arguments[0] === 'scroll').length, 1);
 
-      assert.equal(scrollingElement.removeEventListener.mock.calls.filter((x) => x.arguments[0] === 'scroll').length, 0);
+      assert.equal(scrollingElement.removeEventListener.mock.calls.length, 0);
 
       instance.scroll = { top: 0, left: 1 };
 
       assert.equal(window.addEventListener.mock.calls.filter((x) => x.arguments[0] === 'scroll').length, 1);
 
-      assert.equal(scrollingElement.addEventListener.mock.calls.filter((x) => x.arguments[0] === 'scroll').length, 0);
+      assert.equal(scrollingElement.addEventListener.mock.calls.length, 0);
 
       assert.equal(window.removeEventListener.mock.calls.filter((x) => x.arguments[0] === 'scroll').length, 1);
 
-      assert.equal(scrollingElement.removeEventListener.mock.calls.filter((x) => x.arguments[0] === 'scroll').length, 0);
+      assert.equal(scrollingElement.removeEventListener.mock.calls.length, 0);
     });
 
     it('should stop listening to scroll event after destruction', () => {
@@ -1373,10 +1365,6 @@ describe('src/padlock', () => {
 
       mock.method(window, 'removeEventListener');
 
-      assert.equal(window.addEventListener.mock.calls.filter((x) => x.arguments[0] === 'resize').length, 0);
-
-      assert.equal(window.removeEventListener.mock.calls.filter((x) => x.arguments[0] === 'resize').length, 0);
-
       assert.equal(window.removeEventListener.mock.calls.length, 0);
 
       const instance = new Padlock(undefined, undefined, window);
@@ -1389,51 +1377,51 @@ describe('src/padlock', () => {
 
       assert.equal(window.addEventListener.mock.calls.filter((x) => x.arguments[0] === 'resize').length, 1);
 
-      assert.equal(scrollingElement.addEventListener.mock.calls.filter((x) => x.arguments[0] === 'resize').length, 0);
+      assert.equal(scrollingElement.addEventListener.mock.calls.length, 0);
 
-      assert.equal(window.removeEventListener.mock.calls.filter((x) => x.arguments[0] === 'resize').length, 0);
+      assert.equal(window.removeEventListener.mock.calls.length, 0);
 
-      assert.equal(scrollingElement.removeEventListener.mock.calls.filter((x) => x.arguments[0] === 'resize').length, 0);
+      assert.equal(scrollingElement.removeEventListener.mock.calls.length, 0);
 
       instance.destroy();
 
       assert.equal(window.addEventListener.mock.calls.filter((x) => x.arguments[0] === 'resize').length, 1);
 
-      assert.equal(scrollingElement.addEventListener.mock.calls.filter((x) => x.arguments[0] === 'resize').length, 0);
+      assert.equal(scrollingElement.addEventListener.mock.calls.length, 0);
 
       assert.equal(window.removeEventListener.mock.calls.filter((x) => x.arguments[0] === 'resize').length, 1);
 
-      assert.equal(scrollingElement.removeEventListener.mock.calls.filter((x) => x.arguments[0] === 'resize').length, 0);
+      assert.equal(scrollingElement.removeEventListener.mock.calls.length, 0);
 
       scrollingElement.dispatchEvent(new window.CustomEvent('resize'));
 
       assert.equal(window.addEventListener.mock.calls.filter((x) => x.arguments[0] === 'resize').length, 1);
 
-      assert.equal(scrollingElement.addEventListener.mock.calls.filter((x) => x.arguments[0] === 'resize').length, 0);
+      assert.equal(scrollingElement.addEventListener.mock.calls.length, 0);
 
       assert.equal(window.removeEventListener.mock.calls.filter((x) => x.arguments[0] === 'resize').length, 1);
 
-      assert.equal(scrollingElement.removeEventListener.mock.calls.filter((x) => x.arguments[0] === 'resize').length, 0);
+      assert.equal(scrollingElement.removeEventListener.mock.calls.length, 0);
 
       instance.update();
 
       assert.equal(window.addEventListener.mock.calls.filter((x) => x.arguments[0] === 'resize').length, 1);
 
-      assert.equal(scrollingElement.addEventListener.mock.calls.filter((x) => x.arguments[0] === 'resize').length, 0);
+      assert.equal(scrollingElement.addEventListener.mock.calls.length, 0);
 
       assert.equal(window.removeEventListener.mock.calls.filter((x) => x.arguments[0] === 'resize').length, 1);
 
-      assert.equal(scrollingElement.removeEventListener.mock.calls.filter((x) => x.arguments[0] === 'resize').length, 0);
+      assert.equal(scrollingElement.removeEventListener.mock.calls.length, 0);
 
       instance.scroll = { top: 0, left: 2 };
 
       assert.equal(window.addEventListener.mock.calls.filter((x) => x.arguments[0] === 'resize').length, 1);
 
-      assert.equal(scrollingElement.addEventListener.mock.calls.filter((x) => x.arguments[0] === 'resize').length, 0);
+      assert.equal(scrollingElement.addEventListener.mock.calls.length, 0);
 
       assert.equal(window.removeEventListener.mock.calls.filter((x) => x.arguments[0] === 'resize').length, 1);
 
-      assert.equal(scrollingElement.removeEventListener.mock.calls.filter((x) => x.arguments[0] === 'resize').length, 0);
+      assert.equal(scrollingElement.removeEventListener.mock.calls.length, 0);
     });
   });
 
@@ -1443,15 +1431,15 @@ describe('src/padlock', () => {
 
       mock.method(window, 'removeEventListener', () => {});
 
-      assert.equal(window.addEventListener.mock.calls.filter((x) => x.arguments[0] === 'scroll').length, 0);
+      assert.equal(window.addEventListener.mock.calls.length, 0);
 
-      assert.equal(window.removeEventListener.mock.calls.filter((x) => x.arguments[0] === 'scroll').length, 0);
+      assert.equal(window.removeEventListener.mock.calls.length, 0);
 
       const instance = new Padlock(undefined, undefined, window);
 
       assert.equal(window.addEventListener.mock.calls.filter((x) => x.arguments[0] === 'scroll').length, 1);
 
-      assert.equal(window.removeEventListener.mock.calls.filter((x) => x.arguments[0] === 'scroll').length, 0);
+      assert.equal(window.removeEventListener.mock.calls.length, 0);
 
       instance.unlisten('scroll');
 
@@ -1471,15 +1459,15 @@ describe('src/padlock', () => {
 
       mock.method(window, 'removeEventListener', () => {});
 
-      assert.equal(window.addEventListener.mock.calls.filter((x) => x.arguments[0] === 'scroll').length, 0);
+      assert.equal(window.addEventListener.mock.calls.length, 0);
 
-      assert.equal(window.removeEventListener.mock.calls.filter((x) => x.arguments[0] === 'scroll').length, 0);
+      assert.equal(window.removeEventListener.mock.calls.length, 0);
 
       const instance = new Padlock(undefined, undefined, window);
 
       assert.equal(window.addEventListener.mock.calls.filter((x) => x.arguments[0] === 'scroll').length, 1);
 
-      assert.equal(window.removeEventListener.mock.calls.filter((x) => x.arguments[0] === 'scroll').length, 0);
+      assert.equal(window.removeEventListener.mock.calls.length, 0);
 
       instance.unlisten('scroll');
 
@@ -1501,15 +1489,15 @@ describe('src/padlock', () => {
 
       mock.method(window, 'removeEventListener');
 
-      assert.equal(window.addEventListener.mock.calls.filter((x) => x.arguments[0] === 'scroll').length, 0);
+      assert.equal(window.addEventListener.mock.calls.length, 0);
 
-      assert.equal(window.removeEventListener.mock.calls.filter((x) => x.arguments[0] === 'scroll').length, 0);
+      assert.equal(window.removeEventListener.mock.calls.length, 0);
 
       const instance = new Padlock(undefined, undefined, window);
 
       assert.equal(window.addEventListener.mock.calls.filter((x) => x.arguments[0] === 'scroll').length, 1);
 
-      assert.equal(window.removeEventListener.mock.calls.filter((x) => x.arguments[0] === 'scroll').length, 0);
+      assert.equal(window.removeEventListener.mock.calls.length, 0);
 
       instance.destroy();
 
@@ -1529,15 +1517,15 @@ describe('src/padlock', () => {
 
       mock.method(window, 'removeEventListener');
 
-      assert.equal(window.addEventListener.mock.calls.filter((x) => x.arguments[0] === 'resize').length, 0);
+      assert.equal(window.addEventListener.mock.calls.length, 0);
 
-      assert.equal(window.removeEventListener.mock.calls.filter((x) => x.arguments[0] === 'resize').length, 0);
+      assert.equal(window.removeEventListener.mock.calls.length, 0);
 
       const instance = new Padlock(undefined, undefined, window);
 
       assert.equal(window.addEventListener.mock.calls.filter((x) => x.arguments[0] === 'resize').length, 1);
 
-      assert.equal(window.removeEventListener.mock.calls.filter((x) => x.arguments[0] === 'resize').length, 0);
+      assert.equal(window.removeEventListener.mock.calls.length, 0);
 
       instance.unlisten('resize');
 
@@ -1557,15 +1545,15 @@ describe('src/padlock', () => {
 
       mock.method(window, 'removeEventListener');
 
-      assert.equal(window.addEventListener.mock.calls.filter((x) => x.arguments[0] === 'resize').length, 0);
+      assert.equal(window.addEventListener.mock.calls.length, 0);
 
-      assert.equal(window.removeEventListener.mock.calls.filter((x) => x.arguments[0] === 'resize').length, 0);
+      assert.equal(window.removeEventListener.mock.calls.length, 0);
 
       const instance = new Padlock(undefined, undefined, window);
 
       assert.equal(window.addEventListener.mock.calls.filter((x) => x.arguments[0] === 'resize').length, 1);
 
-      assert.equal(window.removeEventListener.mock.calls.filter((x) => x.arguments[0] === 'resize').length, 0);
+      assert.equal(window.removeEventListener.mock.calls.length, 0);
 
       instance.unlisten('resize');
 
@@ -1587,15 +1575,15 @@ describe('src/padlock', () => {
 
       mock.method(window, 'removeEventListener');
 
-      assert.equal(window.addEventListener.mock.calls.filter((x) => x.arguments[0] === 'resize').length, 0);
+      assert.equal(window.addEventListener.mock.calls.length, 0);
 
-      assert.equal(window.removeEventListener.mock.calls.filter((x) => x.arguments[0] === 'resize').length, 0);
+      assert.equal(window.removeEventListener.mock.calls.length, 0);
 
       const instance = new Padlock(undefined, undefined, window);
 
       assert.equal(window.addEventListener.mock.calls.filter((x) => x.arguments[0] === 'resize').length, 1);
 
-      assert.equal(window.removeEventListener.mock.calls.filter((x) => x.arguments[0] === 'resize').length, 0);
+      assert.equal(window.removeEventListener.mock.calls.length, 0);
 
       instance.destroy();
 
@@ -1608,6 +1596,64 @@ describe('src/padlock', () => {
       assert.equal(window.addEventListener.mock.calls.filter((x) => x.arguments[0] === 'resize').length, 1);
 
       assert.equal(window.removeEventListener.mock.calls.filter((x) => x.arguments[0] === 'resize').length, 1);
+    });
+  });
+
+  describe('resize handler wrapper', () => {
+    it('should be able to wrap the resize handler through options parameter', async () => {
+      let handler;
+
+      const wrapper = mock.fn((originalHandler) => {
+        handler = mock.fn(originalHandler);
+
+        return handler;
+      });
+
+      const instance = new Padlock({
+        resizeHandlerWrapper: wrapper,
+
+        client: window,
+      });
+
+      assert.equal(wrapper.mock.calls.length, 1);
+      assert.equal(handler.mock.calls.length, 0);
+
+      window.dispatchEvent(new window.CustomEvent('resize'));
+
+      await new Promise(window.setTimeout);
+
+      assert.equal(wrapper.mock.calls.length, 1);
+      assert.equal(handler.mock.calls.length, 1);
+
+      instance.destroy();
+    });
+
+    it('should be able to wrap the scroll handler through options parameter', async () => {
+      let handler;
+
+      const wrapper = mock.fn((originalHandler) => {
+        handler = mock.fn(originalHandler);
+
+        return handler;
+      });
+
+      const instance = new Padlock({
+        scrollHandlerWrapper: wrapper,
+
+        client: window,
+      });
+
+      assert.equal(wrapper.mock.calls.length, 1);
+      assert.equal(handler.mock.calls.length, 0);
+
+      window.dispatchEvent(new window.CustomEvent('scroll'));
+
+      await new Promise(window.setTimeout);
+
+      assert.equal(wrapper.mock.calls.length, 1);
+      assert.equal(handler.mock.calls.length, 1);
+
+      instance.destroy();
     });
   });
 });

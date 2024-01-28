@@ -9,7 +9,8 @@
   "description": "Locks elements scroll handling scrollbar gaps and iOS Safari with CSS variables",
   "main": "dist/umd/scroll-padlock.min.js",
   "module": "dist/es/scroll-padlock.js",
-  "version": "2.4.2",
+  "types": "./dist/scroll-padlock.d.ts",
+  "version": "2.5.0",
   "license": "MIT",
   "repository": "https://github.com/memob0x/scroll-padlock.git",
   "keywords": [
@@ -40,30 +41,26 @@
     "tablet"
   ],
   "scripts": {
-    "lint": "./node_modules/.bin/eslint --ext .js . --fix",
-    "build": "node ./build.js",
-    "test:unit": "node --test ./test/unit/*.spec.js",
-    "test:coverage": "./node_modules/.bin/c8 -r html npm run test:unit",
-    "test:coverage:check": "./node_modules/.bin/c8 check-coverage --100 npm run test:unit",
+    "lint": "npx eslint --ext .js .",
+    "build": "node ./build.js && npx tsc",
+    "test:unit": "node --test --experimental-test-coverage --test-reporter=spec --test-reporter=lcov --test-reporter=./reporter.js --test-reporter-destination=stdout --test-reporter-destination=lcov.info --test-reporter-destination=stdout test/unit/*.spec.js",
     "test:e2e": "npm run build && node --test ./test/e2e/*.spec.js",
-    "test": "npm run test:coverage && npm run test:coverage:check && npm run test:e2e",
-    "docs": "node ./build-docs.js",
+    "test": "npm run test:unit && npm run test:e2e",
     "prepare": "husky install"
   },
   "devDependencies": {
     "@rollup/plugin-terser": "^0.4.4",
-    "c8": "^8.0.1",
-    "eslint": "^8.55.0",
+    "eslint": "^8.56.0",
     "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-plugin-import": "^2.29.0",
-    "eslint-plugin-jsdoc": "^46.9.1",
-    "husky": "^8.0.3",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-jsdoc": "^48.0.4",
+    "husky": "^9.0.6",
     "jsdoc": "^4.0.2",
-    "jsdoc-to-markdown": "^8.0.0",
-    "jsdom": "^23.0.1",
-    "puppeteer": "^21.6.1",
+    "jsdom": "^24.0.0",
+    "puppeteer": "^21.9.0",
     "resemblejs": "^5.0.0",
-    "rollup": "^4.9.0",
-    "rollup-plugin-gzip": "^3.1.0"
+    "rollup": "^4.9.6",
+    "rollup-plugin-gzip": "^3.1.1",
+    "typescript": "^5.3.3"
   }
 }

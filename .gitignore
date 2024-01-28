@@ -2,3 +2,4 @@ node_modules
 /dist
 /test/e2e/screenshots
 /coverage
+lcov.info

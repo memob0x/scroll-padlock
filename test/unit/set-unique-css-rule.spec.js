@@ -1,10 +1,9 @@
 import { describe, it, beforeEach } from 'node:test';
 import assert from 'node:assert';
-
 import setUniqueCssRule from '../../src/set-unique-css-rule.js';
 import getJsdomWindow from '../utils/get-jsdom-window.js';
 
-describe('src/set-unique-css-rule', () => {
+describe(setUniqueCssRule.name, () => {
   let window;
 
   let document;

@@ -1,9 +1,8 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert';
-
 import getLayoutDimensionsCssRules from '../../src/get-layout-dimensions-css-rules.js';
 
-describe('src/get-layout-dimensions-css-rules', () => {
+describe(getLayoutDimensionsCssRules.name, () => {
   it('should be able to format a layout object as a css rules string', () => {
     assert.equal(getLayoutDimensionsCssRules(), getLayoutDimensionsCssRules(null));
 

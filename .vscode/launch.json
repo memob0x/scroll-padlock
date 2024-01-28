@@ -2,29 +2,14 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "test:unit:padlock",
       "type": "node",
       "request": "launch",
-      "name": "unit tests",
-      "program": "${workspaceFolder}/node_modules/.bin/mocha",
-      "args": [
-        "--colors",
-        "--experimental-specifier-resolution=node",
-        "${workspaceFolder}/test/unit/*.spec.*",
-      ],
-      "internalConsoleOptions": "openOnSessionStart",
-      "skipFiles": [
-        "<node_internals>/**"
-      ]
-    },
-    {
-      "type": "node",
-      "request": "launch",
-      "name": "e2e tests",
-      "program": "${workspaceFolder}/node_modules/.bin/mocha",
-      "args": [
-        "--colors",
-        "--experimental-specifier-resolution=node",
-        "${workspaceFolder}/test/e2e/*.spec.*",
+      "runtimeArgs": [
+        "--inspect",
+        "--test",
+        "--test-reporter=spec",
+        "test/unit/scroll-padlock.spec.js"
       ],
       "internalConsoleOptions": "openOnSessionStart",
       "skipFiles": [

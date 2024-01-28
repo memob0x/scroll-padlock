@@ -4,7 +4,7 @@ import assert from 'node:assert';
 import getScroll from '../../src/get-scroll-position.js';
 import getJsdomWindow from '../utils/get-jsdom-window.js';
 
-describe('src/get-scroll-position', () => {
+describe(getScroll.name, () => {
   let window;
 
   let document;

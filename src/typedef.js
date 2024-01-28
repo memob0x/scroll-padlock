@@ -15,3 +15,29 @@
  * @property {number} scrollbarWidth Vertical scrollbar width.
  * @property {number} scrollbarHeight Horizontal scrollbar height.
  */
+
+/**
+ * @typedef Client
+ * @type {Window & typeof globalThis}
+ */
+
+/**
+ * @callback Handler
+ * @returns {void}
+ */
+
+/**
+ * @callback HandlerWrapper
+ * @param {Handler} predicate
+ * @returns {Handler}
+ */
+
+/**
+ * @typedef ScrollPadlockOptions
+ * @property {HTMLElement} scrollingElement Asd.
+ * @property {Client | HTMLElement} scrollEventElement Asd.
+ * @property {string} cssClassName Asd.
+ * @property {HandlerWrapper} resizeHandlerWrapper Asd.
+ * @property {HandlerWrapper} scrollHandlerWrapper Asd.
+ * @property {Client} client Asd.
+ */

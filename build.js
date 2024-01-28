@@ -1,5 +1,4 @@
 import { resolve } from 'node:path';
-
 import { rollup } from 'rollup';
 import rollupGzip from 'rollup-plugin-gzip';
 import rollupTerser from '@rollup/plugin-terser';
@@ -21,7 +20,7 @@ const formats = [
 ];
 
 const rollupResult = await rollup({
-  input: `${pathRoot}/src/padlock.js`,
+  input: `${pathRoot}/src/scroll-padlock.js`,
 });
 
 const tasks = [];
@@ -36,7 +35,7 @@ for (let formatIndex = 0, { length } = formats; formatIndex < length; formatInde
 
     let suffixes = '';
 
-    if (versionIndex % 2 === 0) {
+    if (versionIndex % 2) {
       plugins.push(rollupTerser());
 
       suffixes += '.min';

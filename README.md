@@ -28,8 +28,8 @@ Here's some example projects for the most common setups:
 
 This library is downloadable via **npm**:
 
-```console
-$ npm install scroll-padlock
+```shell
+npm install scroll-padlock
 ```
 
 The source code is entirely written in [standard ECMAScript](https://tc39.es/) with no dependencies.
@@ -46,9 +46,16 @@ const scrollPadlock = new ScrollPadlock();
 ### Browser (modules):
 
 ```html
+<script type="importmap">
+  {
+    "imports": {
+      "scroll-padlock": "https://cdn.jsdelivr.net/npm/scroll-padlock/dist/es/scroll-padlock.min.js"
+    }
+  }
+</script>
+
 <script type="module">
-  // es modules minified version
-  import ScrollPadlock from "path/to/scroll-padlock/dist/es/scroll-padlock.min.js";
+  import ScrollPadlock from "scroll-padlock";
 
   const scrollPadlock = new ScrollPadlock();
 </script>
@@ -57,8 +64,7 @@ const scrollPadlock = new ScrollPadlock();
 ### Browser (globals):
 
 ```html
-<!-- iife minified version -->
-<script src="path/to/scroll-padlock/dist/iife/scroll-padlock.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/scroll-padlock/dist/iife/scroll-padlock.min.js"></script>
 
 <script>
   var scrollPadlock = new ScrollPadlock();
@@ -100,23 +106,16 @@ document.scrollingElement.classList.remove('scroll-padlock-locked');
 A custom scrolling element and a custom css class name are both supported.
 
 ```javascript
-const customScrollingElement = document.querySelector('#custom-scrolling-element');
+const scrollingElement = document.querySelector('#scrolling-element');
 
-const instance = new ScrollPadlock(
-  customScrollingElement,
+const instance = new ScrollPadlock(scrollingElement "scroll-locked");
 
-  "custom-scrolling-element-scroll-locked",
+scrollingElement.classList.add("scroll-locked");
 
-  // useful in test environment scenarios
-  window,
-);
-
-customScrollingElement.classList.add("custom-scrolling-element-scroll-locked");
-
-customScrollingElement.classList.remove("custom-scrolling-element-scroll-locked");
+scrollingElement.classList.remove("scroll-locked");
 ```
 
-The first constructor argument can be a single object of options.
+The first constructor argument can be a single object of options, allowing more parameters to be used.
 
 ```javascript
 const instance = new ScrollPadlock({
@@ -126,13 +125,13 @@ const instance = new ScrollPadlock({
   // the element which trigger scroll event
   scrollEventElement: window,
 
-  cssClassName: 'locked-state-css-class',
+  cssClassName: 'scroll-locked',
 
   // useful in order to debounce the original resize handler execution, etc...
-  resizeHandlerWrapper: handler => handler(),
+  resizeHandlerWrapper: handler => handler,
 
   // useful in order to throttle the original scroll handler execution, etc...
-  scrollHandlerWrapper: handler => handler(),
+  scrollHandlerWrapper: handler => handler,
 
   // useful in test environment scenarios
   client: window,
@@ -244,12 +243,10 @@ instance.listen('resize');
 instance.listen('scroll');
 ```
 
-* [Full source code documentation](https://github.com/memob0x/scroll-padlock/blob/master/documentation.md#scrollpadlock)
-
 ## TL;TR: a page scroll lock overview
 
 🙅 `overflow: hidden` is the most common way to lock the scroll position on every browsers, unfortunately, unless user's browser has overlay scrollbars, that would cause the scrollbar to disappear, the body to expand and the contents to jump to the right ([CLS](https://web.dev/cls/));
-to make things worse that technique just **doesn't work** on **iOS safari**: when set the user can still somehow scroll the page.
+to make things worse that technique just **doesn't work** on **iOS safari**: when set the user can still scroll the page.
 
 🙅 `touch-action: none` can't help since Safari [doesn't seem to support it](https://bugs.webkit.org/show_bug.cgi?id=133112) anytime soon.
 
@@ -279,15 +276,13 @@ If positioned elements "jumps" on a parent lock state change, the same CSS varia
 
 ## iOS Bars and Keyboard Tray
 
-There might still be an iOS edge case when locking page scroll with _position: fixed_ technique.
-
-When the page is scrolled the **system bars** become smaller; at that point, when focusing an input element programmatically, the keyboard tray is triggered and the bars become larger again; that, probably when some animations are taking place, can cause the following visual artifacts.
+There might still be an iOS edge case when locking page scroll with _position: fixed_ technique: when the page is scrolled the **system bars** become smaller; at that point, when focusing an input element programmatically, the keyboard tray is triggered and the bars become larger again; that, probably when some animations are taking place, can cause the following visual artifacts.
 
 ![ios bug](https://github.com/memob0x/scroll-padlock/blob/master/docs/ios-bug.gif?raw=true)
 
-iOS forces a scroll to the focused element (still out of canvas) in an already "locked" area (limited by the OS itself) which would be also shortly resized because of the system bars getting bigger.
+What happens here is iOS forcing a scroll to the focused element (still out of canvas) in an already "locked" area (limited by the OS itself) which would be also resized because of the system bars getting taller.
 
-To overcome this problem the native `resize` event can be listened to programmatically scroll to top that ios-keyboard-sub-window-thing.
+To overcome this problem the native `resize` event can be listened in order to programmatically scroll to top when the css class of that particular case is present.
 
 ```javascript
 // Addressing the "ios-keyboard-sub-window-thing offset" bug:
@@ -314,4 +309,12 @@ The library doesn't provide a fallback for those browsers which don't support [C
 
 ## Development
 
-Node version 20.2.0 or higher is required in order to compile source code or launch tests.
+Node version 20.11.0 or higher is required in order to compile source code or launch tests.
+
+You can generate the unit tests coverage in human readable form with the following commands (having `lcov` installed is required).
+
+```shell
+npm test
+
+genhtml lcov.info -o coverage
+```

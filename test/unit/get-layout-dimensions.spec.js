@@ -1,9 +1,8 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert';
-
 import getLayout from '../../src/get-layout-dimensions.js';
 
-describe('src/get-layout-dimensions', () => {
+describe(getLayout.name, () => {
   it('should not throw with given invalid arguments', () => {
     assert.deepEqual(getLayout(), getLayout(null));
 

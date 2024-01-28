@@ -1,9 +1,8 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert';
-
 import getScrollPositionCssRules from '../../src/get-scroll-position-css-rules.js';
 
-describe('src/get-scroll-position-css-rules', () => {
+describe(getScrollPositionCssRules.name, () => {
   it('should be able to format a scroll object as a css rules string', () => {
     assert.equal(getScrollPositionCssRules(), getScrollPositionCssRules(null));
 

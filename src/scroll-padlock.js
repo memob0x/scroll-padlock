@@ -9,9 +9,6 @@ import getScrollPositionCssRules from './get-scroll-position-css-rules.js';
 // The element data attribute name
 const CSS_SELECTOR_ATTR_NAME = 'data-scroll-padlock';
 
-// Handlers no-op function, default value
-const defaultHandlerWrapper = (a) => a;
-
 // Padlock instances global id reference
 let instanceId = -1;
 
@@ -73,10 +70,10 @@ class ScrollPadlock {
    * @public
    * @throws {TypeError} Throws when the given constructor arguments are invalid.
    * @throws {Error} Throws when an instance is already attached to the given dom element.
-   * @param {HTMLElement | object} [scrollingElementArgument] - The given scrollable element
-   * whose scroll needs to be controlled or an options object.
+   * @param {HTMLElement | ScrollPadlockOptions} [scrollingElementArgument] - The given scrollable
+   * element whose scroll needs to be controlled or an options object.
    * @param {string} [cssClassNameArgument] - The locked-state css class or an options object.
-   * @param {Window} [clientArgument] - The client environment object (window).
+   * @param {Client} [clientArgument] - The client environment object (window).
    */
   constructor(scrollingElementArgument, cssClassNameArgument, clientArgument = globalThis) {
     // The Padlock first argument type
@@ -240,10 +237,22 @@ class ScrollPadlock {
     this.#cssClassName = optionCssClassName || 'scroll-padlock-locked';
 
     // Stores a resize event handler function wrapper
-    this.#resizeHandlerWrapper = optionResizeHandlerWrapper || defaultHandlerWrapper;
+    if (optionResizeHandlerWrapper) {
+      this.#handleResize = optionResizeHandlerWrapper(
+        this.#resizeHandler.bind(this),
+      );
+
+      this.#listenersHandlers.resize = this.#handleResize;
+    }
 
     // Stores a scroll event handler function wrapper
-    this.#scrollHandlerWrapper = optionScrollHandlerWrapper || defaultHandlerWrapper;
+    if (optionScrollHandlerWrapper) {
+      this.#handleScroll = optionScrollHandlerWrapper(
+        this.#scrollHandler.bind(this),
+      );
+
+      this.#listenersHandlers.scroll = this.#handleScroll;
+    }
 
     // Handles the Padlock DOM observation through MutationObserver API
     this.#observer = new MutationObserver(this.#handleObservation.bind(this));
@@ -294,7 +303,7 @@ class ScrollPadlock {
   /**
    * A reference to the client "window" object.
    * @private
-   * @type {Window}
+   * @type {Client}
    * @memberof ScrollPadlock
    */
   #window = null;
@@ -552,14 +561,6 @@ class ScrollPadlock {
   }
 
   /**
-   * The resize event handler function wrapper.
-   * @private
-   * @memberof ScrollPadlock
-   * @returns {any} Anything the given function returns is returned.
-   */
-  #resizeHandlerWrapper = defaultHandlerWrapper;
-
-  /**
    * Window resize event handler.
    * @private
    * @memberof ScrollPadlock
@@ -577,19 +578,9 @@ class ScrollPadlock {
    * Window resize event handler, bound with the wrapper function.
    * @private
    * @memberof ScrollPadlock
-   * @returns {void} Nothing.
+   * @type {Handler}
    */
-  #handleResize = this.#resizeHandlerWrapper(
-    this.#resizeHandler.bind(this),
-  );
-
-  /**
-   * The scroll event handler function wrapper.
-   * @private
-   * @memberof ScrollPadlock
-   * @returns {any} Anything the given function returns is returned.
-   */
-  #scrollHandlerWrapper = defaultHandlerWrapper;
+  #handleResize = this.#resizeHandler.bind(this);
 
   /**
    * Element scroll event handler.
@@ -609,11 +600,9 @@ class ScrollPadlock {
    * Element scroll event handler, bound with the wrapper function.
    * @private
    * @memberof ScrollPadlock
-   * @returns {any} Anything the given function returns is returned.
+   * @type {Handler}
    */
-  #handleScroll = this.#scrollHandlerWrapper(
-    this.#scrollHandler.bind(this),
-  );
+  #handleScroll = this.#scrollHandler.bind(this);
 
   /**
    * Event listeners handlers map,
@@ -659,7 +648,7 @@ class ScrollPadlock {
    * @private
    * @memberof ScrollPadlock
    * @param {Function} action - The given function to be fired at unlocked scroll state.
-   * @returns {any} Anything the given function returns is returned.
+   * @returns {unknown} Anything the given function returns is returned.
    */
   #performUnlockedAction(action) {
     // Caches the scroll lock state (true if css class is set, thus on a locked state)

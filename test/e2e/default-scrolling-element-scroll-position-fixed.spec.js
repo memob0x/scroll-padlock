@@ -3,7 +3,6 @@ import {
 } from 'node:test';
 import assert from 'node:assert';
 import { resolve } from 'node:path';
-
 import launchBrowser from '../utils/launch-browser.js';
 import browseHtmlPlaygroundFile from '../utils/browse-file.js';
 import takeBrowserScreenshot from '../utils/take-browser-screenshot.js';
