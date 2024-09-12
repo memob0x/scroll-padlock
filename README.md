@@ -35,7 +35,7 @@ npm install scroll-padlock
 The source code is entirely written in [standard ECMAScript](https://tc39.es/) with no dependencies.
 All major bundle formats are supported, including [umd](https://github.com/umdjs/umd), [iife](https://developer.mozilla.org/en-US/docs/Glossary/IIFE), [amd](https://en.wikipedia.org/wiki/Asynchronous_module_definition), [cjs](https://en.wikipedia.org/wiki/CommonJS), [esm](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules) and [SystemJS](https://github.com/systemjs/systemjs); a minified gzipped version is also available for each bundle format.
 
-### Node:
+### Node
 
 ```javascript
 import ScrollPadlock from "scroll-padlock";
@@ -43,7 +43,7 @@ import ScrollPadlock from "scroll-padlock";
 const scrollPadlock = new ScrollPadlock();
 ```
 
-### Browser (modules):
+### Browser (modules)
 
 ```html
 <script type="importmap">
@@ -61,7 +61,7 @@ const scrollPadlock = new ScrollPadlock();
 </script>
 ```
 
-### Browser (globals):
+### Browser (globals)
 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/scroll-padlock/dist/iife/scroll-padlock.min.js"></script>
@@ -254,7 +254,7 @@ to make things worse that technique just **doesn't work** on **iOS safari**: whe
 
 🙅 `position: fixed` alone can force iOS to lock the scroll, but when applied the scroll position would eventually jump to the top of the page.
 
-💁 This library sets some **css variables** and **css classes** in order to allow the developer to choose their preferred [CSS-only approach](#css-rules-examples), while the class instance exposes a quite granular API in order to implement some JS strategies too.
+💁 This library sets some **css variables** and **css classes** in order to allow the developer to choose their preferred CSS-only approach, while the class instance exposes a quite granular API in order to implement some JS strategies too.
 
 ## Positioned Elements
 
@@ -305,7 +305,7 @@ The problem should be solved at this point.
 
 All [modern browsers](https://teamtreehouse.com/community/what-is-a-modern-browser) have been tested.
 
-The library doesn't provide a fallback for those browsers which don't support [CSS variables](https://caniuse.com/css-variables) (mainly Internet Explorer 11); since these browsers tipically support _overflow: hidden_, the [JS API](#API) can be used to implement the scrollbars-gaps compensation normally achievable through CSS by standard browsers (a graceful degradation approach is highly suggested though).
+The library doesn't provide a fallback for those browsers which don't support [CSS variables](https://caniuse.com/css-variables) (mainly Internet Explorer 11); since these browsers tipically support _overflow: hidden_, the [JS API](#api) can be used to implement the scrollbars-gaps compensation normally achievable through CSS by standard browsers (a graceful degradation approach is highly suggested though).
 
 ## Development
 
