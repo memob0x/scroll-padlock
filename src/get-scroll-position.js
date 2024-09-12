@@ -5,7 +5,7 @@ import './typedef.js';
  * @public
  * @example
  * getScrollPosition(document.queryselector('div')); // --> { top: 123, left: 345 }
- * @param {Client|HTMLElement} element - The given element whose scroll
+ * @param {GlobalContext|HTMLElement} element - The given element whose scroll
  * position needs to be retrieved.
  * @returns {ScrollPosition} The given element scroll position
  * as an object ({ top, left }).

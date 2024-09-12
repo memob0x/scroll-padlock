@@ -24,7 +24,7 @@ const getLayoutOuterDimensions = (element, scroller) => {
  * @example
  * getLayoutDimensions(document.querySelector('div')) // --> { outerHeight: 123, ... }
  * @param {HTMLElement} element - The given element whose dimensions need to be retrieved.
- * @param {Client|HTMLElement} scroller - The given scrollable used to retrieve some
+ * @param {GlobalContext|HTMLElement} scroller - The given scrollable used to retrieve some
  * dimensions when the given element is global (page).
  * @returns {LayoutDimensions} The given element dimensions as an object ({ top, left }).
  */

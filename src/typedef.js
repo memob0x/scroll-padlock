@@ -17,27 +17,28 @@
  */
 
 /**
- * @typedef Client
+ * @typedef GlobalContext
  * @type {Window & typeof globalThis}
  */
 
 /**
- * @callback Handler
+ * @callback EventHandler
  * @returns {void}
  */
 
 /**
- * @callback HandlerWrapper
- * @param {Handler} predicate
- * @returns {Handler}
+ * @callback EventHandlerWrapper
+ * @param {EventHandler} predicate - The original handler function.
+ * @returns {EventHandler}
  */
 
 /**
- * @typedef ScrollPadlockOptions
- * @property {HTMLElement} scrollingElement Asd.
- * @property {Client | HTMLElement} scrollEventElement Asd.
- * @property {string} cssClassName Asd.
- * @property {HandlerWrapper} resizeHandlerWrapper Asd.
- * @property {HandlerWrapper} scrollHandlerWrapper Asd.
- * @property {Client} client Asd.
+ * @typedef ConstructorOptions
+ * @property {HTMLElement} scrollingElement The html element that can perform the scrolling action.
+ * @property {GlobalContext|HTMLElement} scrollEventElement The element that can
+ * perform and listen to scroll event.
+ * @property {string} cssClassName The lock state CSS class name.
+ * @property {EventHandlerWrapper} resizeHandlerWrapper The "resize" event handler function wrapper.
+ * @property {EventHandlerWrapper} scrollHandlerWrapper The "scroll" event handler function wrapper.
+ * @property {GlobalContext} client A reference to the client "window" object.
  */

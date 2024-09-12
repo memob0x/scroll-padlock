@@ -70,10 +70,10 @@ class ScrollPadlock {
    * @public
    * @throws {TypeError} Throws when the given constructor arguments are invalid.
    * @throws {Error} Throws when an instance is already attached to the given dom element.
-   * @param {HTMLElement | ScrollPadlockOptions} [scrollingElementArgument] - The given scrollable
+   * @param {HTMLElement|ConstructorOptions} [scrollingElementArgument] - The given scrollable
    * element whose scroll needs to be controlled or an options object.
    * @param {string} [cssClassNameArgument] - The locked-state css class or an options object.
-   * @param {Client} [clientArgument] - The client environment object (window).
+   * @param {GlobalContext} [clientArgument] - The client environment object (window).
    */
   constructor(scrollingElementArgument, cssClassNameArgument, clientArgument = globalThis) {
     // The Padlock first argument type
@@ -303,7 +303,7 @@ class ScrollPadlock {
   /**
    * A reference to the client "window" object.
    * @private
-   * @type {Client}
+   * @type {GlobalContext}
    * @memberof ScrollPadlock
    */
   #window = null;
@@ -382,7 +382,7 @@ class ScrollPadlock {
 
   /**
    * The current scroll position.
-   * @type {Types.ScrollPosition}
+   * @type {ScrollPosition}
    * @private
    * @memberof ScrollPadlock
    */
@@ -390,7 +390,7 @@ class ScrollPadlock {
 
   /**
    * The scroll position saving, the scroll position stored for later use.
-   * @type {Types.ScrollPosition}
+   * @type {ScrollPosition}
    * @private
    * @memberof ScrollPadlock
    */
@@ -475,7 +475,7 @@ class ScrollPadlock {
    * const padlock = new ScrollPadlock();
    *
    * padlock.scroll // --> { top: 123, left: 345 }
-   * @returns {Types.ScrollPosition} The current scroll position object or the
+   * @returns {ScrollPosition} The current scroll position object or the
    * scroll position previously saved if on a locked state.
    */
   get scroll() {
@@ -492,7 +492,7 @@ class ScrollPadlock {
    * const padlock = new ScrollPadlock();
    *
    * padlock.scroll = { top: 123, left: 345 }
-   * @param {Types.ScrollPosition} position - The scroll position to be set
+   * @param {ScrollPosition} position - The scroll position to be set
    * or saved if on a locked state.
    */
   set scroll(position) {
@@ -517,7 +517,7 @@ class ScrollPadlock {
    * const padlock = new ScrollPadlock();
    *
    * padlock.layout // --> { outerHeight: 123, outerWidth: 345, innerWidth: 123, ... }
-   * @returns {Types.Layout} The layout object.
+   * @returns {LayoutDimensions} The layout object.
    */
   get layout() {
     return this.#layout;
@@ -578,7 +578,7 @@ class ScrollPadlock {
    * Window resize event handler, bound with the wrapper function.
    * @private
    * @memberof ScrollPadlock
-   * @type {Handler}
+   * @type {EventHandler}
    */
   #handleResize = this.#resizeHandler.bind(this);
 
@@ -600,7 +600,7 @@ class ScrollPadlock {
    * Element scroll event handler, bound with the wrapper function.
    * @private
    * @memberof ScrollPadlock
-   * @type {Handler}
+   * @type {EventHandler}
    */
   #handleScroll = this.#scrollHandler.bind(this);
 
@@ -620,7 +620,7 @@ class ScrollPadlock {
    * Scrolls the given element to a given scroll position.
    * @private
    * @memberof ScrollPadlock
-   * @param {Types.ScrollPosition} position - The scroll position to be set.
+   * @param {ScrollPosition} position - The scroll position to be set.
    * @returns {void} Nothing.
    */
   #scrollTo = (position) => this.#scrollEventElement?.scrollTo(
@@ -679,7 +679,7 @@ class ScrollPadlock {
    * Updates the layout object.
    * @private
    * @memberof ScrollPadlock
-   * @returns {Types.ScrollPosition} The layout object.
+   * @returns {LayoutDimensions} The layout object.
    */
   #updateLayout() {
     // If the elements involved are set (if not the instance has been probably destroyed)
@@ -696,7 +696,7 @@ class ScrollPadlock {
    * Refresh the scroll position at a (temporarly) unlocked state.
    * @private
    * @memberof ScrollPadlock
-   * @returns {Types.ScrollPosition} The current scroll position object.
+   * @returns {ScrollPosition} The current scroll position object.
    */
   #updateScrollCurrent() {
     // If the involved element is set (if not the instance has been probably destroyed)
