@@ -2,13 +2,13 @@ import './typedef.js';
 
 /**
  * Gets a given element or browser scroll position.
- * @public
- * @example
- * getScrollPosition(document.queryselector('div')); // --> { top: 123, left: 345 }
  * @param {GlobalContext|HTMLElement} element - The given element whose scroll
  * position needs to be retrieved.
  * @returns {ScrollPosition} The given element scroll position
  * as an object ({ top, left }).
+ * @public
+ * @example
+ * getScrollPosition(document.queryselector('div')); // --> { top: 123, left: 345 }
  */
 const getScrollPosition = (element) => ({
   // NOTE: assuming it's page case by checking scrollY|scrollX and

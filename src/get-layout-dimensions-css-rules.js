@@ -2,6 +2,8 @@ import './typedef.js';
 
 /**
  * Gets the given layout dimensions object as css rules.
+ * @param {LayoutDimensions} layout - The layout dimensions objects to be set in css variables.
+ * @returns {string} The styling rule css string.
  * @public
  * @example
  * getLayoutDimensionsCssRules({ outerWidth: 10 }); // --> `
@@ -13,8 +15,6 @@ import './typedef.js';
  * // --scroll-padlock-scroll-height: 0px;
  * // --scroll-padlock-scrollbar-width: 0px;
  * // --scroll-padlock-scrollbar-height: 0px;`
- * @param {LayoutDimensions} layout - The layout dimensions objects to be set in css variables.
- * @returns {string} The styling rule css string.
  */
 const getLayoutDimensionsCssRules = (layout) => `--scroll-padlock-outer-width: ${layout?.outerWidth || 0}px;
 --scroll-padlock-outer-height: ${layout?.outerHeight || 0}px;
