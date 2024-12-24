@@ -243,19 +243,6 @@ instance.listen('resize');
 instance.listen('scroll');
 ```
 
-## TL;TR: a page scroll lock overview
-
-🙅 `overflow: hidden` is the most common way to lock the scroll position on every browsers, unfortunately, unless user's browser has overlay scrollbars, that would cause the scrollbar to disappear, the body to expand and the contents to jump to the right ([CLS](https://web.dev/cls/));
-to make things worse that technique just **doesn't work** on **iOS safari**: when set the user can still scroll the page.
-
-🙅 `touch-action: none` can't help since Safari [doesn't seem to support it](https://bugs.webkit.org/show_bug.cgi?id=133112) anytime soon.
-
-🤷 Some libraries propose to solve this preventing `touchmove` events, which might work out very well in many cases; unfortunately some **issues** with some **`viewport` configurations** or **pinch to zoom** might still be encountered, also **iOS navigation bars** might end up covering some layout elements.
-
-🙅 `position: fixed` alone can force iOS to lock the scroll, but when applied the scroll position would eventually jump to the top of the page.
-
-💁 This library sets some **css variables** and **css classes** in order to allow the developer to choose their preferred CSS-only approach, while the class instance exposes a quite granular API in order to implement some JS strategies too.
-
 ## Positioned Elements
 
 If positioned elements "jumps" on a parent lock state change, the same CSS variables that are used to reserve the scrollbar width can be used to overcome this problem as well.
@@ -301,6 +288,15 @@ The problem should be solved at this point.
 
 ![ios bug](https://github.com/memob0x/scroll-padlock/blob/master/docs/ios-fix.gif?raw=true)
 
+## The case study
+
+- `overflow: hidden` is the most common way to lock the scroll position on every browsers, unfortunately, unless user's browser has overlay scrollbars, that would cause the scrollbar to disappear, the body to expand and the contents to jump to the right ([CLS](https://web.dev/cls/));
+to make things worse that technique just **doesn't work** on **iOS safari**: when set the user can still scroll the page.
+- `touch-action: none` can't help since Safari [doesn't seem to support it](https://bugs.webkit.org/show_bug.cgi?id=133112) anytime soon.
+- Some libraries propose to solve this preventing `touchmove` events, which might work out very well in many cases; unfortunately some **issues** with some **`viewport` configurations** or **pinch to zoom** might still be encountered, also **iOS navigation bars** might end up covering some layout elements.
+- `position: fixed` alone can force iOS to lock the scroll, but when applied the scroll position would eventually jump to the top of the page.
+- This library sets some **css variables** and **css classes** in order to allow the developer to choose their preferred CSS-only approach, while the class instance exposes a quite granular API in order to implement some JS strategies too.
+
 ## Support
 
 All [modern browsers](https://teamtreehouse.com/community/what-is-a-modern-browser) have been tested.
@@ -315,6 +311,14 @@ You can generate the unit tests coverage in human readable form with the followi
 
 ```shell
 npm test
+```
 
+```shell
 genhtml lcov.info -o coverage
+```
+
+The library is compiled with the following command:
+
+```shell
+npm run build
 ```
