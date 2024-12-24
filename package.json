@@ -63,6 +63,7 @@
     "resemblejs": "^5.0.0",
     "rollup": "^4.29.1",
     "rollup-plugin-gzip": "^4.0.1",
+    "sharp": "^0.33.5",
     "typescript": "^5.7.2"
   }
 }

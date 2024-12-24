@@ -1,15 +1,11 @@
 import puppeteer from 'puppeteer';
 
-export default () => puppeteer.launch({
+export default (viewport) => puppeteer.launch({
   headless: 'new',
 
   executablePath: puppeteer.executablePath(),
 
-  defaultViewport: {
-    width: 640,
-
-    height: 480,
-  },
+  defaultViewport: viewport,
 
   args: ['--disable-web-security'],
 

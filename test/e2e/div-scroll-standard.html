@@ -2,52 +2,54 @@
 <html>
 
 <head>
-    <title>Test</title>
+  <title>Test</title>
 
-    <style>
-        * {
-            box-sizing: border-box;
-        }
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-        #el {
-            font-size: 200px;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-        }
+    #el {
+      font-size: 120px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+    }
 
-        #el.locked {
-            overflow: hidden;
-            padding-right: var(--scroll-padlock-scrollbar-width);
-        }
-    </style>
+    #el.locked {
+      overflow: hidden;
+      padding-right: var(--scroll-padlock-scrollbar-width);
+    }
+  </style>
 </head>
 
 <body>
-    <div id="el">
-        Hello there, Lorem ipsum. How r u today?
-    </div>
+  <div id="el">
+    Hello there, Lorem ipsum. How r u today?
+  </div>
 
-    <script src="../../dist/umd/scroll-padlock.js"></script>
+  <script src="../../dist/umd/scroll-padlock.js"></script>
 
-    <script>
-        window.cssClassNameElLocked = 'locked';
+  <script>
+    window.cssClassNameElLocked = 'locked';
 
-        const el = document.querySelector('#el');
+    const el = document.querySelector('#el');
 
-        const { classList } = el;
+    const { classList } = el;
 
-        window.instance = new window.ScrollPadlock(el, cssClassNameElLocked)
+    window.instance = new window.ScrollPadlock(el, cssClassNameElLocked)
 
-        window.lock = () => classList.add(cssClassNameElLocked);
+    window.lock = () => classList.add(cssClassNameElLocked);
 
-        window.unlock = () => classList.remove(cssClassNameElLocked);
-    </script>
+    window.unlock = () => classList.remove(cssClassNameElLocked);
+
+    window.elScrollTo = el;
+  </script>
 </body>
 
 </html>

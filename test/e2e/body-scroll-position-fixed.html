@@ -2,47 +2,49 @@
 <html>
 
 <head>
-    <title>Test</title>
+  <title>Test</title>
 
-    <style>
-        * {
-            box-sizing: border-box;
-        }
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-        body {
-            font-size: 200px;
-            margin: 0;
-        }
+    body {
+      font-size: 120px;
+      margin: 0;
+    }
 
-        body.locked {
-            position: fixed;
-            width: 100%;
-            top: calc(var(--scroll-padlock-scroll-top) * -1);
-            padding-right: var(--scroll-padlock-scrollbar-width);
-        }
-    </style>
+    body.locked {
+      position: fixed;
+      width: 100%;
+      top: calc(var(--scroll-padlock-scroll-top) * -1);
+      padding-right: var(--scroll-padlock-scrollbar-width);
+    }
+  </style>
 </head>
 
 <body>
-    <p>
-        Hello there, Lorem ipsum. How r u today?
-    </p>
+  <p>
+    Hello there, Lorem ipsum. How r u today?
+  </p>
 
-    <script src="../../dist/umd/scroll-padlock.js"></script>
+  <script src="../../dist/umd/scroll-padlock.js"></script>
 
-    <script>
-        window.cssClassNameBodyLocked = 'locked';
+  <script>
+    window.cssClassNameBodyLocked = 'locked';
 
-        const { body } = document;
+    const { body } = document;
 
-        const { classList } = body;
+    const { classList } = body;
 
-        window.instance = new window.ScrollPadlock(body, cssClassNameBodyLocked)
+    window.instance = new window.ScrollPadlock(body, cssClassNameBodyLocked)
 
-        window.lock = () => classList.add(cssClassNameBodyLocked);
+    window.lock = () => classList.add(cssClassNameBodyLocked);
 
-        window.unlock = () => classList.remove(cssClassNameBodyLocked);
-    </script>
+    window.unlock = () => classList.remove(cssClassNameBodyLocked);
+
+    window.elScrollTo = window;
+  </script>
 </body>
 
 </html>
