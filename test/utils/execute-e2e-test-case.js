@@ -5,11 +5,32 @@ import takeBrowserScreenshot from './take-browser-screenshot.js';
 import compareTwoImages from './compare-two-images.js';
 import cropImage from './crop-image.js';
 
+const takeCroppedBrowserScreenshot = async (
+  page,
+
+  filename,
+
+  screenshotCropSettings,
+) => {
+  // puppeteer triggers resize event when taking screenshot
+  // so event resize listener needs to be paused...
+  await page.evaluate(() => window.instance.unlisten('resize'));
+
+  let image = await takeBrowserScreenshot(page, filename);
+
+  ({ output: image } = await cropImage(image, screenshotCropSettings));
+
+  await page.evaluate(() => window.instance.listen('resize'));
+
+  return image;
+};
+
 /**
  * Executes the e2e default test case with the given html file path.
  * @param {Promise<Browser>} browser - The browser instance.
  * @param {string} testCaseHtmlFilePath - The test case html file path to be used in the test case.
- * @param {Region} screenshotCropSettings - The settings to be used to crop the screenshot.
+ * @param {Region} screenshotCropSettings - The settings to be used to crop the screenshot. NOTE:
+ * image is cropped in order to cut out the scrollbar which may cause images comparison failures.
  */
 export default async function executeE2eTestCase(
   browser,
@@ -20,27 +41,15 @@ export default async function executeE2eTestCase(
 ) {
   const page = await browseHtmlPlaygroundFile(browser, resolve(testCaseHtmlFilePath));
 
-  // puppeteer triggers resize event when taking screenshot
-  // so event resize listener needs to be paused...
-  await page.evaluate(() => window.instance.unlisten('resize'));
-
   await page.evaluate(() => window.elScrollTo.scrollTo(0, 9999));
 
   const filenameWithoutExt = basename(testCaseHtmlFilePath, extname(testCaseHtmlFilePath));
 
-  let firstImage = await takeBrowserScreenshot(page, `${filenameWithoutExt}-0`);
-
-  // NOTE: image is cropped in order to cut out the scrollbar
-  // which may cause images comparison failures
-  ({ output: firstImage } = await cropImage(firstImage, screenshotCropSettings));
+  const firstImage = await takeCroppedBrowserScreenshot(page, `${filenameWithoutExt}-0`, screenshotCropSettings);
 
   await page.evaluate(() => window.lock());
 
-  let secondImage = await takeBrowserScreenshot(page, `${filenameWithoutExt}-1`);
-
-  // NOTE: image is cropped in order to cut out the scrollbar
-  // which may cause images comparison failures
-  ({ output: secondImage } = await cropImage(secondImage, screenshotCropSettings));
+  const secondImage = await takeCroppedBrowserScreenshot(page, `${filenameWithoutExt}-1`, screenshotCropSettings);
 
   let {
     isSameDimensions,
@@ -55,11 +64,7 @@ export default async function executeE2eTestCase(
     window.instance.scroll = { top: 0, left: 0 };
   });
 
-  let thirdImage = await takeBrowserScreenshot(page, `${filenameWithoutExt}-2`);
-
-  // NOTE: image is cropped in order to cut out the scrollbar
-  // which may cause images comparison failures
-  ({ output: thirdImage } = await cropImage(thirdImage, screenshotCropSettings));
+  const thirdImage = await takeCroppedBrowserScreenshot(page, `${filenameWithoutExt}-2`, screenshotCropSettings);
 
   ({
     isSameDimensions,
@@ -72,11 +77,7 @@ export default async function executeE2eTestCase(
 
   await page.evaluate(() => window.unlock());
 
-  let fourthImage = await takeBrowserScreenshot(page, `${filenameWithoutExt}-3`);
-
-  // NOTE: image is cropped in order to cut out the scrollbar
-  // which may cause images comparison failures
-  ({ output: fourthImage } = await cropImage(fourthImage, screenshotCropSettings));
+  const fourthImage = await takeCroppedBrowserScreenshot(page, `${filenameWithoutExt}-3`, screenshotCropSettings);
 
   ({
     isSameDimensions,
