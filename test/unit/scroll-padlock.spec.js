@@ -20,262 +20,89 @@ describe(Padlock.name, () => {
     ({ document } = window);
 
     ({ head, body } = document);
+
+    // eslint-disable-next-line no-global-assign
+    globalThis = window;
   });
 
   describe('construction', () => {
-    it('should throw if incorrect first argument is passed to constructor', () => {
-      assert.throws(
-        () => new Padlock(null, undefined, window),
-
-        TypeError,
-      );
-
-      assert.throws(
-        () => new Padlock([], undefined, window),
-
-        TypeError,
-      );
-
-      assert.throws(
-        () => new Padlock('', undefined, window),
-
-        TypeError,
-      );
-
-      assert.throws(
-        () => new Padlock(0, undefined, window),
-
-        TypeError,
-      );
-
-      assert.throws(
-        () => new Padlock(1, undefined, window),
-
-        TypeError,
-      );
-
-      assert.throws(
-        () => new Padlock(NaN, undefined, window),
-
-        TypeError,
-      );
-
-      assert.throws(
-        () => new Padlock(Infinity, undefined, window),
-
-        TypeError,
-      );
-
-      assert.throws(
-        () => new Padlock(window, undefined, window),
-
-        TypeError,
-      );
-
-      assert.throws(
-        () => new Padlock(document, undefined, window),
+    it('should not throw if option object is not passed', () => {
+      assert.doesNotThrow(
+        () => new Padlock(),
 
         TypeError,
       );
     });
 
-    it('should create an instance when valid first argument is passed to constructor', () => {
-      let instance;
-
-      const a = () => {
-        instance = new Padlock(undefined, undefined, window);
-      };
-
-      assert.doesNotThrow(a, TypeError);
-
-      assert.equal(instance.scrollingElement, document.documentElement);
-
-      assert.equal(instance.scrollEventElement, window);
-
-      instance.destroy();
-
-      const b = () => {
-        instance = new Padlock({}, undefined, window);
-      };
-
-      assert.doesNotThrow(b, TypeError);
-
-      assert.equal(instance.scrollingElement, document.documentElement);
-
-      assert.equal(instance.scrollEventElement, window);
-
-      instance.destroy();
-
-      const div = document.createElement('div');
-
-      const c = () => {
-        instance = new Padlock(div, undefined, window);
-      };
-
-      assert.doesNotThrow(c, TypeError);
-
-      assert.equal(instance.scrollingElement, div);
-
-      assert.equal(instance.scrollEventElement, div);
-
-      instance.destroy();
-
-      const d = () => {
-        instance = new Padlock({ ...window, client: window });
-      };
-
-      assert.doesNotThrow(d, TypeError);
-
-      assert.equal(instance.scrollingElement, document.documentElement);
-
-      assert.equal(instance.scrollEventElement, window);
-
-      instance.destroy();
-
-      const e = () => {
-        instance = new Padlock(document.documentElement, undefined, window);
-      };
-
-      assert.doesNotThrow(e, TypeError);
-
-      assert.equal(instance.scrollingElement, document.documentElement);
-
-      assert.equal(instance.scrollEventElement, window);
-
-      instance.destroy();
-
-      const f = () => {
-        instance = new Padlock(body, undefined, window);
-      };
-
-      assert.doesNotThrow(f, TypeError);
-
-      assert.equal(instance.scrollingElement, body);
-
-      assert.equal(instance.scrollEventElement, window);
-
-      instance.destroy();
-    });
-
-    it('should throw if incorrect second argument is passed to constructor', () => {
-      assert.throws(
-        () => new Padlock(document.createElement('div'), null, window),
-
-        TypeError,
-      );
-
-      assert.throws(
-        () => new Padlock(document.createElement('div'), {}, window),
-
-        TypeError,
-      );
-
-      assert.throws(
-        () => new Padlock(document.createElement('div'), [], window),
-
-        TypeError,
-      );
-
-      assert.throws(
-        () => new Padlock(document.createElement('div'), '', window),
-
-        TypeError,
-      );
-
-      assert.throws(
-        () => new Padlock(document.createElement('div'), 0, window),
-
-        TypeError,
-      );
-
-      assert.throws(
-        () => new Padlock(document.createElement('div'), 1, window),
-
-        TypeError,
-      );
-
-      assert.throws(
-        () => new Padlock(document.createElement('div'), NaN, window),
-
-        TypeError,
-      );
-
-      assert.throws(
-        () => new Padlock(document.createElement('div'), Infinity, window),
+    it('should not throw if the option object is passed as an empty object', () => {
+      assert.doesNotThrow(
+        () => new Padlock({ }),
 
         TypeError,
       );
     });
 
-    it('should create an instance when valid second argument is passed to constructor', () => {
-      let instance;
-
-      const a = () => {
-        instance = new Padlock(document.createElement('div'), undefined, window);
-      };
-
-      assert.doesNotThrow(a, TypeError);
-
-      assert.equal(instance.cssClassName, 'scroll-padlock-locked');
-
-      instance.destroy();
-
-      const b = () => {
-        instance = new Padlock(document.createElement('div'), '1', window);
-      };
-
-      assert.doesNotThrow(b, TypeError);
-
-      assert.equal(instance.cssClassName, '1');
-
-      instance.destroy();
-    });
-
-    it('should throw if first argument option object with invalid css class name property is passed', () => {
+    it('should throw if option object with invalid css class name property is passed', () => {
       assert.throws(
-        () => new Padlock({ cssClassName: null, client: window }),
+        () => new Padlock({
+          cssClassName: null,
+        }),
 
         TypeError,
       );
 
       assert.throws(
-        () => new Padlock({ cssClassName: [], client: window }),
+        () => new Padlock({
+          cssClassName: [],
+        }),
 
         TypeError,
       );
 
       assert.throws(
-        () => new Padlock({ cssClassName: {}, client: window }),
+        () => new Padlock({
+          cssClassName: {},
+        }),
 
         TypeError,
       );
 
       assert.throws(
-        () => new Padlock({ cssClassName: '', client: window }),
+        () => new Padlock({
+          cssClassName: '',
+        }),
 
         TypeError,
       );
 
       assert.throws(
-        () => new Padlock({ cssClassName: 0, client: window }),
+        () => new Padlock({
+          cssClassName: 0,
+        }),
 
         TypeError,
       );
 
       assert.throws(
-        () => new Padlock({ cssClassName: 1, client: window }),
+        () => new Padlock({
+          cssClassName: 1,
+        }),
 
         TypeError,
       );
 
       assert.throws(
-        () => new Padlock({ cssClassName: NaN, client: window }),
+        () => new Padlock({
+          cssClassName: NaN,
+        }),
 
         TypeError,
       );
 
       assert.throws(
-        () => new Padlock({ cssClassName: Infinity, client: window }),
+        () => new Padlock({
+          cssClassName: Infinity,
+        }),
 
         TypeError,
       );
@@ -285,7 +112,9 @@ describe(Padlock.name, () => {
       let instance;
 
       const a = () => {
-        instance = new Padlock({ cssClassName: undefined, client: window });
+        instance = new Padlock({
+          cssClassName: undefined,
+        });
       };
 
       assert.doesNotThrow(a, TypeError);
@@ -295,7 +124,9 @@ describe(Padlock.name, () => {
       instance.destroy();
 
       const b = () => {
-        instance = new Padlock({ cssClassName: '1', client: window });
+        instance = new Padlock({
+          cssClassName: '1',
+        });
       };
 
       assert.doesNotThrow(b, TypeError);
@@ -309,8 +140,6 @@ describe(Padlock.name, () => {
       assert.throws(
         () => new Padlock({
           scrollingElement: null,
-
-          client: window,
         }),
 
         TypeError,
@@ -319,8 +148,6 @@ describe(Padlock.name, () => {
       assert.throws(
         () => new Padlock({
           scrollingElement: [],
-
-          client: window,
         }),
 
         TypeError,
@@ -329,8 +156,6 @@ describe(Padlock.name, () => {
       assert.throws(
         () => new Padlock({
           scrollingElement: {},
-
-          client: window,
         }),
 
         TypeError,
@@ -339,8 +164,6 @@ describe(Padlock.name, () => {
       assert.throws(
         () => new Padlock({
           scrollingElement: '',
-
-          client: window,
         }),
 
         TypeError,
@@ -349,8 +172,6 @@ describe(Padlock.name, () => {
       assert.throws(
         () => new Padlock({
           scrollingElement: 0,
-
-          client: window,
         }),
 
         TypeError,
@@ -359,8 +180,6 @@ describe(Padlock.name, () => {
       assert.throws(
         () => new Padlock({
           scrollingElement: 1,
-
-          client: window,
         }),
 
         TypeError,
@@ -369,8 +188,6 @@ describe(Padlock.name, () => {
       assert.throws(
         () => new Padlock({
           scrollingElement: NaN,
-
-          client: window,
         }),
 
         TypeError,
@@ -379,8 +196,6 @@ describe(Padlock.name, () => {
       assert.throws(
         () => new Padlock({
           scrollingElement: Infinity,
-
-          client: window,
         }),
 
         TypeError,
@@ -389,8 +204,6 @@ describe(Padlock.name, () => {
       assert.throws(
         () => new Padlock({
           scrollingElement: window,
-
-          client: window,
         }),
 
         TypeError,
@@ -399,8 +212,6 @@ describe(Padlock.name, () => {
       assert.throws(
         () => new Padlock({
           scrollingElement: document,
-
-          client: window,
         }),
 
         TypeError,
@@ -413,8 +224,6 @@ describe(Padlock.name, () => {
       const a = () => {
         instance = new Padlock({
           scrollingElement: undefined,
-
-          client: window,
         });
       };
 
@@ -431,8 +240,6 @@ describe(Padlock.name, () => {
       const c = () => {
         instance = new Padlock({
           scrollingElement: div,
-
-          client: window,
         });
       };
 
@@ -447,8 +254,6 @@ describe(Padlock.name, () => {
       const e = () => {
         instance = new Padlock({
           scrollingElement: document.documentElement,
-
-          client: window,
         });
       };
 
@@ -463,8 +268,6 @@ describe(Padlock.name, () => {
       const f = () => {
         instance = new Padlock({
           scrollingElement: body,
-
-          client: window,
         });
       };
 
@@ -481,8 +284,6 @@ describe(Padlock.name, () => {
       assert.throws(
         () => new Padlock({
           scrollEventElement: null,
-
-          client: window,
         }),
 
         TypeError,
@@ -491,8 +292,6 @@ describe(Padlock.name, () => {
       assert.throws(
         () => new Padlock({
           scrollEventElement: [],
-
-          client: window,
         }),
 
         TypeError,
@@ -501,8 +300,6 @@ describe(Padlock.name, () => {
       assert.throws(
         () => new Padlock({
           scrollEventElement: {},
-
-          client: window,
         }),
 
         TypeError,
@@ -511,8 +308,6 @@ describe(Padlock.name, () => {
       assert.throws(
         () => new Padlock({
           scrollEventElement: '',
-
-          client: window,
         }),
 
         TypeError,
@@ -521,8 +316,6 @@ describe(Padlock.name, () => {
       assert.throws(
         () => new Padlock({
           scrollEventElement: 0,
-
-          client: window,
         }),
 
         TypeError,
@@ -531,8 +324,6 @@ describe(Padlock.name, () => {
       assert.throws(
         () => new Padlock({
           scrollEventElement: 1,
-
-          client: window,
         }),
 
         TypeError,
@@ -541,8 +332,6 @@ describe(Padlock.name, () => {
       assert.throws(
         () => new Padlock({
           scrollEventElement: NaN,
-
-          client: window,
         }),
 
         TypeError,
@@ -551,8 +340,6 @@ describe(Padlock.name, () => {
       assert.throws(
         () => new Padlock({
           scrollEventElement: Infinity,
-
-          client: window,
         }),
 
         TypeError,
@@ -561,8 +348,6 @@ describe(Padlock.name, () => {
       assert.throws(
         () => new Padlock({
           scrollEventElement: document,
-
-          client: window,
         }),
 
         TypeError,
@@ -575,8 +360,6 @@ describe(Padlock.name, () => {
       const a = () => {
         instance = new Padlock({
           scrollEventElement: undefined,
-
-          client: window,
         });
       };
 
@@ -593,8 +376,6 @@ describe(Padlock.name, () => {
       const c = () => {
         instance = new Padlock({
           scrollEventElement: div,
-
-          client: window,
         });
       };
 
@@ -609,8 +390,6 @@ describe(Padlock.name, () => {
       const e = () => {
         instance = new Padlock({
           scrollEventElement: window,
-
-          client: window,
         });
       };
 
@@ -629,10 +408,14 @@ describe(Padlock.name, () => {
       assert.throws(() => {
         const div = document.createElement('div');
 
-        let instance = new Padlock(div, undefined, window);
+        let instance = new Padlock({
+          scrollEventElement: div,
+        });
 
         try {
-          instance = new Padlock(div, undefined, window);
+          instance = new Padlock({
+            scrollEventElement: div,
+          });
         } catch (e) {
           instance.destroy();
 
@@ -643,10 +426,10 @@ describe(Padlock.name, () => {
       // These instances are created on the same default element,
       // an error has to be thrown
       assert.throws(() => {
-        let instance = new Padlock(undefined, undefined, window);
+        let instance = new Padlock();
 
         try {
-          instance = new Padlock(undefined, undefined, window);
+          instance = new Padlock();
         } catch (e) {
           instance.destroy();
 
@@ -658,10 +441,14 @@ describe(Padlock.name, () => {
       // but it's still the global scroller element,
       // an error has to be thrown
       assert.throws(() => {
-        let instance = new Padlock(body, undefined, window);
+        let instance = new Padlock({
+          scrollingElement: body,
+        });
 
         try {
-          instance = new Padlock(document.documentElement, undefined, window);
+          instance = new Padlock({
+            scrollingElement: document.documentElement,
+          });
         } catch (e) {
           instance.destroy();
 
@@ -674,9 +461,13 @@ describe(Padlock.name, () => {
       // These instances are created on different elements,
       // no error is thrown here because they are two completely different instances
       assert.doesNotThrow(() => {
-        const instanceA = new Padlock(document.createElement('div'), undefined, window);
+        const instanceA = new Padlock({
+          scrollingElement: document.createElement('div'),
+        });
 
-        const instanceB = new Padlock(document.createElement('div'), undefined, window);
+        const instanceB = new Padlock({
+          scrollingElement: document.createElement('div'),
+        });
 
         instanceA.destroy();
 
@@ -688,11 +479,15 @@ describe(Padlock.name, () => {
       assert.doesNotThrow(() => {
         const div = document.createElement('div');
 
-        let instance = new Padlock(div, undefined, window);
+        let instance = new Padlock({
+          scrollingElement: div,
+        });
 
         instance.destroy();
 
-        instance = new Padlock(div, undefined, window);
+        instance = new Padlock({
+          scrollingElement: div,
+        });
 
         instance.destroy();
       }, Error);
@@ -705,7 +500,9 @@ describe(Padlock.name, () => {
 
       assert.equal(div.matches('[data-scroll-padlock]'), false);
 
-      const instance = new Padlock(div, undefined, window);
+      const instance = new Padlock({
+        scrollingElement: div,
+      });
 
       assert.equal(div.matches('[data-scroll-padlock]'), true);
 
@@ -717,7 +514,9 @@ describe(Padlock.name, () => {
     it('should remove a data attribute value to the scrolling element on instance destruction', () => {
       const div = document.createElement('div');
 
-      const instance = new Padlock(div, undefined, window);
+      const instance = new Padlock({
+        scrollingElement: div,
+      });
 
       assert.equal(div.matches('[data-scroll-padlock]'), true);
 
@@ -729,13 +528,17 @@ describe(Padlock.name, () => {
     it('should renew scrolling element data attribute value on instance creation', () => {
       const div = document.createElement('div');
 
-      let instance = new Padlock(div, undefined, window);
+      let instance = new Padlock({
+        scrollingElement: div,
+      });
 
       const firstInstanceAttrValue = div.getAttribute('data-scroll-padlock');
 
       instance.destroy();
 
-      instance = new Padlock(div, undefined, window);
+      instance = new Padlock({
+        scrollingElement: div,
+      });
 
       const secondInstanceAttrValue = div.getAttribute('data-scroll-padlock');
 
@@ -751,7 +554,9 @@ describe(Padlock.name, () => {
 
       assert.equal(styles.length, 0);
 
-      const instance = new Padlock(document.createElement('div'), undefined, window);
+      const instance = new Padlock({
+        scrollingElement: document.createElement('div'),
+      });
 
       styles = head.querySelectorAll('style');
 
@@ -761,7 +566,9 @@ describe(Padlock.name, () => {
     });
 
     it('should remove the appended style tag on instance destruction', () => {
-      const instance = new Padlock(document.createElement('div'), undefined, window);
+      const instance = new Padlock({
+        scrollingElement: document.createElement('div'),
+      });
 
       const style = head.querySelector('style');
 
@@ -775,7 +582,9 @@ describe(Padlock.name, () => {
     it('should style the applied css selector attribute', () => {
       const div = document.createElement('div');
 
-      const instance = new Padlock(div, undefined, window);
+      const instance = new Padlock({
+        scrollingElement: div,
+      });
 
       const style = head.querySelector('style');
 
@@ -799,7 +608,9 @@ describe(Padlock.name, () => {
         height: 200,
       }));
 
-      const instance = new Padlock(div, undefined, window);
+      const instance = new Padlock({
+        scrollingElement: div,
+      });
 
       assert.equal(instance.layout.outerWidth, 100);
 
@@ -845,7 +656,9 @@ describe(Padlock.name, () => {
 
       div.scrollLeft = 2000;
 
-      const instance = new Padlock(div, undefined, window);
+      const instance = new Padlock({
+        scrollingElement: div,
+      });
 
       assert.deepEqual(instance.scroll, {
         top: 1000,
@@ -893,7 +706,9 @@ describe(Padlock.name, () => {
         height: 200,
       }));
 
-      const instance = new Padlock(div, undefined, window);
+      const instance = new Padlock({
+        scrollingElement: div,
+      });
 
       assert.equal(instance.layout.outerWidth, 100);
 
@@ -927,7 +742,9 @@ describe(Padlock.name, () => {
         height: 200,
       }));
 
-      const instance = new Padlock(div, undefined, window);
+      const instance = new Padlock({
+        scrollingElement: div,
+      });
 
       assert.equal(instance.layout.outerWidth, 100);
 
@@ -951,6 +768,28 @@ describe(Padlock.name, () => {
 
       instance.destroy();
     });
+
+    it('should be able to update "layout" object on "updateLayoutDimensions" method call', () => {
+      // TODO: specs
+    });
+
+    it('should be able to update "scroll" object on "updateScrollPosition" method call', () => {
+      // TODO: specs
+    });
+
+    it('should be able to update "locked/unlocked state" on "updateLockState" method call', () => {
+      // TODO: specs
+    });
+  });
+
+  describe('listeners', () => {
+    it('should be able to add or remove the "resize" event listener passing the "updateLayoutDimensions" method', () => {
+      // TODO: specs
+    });
+
+    it('should be able to add or remove the "scroll" event listener passing the "updateScrollPosition" method', () => {
+      // TODO: specs
+    });
   });
 
   describe('scroll setter effects', () => {
@@ -963,7 +802,11 @@ describe(Padlock.name, () => {
 
       const cssClassName = 'locked';
 
-      const instance = new Padlock(div, cssClassName, window);
+      const instance = new Padlock({
+        scrollingElement: div,
+
+        cssClassName,
+      });
 
       instance.scroll = { top: 100, left: 200 };
 
@@ -997,7 +840,11 @@ describe(Padlock.name, () => {
 
       const cssClassName = 'locked';
 
-      const instance = new Padlock(div, cssClassName, window);
+      const instance = new Padlock({
+        scrollingElement: div,
+
+        cssClassName,
+      });
 
       div.classList.add(cssClassName);
 
@@ -1029,7 +876,11 @@ describe(Padlock.name, () => {
 
       const cssClassName = 'locked';
 
-      const instance = new Padlock(div, cssClassName, window);
+      const instance = new Padlock({
+        scrollingElement: div,
+
+        cssClassName,
+      });
 
       assert.equal(div.scrollTo.mock.calls.length, 0);
 
@@ -1065,7 +916,11 @@ describe(Padlock.name, () => {
 
       const cssClassName = 'locked';
 
-      const instance = new Padlock(div, cssClassName, window);
+      const instance = new Padlock({
+        scrollingElement: div,
+
+        cssClassName,
+      });
 
       assert.equal(div.scrollTo.mock.calls.length, 0);
 
@@ -1101,7 +956,11 @@ describe(Padlock.name, () => {
 
       const cssClassName = 'locked';
 
-      const instance = new Padlock(div, cssClassName, window);
+      const instance = new Padlock({
+        scrollingElement: div,
+
+        cssClassName,
+      });
 
       div.classList.add(cssClassName);
 
@@ -1133,7 +992,9 @@ describe(Padlock.name, () => {
     it('should not react to "update" method calls or "scroll" setter calls when locked state', async () => {
       const cssClassName = 'locked';
 
-      const instance = new Padlock(undefined, cssClassName, window);
+      const instance = new Padlock({
+        cssClassName,
+      });
 
       mock.method(instance.scrollEventElement, 'scrollTo', () => {});
 
@@ -1167,7 +1028,7 @@ describe(Padlock.name, () => {
 
   describe('destruction', () => {
     it('should be able to set instance members references to initial state on destroy', () => {
-      const instance = new Padlock(undefined, undefined, window);
+      const instance = new Padlock();
 
       const { scrollingElement } = instance;
 
@@ -1257,7 +1118,7 @@ describe(Padlock.name, () => {
 
       assert.equal(window.MutationObserver.prototype.disconnect.mock.calls.length, 0);
 
-      const instance = new Padlock(undefined, undefined, window);
+      const instance = new Padlock();
 
       assert.equal(window.MutationObserver.prototype.observe.mock.calls.length, 1);
 
@@ -1303,7 +1164,7 @@ describe(Padlock.name, () => {
 
       assert.equal(window.removeEventListener.mock.calls.length, 0);
 
-      const instance = new Padlock(undefined, undefined, window);
+      const instance = new Padlock();
 
       const { scrollingElement } = instance;
 
@@ -1367,7 +1228,7 @@ describe(Padlock.name, () => {
 
       assert.equal(window.removeEventListener.mock.calls.length, 0);
 
-      const instance = new Padlock(undefined, undefined, window);
+      const instance = new Padlock();
 
       const { scrollingElement } = instance;
 
@@ -1422,238 +1283,6 @@ describe(Padlock.name, () => {
       assert.equal(window.removeEventListener.mock.calls.filter((x) => x.arguments[0] === 'resize').length, 1);
 
       assert.equal(scrollingElement.removeEventListener.mock.calls.length, 0);
-    });
-  });
-
-  describe('listeners', () => {
-    it('should be able to pause scroll event listener', () => {
-      mock.method(window, 'addEventListener', () => {});
-
-      mock.method(window, 'removeEventListener', () => {});
-
-      assert.equal(window.addEventListener.mock.calls.length, 0);
-
-      assert.equal(window.removeEventListener.mock.calls.length, 0);
-
-      const instance = new Padlock(undefined, undefined, window);
-
-      assert.equal(window.addEventListener.mock.calls.filter((x) => x.arguments[0] === 'scroll').length, 1);
-
-      assert.equal(window.removeEventListener.mock.calls.length, 0);
-
-      instance.unlisten('scroll');
-
-      assert.equal(window.addEventListener.mock.calls.filter((x) => x.arguments[0] === 'scroll').length, 1);
-
-      assert.equal(window.removeEventListener.mock.calls.filter((x) => x.arguments[0] === 'scroll').length, 1);
-
-      instance.destroy();
-
-      assert.equal(window.addEventListener.mock.calls.filter((x) => x.arguments[0] === 'scroll').length, 1);
-
-      assert.equal(window.removeEventListener.mock.calls.filter((x) => x.arguments[0] === 'scroll').length, 1);
-    });
-
-    it('should be able to resume scroll event listener', () => {
-      mock.method(window, 'addEventListener', () => {});
-
-      mock.method(window, 'removeEventListener', () => {});
-
-      assert.equal(window.addEventListener.mock.calls.length, 0);
-
-      assert.equal(window.removeEventListener.mock.calls.length, 0);
-
-      const instance = new Padlock(undefined, undefined, window);
-
-      assert.equal(window.addEventListener.mock.calls.filter((x) => x.arguments[0] === 'scroll').length, 1);
-
-      assert.equal(window.removeEventListener.mock.calls.length, 0);
-
-      instance.unlisten('scroll');
-
-      assert.equal(window.addEventListener.mock.calls.filter((x) => x.arguments[0] === 'scroll').length, 1);
-
-      assert.equal(window.removeEventListener.mock.calls.filter((x) => x.arguments[0] === 'scroll').length, 1);
-
-      instance.listen('scroll');
-
-      assert.equal(window.addEventListener.mock.calls.filter((x) => x.arguments[0] === 'scroll').length, 2);
-
-      assert.equal(window.removeEventListener.mock.calls.filter((x) => x.arguments[0] === 'scroll').length, 1);
-
-      instance.destroy();
-    });
-
-    it('should not be able to resume scroll event listener after destruction', () => {
-      mock.method(window, 'addEventListener');
-
-      mock.method(window, 'removeEventListener');
-
-      assert.equal(window.addEventListener.mock.calls.length, 0);
-
-      assert.equal(window.removeEventListener.mock.calls.length, 0);
-
-      const instance = new Padlock(undefined, undefined, window);
-
-      assert.equal(window.addEventListener.mock.calls.filter((x) => x.arguments[0] === 'scroll').length, 1);
-
-      assert.equal(window.removeEventListener.mock.calls.length, 0);
-
-      instance.destroy();
-
-      assert.equal(window.addEventListener.mock.calls.filter((x) => x.arguments[0] === 'scroll').length, 1);
-
-      assert.equal(window.removeEventListener.mock.calls.filter((x) => x.arguments[0] === 'scroll').length, 1);
-
-      instance.listen('scroll');
-
-      assert.equal(window.addEventListener.mock.calls.filter((x) => x.arguments[0] === 'scroll').length, 1);
-
-      assert.equal(window.removeEventListener.mock.calls.filter((x) => x.arguments[0] === 'scroll').length, 1);
-    });
-
-    it('should be able to pause resize event listener', () => {
-      mock.method(window, 'addEventListener');
-
-      mock.method(window, 'removeEventListener');
-
-      assert.equal(window.addEventListener.mock.calls.length, 0);
-
-      assert.equal(window.removeEventListener.mock.calls.length, 0);
-
-      const instance = new Padlock(undefined, undefined, window);
-
-      assert.equal(window.addEventListener.mock.calls.filter((x) => x.arguments[0] === 'resize').length, 1);
-
-      assert.equal(window.removeEventListener.mock.calls.length, 0);
-
-      instance.unlisten('resize');
-
-      assert.equal(window.addEventListener.mock.calls.filter((x) => x.arguments[0] === 'resize').length, 1);
-
-      assert.equal(window.removeEventListener.mock.calls.filter((x) => x.arguments[0] === 'resize').length, 1);
-
-      instance.destroy();
-
-      assert.equal(window.addEventListener.mock.calls.filter((x) => x.arguments[0] === 'resize').length, 1);
-
-      assert.equal(window.removeEventListener.mock.calls.filter((x) => x.arguments[0] === 'resize').length, 1);
-    });
-
-    it('should be able to resume resize event listener', () => {
-      mock.method(window, 'addEventListener');
-
-      mock.method(window, 'removeEventListener');
-
-      assert.equal(window.addEventListener.mock.calls.length, 0);
-
-      assert.equal(window.removeEventListener.mock.calls.length, 0);
-
-      const instance = new Padlock(undefined, undefined, window);
-
-      assert.equal(window.addEventListener.mock.calls.filter((x) => x.arguments[0] === 'resize').length, 1);
-
-      assert.equal(window.removeEventListener.mock.calls.length, 0);
-
-      instance.unlisten('resize');
-
-      assert.equal(window.addEventListener.mock.calls.filter((x) => x.arguments[0] === 'resize').length, 1);
-
-      assert.equal(window.removeEventListener.mock.calls.filter((x) => x.arguments[0] === 'resize').length, 1);
-
-      instance.listen('resize');
-
-      assert.equal(window.addEventListener.mock.calls.filter((x) => x.arguments[0] === 'resize').length, 2);
-
-      assert.equal(window.removeEventListener.mock.calls.filter((x) => x.arguments[0] === 'resize').length, 1);
-
-      instance.destroy();
-    });
-
-    it('should not be able to resume resize event listener after destruction', () => {
-      mock.method(window, 'addEventListener');
-
-      mock.method(window, 'removeEventListener');
-
-      assert.equal(window.addEventListener.mock.calls.length, 0);
-
-      assert.equal(window.removeEventListener.mock.calls.length, 0);
-
-      const instance = new Padlock(undefined, undefined, window);
-
-      assert.equal(window.addEventListener.mock.calls.filter((x) => x.arguments[0] === 'resize').length, 1);
-
-      assert.equal(window.removeEventListener.mock.calls.length, 0);
-
-      instance.destroy();
-
-      assert.equal(window.addEventListener.mock.calls.filter((x) => x.arguments[0] === 'resize').length, 1);
-
-      assert.equal(window.removeEventListener.mock.calls.filter((x) => x.arguments[0] === 'resize').length, 1);
-
-      instance.listen('resize');
-
-      assert.equal(window.addEventListener.mock.calls.filter((x) => x.arguments[0] === 'resize').length, 1);
-
-      assert.equal(window.removeEventListener.mock.calls.filter((x) => x.arguments[0] === 'resize').length, 1);
-    });
-  });
-
-  describe('resize handler wrapper', () => {
-    it('should be able to wrap the resize handler through options parameter', async () => {
-      let handler;
-
-      const wrapper = mock.fn((originalHandler) => {
-        handler = mock.fn(originalHandler);
-
-        return handler;
-      });
-
-      const instance = new Padlock({
-        resizeHandlerWrapper: wrapper,
-
-        client: window,
-      });
-
-      assert.equal(wrapper.mock.calls.length, 1);
-      assert.equal(handler.mock.calls.length, 0);
-
-      window.dispatchEvent(new window.CustomEvent('resize'));
-
-      await new Promise(window.setTimeout);
-
-      assert.equal(wrapper.mock.calls.length, 1);
-      assert.equal(handler.mock.calls.length, 1);
-
-      instance.destroy();
-    });
-
-    it('should be able to wrap the scroll handler through options parameter', async () => {
-      let handler;
-
-      const wrapper = mock.fn((originalHandler) => {
-        handler = mock.fn(originalHandler);
-
-        return handler;
-      });
-
-      const instance = new Padlock({
-        scrollHandlerWrapper: wrapper,
-
-        client: window,
-      });
-
-      assert.equal(wrapper.mock.calls.length, 1);
-      assert.equal(handler.mock.calls.length, 0);
-
-      window.dispatchEvent(new window.CustomEvent('scroll'));
-
-      await new Promise(window.setTimeout);
-
-      assert.equal(wrapper.mock.calls.length, 1);
-      assert.equal(handler.mock.calls.length, 1);
-
-      instance.destroy();
     });
   });
 });

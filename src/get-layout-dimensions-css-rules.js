@@ -16,13 +16,15 @@ import './typedef.js';
  * // --scroll-padlock-scrollbar-width: 0px;
  * // --scroll-padlock-scrollbar-height: 0px;`
  */
-const getLayoutDimensionsCssRules = (layout) => `--scroll-padlock-outer-width: ${layout?.outerWidth || 0}px;
---scroll-padlock-outer-height: ${layout?.outerHeight || 0}px;
---scroll-padlock-inner-width: ${layout?.innerWidth || 0}px;
---scroll-padlock-inner-height: ${layout?.innerHeight || 0}px;
---scroll-padlock-scroll-width: ${layout?.scrollWidth || 0}px;
---scroll-padlock-scroll-height: ${layout?.scrollHeight || 0}px;
---scroll-padlock-scrollbar-width: ${layout?.scrollbarWidth || 0}px;
---scroll-padlock-scrollbar-height: ${layout?.scrollbarHeight || 0}px;`;
+const getLayoutDimensionsCssRules = (
+  layout,
+) => `--scroll-padlock-outer-width: ${Math.round(layout?.outerWidth || 0)}px;
+--scroll-padlock-outer-height: ${Math.round(layout?.outerHeight || 0)}px;
+--scroll-padlock-inner-width: ${Math.round(layout?.innerWidth || 0)}px;
+--scroll-padlock-inner-height: ${Math.round(layout?.innerHeight || 0)}px;
+--scroll-padlock-scroll-width: ${Math.round(layout?.scrollWidth || 0)}px;
+--scroll-padlock-scroll-height: ${Math.round(layout?.scrollHeight || 0)}px;
+--scroll-padlock-scrollbar-width: ${Math.round(layout?.scrollbarWidth || 0)}px;
+--scroll-padlock-scrollbar-height: ${Math.round(layout?.scrollbarHeight || 0)}px;`;
 
 export default getLayoutDimensionsCssRules;

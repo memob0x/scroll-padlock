@@ -21,48 +21,10 @@ const instances = new WeakMap();
  * @example
  * void new ScrollPadlock();
  *
- * void new ScrollPadlock(
- *  document.scrollingElement,
- *
- *  'locked-state-css-class'
- * );
- *
- * void new ScrollPadlock({
- *  cssClassName: 'locked-state-css-class'
- * });
- *
- * void new ScrollPadlock(
- *  document.querySelector('#custom-scrolling-element'),
- * );
- *
  * void new ScrollPadlock({
  *  scrollingElement: document.querySelector('#custom-scrolling-element'),
- * });
- *
- * void new ScrollPadlock(
- *  document.querySelector('#custom-scrolling-element'),
- *
- *  'locked-state-css-class',
- *
- *  window,
- * );
- *
- * void new ScrollPadlock({
- *  client: window,
- * });
- *
- * void new ScrollPadlock({
- *  scrollingElement: document.querySelector('#custom-scrolling-element'),
- *
- *  scrollEventElement: window,
  *
  *  cssClassName: 'locked-state-css-class',
- *
- *  resizeHandlerWrapper: debounce,
- *
- *  scrollHandlerWrapper: throttle,
- *
- *  client: window,
  * });
  */
 class ScrollPadlock {
@@ -70,55 +32,12 @@ class ScrollPadlock {
 
   /**
    * Creates the scroll padlock class instance on body scroll or on a given scrollable element.
-   * @param {HTMLElement|ConstructorOptions} [scrollingElementArgument] - The given scrollable
-   * element whose scroll needs to be controlled or an options object.
-   * @param {string} [cssClassNameArgument] - The locked-state css class or an options object.
-   * @param {types.GlobalContext} [clientArgument] - The client environment object (window).
+   * @param {ConstructorOptions} [options] - An options object.
    * @throws {TypeError} Throws when the given constructor arguments are invalid.
    * @throws {Error} Throws when an instance is already attached to the given dom element.
    * @public
    */
-  constructor(scrollingElementArgument, cssClassNameArgument, clientArgument = globalThis) {
-    // The Padlock first argument type
-    const scrollingElementArgumentTypeString = typeof scrollingElementArgument;
-
-    // Whether the scrolling element constructor argument is an object or not
-    const isScrollingElementArgumentObject = scrollingElementArgumentTypeString === 'object';
-
-    // Whether the scrolling element constructor argument is an object, but not an array
-    const isScrollingElementArgumentObjectButNotArray = (
-      isScrollingElementArgumentObject && !Array.isArray(scrollingElementArgument)
-    );
-
-    const {
-      client: clientOptionObject,
-    } = isScrollingElementArgumentObjectButNotArray ? scrollingElementArgument : {};
-
-    const possiblyClient = clientOptionObject || clientArgument;
-
-    // The html element type from the client argument
-    const { HTMLElement } = possiblyClient;
-
-    // Whether the scrolling element constructor argument is an html element or not
-    const isScrollingElementArgumentHtmlElement = (
-      scrollingElementArgument instanceof HTMLElement
-    );
-
-    // Whether the scrolling element constructor argument is an object of options
-    const isScrollingElementArgumentOptionsObject = (
-      isScrollingElementArgumentObjectButNotArray && !isScrollingElementArgumentHtmlElement
-    );
-
-    // Seamless object of options reference
-    // (if the first argument is an object of options) or declaration
-    const options = isScrollingElementArgumentOptionsObject ? scrollingElementArgument : {
-      scrollingElement: scrollingElementArgument,
-
-      cssClassName: cssClassNameArgument,
-
-      client: possiblyClient,
-    };
-
+  constructor(options) {
     // Object of options deconstruction
     const {
       scrollingElement: optionScrollingElement,
@@ -126,60 +45,32 @@ class ScrollPadlock {
       scrollEventElement: optionScrollEventElement,
 
       cssClassName: optionCssClassName,
-
-      resizeHandlerWrapper: optionResizeHandlerWrapper,
-
-      scrollHandlerWrapper: optionScrollHandlerWrapper,
-
-      client: optionClient,
-    } = options;
+    } = options || {};
 
     // The client "window" object reference
-    this.#window = optionClient || clientArgument;
-
-    // The client "window" object deconstruction
-    const {
-      document,
-
-      MutationObserver,
-    } = this.#window;
+    this.#window = globalThis;
 
     // The client "document" object deconstruction
-    this.#document = document;
-
-    //
-    const isScrollingElementArgumentObjectOrNotSet = (
-      isScrollingElementArgumentObject || scrollingElementArgumentTypeString === 'undefined'
-    );
-
-    // Constructor scrolling element argument type check validity check...
-    if (
-      // (is set, but not an object)
-      !isScrollingElementArgumentObjectOrNotSet
-      || scrollingElementArgument === this.#window
-      || scrollingElementArgument === this.#document
-    ) {
-      // ...throws error if invalid
-      throw new TypeError('The Padlock constructor "scrolling element" argument is invalid.');
-    }
-
-    // The client "document" object deconstruction
-    const {
-      body,
-
-      documentElement,
-
-      scrollingElement: documentScrollingElement,
-    } = this.#document;
+    this.#document = this.#window.document;
 
     // The browser default scrolling element
-    const defaultScrollingElement = documentScrollingElement || documentElement;
+    const defaultScrollingElement = (
+      this.#document.scrollingElement
+
+      || this.#document.documentElement
+    );
 
     // The Padlock instance scrolling element
-    this.#scrollingElement = typeof optionScrollingElement !== 'undefined' ? optionScrollingElement : defaultScrollingElement;
+    this.#scrollingElement = defaultScrollingElement;
+
+    if (optionScrollingElement !== undefined) {
+      this.#scrollingElement = optionScrollingElement;
+    }
 
     // Whether the scrolling element Padlock instance member is an html element or not
-    const isScrollingElementHtmlElement = this.#scrollingElement instanceof HTMLElement;
+    const isScrollingElementHtmlElement = (
+      this.#scrollingElement instanceof this.#window.HTMLElement
+    );
 
     // Padlock instance scrolling element validity check...
     if (!isScrollingElementHtmlElement) {
@@ -194,17 +85,24 @@ class ScrollPadlock {
     let defaultScrollEventElement = optionScrollingElement || this.#window;
 
     // The default element which trigger "scroll" event, based on "scrolling element" option
-    defaultScrollEventElement = (
-      optionScrollingElement === body || optionScrollingElement === documentElement
-        ? this.#window
-        : defaultScrollEventElement
-    );
+    if (
+      optionScrollingElement === this.#document.body
+
+      || optionScrollingElement === this.#document.documentElement
+    ) {
+      defaultScrollEventElement = this.#window;
+    }
 
     // Padlock instance element which trigger "scroll" event member reference
-    this.#scrollEventElement = typeof optionScrollEventElement !== 'undefined' ? optionScrollEventElement : defaultScrollEventElement;
+    this.#scrollEventElement = defaultScrollEventElement;
+
+    //
+    if (optionScrollEventElement !== undefined) {
+      this.#scrollEventElement = optionScrollEventElement;
+    }
 
     // Whether the scrolling element Padlock instance member is an html element or not
-    const isScrollEventHtmlElement = this.#scrollEventElement instanceof HTMLElement;
+    const isScrollEventHtmlElement = this.#scrollEventElement instanceof this.#window.HTMLElement;
 
     // Padlock instance scroll event element validity check...
     if (!isScrollEventHtmlElement && this.#scrollEventElement !== this.#window) {
@@ -222,12 +120,9 @@ class ScrollPadlock {
       throw new Error(`An instance has already been initialized on ${this.#elementUniqueInstance}`);
     }
 
-    // The Padlock css class option type
-    const optionCssClassNameTypeString = typeof optionCssClassName;
-
     // Whether the Padlock css class option is set, but it's not of type "string"
     const isOptionsCssClassNameSetButNotString = (
-      optionCssClassNameTypeString !== 'undefined' && optionCssClassNameTypeString !== 'string'
+      optionCssClassName !== undefined && typeof optionCssClassName !== 'string'
     );
 
     // The css class to be observed validity check...
@@ -239,26 +134,8 @@ class ScrollPadlock {
     // Stores the css class name to be observer or a default value
     this.#cssClassName = optionCssClassName || 'scroll-padlock-locked';
 
-    // Stores a resize event handler function wrapper
-    if (optionResizeHandlerWrapper) {
-      this.#handleResize = optionResizeHandlerWrapper(
-        this.#resizeHandler.bind(this),
-      );
-
-      this.#listenersHandlers.resize = this.#handleResize;
-    }
-
-    // Stores a scroll event handler function wrapper
-    if (optionScrollHandlerWrapper) {
-      this.#handleScroll = optionScrollHandlerWrapper(
-        this.#scrollHandler.bind(this),
-      );
-
-      this.#listenersHandlers.scroll = this.#handleScroll;
-    }
-
     // Handles the Padlock DOM observation through MutationObserver API
-    this.#observer = new MutationObserver(this.#handleObservation.bind(this));
+    this.#observer = new this.#window.MutationObserver(this.#handleObservation.bind(this));
 
     // The Padlock instance unique styler, a <style /> element
     this.#styler = this.#document.createElement('style');
@@ -273,7 +150,11 @@ class ScrollPadlock {
     this.#cssSelector = `[${CSS_SELECTOR_ATTR_NAME}="${this.#id}"]`;
 
     // Applies the attribute selector to the scrolling element
-    this.#applyCssSelectorAttribute('set');
+    this.#scrollingElement?.setAttribute(
+      CSS_SELECTOR_ATTR_NAME,
+
+      this.#id,
+    );
 
     // Fires the public update method to initialize everything;
     // computes scroll position, scrollbars sizes and writes css variables
@@ -283,10 +164,18 @@ class ScrollPadlock {
     this.#observeCssClass();
 
     // Attaches resize event listener
-    this.#listener('resize', 'add');
+    this.#window?.addEventListener(
+      'resize',
+
+      this.updateLayoutDimensions,
+    );
 
     // Attaches scroll event listener
-    this.#listener('scroll', 'add');
+    this.#scrollEventElement?.addEventListener(
+      'scroll',
+
+      this.updateScrollPosition,
+    );
 
     // The instance is not registered ad this point,
     // so, since nothing threw errors so far,
@@ -389,18 +278,6 @@ class ScrollPadlock {
   #observer = null;
 
   /**
-   * Event listeners states map,
-   * contains the last method called by event name (as key).
-   * @memberof ScrollPadlock
-   * @private
-   */
-  #listenersState = {
-    resize: 'remove',
-
-    scroll: 'remove',
-  };
-
-  /**
    * The layout dimensions.
    * @memberof ScrollPadlock
    * @private
@@ -408,7 +285,7 @@ class ScrollPadlock {
   #layout = null;
 
   /**
-   * The scroll lock state.
+   * The scroll lock state, true if is locked, false if not.
    * @memberof ScrollPadlock
    * @private
    */
@@ -484,9 +361,13 @@ class ScrollPadlock {
    * padlock.scroll // --> { top: 123, left: 345 }
    */
   get scroll() {
-    // If the state is locked, the saved scroll position is returned,
-    // otherwise the current scroll position is returned
-    return this.#lockState ? this.#scrollSaving : this.#scrollCurrent;
+    // If the state is locked, the saved scroll position is returned...
+    if (this.#lockState) {
+      return this.#scrollSaving;
+    }
+
+    // ...otherwise the current scroll position is returned
+    return this.#scrollCurrent;
   }
 
   /**
@@ -543,7 +424,7 @@ class ScrollPadlock {
     const state = this.#lockState;
 
     // Updates lock state member
-    this.#updateLockState();
+    this.updateLockState();
 
     // No state change...
     if (this.#lockState === state) {
@@ -566,62 +447,6 @@ class ScrollPadlock {
   }
 
   /**
-   * Window resize event handler.
-   * @memberof ScrollPadlock
-   * @returns {void} Nothing.
-   * @private
-   */
-  #resizeHandler() {
-    // Refresh layout
-    this.#performUnlockedAction(this.#updateLayout);
-
-    // Rewrites css variables
-    this.#applyStyles();
-  }
-
-  /**
-   * Window resize event handler, bound with the wrapper function.
-   * @type {EventHandler}
-   * @memberof ScrollPadlock
-   * @private
-   */
-  #handleResize = this.#resizeHandler.bind(this);
-
-  /**
-   * Element scroll event handler.
-   * @memberof ScrollPadlock
-   * @returns {void} Nothing.
-   * @private
-   */
-  #scrollHandler() {
-    // Refresh scrollbars size
-    this.#performUnlockedAction(this.#updateScrollCurrent);
-
-    // Rewrites css variables
-    this.#applyStyles();
-  }
-
-  /**
-   * Element scroll event handler, bound with the wrapper function.
-   * @type {EventHandler}
-   * @memberof ScrollPadlock
-   * @private
-   */
-  #handleScroll = this.#scrollHandler.bind(this);
-
-  /**
-   * Event listeners handlers map,
-   * contains the supported events handlers by event name (as key).
-   * @memberof ScrollPadlock
-   * @private
-   */
-  #listenersHandlers = {
-    resize: this.#handleResize,
-
-    scroll: this.#handleScroll,
-  };
-
-  /**
    * Scrolls the given element to a given scroll position.
    * @memberof ScrollPadlock
    * @param {ScrollPosition} position - The scroll position to be set.
@@ -633,20 +458,6 @@ class ScrollPadlock {
 
     position.top,
   );
-
-  /**
-   * Updates the scroll state.
-   * @memberof ScrollPadlock
-   * @returns {boolean} The scroll state.
-   * @private
-   */
-  #updateLockState() {
-    // Updates the instance scroll state...
-    this.#lockState = !!this.#scrollingElementClassList?.contains(this.#cssClassName);
-
-    // ...then returns it.
-    return this.#lockState;
-  }
 
   /**
    * Fires a given function at a unlocked scroll state.
@@ -689,7 +500,7 @@ class ScrollPadlock {
   #updateLayout() {
     // If the elements involved are set (if not the instance has been probably destroyed)
     if (this.#scrollingElement && this.#scrollEventElement) {
-    // Updates the instance layout state...
+      // Updates the instance layout state...
       this.#layout = getLayoutDimensions(this.#scrollingElement, this.#scrollEventElement);
     }
 
@@ -712,21 +523,6 @@ class ScrollPadlock {
 
     // Returns the current scroll position.
     return this.#scrollCurrent;
-  }
-
-  /**
-   * Sets or removes the attribute selector to/from the scrolling element.
-   * @memberof ScrollPadlock
-   * @param {string} method - The action to be performed, can be "remove" or "add".
-   * @returns {void} Nothing.
-   * @private
-   */
-  #applyCssSelectorAttribute(method) {
-    this.#scrollingElement?.[`${method}Attribute`](
-      CSS_SELECTOR_ATTR_NAME,
-
-      this.#id,
-    );
   }
 
   /**
@@ -812,7 +608,7 @@ class ScrollPadlock {
    * @returns {void} Nothing.
    * @private
    */
-  #refresh() {
+  #updateAll() {
     // Refresh layout
     this.#updateLayout();
 
@@ -820,94 +616,9 @@ class ScrollPadlock {
     this.#updateScrollCurrent();
   }
 
-  /**
-   * Attaches or detaches a supported listener.
-   * @memberof ScrollPadlock
-   * @param {string} type - The event type (scroll, resize...).
-   * @param {string} method - The event method (add, remove).
-   * @returns {boolean} Whether the event attachment or detachment has been successful or not.
-   * @private
-   */
-  #listener(type, method) {
-    // Gets the last method for the given event
-    const state = this.#listenersState[type];
-
-    // Event listeners targets (elements) map,
-    // contains the event targets elements by event name (as key).
-    const listenersTargets = {
-      resize: this.#window,
-
-      scroll: this.#scrollEventElement,
-    };
-
-    //
-    const target = listenersTargets[type];
-
-    // Exit early...
-    if (
-      // ...if the main element is not set (probably the instance has been destroyed)
-      !target
-
-      // ...if a state for the given event doesn't exist
-      // (supplied event type is not supported)
-      || !state
-
-      // ...if the former event method is the same as the current one
-      // avoids multiple event handlers attachment
-      || state === method
-    ) {
-      return false;
-    }
-
-    // Updates the state for the given event type
-    this.#listenersState[type] = method;
-
-    // Attaches or detaches the given event type
-    target[`${method}EventListener`](
-      type,
-
-      this.#listenersHandlers[type],
-    );
-
-    // Ok
-    return true;
-  }
-
   // #endregion
 
   // #region public methods
-
-  /**
-   * Detaches a supported listener.
-   * @memberof ScrollPadlock
-   * @param {string} type - The event type (scroll, resize...).
-   * @returns {boolean} Whether the event attachment or detachment has been successful or not.
-   * @public
-   * @example
-   * const padlock = new ScrollPadlock();
-   *
-   * padlock.unlisten('scroll'); // pauses scroll handler
-   * padlock.unlisten('resize'); // pauses resize handler
-   */
-  unlisten(type) {
-    return this.#listener(type, 'remove');
-  }
-
-  /**
-   * Attaches a supported listener.
-   * @memberof ScrollPadlock
-   * @param {string} type - The event type (scroll, resize...).
-   * @returns {boolean} Whether the event attachment or detachment has been successful or not.
-   * @public
-   * @example
-   * const padlock = new ScrollPadlock();
-   *
-   * padlock.listen('scroll'); // resumes scroll handler
-   * padlock.listen('resize'); // resumes resize handler
-   */
-  listen(type) {
-    return this.#listener(type, 'add');
-  }
 
   /**
    * Effectively destroy the instance, detaching event listeners, removing styles, etc...
@@ -927,13 +638,25 @@ class ScrollPadlock {
     this.#styler?.remove();
 
     // Removes the css attribute selector from the scrolling element
-    this.#applyCssSelectorAttribute('remove');
+    this.#scrollingElement?.removeAttribute(
+      CSS_SELECTOR_ATTR_NAME,
+
+      this.#id,
+    );
 
     // Detaches the scroll event listener
-    this.#listener('resize', 'remove');
+    this.#window?.removeEventListener(
+      'resize',
+
+      this.updateLayoutDimensions,
+    );
 
     // Detaches the resize event listener
-    this.#listener('scroll', 'remove');
+    this.#scrollEventElement?.removeEventListener(
+      'scroll',
+
+      this.updateScrollPosition,
+    );
 
     // Removes the instance from the instances collection
     instances.delete(this.#elementUniqueInstance);
@@ -965,6 +688,63 @@ class ScrollPadlock {
   }
 
   /**
+   * Updates the scroll state.
+   * @memberof ScrollPadlock
+   * @returns {boolean} The scroll state, true if is locked, false if not.
+   * @public
+   * @example
+   * const padlock = new ScrollPadlock();
+   *
+   * padlock.updateLockState(); // programmaticaly updates
+   * // the current padlock scroll locked or unlocked state in its environment
+   */
+  updateLockState() {
+    // Updates the instance scroll state...
+    this.#lockState = !!this.#scrollingElementClassList?.contains(this.#cssClassName);
+
+    // ...then returns it.
+    return this.#lockState;
+  }
+
+  /**
+   * Re-evaluates scroll positions, updates the relative css variables to the current state...
+   * @memberof ScrollPadlock
+   * @returns {void} Nothing.
+   * @public
+   * @example
+   * const padlock = new ScrollPadlock();
+   *
+   * padlock.updateScrollPosition(); // programmaticaly updates
+   * // the current padlock layout state in its environment
+   */
+  updateScrollPosition = function updateScrollPosition() {
+    // Refresh scrollbars size
+    this.#performUnlockedAction(this.#updateScrollCurrent);
+
+    // Rewrites css variables
+    this.#applyStyles();
+  }.bind(this);
+
+  /**
+   * Re-evaluates layout dimensions, updates the relative css variables to the current state...
+   * @memberof ScrollPadlock
+   * @returns {void} Nothing.
+   * @public
+   * @example
+   * const padlock = new ScrollPadlock();
+   *
+   * padlock.updateLayoutDimensions(); // programmaticaly updates
+   * // the current padlock scroll state in its environment
+   */
+  updateLayoutDimensions = function updateLayoutDimensions() {
+    // Refresh layout
+    this.#performUnlockedAction(this.#updateLayout);
+
+    // Rewrites css variables
+    this.#applyStyles();
+  }.bind(this);
+
+  /**
    * Re-evaluates dimensions and such, updates css variables to the current state...
    * @memberof ScrollPadlock
    * @returns {void} Nothing.
@@ -976,10 +756,10 @@ class ScrollPadlock {
    */
   update() {
     // Refresh the css class state
-    this.#updateLockState();
+    this.updateLockState();
 
     // Perform layout an scroll position refresh at unlocked state
-    this.#performUnlockedAction(this.#refresh);
+    this.#performUnlockedAction(this.#updateAll);
 
     // Rewrites css variables
     this.#applyStyles();

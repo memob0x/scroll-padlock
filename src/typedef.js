@@ -38,7 +38,4 @@
  * @property {GlobalContext|HTMLElement} scrollEventElement The element that can
  * perform and listen to scroll event.
  * @property {string} cssClassName The lock state CSS class name.
- * @property {EventHandlerWrapper} resizeHandlerWrapper The "resize" event handler function wrapper.
- * @property {EventHandlerWrapper} scrollHandlerWrapper The "scroll" event handler function wrapper.
- * @property {GlobalContext} client A reference to the client "window" object.
  */

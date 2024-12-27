@@ -11,7 +11,9 @@ import './typedef.js';
  * // --scroll-padlock-scroll-top: 10px;
  * // --scroll-padlock-scroll-left: 0px;`
  */
-const getScrollPositionCssRules = (scroll) => `--scroll-padlock-scroll-top: ${scroll?.top || 0}px;
---scroll-padlock-scroll-left: ${scroll?.left || 0}px;`;
+const getScrollPositionCssRules = (
+  scroll,
+) => `--scroll-padlock-scroll-top: ${Math.round(scroll?.top || 0)}px;
+--scroll-padlock-scroll-left: ${Math.round(scroll?.left || 0)}px;`;
 
 export default getScrollPositionCssRules;

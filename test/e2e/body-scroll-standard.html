@@ -18,10 +18,25 @@
       overflow: hidden;
       padding-right: var(--scroll-padlock-scrollbar-width);
     }
+
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 999;
+    }
   </style>
 </head>
 
 <body>
+  <nav>
+    <button id="toggle-lock-scroll">Toggle scroll lock</button>
+
+    <button id="scroll-by-some-px">Scroll by some pixels</button>
+
+    <button id="restore-scroll">Restore scroll</button>
+  </nav>
+
   <p>
     Hello there, Lorem ipsum. How r u today?
   </p>
@@ -29,19 +44,29 @@
   <script src="../../dist/umd/scroll-padlock.js"></script>
 
   <script>
-    window.cssClassNameBodyLocked = 'locked';
+    const cssClassName = 'locked';
 
     const { body } = document;
 
     const { classList } = body;
 
-    window.instance = new window.ScrollPadlock(body, cssClassNameBodyLocked)
+    const instance = new ScrollPadlock({
+      scrollingElement: body,
 
-    window.lock = () => classList.add(cssClassNameBodyLocked);
+      cssClassName: cssClassName,
+    });
 
-    window.unlock = () => classList.remove(cssClassNameBodyLocked);
+    document.querySelector('#toggle-lock-scroll').addEventListener('click', () => {
+      classList.toggle(cssClassName);
+    });
 
-    window.elScrollTo = window;
+    document.querySelector('#scroll-by-some-px').addEventListener('click', () => {
+      window.scrollBy(0, 100);
+    });
+
+    document.querySelector('#restore-scroll').addEventListener('click', () => {
+      instance.scroll = { top: 0, left: 0 };
+    });
   </script>
 </body>
 

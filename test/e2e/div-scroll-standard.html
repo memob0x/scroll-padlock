@@ -9,15 +9,21 @@
       box-sizing: border-box;
     }
 
+    html {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    body {
+      margin: 0;
+      flex-grow: 1;
+      overflow: hidden;
+    }
+
     #el {
       font-size: 120px;
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      width: 100%;
-      height: 100%;
+      max-height: 100%;
       overflow: auto;
     }
 
@@ -25,10 +31,25 @@
       overflow: hidden;
       padding-right: var(--scroll-padlock-scrollbar-width);
     }
+
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 999;
+    }
   </style>
 </head>
 
 <body>
+  <nav>
+    <button id="toggle-lock-scroll">Toggle scroll lock</button>
+
+    <button id="scroll-by-some-px">Scroll by some pixels</button>
+
+    <button id="restore-scroll">Restore scroll</button>
+  </nav>
+
   <div id="el">
     Hello there, Lorem ipsum. How r u today?
   </div>
@@ -36,19 +57,29 @@
   <script src="../../dist/umd/scroll-padlock.js"></script>
 
   <script>
-    window.cssClassNameElLocked = 'locked';
+    const cssClassName = 'locked';
 
     const el = document.querySelector('#el');
 
     const { classList } = el;
 
-    window.instance = new window.ScrollPadlock(el, cssClassNameElLocked)
+    const instance = new ScrollPadlock({
+      scrollingElement: el,
 
-    window.lock = () => classList.add(cssClassNameElLocked);
+      cssClassName: cssClassName,
+    });
 
-    window.unlock = () => classList.remove(cssClassNameElLocked);
+    document.querySelector('#toggle-lock-scroll').addEventListener('click', () => {
+      classList.toggle(cssClassName);
+    });
 
-    window.elScrollTo = el;
+    document.querySelector('#scroll-by-some-px').addEventListener('click', () => {
+      el.scrollBy(0, 100);
+    });
+
+    document.querySelector('#restore-scroll').addEventListener('click', () => {
+      instance.scroll = { top: 0, left: 0 };
+    });
   </script>
 </body>
 

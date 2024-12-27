@@ -20,10 +20,25 @@
       top: calc(var(--scroll-padlock-scroll-top) * -1);
       padding-right: var(--scroll-padlock-scrollbar-width);
     }
+
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 999;
+    }
   </style>
 </head>
 
 <body>
+  <nav>
+    <button id="toggle-lock-scroll">Toggle scroll lock</button>
+
+    <button id="scroll-by-some-px">Scroll by some pixels</button>
+
+    <button id="restore-scroll">Restore scroll</button>
+  </nav>
+
   <p>
     Hello there, Lorem ipsum. How r u today?
   </p>
@@ -35,13 +50,19 @@
 
     const { classList } = scrollingElement;
 
-    window.instance = new window.ScrollPadlock();
+    const instance = new ScrollPadlock();
 
-    window.lock = () => classList.add('scroll-padlock-locked');
+    document.querySelector('#toggle-lock-scroll').addEventListener('click', () => {
+      classList.toggle('scroll-padlock-locked');
+    });
 
-    window.unlock = () => classList.remove('scroll-padlock-locked');
+    document.querySelector('#scroll-by-some-px').addEventListener('click', () => {
+      window.scrollBy(0, 100);
+    });
 
-    window.elScrollTo = window;
+    document.querySelector('#restore-scroll').addEventListener('click', () => {
+      instance.scroll = { top: 0, left: 0 };
+    });
   </script>
 </body>
 

@@ -17,4 +17,12 @@ describe(getScrollPositionCssRules.name, () => {
     }), `--scroll-padlock-scroll-top: 10px;
 --scroll-padlock-scroll-left: 20px;`);
   });
+
+  it('should round decimal values', () => {
+    assert.equal(getScrollPositionCssRules({
+      top: 10.1,
+      left: 20.9,
+    }), `--scroll-padlock-scroll-top: 10px;
+--scroll-padlock-scroll-left: 21px;`);
+  });
 });
