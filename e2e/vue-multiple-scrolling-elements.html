@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Test</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      overflow: hidden;
+    }
+
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 999;
+    }
+
+    #app {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .scroll-container {
+      height: 200px;
+      overflow-y: scroll;
+    }
+
+    .scroll-locked {
+      overflow: hidden;
+      padding-right: var(--scrollbar-width);
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <nav>
+      <button @click="toggleLockScroll" id="toggle-lock-scroll">
+        Toggle scroll lock
+      </button>
+
+      <button @click="scrollBySomePx" id="scroll-by-some-px">
+        Scroll by some pixels
+      </button>
+
+      <button @click="scrollToTop" id="scroll-to-top">
+        Scroll to top
+      </button>
+    </nav>
+
+    <scroll-container v-for="(container, index) in containers" :key="index" :locked="isLocked" v-model="scrollTop">
+      <p>Lorem ipsum odor amet, consectetuer adipiscing elit. Luctus nostra venenatis sed commodo amet parturient. Vitae
+        cras interdum in sem odio himenaeos. Habitant rutrum libero vestibulum lobortis per quis justo. Lobortis quisque
+        cursus parturient nostra ut ex elit? Tempus fringilla maximus lorem malesuada ex pharetra commodo. Dictumst
+        mauris eros accumsan nisi mauris nascetur duis elit. Diam amet vitae nascetur dapibus placerat aenean praesent
+        cubilia vestibulum. Ad laoreet orci commodo rutrum pulvinar ultrices laoreet conubia. Tempus nostra magnis ac
+        magnis cubilia velit nunc.</p>
+
+      <p>Placerat inceptos aenean pulvinar fermentum ex fames luctus. Dictumst nam sit sed mattis iaculis nec eleifend
+        id. Tellus vehicula eu vulputate ultrices neque eleifend mattis. Augue tristique ullamcorper tortor ligula
+        sagittis. Ultricies vel sit lacinia ligula ac at platea porta. Ligula urna ante odio habitasse, ridiculus
+        curabitur enim. Augue interdum lectus imperdiet montes a sapien volutpat auctor. Vehicula dignissim maecenas
+        primis hendrerit facilisis nec nascetur bibendum.</p>
+
+      <p>Tempus aliquet natoque potenti molestie dapibus litora eros ultrices leo. Non torquent lobortis vehicula eu
+        cursus tempus mattis. Fusce at nulla odio maximus libero aliquam nisi. Condimentum himenaeos hendrerit natoque
+        hendrerit orci torquent nam. Condimentum bibendum porta vivamus ante sodales eu purus facilisi nostra. Phasellus
+        eget odio mauris fermentum consequat convallis eget eros finibus. Senectus ligula eleifend et ultricies mollis
+        nascetur. Ornare rutrum viverra sociosqu dignissim amet ligula ante justo cubilia.</p>
+
+      <p>Cubilia dis mollis feugiat turpis ante. In nisl laoreet euismod mus ornare nisi mi etiam. Cubilia mi etiam
+        malesuada hac euismod lectus habitasse. Augue posuere elit aenean dapibus ex sociosqu aptent morbi. Primis
+        facilisis massa class neque faucibus aptent duis. Potenti hac efficitur mattis aptent non viverra malesuada.
+        Finibus consequat suscipit leo est ex adipiscing.</p>
+
+      <p>Vel quam lacus ridiculus laoreet urna. Nisl blandit nam habitant sapien ultricies pulvinar parturient ligula.
+        Donec pretium volutpat quisque penatibus mauris fringilla senectus. Iaculis egestas fermentum mus sem sagittis
+        etiam natoque. Amet sed arcu ex platea aptent rutrum sagittis tempor. Quis ad natoque sed quis cursus gravida
+        facilisis. Mattis natoque elementum tempus at magna proin eu quis himenaeos. Dictum efficitur maximus non
+        inceptos conubia at ipsum montes.</p>
+
+      <p>Gravida eros nec fusce imperdiet taciti penatibus. Pulvinar molestie habitasse torquent tortor faucibus.
+        Ridiculus luctus ipsum convallis aenean tempor aenean. Ad tortor auctor pulvinar sodales imperdiet nibh
+        condimentum. Luctus eros dis magna; sodales per tristique eu. Et hac habitasse arcu efficitur sociosqu hac velit
+        tempus platea?</p>
+
+      <p>Taciti pretium efficitur felis massa; tristique egestas accumsan. Placerat phasellus nullam aenean aliquam
+        urna. Fringilla lobortis eros etiam fames venenatis efficitur nulla. Blandit quisque ad in suspendisse nostra,
+        cras torquent elementum. Natoque odio sapien ad nam torquent nullam est vehicula. Nulla elit platea ornare
+        commodo id tortor himenaeos nisi primis. Ultricies in rutrum nullam ad, curabitur facilisis eros platea.</p>
+
+      <p>Acras donec quisque tristique interdum tortor sociosqu congue. Volutpat dictum lacus pellentesque hac nascetur
+        et duis elementum. Ipsum ex nascetur adipiscing velit convallis. Nisi iaculis conubia congue bibendum
+        pellentesque porta nullam condimentum. Cubilia ornare non ultricies euismod est vitae scelerisque non. Placerat
+        felis lacus vestibulum dictum himenaeos. Amet hac nulla lacinia mauris velit massa morbi sit. Fames aliquet
+        habitant vulputate feugiat id mattis hac quam donec. Class montes erat ad rhoncus ultricies ipsum placerat
+        vulputate. Vestibulum phasellus sollicitudin phasellus amet fames at etiam proin.</p>
+
+      <p>Vehicula dignissim ac vestibulum cubilia congue tincidunt conubia. Praesent purus dignissim ullamcorper neque
+        litora. Mauris pretium in class interdum massa commodo metus euismod. Nulla parturient eros porttitor, torquent
+        pellentesque fermentum libero cursus. Magnis in non venenatis et orci enim nascetur. Interdum scelerisque
+        habitant phasellus conubia leo faucibus orci eget nisi. Habitasse nam nostra dignissim lectus varius tempor
+        malesuada consequat. Nam purus tincidunt dictum, congue curabitur maximus. Tortor finibus dolor montes rhoncus
+        penatibus. Platea felis at; etiam lectus egestas facilisi aliquam.</p>
+
+      <p>Volutpat torquent nunc, euismod dui vitae proin. Felis sollicitudin habitasse bibendum auctor sit platea
+        egestas. Platea feugiat egestas mauris ultricies primis mus. Adipiscing egestas proin dictumst fermentum proin
+        faucibus. Nam nibh tempor quisque egestas magna ornare interdum. Enim consectetur sodales risus posuere
+        adipiscing netus. Mus diam luctus ultricies interdum mus.</p>
+
+      <p>Quisque dapibus finibus aliquet auctor netus, ligula libero quis senectus. Ante tempus libero class nostra
+        vitae tempor dictum cras. Aliquet turpis massa aenean est venenatis tellus arcu nullam platea. Ante vehicula
+        condimentum sapien pulvinar ante malesuada aliquam facilisi. Cras litora suspendisse imperdiet ad nisl facilisi
+        duis. Felis at tempus sociosqu vitae penatibus purus. Himenaeos pretium eleifend fames amet tincidunt in luctus
+        rhoncus.</p>
+
+      <p>Parturient nisl ante tempor magnis blandit neque erat maximus blandit. Curae nascetur dolor nam ex orci velit
+        luctus. Consectetur mattis facilisis pretium sociosqu cubilia fringilla nam placerat. Nisl dolor habitasse
+        interdum vulputate magna aliquet rutrum platea. Tincidunt quam aenean est; quis quisque euismod. Porta fringilla
+        mauris; pretium tortor ridiculus vehicula. Adipiscing libero senectus eros porta ut. Sociosqu rutrum dignissim
+        senectus pulvinar feugiat.</p>
+
+      <p>Proin volutpat metus diam, tempor neque rhoncus habitasse. Mattis sapien lectus ullamcorper dictum vehicula
+        auctor vitae praesent. Ad eleifend habitasse duis sem integer praesent blandit. Tellus hendrerit nam, eu
+        porttitor lacinia ligula tempor. Rhoncus dui ultricies tellus feugiat himenaeos eros magna senectus. Nec elit
+        proin pharetra quis vitae convallis himenaeos. Dolor suscipit ad penatibus molestie turpis montes eros? Per leo
+        dui iaculis maecenas commodo ad rutrum cubilia. Sagittis facilisis adipiscing et feugiat et pellentesque
+        vulputate.</p>
+
+      <p>Sapien nibh justo consequat rhoncus ipsum porta. Posuere quam senectus semper posuere penatibus orci. Integer
+        semper quisque montes condimentum donec nisi ipsum. Diam quis fusce placerat pretium id ultrices magnis.
+        Suspendisse ad venenatis mauris aptent taciti potenti vivamus. Velit nam tempor sociosqu quisque euismod tempus.
+        Primis natoque sagittis sed eros curae. Volutpat aenean est feugiat luctus euismod aliquet ut sollicitudin.
+        Praesent sociosqu pharetra orci praesent, potenti dapibus.</p>
+
+      <p>Diam maecenas velit; nostra dictumst massa ridiculus montes netus. Elit luctus auctor sed tempus placerat
+        placerat aptent fusce purus. Taciti semper ut himenaeos sagittis viverra; dictum ligula iaculis. Penatibus
+        ornare lacus nunc facilisis ligula nostra ante cursus. Arcu feugiat cras quam proin hac commodo quisque.
+        Eleifend nulla nulla semper vulputate duis porta dolor.</p>
+    </scroll-container>
+  </div>
+
+  <script src="../dist/umd/scroll-padlock.js"></script>
+
+  <script type="importmap">
+    {
+      "imports": {
+        "vue": "https://cdn.jsdelivr.net/npm/vue@3.5.13/dist/vue.esm-browser.js"
+      }
+    }
+  </script>
+
+  <script type="module">
+    import { createApp, ref, defineComponent, watch } from 'vue';
+
+    const ScrollContainer = defineComponent({
+      props: {
+        locked: {
+          type: Boolean,
+          default: false,
+        },
+
+        modelValue: {
+          type: Number,
+          default: 0,
+        },
+      },
+
+      emits: [
+        'update:modelValue'
+      ],
+
+      setup(props, { emit }) {
+        const scrollable = ref(null);
+
+        watch(() => props.modelValue, (value) => {
+          if (scrollable.value) {
+            scrollable.value.scrollTo(0, value);
+          }
+        });
+
+        watch(() => props.locked, () => {
+          if (scrollable.value && props.locked) {
+            window.setScrollPadlockStyle({
+              element: scrollable.value,
+            });
+          }
+        });
+
+        return {
+          scrollable,
+
+          updateScrollTop() {
+            emit("update:modelValue", scrollable.value.scrollTop);
+          },
+        };
+      },
+
+      template: `
+        <div :class="['scroll-container', { 'scroll-locked': locked }]" ref="scrollable" @scroll="updateScrollTop">
+          <slot></slot>
+        </div>
+      `,
+    });
+
+    createApp({
+      components: {
+        ScrollContainer,
+      },
+
+      setup() {
+        const isLocked = ref(false);
+
+        const scrollTop = ref(0);
+
+        const containers = ref([{}, {}, {}]);
+
+        return {
+          isLocked,
+
+          scrollTop,
+
+          containers,
+
+          toggleLockScroll() {
+            isLocked.value = !isLocked.value;
+          },
+
+          scrollBySomePx() {
+            scrollTop.value += 100;
+          },
+
+          scrollToTop() {
+            scrollTop.value = 0;
+          },
+        };
+      },
+    }).mount('#app');
+  </script>
+</body>
+
+</html>

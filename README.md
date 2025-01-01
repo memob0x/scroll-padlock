@@ -9,22 +9,15 @@ A small (~4K gzipped) unobtrusive script aimed to encourage a **CSS-first** appr
 
 🙅 Without this library:
 
-![without scrollbar gap compensation](https://github.com/memob0x/scroll-padlock/blob/master/docs/without-gap-compensation.gif?raw=true)
+![without scrollbar gap compensation](https://github.com/memob0x/scroll-padlock/blob/master/assets/without.gif?raw=true)
 
 💁 With this library:
 
-![with scrollbar gap compensation](https://github.com/memob0x/scroll-padlock/blob/master/docs/with-gap-compensation.gif?raw=true)
+![with scrollbar gap compensation](https://github.com/memob0x/scroll-padlock/blob/master/assets/with.gif?raw=true)
 
 ## Try it out
 
-Here's some example projects for the most common setups:
-
-- [React](https://vouoz.csb.app/)
-- [Angular](https://xuudg.csb.app/)
-- [Vue](https://6ewti.csb.app/)
-- [Vanilla](https://rgzrb.csb.app/)
-
-Additionally, the project "e2e" folder _html files_ can also be used as demos to showcase how the library can be integrated with various CSS rules and addressing various elements.
+The project "e2e" folder _html files_ can also be used as demos to showcase how the library can be integrated with various CSS rules and addressing various elements of various applications.
 
 ## Inclusion
 
@@ -150,7 +143,7 @@ Node version 20.11.0 or higher is required in order to compile source code or la
 npm test
 ```
 
-You can generate the unit tests coverage in human readable form with the following commands (having `lcov` installed is required).
+To generate the unit tests coverage in a readable format, [lcov](https://github.com/linux-test-project/lcov) can be used.
 
 ```shell
 genhtml --branch-coverage lcov.info -o coverage
