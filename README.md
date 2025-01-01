@@ -15,7 +15,7 @@ A small (~4K gzipped) unobtrusive script aimed to encourage a **CSS-first** appr
 
 ![with scrollbar gap compensation](https://github.com/memob0x/scroll-padlock/blob/master/assets/with.gif?raw=true)
 
-## Try it out
+## Examples
 
 The project "e2e" folder _html files_ can also be used as demos to showcase how the library can be integrated with various CSS rules and addressing various elements of various applications.
 

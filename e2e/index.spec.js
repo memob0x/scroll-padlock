@@ -61,7 +61,7 @@ currentPathHtmlFiles.forEach((htmlFile) => {
       await browser.close();
     });
 
-    it('should be able to ensure scroll position standard approach', async () => {
+    it('should be able to lock and unlock the scroll position without any layout shift', async () => {
       const page = await browseHtmlPlaygroundFile(browser, resolve(currentPath, htmlFile));
 
       await page.evaluate(() => document.querySelector('#scroll-by-some-px').click());
