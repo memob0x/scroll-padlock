@@ -3,14 +3,13 @@
   "type": "module",
   "author": {
     "name": "memob0x",
-    "email": "dfioroni91@gmail.com",
     "url": "https://github.com/memob0x"
   },
   "description": "Locks elements scroll handling scrollbar gaps and iOS Safari with CSS variables",
   "main": "dist/umd/scroll-padlock.min.js",
   "module": "dist/es/scroll-padlock.js",
-  "types": "./dist/scroll-padlock.d.ts",
-  "version": "2.5.0",
+  "types": "dist/scroll-padlock.d.ts",
+  "version": "3.0.0",
   "license": "MIT",
   "repository": "https://github.com/memob0x/scroll-padlock.git",
   "keywords": [
@@ -42,9 +41,9 @@
   ],
   "scripts": {
     "lint": "npx eslint",
-    "build": "node ./build.js && npx tsc",
-    "test:unit": "node --test --experimental-test-coverage --test-reporter=spec --test-reporter=lcov --test-reporter=./reporter.js --test-reporter-destination=stdout --test-reporter-destination=lcov.info --test-reporter-destination=stdout test/unit/*.spec.js",
-    "test:e2e": "npm run build && node --test ./test/e2e/*.spec.js",
+    "build": "node ./build.js",
+    "test:unit": "node --test --experimental-test-coverage --test-reporter=spec --test-reporter=lcov --test-reporter=./reporter.js --test-reporter-destination=stdout --test-reporter-destination=lcov.info --test-reporter-destination=stdout src/*.spec.js",
+    "test:e2e": "npm run build && node --test ./e2e/*.spec.js",
     "test": "npm run test:unit && npm run test:e2e",
     "prepare": "husky install"
   },

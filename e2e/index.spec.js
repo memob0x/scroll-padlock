@@ -7,11 +7,11 @@ import {
 } from 'node:path';
 import { readdir } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
-import launchBrowser from '../utils/launch-browser.js';
-import browseHtmlPlaygroundFile from '../utils/browse-file.js';
-import takeBrowserScreenshot from '../utils/take-browser-screenshot.js';
-import compareTwoImages from '../utils/compare-two-images.js';
-import cropImage from '../utils/crop-image.js';
+import launchBrowser from './utils/launch-browser.js';
+import browseHtmlPlaygroundFile from './utils/browse-file.js';
+import takeBrowserScreenshot from './utils/take-browser-screenshot.js';
+import compareTwoImages from './utils/compare-two-images.js';
+import cropImage from './utils/crop-image.js';
 
 const CROP = {
   top: 0,
@@ -66,48 +66,27 @@ currentPathHtmlFiles.forEach((htmlFile) => {
 
       await page.evaluate(() => document.querySelector('#scroll-by-some-px').click());
 
-      const firstImage = await takeCroppedBrowserScreenshot(page, `${filenameWithoutExt}-0`);
+      const screenshot0 = await takeCroppedBrowserScreenshot(page, `${filenameWithoutExt}-0`);
 
       await page.evaluate(() => document.querySelector('#toggle-lock-scroll').click());
 
-      const secondImage = await takeCroppedBrowserScreenshot(page, `${filenameWithoutExt}-1`);
+      const screenshot1 = await takeCroppedBrowserScreenshot(page, `${filenameWithoutExt}-1`);
 
-      let {
-        isSameDimensions,
+      const comparison0and1 = await compareTwoImages(screenshot0, screenshot1);
 
-        rawMisMatchPercentage,
-      } = await compareTwoImages(firstImage, secondImage);
+      assert.equal(comparison0and1.isSameDimensions, true);
 
-      assert.equal(isSameDimensions, true);
-      assert.equal(Math.floor(rawMisMatchPercentage), 0);
-
-      await page.evaluate(() => document.querySelector('#restore-scroll').click());
-
-      const thirdImage = await takeCroppedBrowserScreenshot(page, `${filenameWithoutExt}-2`);
-
-      ({
-        isSameDimensions,
-
-        rawMisMatchPercentage,
-      } = await compareTwoImages(firstImage, thirdImage));
-
-      assert.equal(isSameDimensions, true);
-      assert.equal(Math.floor(rawMisMatchPercentage), 0);
+      assert.equal(Math.floor(comparison0and1.rawMisMatchPercentage), 0);
 
       await page.evaluate(() => document.querySelector('#toggle-lock-scroll').click());
 
-      const fourthImage = await takeCroppedBrowserScreenshot(page, `${filenameWithoutExt}-3`);
+      const screenshot2 = await takeCroppedBrowserScreenshot(page, `${filenameWithoutExt}-2`);
 
-      ({
-        isSameDimensions,
+      const comparison1and2 = await compareTwoImages(screenshot1, screenshot2);
 
-        rawMisMatchPercentage,
-      } = await compareTwoImages(secondImage, fourthImage));
+      assert.equal(comparison1and2.isSameDimensions, true);
 
-      assert.equal(isSameDimensions, true);
-      assert.notEqual(Math.floor(rawMisMatchPercentage), 0);
-
-      await page.close();
+      assert.equal(Math.floor(comparison1and2.rawMisMatchPercentage), 0);
     });
   });
 });

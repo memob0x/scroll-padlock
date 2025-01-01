@@ -1,7 +1,10 @@
-import { resolve } from 'path';
+import { dirname, resolve } from 'path';
+import { fileURLToPath } from 'url';
 import ensureFolderExistence from './ensure-folder-existence.js';
 
-const screenshotsPath = resolve('./test/e2e/screenshots');
+const currentPath = dirname(fileURLToPath(import.meta.url));
+
+const screenshotsPath = resolve(currentPath, '..', 'screenshots');
 
 export default async (page, name) => {
   await ensureFolderExistence(screenshotsPath);
