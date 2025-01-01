@@ -24,7 +24,7 @@ Here's some example projects for the most common setups:
 - [Vue](https://6ewti.csb.app/)
 - [Vanilla](https://rgzrb.csb.app/)
 
-project "e2e" folder...
+Additionally, the project "e2e" folder _html files_ can also be used as demos to showcase how the library can be integrated with various CSS rules and addressing various elements.
 
 ## Inclusion
 
@@ -73,13 +73,9 @@ setScrollPadlockStyle();
 </script>
 ```
 
-## Under the Hood
-
-...
-
 ## Usage
 
-By default, a padlock instance addresses  the [default browser scrolling element](https://developer.mozilla.org/en-US/docs/Web/API/document/scrollingElement) and a `scroll-locked` css class.
+The library adds a stylesheet using the `.scroll-locked` selector, setting CSS variables with values useful for locking the page scroll using only CSS.
 
 ```css
 .scroll-locked {
@@ -89,9 +85,13 @@ By default, a padlock instance addresses  the [default browser scrolling element
 }
 ```
 
+The library uses the [default browser scrolling element](https://developer.mozilla.org/en-US/docs/Web/API/document/scrollingElement) and the [window object](https://developer.mozilla.org/en-US/docs/Web/API/Window) to retrieve the values for the CSS variables.
+
 ```javascript
 setScrollPadlockStyle();
 ```
+
+At this point, it is possible to remove or add the CSS class to determine the blocking of the page scroll.
 
 ```javascript
 document.scrollingElement.classList.add('scroll-locked');
@@ -116,6 +116,12 @@ This is the complete list of **CSS variables** set by this library on the given 
 
 ## Options
 
+The library function accepts an options object to customize its behavior. Here are the available options:
+
+- `element`: The DOM element that will be used to retrieve the values for the CSS variables.
+- `selector`: A string representing a CSS selector to identify the target element.
+- `formatter`: A function that formats the CSS styles to be added.
+
 ```javascript
 setScrollPadlockStyle({
   element: document.querySelector('#custom-scrolling-element'),
@@ -131,6 +137,8 @@ setScrollPadlockStyle({
 
 ## Return
 
+The function returns an `HTMLStyleElement`. This element is created and added to the document's `head` if it doesn't already exist. If it does exist, the previously set style rules are replaced.
+
 ```javascript
 const style = setScrollPadlockStyle();
 
@@ -141,27 +149,29 @@ style.remove();
 
 All [modern browsers](https://teamtreehouse.com/community/what-is-a-modern-browser) have been tested.
 
-The library doesn't provide a fallback for those browsers which don't support [CSS variables](https://caniuse.com/css-variables) (mainly Internet Explorer 11).
+The library doesn't provide a fallback for those browsers which don't support [CSS variables](https://caniuse.com/css-variables).
 
 ## Development
 
 Node version 20.11.0 or higher is required in order to compile source code or launch tests.
 
-You can generate the unit tests coverage in human readable form with the following commands (having `lcov` installed is required).
-
 ```shell
 npm test
 ```
+
+You can generate the unit tests coverage in human readable form with the following commands (having `lcov` installed is required).
 
 ```shell
 genhtml --branch-coverage lcov.info -o coverage
 ```
 
+To run the e2e tests, use the following command:
+
 ```shell
 npm run test:e2e
 ```
 
-The library is compiled with the following command:
+To build the project, use the following command:
 
 ```shell
 npm run build
