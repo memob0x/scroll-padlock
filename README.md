@@ -86,9 +86,10 @@ The library adds a stylesheet using the `.scroll-locked` selector, setting CSS v
 ```
 
 The library uses the [default browser scrolling element](https://developer.mozilla.org/en-US/docs/Web/API/document/scrollingElement) and the [window object](https://developer.mozilla.org/en-US/docs/Web/API/Window) to retrieve the values for the CSS variables.
+The function returns an `HTMLStyleElement`. This element is created and added to the document's `head` if it doesn't already exist. If it does exist, the previously set style rules are replaced.
 
 ```javascript
-setScrollPadlockStyle();
+const styleElement = setScrollPadlockStyle();
 ```
 
 At this point, it is possible to remove or add the CSS class to determine the blocking of the page scroll.
@@ -135,19 +136,9 @@ setScrollPadlockStyle({
 });
 ```
 
-## Return
-
-The function returns an `HTMLStyleElement`. This element is created and added to the document's `head` if it doesn't already exist. If it does exist, the previously set style rules are replaced.
-
-```javascript
-const style = setScrollPadlockStyle();
-
-style.remove();
-```
-
 ## Support
 
-All [modern browsers](https://teamtreehouse.com/community/what-is-a-modern-browser) have been tested.
+The most common [modern browsers](https://browsersl.ist/#q=defaults) have been tested.
 
 The library doesn't provide a fallback for those browsers which don't support [CSS variables](https://caniuse.com/css-variables).
 
