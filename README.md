@@ -7,11 +7,11 @@
 
 A small (~4K gzipped) unobtrusive script aimed to encourage a **CSS-first** approach when **locking html elements scroll** reducing [cumulative layout shift](https://web.dev/cls/) and iOS Safari quirkiness.
 
-🙅 Without this library:
+Without:
 
 ![without scrollbar gap compensation](https://github.com/memob0x/scroll-padlock/blob/master/assets/without.gif?raw=true)
 
-💁 With this library:
+With:
 
 ![with scrollbar gap compensation](https://github.com/memob0x/scroll-padlock/blob/master/assets/with.gif?raw=true)
 
@@ -30,15 +30,7 @@ npm install scroll-padlock
 The source code is entirely written in [standard ECMAScript](https://tc39.es/) with no dependencies.
 All major bundle formats are supported, including [umd](https://github.com/umdjs/umd), [iife](https://developer.mozilla.org/en-US/docs/Glossary/IIFE), [amd](https://en.wikipedia.org/wiki/Asynchronous_module_definition), [cjs](https://en.wikipedia.org/wiki/CommonJS), [esm](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules) and [SystemJS](https://github.com/systemjs/systemjs); a minified gzipped version is also available for each bundle format.
 
-### Node
-
-```javascript
-import setScrollPadlockStyle from "scroll-padlock";
-
-setScrollPadlockStyle();
-```
-
-### Browser (modules)
+### Modules
 
 ```html
 <script type="importmap">
@@ -56,19 +48,19 @@ setScrollPadlockStyle();
 </script>
 ```
 
-### Browser (globals)
+### Globals
 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/scroll-padlock/dist/iife/scroll-padlock.min.js"></script>
 
 <script>
-  setScrollPadlockStyle();
+  window.setScrollPadlockStyle();
 </script>
 ```
 
 ## Usage
 
-The library adds a stylesheet using the `.scroll-locked` selector, setting CSS variables with values useful for locking the page scroll using only CSS.
+The library appends a stylesheet element using the default `.scroll-locked` selector, setting CSS variables with values useful for locking the page scroll using the preferred CSS rules; see the following example:
 
 ```css
 .scroll-locked {
@@ -82,15 +74,9 @@ The library uses the [default browser scrolling element](https://developer.mozil
 The function returns an `HTMLStyleElement`. This element is created and added to the document's `head` if it doesn't already exist. If it does exist, the previously set style rules are replaced.
 
 ```javascript
-const styleElement = setScrollPadlockStyle();
-```
+const style = setScrollPadlockStyle();
 
-At this point, it is possible to remove or add the CSS class to determine the blocking of the page scroll.
-
-```javascript
-document.scrollingElement.classList.add('scroll-locked');
-
-document.scrollingElement.classList.remove('scroll-locked');
+document.scrollingElement.classList.toggle('scroll-locked');
 ```
 
 ## CSS Variables
@@ -112,9 +98,9 @@ This is the complete list of **CSS variables** set by this library on the given 
 
 The library function accepts an options object to customize its behavior. Here are the available options:
 
-- `element`: The DOM element that will be used to retrieve the values for the CSS variables.
-- `selector`: A string representing a CSS selector to identify the target element.
-- `formatter`: A function that formats the CSS styles to be added.
+- `element`: the DOM element that will be used to retrieve the values for the CSS variables.
+- `selector`: a string representing a CSS selector to identify the target element.
+- `formatter`: a function that formats the CSS styles to be added.
 
 ```javascript
 setScrollPadlockStyle({
@@ -128,12 +114,6 @@ setScrollPadlockStyle({
   `
 });
 ```
-
-## Support
-
-The most common [modern browsers](https://browsersl.ist/#q=defaults) have been tested.
-
-The library doesn't provide a fallback for those browsers which don't support [CSS variables](https://caniuse.com/css-variables).
 
 ## Development
 
