@@ -1,17 +1,35 @@
-import { dirname, resolve } from 'path';
-import { fileURLToPath } from 'url';
-import ensureFolderExistence from './ensure-folder-existence.js';
+import {
+  basename, dirname, extname, join,
+} from 'path';
+import { rename, rm } from 'fs/promises';
+import sharp from 'sharp';
 
-const currentPath = dirname(fileURLToPath(import.meta.url));
+export default async (page, path, options) => {
+  const {
+    type = 'jpeg',
 
-const screenshotsPath = resolve(currentPath, '..', 'screenshots');
+    crop,
+  } = options || {};
 
-export default async (page, name) => {
-  await ensureFolderExistence(screenshotsPath);
+  await page.screenshot({
+    path,
 
-  const path = `${screenshotsPath}/${name}.jpg`;
+    type,
+  });
 
-  await page.screenshot({ path, type: 'jpeg' });
+  if (crop) {
+    const pathCrop = join(
+      dirname(path),
+
+      `${basename(path, extname(path))}-crop${extname(path)}`,
+    );
+
+    await sharp(path).extract(crop).toFile(pathCrop);
+
+    await rm(path);
+
+    await rename(pathCrop, path);
+  }
 
   return path;
 };

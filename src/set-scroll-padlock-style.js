@@ -36,7 +36,7 @@ export default function setScrollPadlockStyle(settings) {
   } = doc;
 
   const {
-    selector = '.scroll-locked',
+    selector = '.scroll-padlock',
 
     element = scrollingElement,
 

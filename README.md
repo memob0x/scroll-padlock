@@ -5,7 +5,7 @@
 [![scroll-padlock (downloads)](https://img.shields.io/npm/dy/scroll-padlock.svg)](https://www.npmjs.com/package/scroll-padlock)
 ![license](https://img.shields.io/npm/l/scroll-padlock)
 
-A small (~4K gzipped) unobtrusive script aimed to encourage a **CSS-first** approach when **locking html elements scroll** reducing [cumulative layout shift](https://web.dev/cls/) and iOS Safari quirkiness.
+A small (~4K gzipped) unobtrusive script aimed to encourage a CSS-first approach when locking HTML elements scroll. The source code is entirely written in vanilla JavaScript with no dependencies.
 
 Without:
 
@@ -17,7 +17,7 @@ With:
 
 ## Examples
 
-The project "e2e" folder _html files_ can also be used as demos to showcase how the library can be integrated with various CSS rules and addressing various elements of various applications.
+The project "e2e" folder HTML files can be used as demos to showcase how the library can be integrated with various approaches in various applications.
 
 ## Inclusion
 
@@ -27,16 +27,13 @@ This library is downloadable via **npm**:
 npm install scroll-padlock
 ```
 
-The source code is entirely written in [standard ECMAScript](https://tc39.es/) with no dependencies.
-All major bundle formats are supported, including [umd](https://github.com/umdjs/umd), [iife](https://developer.mozilla.org/en-US/docs/Glossary/IIFE), [amd](https://en.wikipedia.org/wiki/Asynchronous_module_definition), [cjs](https://en.wikipedia.org/wiki/CommonJS), [esm](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules) and [SystemJS](https://github.com/systemjs/systemjs); a minified gzipped version is also available for each bundle format.
-
 ### Modules
 
 ```html
 <script type="importmap">
   {
     "imports": {
-      "scroll-padlock": "https://cdn.jsdelivr.net/npm/scroll-padlock/dist/es/scroll-padlock.min.js"
+      "scroll-padlock": "https://cdn.jsdelivr.net/npm/scroll-padlock@latest/+esm"
     }
   }
 </script>
@@ -51,7 +48,7 @@ All major bundle formats are supported, including [umd](https://github.com/umdjs
 ### Globals
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/scroll-padlock/dist/iife/scroll-padlock.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/scroll-padlock@latest/dist/scroll-padlock.umd.min.js"></script>
 
 <script>
   window.setScrollPadlockStyle();
@@ -60,28 +57,7 @@ All major bundle formats are supported, including [umd](https://github.com/umdjs
 
 ## Usage
 
-The library appends a stylesheet element using the default `.scroll-locked` selector, setting CSS variables with values useful for locking the page scroll using the preferred CSS rules; see the following example:
-
-```css
-.scroll-locked {
-  overflow: hidden;
-
-  padding-right: var(--scrollbar-width);
-}
-```
-
-The library uses the [default browser scrolling element](https://developer.mozilla.org/en-US/docs/Web/API/document/scrollingElement) and the [window object](https://developer.mozilla.org/en-US/docs/Web/API/Window) to retrieve the values for the CSS variables.
-The function returns an `HTMLStyleElement`. This element is created and added to the document's `head` if it doesn't already exist. If it does exist, the previously set style rules are replaced.
-
-```javascript
-const style = setScrollPadlockStyle();
-
-document.scrollingElement.classList.toggle('scroll-locked');
-```
-
-## CSS Variables
-
-This is the complete list of **CSS variables** set by this library on the given elements.
+The library exports a function which appends CSS styles addressing a default `.scroll-padlock` selector using the [default browser scrolling element](https://developer.mozilla.org/en-US/docs/Web/API/document/scrollingElement) and the [window object](https://developer.mozilla.org/en-US/docs/Web/API/Window) to retrieve the values which would be set as the following CSS variables:
 
 - `--scroll-top`: the number of pixels the element's content is scrolled vertically.
 - `--scroll-left`: the number of pixels the element's content is scrolled horizontally.
@@ -94,30 +70,45 @@ This is the complete list of **CSS variables** set by this library on the given 
 - `--client-width`: the visible width of the element, excluding the scrollbar.
 - `--client-height`: the visible height of the element, excluding the scrollbar.
 
+These CSS variables can be used to implement the preferred approach to prevent the element scroll or to add the scrollbar gap componsation.
+
+```css
+.scroll-padlock {
+  overflow: hidden;
+
+  padding-right: var(--scrollbar-width);
+}
+```
+
+Since a function call updates the styles it can be called before adding the CSS class.
+
+```javascript
+setScrollPadlockStyle();
+
+document.scrollingElement.classList.add('scroll-padlock');
+```
+
 ## Options
 
-The library function accepts an options object to customize its behavior. Here are the available options:
+The library function accepts an options object to customize its behavior; these are the available options:
 
 - `element`: the DOM element that will be used to retrieve the values for the CSS variables.
 - `selector`: a string representing a CSS selector to identify the target element.
-- `formatter`: a function that formats the CSS styles to be added.
+- `formatter`: a function that allows to customize the the CSS styles to be added.
 
 ```javascript
 setScrollPadlockStyle({
   element: document.querySelector('#custom-scrolling-element'),
 
-  selector: '#custom-scrolling-element.locked',
+  selector: '.custom-element-scroll-padlock',
 
-  formatter: ({ clientWidth, offsetWidth }) => `
-    --custom-property: ${offsetWidth}px;
-    width: ${clientWidth}px;
-  `
+  formatter: ({ clientWidth }) => `--width-without-scrollbar: ${clientWidth}px;`
 });
 ```
 
 ## Development
 
-Node version 20.11.0 or higher is required in order to compile source code or launch tests.
+Node version 20.11.0 or higher is required in order to execute the tests.
 
 ```shell
 npm test

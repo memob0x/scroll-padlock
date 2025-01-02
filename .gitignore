@@ -1,5 +1,4 @@
 node_modules
 dist
-e2e/screenshots
 coverage
 lcov.info

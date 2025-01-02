@@ -5,23 +5,13 @@ import assert from 'node:assert';
 import {
   resolve, basename, extname, dirname,
 } from 'node:path';
-import { readdir } from 'node:fs/promises';
+import { readdir, rm } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import launchBrowser from './utils/launch-browser.js';
 import browseHtmlPlaygroundFile from './utils/browse-file.js';
 import takeBrowserScreenshot from './utils/take-browser-screenshot.js';
 import compareTwoImages from './utils/compare-two-images.js';
-import cropImage from './utils/crop-image.js';
-
-const CROP = {
-  top: 0,
-
-  left: 0,
-
-  width: 600,
-
-  height: 400,
-};
+import ensureFolderExistence from './utils/ensure-folder-existence.js';
 
 const VIEWPORT = {
   width: 640,
@@ -29,16 +19,14 @@ const VIEWPORT = {
   height: 480,
 };
 
-const takeCroppedBrowserScreenshot = async (
-  page,
+const VIEWPORT_CROP = {
+  top: 0,
 
-  filename,
-) => {
-  let image = await takeBrowserScreenshot(page, filename);
+  left: 0,
 
-  ({ output: image } = await cropImage(image, CROP));
+  width: 620,
 
-  return image;
+  height: 480,
 };
 
 const currentPath = dirname(fileURLToPath(import.meta.url));
@@ -47,14 +35,34 @@ const currentPathFiles = await readdir(currentPath);
 
 const currentPathHtmlFiles = currentPathFiles.filter((file) => extname(file) === '.html');
 
+const distPath = resolve(currentPath, '..', 'dist');
+
+await ensureFolderExistence(distPath);
+
 currentPathHtmlFiles.forEach((htmlFile) => {
   const filenameWithoutExt = basename(htmlFile, extname(htmlFile));
+
+  const isModalFile = filenameWithoutExt.includes('modal');
+
+  let crop = null;
+
+  if (!isModalFile) {
+    crop = VIEWPORT_CROP;
+  }
 
   describe(filenameWithoutExt, () => {
     let browser;
 
+    let page;
+
+    const scrollBySomePx = () => page.evaluate(() => document.querySelector('[data-button-name="scroll-by-some-px"]').click());
+
+    const toggleLockScroll = () => page.evaluate(() => document.querySelector('[data-button-name="toggle-lock-scroll"]').click());
+
     beforeEach(async () => {
       browser = await launchBrowser(VIEWPORT);
+
+      page = await browseHtmlPlaygroundFile(browser, resolve(currentPath, htmlFile));
     });
 
     afterEach(async () => {
@@ -62,31 +70,43 @@ currentPathHtmlFiles.forEach((htmlFile) => {
     });
 
     it('should be able to lock and unlock the scroll position without any layout shift', async () => {
-      const page = await browseHtmlPlaygroundFile(browser, resolve(currentPath, htmlFile));
+      await scrollBySomePx();
 
-      await page.evaluate(() => document.querySelector('#scroll-by-some-px').click());
+      let screenshots = [];
 
-      const screenshot0 = await takeCroppedBrowserScreenshot(page, `${filenameWithoutExt}-0`);
+      screenshots.push(await takeBrowserScreenshot(page, `${distPath}/${filenameWithoutExt}-${screenshots.length}.jpg`, { crop }));
 
-      await page.evaluate(() => document.querySelector('#toggle-lock-scroll').click());
+      await toggleLockScroll();
 
-      const screenshot1 = await takeCroppedBrowserScreenshot(page, `${filenameWithoutExt}-1`);
+      let comparison;
 
-      const comparison0and1 = await compareTwoImages(screenshot0, screenshot1);
+      if (!isModalFile) {
+        screenshots.push(await takeBrowserScreenshot(page, `${distPath}/${filenameWithoutExt}-${screenshots.length}.jpg`, { crop }));
 
-      assert.equal(comparison0and1.isSameDimensions, true);
+        comparison = await compareTwoImages(...screenshots);
 
-      assert.equal(Math.floor(comparison0and1.rawMisMatchPercentage), 0);
+        assert.equal(comparison.isSameDimensions, true);
 
-      await page.evaluate(() => document.querySelector('#toggle-lock-scroll').click());
+        assert.equal(Math.floor(comparison.rawMisMatchPercentage), 0);
 
-      const screenshot2 = await takeCroppedBrowserScreenshot(page, `${filenameWithoutExt}-2`);
+        await rm(screenshots[0]);
 
-      const comparison1and2 = await compareTwoImages(screenshot1, screenshot2);
+        screenshots.shift();
+      }
 
-      assert.equal(comparison1and2.isSameDimensions, true);
+      await toggleLockScroll();
 
-      assert.equal(Math.floor(comparison1and2.rawMisMatchPercentage), 0);
+      screenshots.push(await takeBrowserScreenshot(page, `${distPath}/${filenameWithoutExt}-${screenshots.length}.jpg`, { crop }));
+
+      comparison = await compareTwoImages(...screenshots);
+
+      assert.equal(comparison.isSameDimensions, true);
+
+      assert.equal(Math.floor(comparison.rawMisMatchPercentage), 0);
+
+      await Promise.all(screenshots.map((screenshot) => rm(screenshot)));
+
+      screenshots = [];
     });
   });
 });

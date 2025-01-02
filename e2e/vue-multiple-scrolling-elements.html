@@ -31,7 +31,7 @@
       overflow-y: scroll;
     }
 
-    .scroll-locked {
+    .scroll-container--locked {
       overflow: hidden;
       padding-right: var(--scrollbar-width);
     }
@@ -41,15 +41,15 @@
 <body>
   <div id="app">
     <nav>
-      <button @click="toggleLockScroll" id="toggle-lock-scroll">
+      <button @click="toggleLockScroll" data-button-name="toggle-lock-scroll">
         Toggle scroll lock
       </button>
 
-      <button @click="scrollBySomePx" id="scroll-by-some-px">
+      <button @click="scrollBySomePx" data-button-name="scroll-by-some-px">
         Scroll by some pixels
       </button>
 
-      <button @click="scrollToTop" id="scroll-to-top">
+      <button @click="scrollToTop" data-button-name="scroll-to-top">
         Scroll to top
       </button>
     </nav>
@@ -146,7 +146,7 @@
     </scroll-container>
   </div>
 
-  <script src="../dist/umd/scroll-padlock.js"></script>
+  <script src="../dist/scroll-padlock.umd.js"></script>
 
   <script type="importmap">
     {
@@ -158,6 +158,10 @@
 
   <script type="module">
     import { createApp, ref, defineComponent, watch } from 'vue';
+
+    const cssClassName = 'scroll-container';
+
+    const cssClassNameLocked = `${cssClassName}--locked`;
 
     const ScrollContainer = defineComponent({
       props: {
@@ -189,6 +193,8 @@
           if (scrollable.value && props.locked) {
             window.setScrollPadlockStyle({
               element: scrollable.value,
+
+              selector: `.${cssClassNameLocked}`,
             });
           }
         });
@@ -203,7 +209,7 @@
       },
 
       template: `
-        <div :class="['scroll-container', { 'scroll-locked': locked }]" ref="scrollable" @scroll="updateScrollTop">
+        <div :class="['${cssClassName}', { ['${cssClassNameLocked}']: locked }]" ref="scrollable" @scroll="updateScrollTop">
           <slot></slot>
         </div>
       `,

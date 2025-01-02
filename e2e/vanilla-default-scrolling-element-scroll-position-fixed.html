@@ -31,11 +31,11 @@
 
 <body>
   <nav>
-    <button id="toggle-lock-scroll">Toggle scroll lock</button>
+    <button data-button-name="toggle-lock-scroll">Toggle scroll lock</button>
 
-    <button id="scroll-by-some-px">Scroll by some pixels</button>
+    <button data-button-name="scroll-by-some-px">Scroll by some pixels</button>
 
-    <button id="scroll-to-top">Scroll to top</button>
+    <button data-button-name="scroll-to-top">Scroll to top</button>
   </nav>
 
   <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Bork Quid censes in Latino fore? Aliter autem vobis
@@ -91,7 +91,7 @@
   <p>Respondent extrema primis, media utrisque, omnia omnibus. </p>
 
 
-  <script src="../dist/umd/scroll-padlock.js"></script>
+  <script src="../dist/scroll-padlock.umd.js"></script>
 
   <script>
     const cssClassName = 'locked';
@@ -102,7 +102,7 @@
 
     let scrollTop = 0;
 
-    document.querySelector('#toggle-lock-scroll').addEventListener('click', () => {
+    Array.from(document.querySelectorAll('[data-button-name="toggle-lock-scroll"]')).forEach(el => el.addEventListener('click', () => {
       if (!classList.contains(cssClassName)) {
         scrollTop = window.scrollY;
       }
@@ -116,15 +116,15 @@
       classList.toggle(cssClassName);
 
       window.scrollTo(0, scrollTop);
-    });
+    }));
 
-    document.querySelector('#scroll-by-some-px').addEventListener('click', () => {
+    Array.from(document.querySelectorAll('[data-button-name="scroll-by-some-px"]')).forEach(el => el.addEventListener('click', () => {
       window.scrollBy(0, 100);
-    });
+    }));
 
-    document.querySelector('#scroll-to-top').addEventListener('click', () => {
+    Array.from(document.querySelectorAll('[data-button-name="scroll-to-top"]')).forEach(el => el.addEventListener('click', () => {
       window.scrollTo(0, 0);
-    });
+    }));
   </script>
 </body>
 

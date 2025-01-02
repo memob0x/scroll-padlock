@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Test</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+    }
+
+    .locked {
+      position: fixed;
+      width: 100%;
+      top: calc(var(--scroll-top) * -1);
+      padding-right: var(--scrollbar-width);
+    }
+
+    #nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+    }
+
+    #modal {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: black;
+      overflow: hidden;
+      color: white;
+      padding: 2rem 4rem;
+
+      visibility: hidden;
+      opacity: 0;
+      transition: visibility 0s 0.5s, opacity 0.5s ease;
+    }
+
+    .locked #modal {
+      overflow: auto;
+      visibility: visible;
+      opacity: 1;
+      transition: visibility 0s, opacity 0.5s ease;
+    }
+
+    #modal nav {
+      position: sticky;
+      top: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    #modal input {
+      max-width: 100%;
+      font-size: 2.5rem;
+      transform: translateY(-100px);
+      transition: transform 0.5s ease;
+    }
+
+    .locked #modal input {
+      transform: translateY(0);
+    }
+  </style>
+</head>
+
+<body>
+  <nav id="nav">
+    <button data-button-name="toggle-lock-scroll">Toggle scroll lock</button>
+
+    <button data-button-name="scroll-by-some-px">Scroll by some pixels</button>
+
+    <button data-button-name="scroll-to-top">Scroll to top</button>
+  </nav>
+
+  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Bork Quid censes in Latino fore? Aliter autem vobis
+    placet. Ergo, inquit, tibi Q. Duo Reges: constructio interrete. Urgent tamen et nihil remittunt. At multis malis
+    affectus. Nam de isto magna dissensio est. </p>
+
+  <p>Sequitur disserendi ratio cognitioque naturae; Aliter homines, aliter philosophos loqui putas oportere? Sed fortuna
+    fortis; Falli igitur possumus. Tum mihi Piso: Quid ergo? Idemne, quod iucunde? Itaque contra est, ac dicitis; </p>
+
+  <p>Tum Triarius: Posthac quidem, inquit, audacius. Paria sunt igitur. Nam de isto magna dissensio est. Primum divisit
+    ineleganter; Sed quanta sit alias, nunc tantum possitne esse tanta. Respondeat totidem verbis. </p>
+
+  <p>Occultum facinus esse potuerit, gaudebit; Proclivi currit oratio. Nihil enim hoc differt. Nihil illinc huc
+    pervenit. </p>
+
+  <p>Ut pulsi recurrant? Aperiendum est igitur, quid sit voluptas; Tum Quintus: Est plane, Piso, ut dicis, inquit. Istic
+    sum, inquit. Quorum altera prosunt, nocent altera. Zenonis est, inquam, hoc Stoici. </p>
+
+  <p>Qui-vere falsone, quaerere mittimus-dicitur oculis se privasse; Erat enim Polemonis. Age sane, inquam. Haec quo
+    modo conveniant, non sane intellego. </p>
+
+  <p>Confecta res esset. Mihi enim erit isdem istis fortasse iam utendum. Quae similitudo in genere etiam humano
+    apparet. </p>
+
+  <p>Id enim natura desiderat. Quis istud possit, inquit, negare? Itaque hic ipse iam pridem est reiectus; Satis est ad
+    hoc responsum. Omnis enim est natura diligens sui. Restinguet citius, si ardentem acceperit. </p>
+
+  <p>An tu me de L. Quo igitur, inquit, modo? Quae duo sunt, unum facit. Sed plane dicit quod intellegit. Ea possunt
+    paria non esse. Quae diligentissime contra Aristonem dicuntur a Chryippo. Quid censes in Latino fore? Quid de
+    Platone aut de Democrito loquar? </p>
+
+  <p>Apparet statim, quae sint officia, quae actiones. Maximus dolor, inquit, brevis est. Pauca mutat vel plura sane;
+    Sed quid sentiat, non videtis. At iam decimum annum in spelunca iacet. Restinguet citius, si ardentem acceperit.
+  </p>
+
+  <p>Primum divisit ineleganter; Vide, quantum, inquam, fallare, Torquate. Verum hoc idem saepe faciamus. Quorum altera
+    prosunt, nocent altera. Falli igitur possumus. Avaritiamne minuis? Haec quo modo conveniant, non sane intellego.
+  </p>
+
+  <p>Sed ad bona praeterita redeamus. Ac tamen hic mallet non dolere. Quod quidem nobis non saepe contingit. Hunc vos
+    beatum; </p>
+
+  <p>Expectoque quid ad id, quod quaerebam, respondeas. Nam de isto magna dissensio est. Minime vero istorum quidem,
+    inquit. Aufert enim sensus actionemque tollit omnem. Ait enim se, si uratur, Quam hoc suave! dicturum. </p>
+
+  <p>Ergo id est convenienter naturae vivere, a natura discedere. Nam Pyrrho, Aristo, Erillus iam diu abiecti. Bork Tu
+    vero, inquam, ducas licet, si sequetur; Istam voluptatem, inquit, Epicurus ignorat? Quae cum dixisset paulumque
+    institisset, Quid est? Tum ille: Ain tandem? Nam ista vestra: Si gravis, brevis; </p>
+
+  <p>Collige omnia, quae soletis: Praesidium amicorum. Bork Hoc est dicere: Non reprehenderem asotos, si non essent
+    asoti. Ut optime, secundum naturam affectum esse possit. An haec ab eo non dicuntur? Pollicetur certe. </p>
+
+  <p>Respondent extrema primis, media utrisque, omnia omnibus. </p>
+
+  <div id="modal">
+    <nav>
+      <button data-button-name="toggle-lock-scroll">close</button>
+
+      <input placeholder="Hello." />
+    </nav>
+
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Bork Quid censes in Latino fore? Aliter autem vobis
+      placet. Ergo, inquit, tibi Q. Duo Reges: constructio interrete. Urgent tamen et nihil remittunt. At multis malis
+      affectus. Nam de isto magna dissensio est. </p>
+
+    <p>Sequitur disserendi ratio cognitioque naturae; Aliter homines, aliter philosophos loqui putas oportere? Sed
+      fortuna
+      fortis; Falli igitur possumus. Tum mihi Piso: Quid ergo? Idemne, quod iucunde? Itaque contra est, ac dicitis; </p>
+
+    <p>Tum Triarius: Posthac quidem, inquit, audacius. Paria sunt igitur. Nam de isto magna dissensio est. Primum
+      divisit
+      ineleganter; Sed quanta sit alias, nunc tantum possitne esse tanta. Respondeat totidem verbis. </p>
+
+    <p>Occultum facinus esse potuerit, gaudebit; Proclivi currit oratio. Nihil enim hoc differt. Nihil illinc huc
+      pervenit. </p>
+
+    <p>Ut pulsi recurrant? Aperiendum est igitur, quid sit voluptas; Tum Quintus: Est plane, Piso, ut dicis, inquit.
+      Istic
+      sum, inquit. Quorum altera prosunt, nocent altera. Zenonis est, inquam, hoc Stoici. </p>
+
+    <p>Qui-vere falsone, quaerere mittimus-dicitur oculis se privasse; Erat enim Polemonis. Age sane, inquam. Haec quo
+      modo conveniant, non sane intellego. </p>
+
+    <p>Confecta res esset. Mihi enim erit isdem istis fortasse iam utendum. Quae similitudo in genere etiam humano
+      apparet. </p>
+
+    <p>Id enim natura desiderat. Quis istud possit, inquit, negare? Itaque hic ipse iam pridem est reiectus; Satis est
+      ad
+      hoc responsum. Omnis enim est natura diligens sui. Restinguet citius, si ardentem acceperit. </p>
+
+    <p>An tu me de L. Quo igitur, inquit, modo? Quae duo sunt, unum facit. Sed plane dicit quod intellegit. Ea possunt
+      paria non esse. Quae diligentissime contra Aristonem dicuntur a Chryippo. Quid censes in Latino fore? Quid de
+      Platone aut de Democrito loquar? </p>
+
+    <p>Apparet statim, quae sint officia, quae actiones. Maximus dolor, inquit, brevis est. Pauca mutat vel plura sane;
+      Sed quid sentiat, non videtis. At iam decimum annum in spelunca iacet. Restinguet citius, si ardentem acceperit.
+    </p>
+
+    <p>Primum divisit ineleganter; Vide, quantum, inquam, fallare, Torquate. Verum hoc idem saepe faciamus. Quorum
+      altera
+      prosunt, nocent altera. Falli igitur possumus. Avaritiamne minuis? Haec quo modo conveniant, non sane intellego.
+    </p>
+
+    <p>Sed ad bona praeterita redeamus. Ac tamen hic mallet non dolere. Quod quidem nobis non saepe contingit. Hunc vos
+      beatum; </p>
+
+    <p>Expectoque quid ad id, quod quaerebam, respondeas. Nam de isto magna dissensio est. Minime vero istorum quidem,
+      inquit. Aufert enim sensus actionemque tollit omnem. Ait enim se, si uratur, Quam hoc suave! dicturum. </p>
+
+    <p>Ergo id est convenienter naturae vivere, a natura discedere. Nam Pyrrho, Aristo, Erillus iam diu abiecti. Bork Tu
+      vero, inquam, ducas licet, si sequetur; Istam voluptatem, inquit, Epicurus ignorat? Quae cum dixisset paulumque
+      institisset, Quid est? Tum ille: Ain tandem? Nam ista vestra: Si gravis, brevis; </p>
+
+    <p>Collige omnia, quae soletis: Praesidium amicorum. Bork Hoc est dicere: Non reprehenderem asotos, si non essent
+      asoti. Ut optime, secundum naturam affectum esse possit. An haec ab eo non dicuntur? Pollicetur certe. </p>
+
+    <p>Respondent extrema primis, media utrisque, omnia omnibus. </p>
+  </div>
+
+  <script src="../dist/scroll-padlock.umd.js"></script>
+
+  <script>
+    const cssClassName = 'locked';
+
+    const { scrollingElement } = document;
+
+    const { classList } = scrollingElement;
+
+    let scrollTop = 0;
+
+    const modalSearchInput = document.querySelector('#modal input')
+
+    Array.from(document.querySelectorAll('[data-button-name="toggle-lock-scroll"]')).forEach(el => el.addEventListener('click', () => {
+      if (!classList.contains(cssClassName)) {
+        scrollTop = window.scrollY;
+      }
+
+      setScrollPadlockStyle({
+        selector: '.' + cssClassName,
+
+        element: scrollingElement,
+      })
+
+      classList.toggle(cssClassName);
+
+      window.scrollTo(0, scrollTop);
+
+      let focusTarget = document.body;
+
+      if (classList.contains(cssClassName)) {
+        focusTarget = modalSearchInput;
+      }
+
+      focusTarget.focus();
+    }));
+
+    Array.from(document.querySelectorAll('[data-button-name="scroll-by-some-px"]')).forEach(el => el.addEventListener('click', () => {
+      window.scrollBy(0, 100);
+    }));
+
+    Array.from(document.querySelectorAll('[data-button-name="scroll-to-top"]')).forEach(el => el.addEventListener('click', () => {
+      window.scrollTo(0, 0);
+    }));
+
+    // Addressing the "ios-keyboard-sub-window-thing offset" bug:
+    // locking the page scroll while a programmatic focus
+    // on an an input field takes place it makes the keyboard tray to show
+    // and that triggers, along with the visual artifact itself, a "resize" event
+    window.addEventListener("resize", () => {
+      if (scrollingElement.classList.contains(cssClassName)) {
+        // "Re-aligns" the iOS keyboard "sub-window"
+        window.scrollTo(0, 0);
+      }
+    });
+  </script>
+</body>
+
+</html>

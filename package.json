@@ -6,9 +6,9 @@
     "url": "https://github.com/memob0x"
   },
   "description": "Locks elements scroll handling scrollbar gaps and iOS Safari with CSS variables",
-  "main": "dist/umd/scroll-padlock.min.js",
-  "module": "dist/es/scroll-padlock.js",
-  "types": "dist/scroll-padlock.d.ts",
+  "main": "./dist/scroll-padlock.umd.js",
+  "module": "./dist/scroll-padlock.js",
+  "types": "./dist/scroll-padlock.d.ts",
   "version": "3.0.0",
   "license": "MIT",
   "repository": "https://github.com/memob0x/scroll-padlock.git",
@@ -42,7 +42,7 @@
   "scripts": {
     "lint": "npx eslint",
     "build": "node ./build.js",
-    "test:unit": "node --test --experimental-test-coverage --test-reporter=spec --test-reporter=lcov --test-reporter=./reporter.js --test-reporter-destination=stdout --test-reporter-destination=lcov.info --test-reporter-destination=stdout src/*.spec.js",
+    "test:unit": "node --test --experimental-test-coverage --test-reporter=spec --test-reporter=lcov --test-reporter=./reporter.js --test-reporter-destination=stdout --test-reporter-destination=lcov.info --test-reporter-destination=stdout ./src/*.spec.js",
     "test:e2e": "npm run build && node --test ./e2e/*.spec.js",
     "test": "npm run test:unit && npm run test:e2e",
     "prepare": "husky install"

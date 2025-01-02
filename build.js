@@ -8,22 +8,20 @@ import { fileURLToPath } from 'node:url';
 
 const pathRoot = resolve('.');
 
+const sourceFolder = 'src';
+
+const distFolder = 'dist';
+
+const moduleName = 'scroll-padlock';
+
 const formats = [
   'umd',
 
-  'amd',
-
-  'cjs',
-
-  'iife',
-
   'es',
-
-  'system',
 ];
 
 const rollupResult = await rollup({
-  input: `${pathRoot}/src/set-scroll-padlock-style.js`,
+  input: `${pathRoot}/${sourceFolder}/set-scroll-padlock-style.js`,
 });
 
 const tasks = [];
@@ -31,12 +29,14 @@ const tasks = [];
 for (let formatIndex = 0, { length } = formats; formatIndex < length; formatIndex += 1) {
   const format = formats[formatIndex];
 
-  const folder = `dist/${format}`;
-
   for (let versionIndex = 0; versionIndex < 2; versionIndex += 1) {
     const plugins = [];
 
     let suffixes = '';
+
+    if (format !== 'es') {
+      suffixes += `.${format}`;
+    }
 
     if (versionIndex % 2) {
       plugins.push(rollupTerser());
@@ -53,7 +53,7 @@ for (let formatIndex = 0, { length } = formats; formatIndex < length; formatInde
 
       name: 'setScrollPadlockStyle',
 
-      file: `${pathRoot}/${folder}/scroll-padlock${suffixes}.js`,
+      file: `${pathRoot}/${distFolder}/${moduleName}${suffixes}.js`,
 
       exports: 'default',
 
@@ -65,29 +65,29 @@ for (let formatIndex = 0, { length } = formats; formatIndex < length; formatInde
 await Promise.all(tasks);
 
 createProgram([
-  'src/typedef.js',
+  `${pathRoot}/${sourceFolder}/typedef.js`,
 
-  'dist/es/scroll-padlock.js',
+  `${pathRoot}/${distFolder}/${moduleName}.js`,
 ], {
   allowJs: true, // include JS files
   declaration: true, // generate .d.ts files
   emitDeclarationOnly: true, // only output declarations
   declarationMap: true, // create declaration maps
-  outFile: 'dist/scroll-padlock.d.ts', // output single .d.ts file
+  outFile: `${pathRoot}/${distFolder}/${moduleName}.d.ts`, // output single .d.ts file
 }).emit();
 
 const dtsPath = resolve(
   dirname(fileURLToPath(import.meta.url)),
 
-  'dist/scroll-padlock.d.ts',
+  `${pathRoot}/${distFolder}/${moduleName}.d.ts`,
 );
 
 const content = await readFile(dtsPath, 'utf-8');
 
 const updatedContent = content.replace(
-  /declare module "dist\/es\/scroll-padlock"/g,
+  new RegExp(`declare module "${distFolder}/${moduleName}"`, 'g'),
 
-  'declare module "scroll-padlock"',
+  `declare module "${moduleName}"`,
 );
 
 await writeFile(dtsPath, updatedContent, 'utf-8');

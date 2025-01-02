@@ -141,7 +141,17 @@ describe(setScrollPadlockStyle.name, () => {
     equal(testingEnvGlobalThis.document.head.querySelectorAll('style').length, 1);
   });
 
-  it('should call use the global computed properties when no element is given', () => {
+  it('should address a default selector if the relative option is not provided', () => {
+    equal(setScrollPadlockStyle().sheet.cssRules[0].cssText.startsWith('.scroll-padlock'), true);
+  });
+
+  it('should address the provided selector if the relative option is provided', () => {
+    const selector = `.${randomUUID()}`;
+
+    equal(setScrollPadlockStyle({ selector }).sheet.cssRules[0].cssText.startsWith(selector), true);
+  });
+
+  it('should call use the global computed properties when no element is provided', () => {
     let calls = 0;
 
     let params = [];
@@ -183,7 +193,7 @@ describe(setScrollPadlockStyle.name, () => {
     ]);
   });
 
-  it('should call use the global computed properties when the default scrolling element is given', () => {
+  it('should call use the global computed properties when the default scrolling element is provided', () => {
     let calls = 0;
 
     let params = [];
@@ -227,7 +237,7 @@ describe(setScrollPadlockStyle.name, () => {
     ]);
   });
 
-  it('should call use the global computed properties when the "body" element is given', () => {
+  it('should call use the global computed properties when the "body" element is provided', () => {
     let calls = 0;
 
     let params = [];
@@ -285,7 +295,7 @@ describe(setScrollPadlockStyle.name, () => {
     ]);
   });
 
-  it('should call use the global computed properties when the "document element" is given', () => {
+  it('should call use the global computed properties when the "document element" is provided', () => {
     let calls = 0;
 
     let params = [];
@@ -343,7 +353,7 @@ describe(setScrollPadlockStyle.name, () => {
     ]);
   });
 
-  it('should call use the given element computed properties when a custom element is given', () => {
+  it('should call use the provided element computed properties when a custom element is provided', () => {
     let calls = 0;
 
     let params = [];
@@ -382,7 +392,7 @@ describe(setScrollPadlockStyle.name, () => {
     ]);
   });
 
-  it('should set the given custom styles to the element which matches the given selector without using inline styles', () => {
+  it('should set the provided custom styles to the element which matches the provided selector without using inline styles', () => {
     const cssClass = `custom-element-${randomUUID()}`;
 
     const selector = `.${cssClass}`;
@@ -470,7 +480,7 @@ describe(setScrollPadlockStyle.name, () => {
     // TODO: check why computed styles are not being updated at this point
   });
 
-  it('should set the default css variables to the element which matches the given selector', () => {
+  it('should set the default css variables to the element which matches the provided selector', () => {
     const cssClass = `custom-element-${randomUUID()}`;
 
     const selector = `.${cssClass}`;
