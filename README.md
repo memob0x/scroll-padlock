@@ -86,7 +86,7 @@ These CSS variables can be used to implement the preferred approach to prevent t
 }
 ```
 
-Since each function call updates the styles, a good time to call it is immediately before adding the CSS class.
+Since each function call updates the CSS variables, a good time to call it is immediately before adding the CSS class that would lock the element scroll.
 
 ```javascript
 setScrollPadlockStyle();
@@ -98,7 +98,7 @@ document.scrollingElement.classList.add('scroll-padlock');
 
 The `setScrollPadlockStyle` function accepts an options object which customizes its behavior. Here are the available options:
 
-- `element`: the DOM element that will be used to retrieve the values for the CSS variables.
+- `element`: the DOM element that will be used to retrieve the CSS variables values.
 - `selector`: the CSS selector string that identifies the target element.
 - `formatter`: a function that allows to customize the the CSS styles to be added.
 

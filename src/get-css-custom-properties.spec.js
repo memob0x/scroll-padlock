@@ -1,5 +1,5 @@
 import { describe, it } from 'node:test';
-import { equal } from 'node:assert';
+import { equal, throws } from 'node:assert';
 import getCSSCustomProperties from './get-css-custom-properties.js';
 
 describe('getCSSCustomProperties', () => {
@@ -25,33 +25,24 @@ describe('getCSSCustomProperties', () => {
 --scroll-left: 20px;`);
   });
 
-  it('should handle missing parameter gracefully', () => {
-    equal(getCSSCustomProperties(), `--offset-width: 0px;
---offset-height: 0px;
---client-width: 0px;
---client-height: 0px;
---scroll-width: 0px;
---scroll-height: 0px;
---scrollbar-width: 0px;
---scrollbar-height: 0px;
---scroll-top: 0px;
---scroll-left: 0px;`);
+  it('should throw when the parameter is missing', () => {
+    throws(() => getCSSCustomProperties(), Error);
   });
 
-  it('should handle missing properties gracefully', () => {
+  it('should not handle missing properties', () => {
     equal(getCSSCustomProperties({
       offsetWidth: 100,
       offsetHeight: 200,
     }), `--offset-width: 100px;
 --offset-height: 200px;
---client-width: 0px;
---client-height: 0px;
---scroll-width: 0px;
---scroll-height: 0px;
---scrollbar-width: 100px;
---scrollbar-height: 200px;
---scroll-top: 0px;
---scroll-left: 0px;`);
+--client-width: NaNpx;
+--client-height: NaNpx;
+--scroll-width: NaNpx;
+--scroll-height: NaNpx;
+--scrollbar-width: NaNpx;
+--scrollbar-height: NaNpx;
+--scroll-top: NaNpx;
+--scroll-left: NaNpx;`);
   });
 
   it('should set "client" values using the minimum value between the given "offset" and "client" values', () => {
@@ -60,16 +51,22 @@ describe('getCSSCustomProperties', () => {
       offsetHeight: 200,
       clientWidth: 120,
       clientHeight: 190,
+
+      scrollWidth: 999,
+      scrollHeight: 999,
+
+      scrollTop: 999,
+      scrollLeft: 999,
     }), `--offset-width: 100px;
 --offset-height: 200px;
 --client-width: 100px;
 --client-height: 190px;
---scroll-width: 0px;
---scroll-height: 0px;
+--scroll-width: 999px;
+--scroll-height: 999px;
 --scrollbar-width: 0px;
 --scrollbar-height: 10px;
---scroll-top: 0px;
---scroll-left: 0px;`);
+--scroll-top: 999px;
+--scroll-left: 999px;`);
   });
 
   it('should calculate and set "scrollbar" values using the given "offset" and "client" values without setting negative values', () => {
@@ -78,15 +75,21 @@ describe('getCSSCustomProperties', () => {
       offsetHeight: 250,
       clientWidth: 100,
       clientHeight: 200,
+
+      scrollWidth: 999,
+      scrollHeight: 999,
+
+      scrollTop: 999,
+      scrollLeft: 999,
     }), `--offset-width: 150px;
 --offset-height: 250px;
 --client-width: 100px;
 --client-height: 200px;
---scroll-width: 0px;
---scroll-height: 0px;
+--scroll-width: 999px;
+--scroll-height: 999px;
 --scrollbar-width: 50px;
 --scrollbar-height: 50px;
---scroll-top: 0px;
---scroll-left: 0px;`);
+--scroll-top: 999px;
+--scroll-left: 999px;`);
   });
 });
