@@ -1,10 +1,10 @@
 import { describe, it } from 'node:test';
 import { equal } from 'node:assert';
-import getCSSCustomAttributes from './get-css-custom-attributes.js';
+import getCSSCustomProperties from './get-css-custom-properties.js';
 
-describe('getCSSCustomAttributes', () => {
+describe('getCSSCustomProperties', () => {
   it('should format CSS custom attributes correctly', () => {
-    equal(getCSSCustomAttributes({
+    equal(getCSSCustomProperties({
       offsetWidth: 100,
       offsetHeight: 200,
       clientWidth: 90,
@@ -26,7 +26,7 @@ describe('getCSSCustomAttributes', () => {
   });
 
   it('should handle missing parameter gracefully', () => {
-    equal(getCSSCustomAttributes(), `--offset-width: 0px;
+    equal(getCSSCustomProperties(), `--offset-width: 0px;
 --offset-height: 0px;
 --client-width: 0px;
 --client-height: 0px;
@@ -39,7 +39,7 @@ describe('getCSSCustomAttributes', () => {
   });
 
   it('should handle missing properties gracefully', () => {
-    equal(getCSSCustomAttributes({
+    equal(getCSSCustomProperties({
       offsetWidth: 100,
       offsetHeight: 200,
     }), `--offset-width: 100px;
@@ -55,7 +55,7 @@ describe('getCSSCustomAttributes', () => {
   });
 
   it('should set "client" values using the minimum value between the given "offset" and "client" values', () => {
-    equal(getCSSCustomAttributes({
+    equal(getCSSCustomProperties({
       offsetWidth: 100,
       offsetHeight: 200,
       clientWidth: 120,
@@ -73,7 +73,7 @@ describe('getCSSCustomAttributes', () => {
   });
 
   it('should calculate and set "scrollbar" values using the given "offset" and "client" values without setting negative values', () => {
-    equal(getCSSCustomAttributes({
+    equal(getCSSCustomProperties({
       offsetWidth: 150,
       offsetHeight: 250,
       clientWidth: 100,

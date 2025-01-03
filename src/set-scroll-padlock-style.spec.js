@@ -193,6 +193,64 @@ describe(setScrollPadlockStyle.name, () => {
     ]);
   });
 
+  it('should call use the fallback global computed properties when no element is provided and the standard global element is not available', () => {
+    let calls = 0;
+
+    let params = [];
+
+    const formatter = (...args) => {
+      calls += 1;
+
+      params = args;
+    };
+
+    testingEnvGlobalThis.innerWidth = 1;
+    testingEnvGlobalThis.innerHeight = 2;
+    testingEnvGlobalThis.scrollY = 3;
+    testingEnvGlobalThis.scrollX = 4;
+
+    testingEnvGlobalThis.document.scrollingElement = null;
+
+    Object.defineProperty(testingEnvGlobalThis.document.documentElement, 'clientWidth', {
+      value: 5,
+      configurable: true,
+    });
+
+    Object.defineProperty(testingEnvGlobalThis.document.documentElement, 'clientHeight', {
+      value: 6,
+      configurable: true,
+    });
+
+    Object.defineProperty(testingEnvGlobalThis.document.documentElement, 'scrollWidth', {
+      value: 7,
+      configurable: true,
+    });
+
+    Object.defineProperty(testingEnvGlobalThis.document.documentElement, 'scrollHeight', {
+      value: 8,
+      configurable: true,
+    });
+
+    setScrollPadlockStyle({
+      formatter,
+    });
+
+    equal(calls, 1);
+
+    deepEqual(params, [
+      {
+        offsetWidth: 1,
+        offsetHeight: 2,
+        scrollTop: 3,
+        scrollLeft: 4,
+        clientWidth: 5,
+        clientHeight: 6,
+        scrollWidth: 7,
+        scrollHeight: 8,
+      },
+    ]);
+  });
+
   it('should call use the global computed properties when the default scrolling element is provided', () => {
     let calls = 0;
 

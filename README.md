@@ -63,7 +63,7 @@ setScrollPadlockStyle();
 
 ## Usage
 
-The library exports a function which appends CSS styles addressing a default `.scroll-padlock` selector using the page default [scrolling element](https://developer.mozilla.org/en-US/docs/Web/API/document/scrollingElement) and the [window](https://developer.mozilla.org/en-US/docs/Web/API/Window) object to retrieve the values which would be set as the following CSS variables:
+The library exports a `setScrollPadlockStyle` function which appends CSS styles addressing a default `.scroll-padlock` selector using the page default [scrolling element](https://developer.mozilla.org/en-US/docs/Web/API/document/scrollingElement) and the [window](https://developer.mozilla.org/en-US/docs/Web/API/Window) object to retrieve the values which would correspond to the following CSS variables:
 
 - `--scroll-top`: the number of pixels the element's content is scrolled vertically.
 - `--scroll-left`: the number of pixels the element's content is scrolled horizontally.
@@ -76,7 +76,7 @@ The library exports a function which appends CSS styles addressing a default `.s
 - `--client-width`: the visible width of the element, excluding the scrollbar.
 - `--client-height`: the visible height of the element, excluding the scrollbar.
 
-These CSS variables can be used to implement the preferred approach to prevent the element scroll or to add the scrollbar gap componsation.
+These CSS variables can be used to implement the preferred approach to prevent the element scroll or to add the scrollbar gap componsation, see the following basic example:
 
 ```css
 .scroll-padlock {
@@ -86,7 +86,7 @@ These CSS variables can be used to implement the preferred approach to prevent t
 }
 ```
 
-Since a function call updates the styles it can be called before adding the CSS class.
+Since each function call updates the styles, a good time to call it is immediately before adding the CSS class.
 
 ```javascript
 setScrollPadlockStyle();
@@ -96,10 +96,10 @@ document.scrollingElement.classList.add('scroll-padlock');
 
 ## Options
 
-The library function accepts an options object to customize its behavior; these are the available options:
+The `setScrollPadlockStyle` function accepts an options object which customizes its behavior. Here are the available options:
 
 - `element`: the DOM element that will be used to retrieve the values for the CSS variables.
-- `selector`: a string representing a CSS selector to identify the target element.
+- `selector`: the CSS selector string that identifies the target element.
 - `formatter`: a function that allows to customize the the CSS styles to be added.
 
 ```javascript

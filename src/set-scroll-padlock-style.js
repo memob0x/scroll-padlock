@@ -1,6 +1,6 @@
-import getCSSCustomAttributes from './get-css-custom-attributes.js';
+import getCSSCustomProperties from './get-css-custom-properties.js';
 
-/** @typedef {import('./types.js').CustomProperties} CustomProperties */
+/** @typedef {import('./types.js').Options} Options */
 
 const INT_CSS_RULE_UNIQUE_INDEX = 0;
 
@@ -12,11 +12,7 @@ const stylers = {};
 
 /**
  * Sets CSS rules for the scroll padlock.
- * @param {{
- * selector: string;
- * element: Element;
- * formatter: (properties: CustomProperties) => string;
- * }} settings - The settings for the scroll padlock.
+ * @param {Options} [settings] - The settings for the scroll padlock.
  * @returns {HTMLStyleElement} The style element containing the CSS rules.
  * @throws {Error} If the given settings are invalid.
  * @throws {Error} If the style element CSSStyleSheet instance can't be referenced.
@@ -39,9 +35,9 @@ export default function setScrollPadlockStyle(settings) {
   const {
     selector = '.scroll-padlock',
 
-    element = scrollingElement,
+    element = scrollingElement || documentElement,
 
-    formatter = getCSSCustomAttributes,
+    formatter = getCSSCustomProperties,
   } = settings || {};
 
   if (!selector || !element || !formatter) {

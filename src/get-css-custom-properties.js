@@ -4,11 +4,11 @@ const { round, min, max } = Math;
 
 /**
  * Formats the given dimensions and scroll information into CSS variables.
- * @param {CustomProperties} customProperties -
+ * @param {CustomProperties} [customProperties] -
  * The dimensions and scroll information.
  * @returns {string} The formatted CSS variables.
  */
-export default function getCSSCustomAttributes(customProperties) {
+export default function getCSSCustomProperties(customProperties) {
   let {
     offsetWidth,
 
@@ -27,21 +27,21 @@ export default function getCSSCustomAttributes(customProperties) {
     scrollLeft,
   } = customProperties || {};
 
-  offsetWidth = offsetWidth ?? 0;
+  offsetWidth = offsetWidth || 0;
 
-  offsetHeight = offsetHeight ?? 0;
+  offsetHeight = offsetHeight || 0;
 
-  clientWidth = clientWidth ?? 0;
+  clientWidth = clientWidth || 0;
 
-  clientHeight = clientHeight ?? 0;
+  clientHeight = clientHeight || 0;
 
-  scrollHeight = scrollHeight ?? 0;
+  scrollHeight = scrollHeight || 0;
 
-  scrollWidth = scrollWidth ?? 0;
+  scrollWidth = scrollWidth || 0;
 
-  scrollTop = scrollTop ?? 0;
+  scrollTop = scrollTop || 0;
 
-  scrollLeft = scrollLeft ?? 0;
+  scrollLeft = scrollLeft || 0;
 
   return `--offset-width: ${round(offsetWidth)}px;
 --offset-height: ${round(offsetHeight)}px;

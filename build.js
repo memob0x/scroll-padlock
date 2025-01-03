@@ -16,23 +16,35 @@ const pathRoot = dirname(fileURLToPath(import.meta.url));
 
 const fileContentJsDocTypes = await readFile(`${pathRoot}/${FOLDER_NAME_SRC}/types.js`, 'utf8');
 
-const moduleNameCamelCase = FILE_NAME_MODULE.replace(/-([a-z])/g, (_, letter) => letter.toUpperCase());
+const jsDocTypedefs = fileContentJsDocTypes.match(/\/\*\*[\s\S]*?@typedef[\s\S]*?\*\//g)?.reduce((acc, typedef) => {
+  const match = typedef.match(/@typedef\s+(\w+)/);
+
+  if (match) {
+    acc[match[1]] = typedef;
+  }
+
+  return acc;
+}, {});
 
 const rollupResult = await rollup({
   input: `${pathRoot}/${FOLDER_NAME_SRC}/index.js`,
 
   plugins: [
     {
-      transform(code) {
-        return {
-          code: code.replaceAll(/\/\*\*[\s\S]*?import\([^)]+\)[\s\S]*?\*\//g, fileContentJsDocTypes),
+      transform: (code) => ({
+        code: code.replace(
+          /\/\*\*\s*@typedef\s*\{import\(['"].*['"]\)\.(\w+)\}\s*\1\s*\*\//g,
 
-          map: null,
-        };
-      },
+          (match, typeName) => jsDocTypedefs?.[typeName] || match,
+        ),
+
+        map: null,
+      }),
     },
   ],
 });
+
+const moduleNameCamelCase = FILE_NAME_MODULE.replace(/-([a-z])/g, (_, letter) => letter.toUpperCase());
 
 await Promise.all([
   'es',
