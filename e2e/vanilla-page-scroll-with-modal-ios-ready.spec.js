@@ -33,7 +33,7 @@ describe(testBaseName, () => {
   beforeEach(async () => {
     browser = await launchBrowser(VIEWPORT);
 
-    page = await browseHtmlPlaygroundFile(browser, resolve(currentPath, `${testBaseName}.html`));
+    page = await browseHtmlPlaygroundFile(browser, `${currentPath}/${testBaseName}.html`);
   });
 
   afterEach(async () => {

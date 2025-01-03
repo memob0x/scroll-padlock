@@ -1,10 +1,11 @@
-import './typedef.js';
+/** @typedef {import('./types.js').CustomProperties} CustomProperties */
 
 const { round, min, max } = Math;
 
 /**
  * Formats the given dimensions and scroll information into CSS variables.
- * @param {CustomProperties} customProperties - The dimensions and scroll information.
+ * @param {CustomProperties} customProperties -
+ * The dimensions and scroll information.
  * @returns {string} The formatted CSS variables.
  */
 export default function getCSSCustomAttributes(customProperties) {

@@ -28,7 +28,7 @@ npm install scroll-padlock
 ```
 
 ```javascript
-import setScrollPadlockStyle from "scroll-padlock";
+import { setScrollPadlockStyle } from "scroll-padlock";
 
 setScrollPadlockStyle();
 ```
@@ -45,7 +45,7 @@ setScrollPadlockStyle();
 </script>
 
 <script type="module">
-  import setScrollPadlockStyle from "scroll-padlock";
+  import { setScrollPadlockStyle } from "scroll-padlock";
 
   setScrollPadlockStyle();
 </script>
@@ -57,7 +57,7 @@ setScrollPadlockStyle();
 <script src="https://cdn.jsdelivr.net/npm/scroll-padlock@latest/dist/scroll-padlock.umd.min.js"></script>
 
 <script>
-  window.setScrollPadlockStyle();
+  window.scrollPadlock.setScrollPadlockStyle();
 </script>
 ```
 

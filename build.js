@@ -1,34 +1,44 @@
-import { dirname, resolve } from 'node:path';
+import { dirname } from 'node:path';
 import { rollup } from 'rollup';
 import { createProgram } from 'typescript';
 import rollupGzip from 'rollup-plugin-gzip';
 import rollupTerser from '@rollup/plugin-terser';
-import { readFile, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
+import { readFile } from 'node:fs/promises';
 
-const pathRoot = resolve('.');
+const FOLDER_NAME_SRC = 'src';
 
-const sourceFolder = 'src';
+const FOLDER_NAME_DIST = 'dist';
 
-const distFolder = 'dist';
+const FILE_NAME_MODULE = 'scroll-padlock';
 
-const moduleName = 'scroll-padlock';
+const pathRoot = dirname(fileURLToPath(import.meta.url));
 
-const formats = [
-  'umd',
+const fileContentJsDocTypes = await readFile(`${pathRoot}/${FOLDER_NAME_SRC}/types.js`, 'utf8');
 
-  'es',
-];
+const moduleNameCamelCase = FILE_NAME_MODULE.replace(/-([a-z])/g, (_, letter) => letter.toUpperCase());
 
 const rollupResult = await rollup({
-  input: `${pathRoot}/${sourceFolder}/set-scroll-padlock-style.js`,
+  input: `${pathRoot}/${FOLDER_NAME_SRC}/index.js`,
+
+  plugins: [
+    {
+      transform(code) {
+        return {
+          code: code.replaceAll(/\/\*\*[\s\S]*?import\([^)]+\)[\s\S]*?\*\//g, fileContentJsDocTypes),
+
+          map: null,
+        };
+      },
+    },
+  ],
 });
 
-const tasks = [];
+await Promise.all([
+  'es',
 
-for (let formatIndex = 0, { length } = formats; formatIndex < length; formatIndex += 1) {
-  const format = formats[formatIndex];
-
+  'umd',
+].reduce((tasks, format) => {
   for (let versionIndex = 0; versionIndex < 2; versionIndex += 1) {
     const plugins = [];
 
@@ -51,43 +61,28 @@ for (let formatIndex = 0, { length } = formats; formatIndex < length; formatInde
 
       format,
 
-      name: 'setScrollPadlockStyle',
+      name: moduleNameCamelCase,
 
-      file: `${pathRoot}/${distFolder}/${moduleName}${suffixes}.js`,
-
-      exports: 'default',
+      file: `${pathRoot}/${FOLDER_NAME_DIST}/${FILE_NAME_MODULE}${suffixes}.js`,
 
       plugins,
     }));
   }
-}
 
-await Promise.all(tasks);
+  return tasks;
+}, []));
+
+const pathDtsFile = `${pathRoot}/${FOLDER_NAME_DIST}/${FILE_NAME_MODULE}.d.ts`;
 
 createProgram([
-  `${pathRoot}/${sourceFolder}/typedef.js`,
-
-  `${pathRoot}/${distFolder}/${moduleName}.js`,
+  `${pathRoot}/${FOLDER_NAME_DIST}/${FILE_NAME_MODULE}.js`,
 ], {
   allowJs: true, // include JS files
   declaration: true, // generate .d.ts files
   emitDeclarationOnly: true, // only output declarations
   declarationMap: true, // create declaration maps
-  outFile: `${pathRoot}/${distFolder}/${moduleName}.d.ts`, // output single .d.ts file
+  outFile: pathDtsFile, // output single .d.ts file
+  paths: {
+    [FILE_NAME_MODULE]: [`${pathRoot}/${FOLDER_NAME_DIST}/${FILE_NAME_MODULE}.js`],
+  },
 }).emit();
-
-const dtsPath = resolve(
-  dirname(fileURLToPath(import.meta.url)),
-
-  `${pathRoot}/${distFolder}/${moduleName}.d.ts`,
-);
-
-const content = await readFile(dtsPath, 'utf-8');
-
-const updatedContent = content.replace(
-  new RegExp(`declare module "${distFolder}/${moduleName}"`, 'g'),
-
-  `declare module "${moduleName}"`,
-);
-
-await writeFile(dtsPath, updatedContent, 'utf-8');

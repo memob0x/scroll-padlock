@@ -1,5 +1,6 @@
-import './typedef.js';
 import getCSSCustomAttributes from './get-css-custom-attributes.js';
+
+/** @typedef {import('./types.js').CustomProperties} CustomProperties */
 
 const INT_CSS_RULE_UNIQUE_INDEX = 0;
 
