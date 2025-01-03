@@ -15,10 +15,10 @@
     }
 
     nav {
-      position: fixed;
+      position: sticky;
       top: 0;
-      left: 0;
-      z-index: 999;
+      display: flex;
+      flex-direction: column;
     }
 
     #app {
@@ -41,12 +41,12 @@
 <body>
   <div id="app">
     <nav>
-      <button @click="toggleLockScroll" data-button-name="toggle-lock-scroll">
+      <button @click="toggleLockScroll" data-button-name="toggle-scroll-lock">
         Toggle scroll lock
       </button>
 
-      <button @click="scrollBySomePx" data-button-name="scroll-by-some-px">
-        Scroll by some pixels
+      <button @click="scrollBySomePx" data-button-name="scroll-to-bottom">
+        Scroll to bottom
       </button>
 
       <button @click="scrollToTop" data-button-name="scroll-to-top">
@@ -239,7 +239,7 @@
           },
 
           scrollBySomePx() {
-            scrollTop.value += 100;
+            scrollTop.value = 9999;
           },
 
           scrollToTop() {

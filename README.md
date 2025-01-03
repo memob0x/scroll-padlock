@@ -21,13 +21,19 @@ The project "e2e" folder HTML files can be used as demos to showcase how the lib
 
 ## Inclusion
 
-This library is downloadable via **npm**:
+### Node
 
 ```shell
 npm install scroll-padlock
 ```
 
-### Modules
+```javascript
+import setScrollPadlockStyle from "scroll-padlock";
+
+setScrollPadlockStyle();
+```
+
+### Browser modules
 
 ```html
 <script type="importmap">
@@ -45,7 +51,7 @@ npm install scroll-padlock
 </script>
 ```
 
-### Globals
+### Browser globals
 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/scroll-padlock@latest/dist/scroll-padlock.umd.min.js"></script>
@@ -57,7 +63,7 @@ npm install scroll-padlock
 
 ## Usage
 
-The library exports a function which appends CSS styles addressing a default `.scroll-padlock` selector using the [default browser scrolling element](https://developer.mozilla.org/en-US/docs/Web/API/document/scrollingElement) and the [window object](https://developer.mozilla.org/en-US/docs/Web/API/Window) to retrieve the values which would be set as the following CSS variables:
+The library exports a function which appends CSS styles addressing a default `.scroll-padlock` selector using the page default [scrolling element](https://developer.mozilla.org/en-US/docs/Web/API/document/scrollingElement) and the [window](https://developer.mozilla.org/en-US/docs/Web/API/Window) object to retrieve the values which would be set as the following CSS variables:
 
 - `--scroll-top`: the number of pixels the element's content is scrolled vertically.
 - `--scroll-left`: the number of pixels the element's content is scrolled horizontally.

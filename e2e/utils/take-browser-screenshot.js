@@ -3,6 +3,7 @@ import {
 } from 'path';
 import { rename, rm } from 'fs/promises';
 import sharp from 'sharp';
+import ensureFolderExistence from './ensure-folder-existence.js';
 
 export default async (page, path, options) => {
   const {
@@ -10,6 +11,10 @@ export default async (page, path, options) => {
 
     crop,
   } = options || {};
+
+  const pathFolder = dirname(path);
+
+  await ensureFolderExistence(pathFolder);
 
   await page.screenshot({
     path,
@@ -19,7 +24,7 @@ export default async (page, path, options) => {
 
   if (crop) {
     const pathCrop = join(
-      dirname(path),
+      pathFolder,
 
       `${basename(path, extname(path))}-crop${extname(path)}`,
     );

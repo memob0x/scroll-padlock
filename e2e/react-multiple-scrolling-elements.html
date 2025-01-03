@@ -15,10 +15,10 @@
     }
 
     nav {
-      position: fixed;
+      position: sticky;
       top: 0;
-      left: 0;
-      z-index: 999;
+      display: flex;
+      flex-direction: column;
     }
 
     .wrapper {
@@ -100,8 +100,7 @@
         onScroll=${() => setScrollTop(scrollable.current.scrollTop)}
       >
         ${children}
-      </div>
-    `;
+      </div>`;
     };
 
     const App = () => {
@@ -114,12 +113,12 @@
       return html`
       <div class="wrapper">
         <nav>
-          <button onClick=${() => setIsLocked(!isLocked)} data-button-name="toggle-lock-scroll">
+          <button onClick=${() => setIsLocked(!isLocked)} data-button-name="toggle-scroll-lock">
             Toggle scroll lock
           </button>
 
-          <button onClick=${() => setScrollTop(scrollTop + 100)} data-button-name="scroll-by-some-px">
-            Scroll by some pixels
+          <button onClick=${() => setScrollTop(9999)} data-button-name="scroll-to-bottom">
+            Scroll to bottom
           </button>
 
           <button onClick=${() => setScrollTop(0)} data-button-name="scroll-to-top">
@@ -151,8 +150,7 @@
             <p>Diam maecenas velit; nostra dictumst massa ridiculus montes netus. Elit luctus auctor sed tempus placerat placerat aptent fusce purus. Taciti semper ut himenaeos sagittis viverra; dictum ligula iaculis. Penatibus ornare lacus nunc facilisis ligula nostra ante cursus. Arcu feugiat cras quam proin hac commodo quisque. Eleifend nulla nulla semper vulputate duis porta dolor.</p>
           </${ScrollContainer}>`
       )}
-      </div>
-    `;
+      </div>`;
     };
 
     createRoot(document.getElementById("app")).render(html`<${App} />`);

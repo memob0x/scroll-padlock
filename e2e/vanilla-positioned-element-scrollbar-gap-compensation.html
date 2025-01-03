@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Test</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      overflow-x: hidden;
+      overflow-y: scroll;
+    }
+
+    .locked {
+      overflow: hidden;
+      position: fixed;
+      width: 100%;
+      top: calc(var(--scroll-top) * -1);
+      padding-right: var(--scrollbar-width);
+    }
+
+    body {
+      margin: 0;
+    }
+
+    nav {
+      position: sticky;
+      top: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .circle {
+      border-radius: 100%;
+      width: 240px;
+      aspect-ratio: 1/1;
+      background-color: red;
+      position: fixed;
+      top: 10%;
+      right: var(--scrollbar-width, 0);
+    }
+
+    .circle+.circle {
+      background-color: blue;
+      top: 20%;
+      right: calc(40px + var(--scrollbar-width, 0px));
+    }
+
+    .circle+.circle+.circle {
+      background-color: green;
+      top: 30%;
+      right: calc(60px + var(--scrollbar-width, 0px));
+    }
+  </style>
+</head>
+
+<body>
+  <nav>
+    <button data-button-name="toggle-scroll-lock">Toggle scroll lock</button>
+  </nav>
+
+  <span class="circle"></span>
+
+  <span class="circle"></span>
+
+  <span class="circle"></span>
+
+  <script src="../dist/scroll-padlock.umd.js"></script>
+
+  <script>
+    const cssClassName = 'locked';
+
+    const { scrollingElement } = document;
+
+    const { classList } = scrollingElement;
+
+    let scrollTop = 0;
+
+    function possiblySaveScrollState() {
+      if (classList.contains(cssClassName)) {
+        return;
+      }
+
+      scrollTop = window.scrollY;
+
+      setScrollPadlockStyle({
+        selector: '.' + cssClassName,
+
+        element: scrollingElement,
+      });
+    }
+
+    function possiblyUpdateLockedScrollState() {
+      if (!classList.contains(cssClassName)) {
+        return;
+      }
+
+      classList.remove(cssClassName);
+
+      window.scrollTo(0, scrollTop);
+
+      possiblySaveScrollState();
+
+      classList.add(cssClassName);
+    }
+
+    function restoreScrollPosition() {
+      if (!classList.contains(cssClassName)) {
+        window.scrollTo(0, scrollTop);
+      }
+    }
+
+    Array.from(document.querySelectorAll('[data-button-name="toggle-scroll-lock"]')).forEach(el => el.addEventListener('click', () => {
+      possiblySaveScrollState();
+
+      classList.toggle(cssClassName);
+
+      restoreScrollPosition();
+    }));
+
+    Array.from(document.querySelectorAll('[data-button-name="scroll-to-bottom"]')).forEach(el => el.addEventListener('click', () => {
+      window.scrollBy(0, 9999);
+    }));
+
+    Array.from(document.querySelectorAll('[data-button-name="scroll-to-top"]')).forEach(el => el.addEventListener('click', () => {
+      window.scrollTo(0, 0);
+    }));
+
+    window.addEventListener('resize', possiblyUpdateLockedScrollState);
+  </script>
+</body>
+
+</html>
