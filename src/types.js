@@ -1,5 +1,5 @@
 /**
- * @typedef CustomProperties
+ * @typedef ComputedLayout
  * @property {number} scrollTop The number of pixels the element's
  * content is scrolled vertically.
  * @property {number} scrollLeft The number of pixels the element's
@@ -21,7 +21,7 @@
  * @property {string} [selector] The CSS selector string that identifies the target element.
  * @property {Element} [element] The DOM element
  * that will be used to retrieve the values for the CSS variables.
- * @property {(properties: CustomProperties) => string} [formatter] A function that allows
+ * @property {(properties: ComputedLayout) => string} [formatter] A function that allows
  * to customize the the CSS styles to be added.
  */
 

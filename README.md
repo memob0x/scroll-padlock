@@ -17,7 +17,7 @@ With:
 
 ## Examples
 
-The project "e2e" folder HTML files can be used as demos to showcase how the library can be integrated with various approaches in various applications.
+The HTML files in the "e2e" folder of the project can be used as demos to showcase how the library can be integrated with different approaches in various applications.
 
 ## Inclusion
 
@@ -126,14 +126,14 @@ To generate the unit tests coverage in a readable format, [lcov](https://github.
 genhtml --branch-coverage lcov.info -o coverage
 ```
 
-To run the e2e tests, use the following command:
-
-```shell
-npm run test:e2e
-```
-
-To build the project, use the following command:
+The locally built library is imported in the end-to-end tests, so a build is required.
 
 ```shell
 npm run build
+```
+
+To run the end-to-end tests, use the following command:
+
+```shell
+npm run test:e2e
 ```

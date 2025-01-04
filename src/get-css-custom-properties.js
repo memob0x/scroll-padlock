@@ -1,40 +1,35 @@
-/** @typedef {import('./types.js').CustomProperties} CustomProperties */
-
-const { round, min, max } = Math;
+/** @typedef {import('./types.js').ComputedLayout} ComputedLayout */
 
 /**
  * Formats the given dimensions and scroll information into CSS variables.
- * @param {CustomProperties} customProperties -
- * The dimensions and scroll information.
+ * @param {ComputedLayout} computedLayout - The dimensions and scroll information.
  * @returns {string} The formatted CSS variables.
  */
-export default function getCSSCustomProperties(customProperties) {
-  const {
-    offsetWidth,
+export default function getCSSCustomProperties({
+  offsetWidth,
 
-    offsetHeight,
+  offsetHeight,
 
-    clientWidth,
+  clientWidth,
 
-    clientHeight,
+  clientHeight,
 
-    scrollHeight,
+  scrollHeight,
 
-    scrollWidth,
+  scrollWidth,
 
-    scrollTop,
+  scrollTop,
 
-    scrollLeft,
-  } = customProperties;
-
-  return `--offset-width: ${round(offsetWidth)}px;
---offset-height: ${round(offsetHeight)}px;
---client-width: ${round(min(offsetWidth, clientWidth))}px;
---client-height: ${round(min(offsetHeight, clientHeight))}px;
---scroll-width: ${round(scrollWidth)}px;
---scroll-height: ${round(scrollHeight)}px;
---scrollbar-width: ${round(max(0, offsetWidth - clientWidth))}px;
---scrollbar-height: ${round(max(0, offsetHeight - clientHeight))}px;
---scroll-top: ${round(scrollTop)}px;
---scroll-left: ${round(scrollLeft)}px;`;
+  scrollLeft,
+}) {
+  return `--offset-width:${Math.round(offsetWidth)}px;`
++ `--offset-height:${Math.round(offsetHeight)}px;`
++ `--client-width:${Math.round(Math.min(offsetWidth, clientWidth))}px;`
++ `--client-height:${Math.round(Math.min(offsetHeight, clientHeight))}px;`
++ `--scroll-width:${Math.round(scrollWidth)}px;`
++ `--scroll-height:${Math.round(scrollHeight)}px;`
++ `--scrollbar-width:${Math.round(Math.max(0, offsetWidth - clientWidth))}px;`
++ `--scrollbar-height:${Math.round(Math.max(0, offsetHeight - clientHeight))}px;`
++ `--scroll-top:${Math.round(scrollTop)}px;`
++ `--scroll-left:${Math.round(scrollLeft)}px;`;
 }

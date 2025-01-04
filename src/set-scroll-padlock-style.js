@@ -2,22 +2,20 @@ import getCSSCustomProperties from './get-css-custom-properties.js';
 
 /** @typedef {import('./types.js').Options} Options */
 
-const INT_CSS_RULE_UNIQUE_INDEX = 0;
-
 /**
- * Sets the given CSS rules to the given selector.
+ * The currently created style elements by selector.
  * @type {Record<string, HTMLStyleElement>} SetCSSRulesOptions
  */
 const stylers = {};
 
 /**
  * Sets CSS rules for the scroll padlock.
- * @param {Options} [settings] - The settings for the scroll padlock.
+ * @param {Options} [options] - The options for the scroll padlock.
  * @returns {HTMLStyleElement} The style element containing the CSS rules.
- * @throws {Error} If the given settings are invalid.
+ * @throws {Error} If the given options are invalid.
  * @throws {Error} If the style element CSSStyleSheet instance can't be referenced.
  */
-export default function setScrollPadlockStyle(settings) {
+export default function setScrollPadlockStyle(options) {
   const win = globalThis;
 
   const { document: doc } = win;
@@ -38,10 +36,10 @@ export default function setScrollPadlockStyle(settings) {
     element = scrollingElement || documentElement,
 
     formatter = getCSSCustomProperties,
-  } = settings || {};
+  } = options || {};
 
   if (!selector || !element || !formatter) {
-    throw new Error('Invalid settings provided.');
+    throw new Error('Invalid options provided.');
   }
 
   // element width with scrollbar width
@@ -106,11 +104,11 @@ export default function setScrollPadlockStyle(settings) {
 
   stylers[selector] = styler;
 
-  if (sheet.cssRules[INT_CSS_RULE_UNIQUE_INDEX]) {
-    sheet.deleteRule(INT_CSS_RULE_UNIQUE_INDEX);
+  while (sheet.cssRules.length) {
+    sheet.deleteRule(0);
   }
 
-  sheet.insertRule(`${selector} { ${formatter({
+  sheet.insertRule(`${selector}{${formatter({
     offsetWidth,
 
     offsetHeight,
@@ -126,7 +124,7 @@ export default function setScrollPadlockStyle(settings) {
     scrollTop,
 
     scrollLeft,
-  })} }`, INT_CSS_RULE_UNIQUE_INDEX);
+  })}}`);
 
   return styler;
 }
