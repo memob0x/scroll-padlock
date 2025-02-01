@@ -5,7 +5,7 @@
 [![scroll-padlock (downloads)](https://img.shields.io/npm/dy/scroll-padlock.svg)](https://www.npmjs.com/package/scroll-padlock)
 ![license](https://img.shields.io/npm/l/scroll-padlock)
 
-A small unobtrusive script aimed to encourage a CSS-first approach when locking HTML elements scroll. The source code is entirely written in vanilla JavaScript with no dependencies.
+A small unobtrusive script aimed to encourage a CSS-first approach when locking HTML elements scroll. It is entirely written in vanilla JavaScript with no dependencies.
 
 Without scrollbar gap compensation:
 
@@ -15,11 +15,11 @@ With scrollbar gap compensation:
 
 ![with scrollbar gap compensation](/assets/with-scrollbar-gap-compensation.gif?raw=true)
 
-The library exports a `setStyle` function that appends CSS styles targeting the default `.scroll-padlock` selector. It uses the page's [scrolling element](https://developer.mozilla.org/en-US/docs/Web/API/document/scrollingElement) and the [window](https://developer.mozilla.org/en-US/docs/Web/API/Window) object to retrieve values, which are then assigned to CSS variables for use as preferred.
+The library exports a `setStyle` function that appends CSS styles targeting the default `.scroll-padlock` selector. By default, it uses the page's [scrolling element](https://developer.mozilla.org/en-US/docs/Web/API/document/scrollingElement) and the [window](https://developer.mozilla.org/en-US/docs/Web/API/Window) object to retrieve values, which are then assigned to CSS variables for use as preferred.
 
 ## Examples
 
-The HTML files in the "e2e" folder of the project can be used as demos to showcase how the library can be integrated with different approaches in various applications.
+The HTML files in the "e2e" folder serve as demos, showcasing how the library can be integrated with different approaches across various applications.
 
 ## Usage
 
@@ -63,7 +63,7 @@ If you prefer to use the library globally, you can include the UMD version of th
 </script>
 ```
 
-After calling `setStyle`, the following default CSS variables become available:
+After calling `setStyle`, the following CSS variables become available:
 
 - `--scroll-top`: the number of pixels the element's content is scrolled vertically.
 - `--scroll-left`: the number of pixels the element's content is scrolled horizontally.
