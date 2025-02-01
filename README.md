@@ -7,11 +7,11 @@
 
 A small unobtrusive script aimed to encourage a CSS-first approach when locking HTML elements scroll. The source code is entirely written in vanilla JavaScript with no dependencies.
 
-Without:
+Without scrollbar gap compensation:
 
 ![without scrollbar gap compensation](/assets/without-scrollbar-gap-compensation.gif?raw=true)
 
-With:
+With scrollbar gap compensation:
 
 ![with scrollbar gap compensation](/assets/with-scrollbar-gap-compensation.gif?raw=true)
 
