@@ -23,7 +23,7 @@ The HTML files in the "e2e" folder serve as demos, showcasing how the library ca
 
 ## Usage
 
-If you're using Node, you can install the library with npm:
+It can be installed via npm:
 
 ```shell
 npm install scroll-padlock
@@ -35,7 +35,7 @@ import { setStyle } from "scroll-padlock";
 setStyle();
 ```
 
-If you prefer using ES modules in the browser, you can import the library as follows:
+It can be imported as an ES module in the browser:
 
 ```html
 <script type="importmap">
@@ -53,7 +53,7 @@ If you prefer using ES modules in the browser, you can import the library as fol
 </script>
 ```
 
-If you prefer to use the library globally, you can include the UMD version of the script:
+It can be used globally by including the UMD version of the script:
 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/scroll-padlock@latest/dist/scroll-padlock.umd.min.js"></script>
