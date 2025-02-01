@@ -7,7 +7,12 @@ export default (viewport) => puppeteer.launch({
 
   defaultViewport: viewport,
 
-  args: ['--disable-web-security'],
+  args: [
+    '--no-sandbox',
+    '--disable-web-security',
+  ],
 
-  ignoreDefaultArgs: ['--hide-scrollbars'],
+  ignoreDefaultArgs: [
+    '--hide-scrollbars',
+  ],
 });
