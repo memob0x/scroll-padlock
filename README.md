@@ -5,7 +5,7 @@
 [![scroll-padlock (downloads)](https://img.shields.io/npm/dy/scroll-padlock.svg)](https://www.npmjs.com/package/scroll-padlock)
 ![license](https://img.shields.io/npm/l/scroll-padlock)
 
-A small (~4K gzipped) unobtrusive script aimed to encourage a CSS-first approach when locking HTML elements scroll. The source code is entirely written in vanilla JavaScript with no dependencies.
+A small unobtrusive script aimed to encourage a CSS-first approach when locking HTML elements scroll. The source code is entirely written in vanilla JavaScript with no dependencies.
 
 Without:
 
@@ -15,13 +15,15 @@ With:
 
 ![with scrollbar gap compensation](https://github.com/memob0x/scroll-padlock/blob/master/assets/with.gif?raw=true)
 
+The library exports a `setStyle` function that appends CSS styles targeting the default `.scroll-padlock` selector. It uses the page's [scrolling element](https://developer.mozilla.org/en-US/docs/Web/API/document/scrollingElement) and the [window](https://developer.mozilla.org/en-US/docs/Web/API/Window) object to retrieve values, which are then assigned to CSS variables for use as preferred.
+
 ## Examples
 
 The HTML files in the "e2e" folder of the project can be used as demos to showcase how the library can be integrated with different approaches in various applications.
 
-## Inclusion
+## Usage
 
-### Node
+If you're using Node, you can install the library with npm:
 
 ```shell
 npm install scroll-padlock
@@ -33,7 +35,7 @@ import { setStyle } from "scroll-padlock";
 setStyle();
 ```
 
-### Browser modules
+If you prefer using ES modules in the browser, you can import the library as follows:
 
 ```html
 <script type="importmap">
@@ -51,7 +53,7 @@ setStyle();
 </script>
 ```
 
-### Browser globals
+If you prefer to use the library globally, you can include the UMD version of the script:
 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/scroll-padlock@latest/dist/scroll-padlock.umd.min.js"></script>
@@ -61,9 +63,7 @@ setStyle();
 </script>
 ```
 
-## Usage
-
-The library exports a `setStyle` function which appends CSS styles addressing a default `.scroll-padlock` selector using the page default [scrolling element](https://developer.mozilla.org/en-US/docs/Web/API/document/scrollingElement) and the [window](https://developer.mozilla.org/en-US/docs/Web/API/Window) object to retrieve the values which would correspond to the following CSS variables:
+After calling `setStyle`, the following default CSS variables become available:
 
 - `--scroll-top`: the number of pixels the element's content is scrolled vertically.
 - `--scroll-left`: the number of pixels the element's content is scrolled horizontally.
@@ -94,8 +94,6 @@ setStyle();
 document.scrollingElement.classList.add('scroll-padlock');
 ```
 
-## Options
-
 The `setStyle` function accepts an options object which customizes its behavior. Here are the available options:
 
 - `element`: the DOM element that will be used to retrieve the CSS variables values.
@@ -112,7 +110,7 @@ setStyle({
 });
 ```
 
-## Development
+## Contributing
 
 Node version 20.11.0 or higher is required in order to execute the tests.
 
