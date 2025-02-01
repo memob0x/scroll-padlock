@@ -28,9 +28,9 @@ npm install scroll-padlock
 ```
 
 ```javascript
-import { setScrollPadlockStyle } from "scroll-padlock";
+import { setStyle } from "scroll-padlock";
 
-setScrollPadlockStyle();
+setStyle();
 ```
 
 ### Browser modules
@@ -45,9 +45,9 @@ setScrollPadlockStyle();
 </script>
 
 <script type="module">
-  import { setScrollPadlockStyle } from "scroll-padlock";
+  import { setStyle } from "scroll-padlock";
 
-  setScrollPadlockStyle();
+  setStyle();
 </script>
 ```
 
@@ -57,13 +57,13 @@ setScrollPadlockStyle();
 <script src="https://cdn.jsdelivr.net/npm/scroll-padlock@latest/dist/scroll-padlock.umd.min.js"></script>
 
 <script>
-  window.scrollPadlock.setScrollPadlockStyle();
+  window.scrollPadlock.setStyle();
 </script>
 ```
 
 ## Usage
 
-The library exports a `setScrollPadlockStyle` function which appends CSS styles addressing a default `.scroll-padlock` selector using the page default [scrolling element](https://developer.mozilla.org/en-US/docs/Web/API/document/scrollingElement) and the [window](https://developer.mozilla.org/en-US/docs/Web/API/Window) object to retrieve the values which would correspond to the following CSS variables:
+The library exports a `setStyle` function which appends CSS styles addressing a default `.scroll-padlock` selector using the page default [scrolling element](https://developer.mozilla.org/en-US/docs/Web/API/document/scrollingElement) and the [window](https://developer.mozilla.org/en-US/docs/Web/API/Window) object to retrieve the values which would correspond to the following CSS variables:
 
 - `--scroll-top`: the number of pixels the element's content is scrolled vertically.
 - `--scroll-left`: the number of pixels the element's content is scrolled horizontally.
@@ -89,21 +89,21 @@ These CSS variables can be used to implement the preferred approach to prevent t
 Since each function call updates the CSS variables, a good time to call it is immediately before adding the CSS class that would lock the element scroll.
 
 ```javascript
-setScrollPadlockStyle();
+setStyle();
 
 document.scrollingElement.classList.add('scroll-padlock');
 ```
 
 ## Options
 
-The `setScrollPadlockStyle` function accepts an options object which customizes its behavior. Here are the available options:
+The `setStyle` function accepts an options object which customizes its behavior. Here are the available options:
 
 - `element`: the DOM element that will be used to retrieve the CSS variables values.
 - `selector`: the CSS selector string that identifies the target element.
 - `formatter`: a function that allows to customize the the CSS styles to be added.
 
 ```javascript
-setScrollPadlockStyle({
+setStyle({
   element: document.querySelector('#custom-scrolling-element'),
 
   selector: '.custom-element-scroll-padlock',

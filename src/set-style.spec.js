@@ -7,11 +7,11 @@ import {
 } from 'node:assert';
 import { JSDOM } from 'jsdom';
 import { randomUUID } from 'node:crypto';
-import setScrollPadlockStyle from './set-scroll-padlock-style.js';
+import setStyle from './set-style.js';
 
 const originalGlobalThis = globalThis;
 
-describe(setScrollPadlockStyle.name, () => {
+describe(setStyle.name, () => {
   /**
    * @type {Window}
    */
@@ -42,37 +42,37 @@ describe(setScrollPadlockStyle.name, () => {
 
   describe('parameter signature', () => {
     it('should throw if the "selector" option is passed as falsy', () => {
-      throws(() => setScrollPadlockStyle({ selector: '' }), {
+      throws(() => setStyle({ selector: '' }), {
         message: 'Invalid options provided.',
       });
     });
 
     it('should throw if the "element" option is passed as null', () => {
-      throws(() => setScrollPadlockStyle({ element: null }), {
+      throws(() => setStyle({ element: null }), {
         message: 'Invalid options provided.',
       });
     });
 
     it('should throw if the "formatter" option is passed as null', () => {
-      throws(() => setScrollPadlockStyle({ formatter: null }), {
+      throws(() => setStyle({ formatter: null }), {
         message: 'Invalid options provided.',
       });
     });
 
     it('should not throw if the "selector" option is passed as undefined', () => {
-      doesNotThrow(() => setScrollPadlockStyle({ selector: undefined }));
+      doesNotThrow(() => setStyle({ selector: undefined }));
     });
 
     it('should not throw if the "element" option is passed as undefined', () => {
-      doesNotThrow(() => setScrollPadlockStyle({ element: undefined }));
+      doesNotThrow(() => setStyle({ element: undefined }));
     });
 
     it('should not throw if the "formatter" option is passed as undefined', () => {
-      doesNotThrow(() => setScrollPadlockStyle({ formatter: undefined }));
+      doesNotThrow(() => setStyle({ formatter: undefined }));
     });
 
     it('should not throw if is called without options', () => {
-      doesNotThrow(() => setScrollPadlockStyle());
+      doesNotThrow(() => setStyle());
     });
   });
 
@@ -82,13 +82,13 @@ describe(setScrollPadlockStyle.name, () => {
 
       testingEnvGlobalThis.document.createElement = () => fn.call(testingEnvGlobalThis.document, 'div');
 
-      throws(() => setScrollPadlockStyle({ selector: `.${randomUUID()}` }), {
+      throws(() => setStyle({ selector: `.${randomUUID()}` }), {
         message: 'Invalid CSSStyleSheet instance.',
       });
     });
 
     it('should create a style element', () => {
-      const style = setScrollPadlockStyle();
+      const style = setStyle();
 
       equal(style.tagName, 'STYLE');
 
@@ -98,11 +98,11 @@ describe(setScrollPadlockStyle.name, () => {
     it('should reuse an existent style when the function is called without options both times', () => {
       equal(testingEnvGlobalThis.document.head.querySelectorAll('style').length, 0);
 
-      const style0 = setScrollPadlockStyle();
+      const style0 = setStyle();
 
       equal(testingEnvGlobalThis.document.head.querySelectorAll('style').length, 1);
 
-      const style1 = setScrollPadlockStyle();
+      const style1 = setStyle();
 
       equal(testingEnvGlobalThis.document.head.querySelectorAll('style').length, 1);
 
@@ -114,11 +114,11 @@ describe(setScrollPadlockStyle.name, () => {
 
       const selector = `.${randomUUID()}`;
 
-      const style0 = setScrollPadlockStyle({ selector });
+      const style0 = setStyle({ selector });
 
       equal(testingEnvGlobalThis.document.head.querySelectorAll('style').length, 1);
 
-      const style1 = setScrollPadlockStyle({ selector });
+      const style1 = setStyle({ selector });
 
       equal(testingEnvGlobalThis.document.head.querySelectorAll('style').length, 1);
 
@@ -130,7 +130,7 @@ describe(setScrollPadlockStyle.name, () => {
 
       const selector = `.${randomUUID()}`;
 
-      const style = setScrollPadlockStyle({ selector });
+      const style = setStyle({ selector });
 
       equal(testingEnvGlobalThis.document.head.querySelectorAll('style').length, 1);
 
@@ -138,7 +138,7 @@ describe(setScrollPadlockStyle.name, () => {
 
       equal(testingEnvGlobalThis.document.head.querySelectorAll('style').length, 0);
 
-      setScrollPadlockStyle({ selector });
+      setStyle({ selector });
 
       equal(testingEnvGlobalThis.document.head.querySelectorAll('style').length, 1);
     });
@@ -167,7 +167,7 @@ describe(setScrollPadlockStyle.name, () => {
       testingEnvGlobalThis.document.scrollingElement.scrollWidth = 7;
       testingEnvGlobalThis.document.scrollingElement.scrollHeight = 8;
 
-      setScrollPadlockStyle({
+      setStyle({
         formatter,
       });
 
@@ -225,7 +225,7 @@ describe(setScrollPadlockStyle.name, () => {
         configurable: true,
       });
 
-      setScrollPadlockStyle({
+      setStyle({
         formatter,
       });
 
@@ -267,7 +267,7 @@ describe(setScrollPadlockStyle.name, () => {
       testingEnvGlobalThis.document.scrollingElement.scrollWidth = 7;
       testingEnvGlobalThis.document.scrollingElement.scrollHeight = 8;
 
-      setScrollPadlockStyle({
+      setStyle({
         formatter,
 
         element: testingEnvGlobalThis.document.scrollingElement,
@@ -325,7 +325,7 @@ describe(setScrollPadlockStyle.name, () => {
         configurable: true,
       });
 
-      setScrollPadlockStyle({
+      setStyle({
         formatter,
 
         element: testingEnvGlobalThis.document.body,
@@ -383,7 +383,7 @@ describe(setScrollPadlockStyle.name, () => {
         configurable: true,
       });
 
-      setScrollPadlockStyle({
+      setStyle({
         formatter,
 
         element: testingEnvGlobalThis.document.documentElement,
@@ -427,7 +427,7 @@ describe(setScrollPadlockStyle.name, () => {
         scrollHeight: 8,
       };
 
-      setScrollPadlockStyle({
+      setStyle({
         formatter,
 
         element: {
@@ -447,13 +447,13 @@ describe(setScrollPadlockStyle.name, () => {
 
   describe('css rules format', () => {
     it('should create a single rule', () => {
-      const { cssRules } = setScrollPadlockStyle().sheet;
+      const { cssRules } = setStyle().sheet;
 
       equal(cssRules.length, 1);
     });
 
     it('should all the rules before adding a new one', () => {
-      const style = setScrollPadlockStyle();
+      const style = setStyle();
 
       style.sheet.insertRule(`.${randomUUID()} { --${randomUUID()}: ${randomUUID()}; }`);
 
@@ -461,13 +461,13 @@ describe(setScrollPadlockStyle.name, () => {
 
       equal(style.sheet.cssRules.length, 3);
 
-      setScrollPadlockStyle();
+      setStyle();
 
       equal(style.sheet.cssRules.length, 1);
     });
 
     it('should address a default selector if the relative option is not provided', () => {
-      const [{ cssText }] = setScrollPadlockStyle().sheet.cssRules;
+      const [{ cssText }] = setStyle().sheet.cssRules;
 
       equal(cssText.startsWith('.scroll-padlock'), true);
     });
@@ -475,13 +475,13 @@ describe(setScrollPadlockStyle.name, () => {
     it('should address the provided selector if the relative option is provided', () => {
       const selector = `.${randomUUID()}`;
 
-      const [{ cssText }] = setScrollPadlockStyle({ selector }).sheet.cssRules;
+      const [{ cssText }] = setStyle({ selector }).sheet.cssRules;
 
       equal(cssText.startsWith(selector), true);
     });
 
     it('should create a rule with the right format', () => {
-      const style = setScrollPadlockStyle().sheet;
+      const style = setStyle().sheet;
 
       match(style.cssRules[0].cssText, /^\.scroll-padlock\s*\{\s*(--[\w-]+:\s*[^;]+;\s*){10}\}$/);
     });
@@ -503,7 +503,7 @@ describe(setScrollPadlockStyle.name, () => {
 
       const propertyValue = randomUUID();
 
-      setScrollPadlockStyle({
+      setStyle({
         selector,
 
         element,
@@ -531,7 +531,7 @@ describe(setScrollPadlockStyle.name, () => {
 
       testingEnvGlobalThis.document.body.appendChild(element);
 
-      setScrollPadlockStyle({
+      setStyle({
         selector,
 
         element,

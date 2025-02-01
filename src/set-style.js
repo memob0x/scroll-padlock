@@ -15,7 +15,7 @@ const stylers = {};
  * @throws {Error} If the given options are invalid.
  * @throws {Error} If the style element CSSStyleSheet instance can't be referenced.
  */
-export default function setScrollPadlockStyle(options) {
+export default function setStyle(options) {
   const win = globalThis;
 
   const { document: doc } = win;

@@ -191,7 +191,7 @@
 
         watch(() => props.locked, () => {
           if (scrollable.value && props.locked) {
-            window.scrollPadlock.setScrollPadlockStyle({
+            window.scrollPadlock.setStyle({
               element: scrollable.value,
 
               selector: `.${cssClassNameLocked}`,
