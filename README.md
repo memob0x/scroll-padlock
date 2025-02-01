@@ -9,11 +9,11 @@ A small unobtrusive script aimed to encourage a CSS-first approach when locking 
 
 Without:
 
-![without scrollbar gap compensation](https://github.com/memob0x/scroll-padlock/blob/master/assets/without.gif?raw=true)
+![without scrollbar gap compensation](/assets/without-scrollbar-gap-compensation.gif?raw=true)
 
 With:
 
-![with scrollbar gap compensation](https://github.com/memob0x/scroll-padlock/blob/master/assets/with.gif?raw=true)
+![with scrollbar gap compensation](/assets/with-scrollbar-gap-compensation.gif?raw=true)
 
 The library exports a `setStyle` function that appends CSS styles targeting the default `.scroll-padlock` selector. It uses the page's [scrolling element](https://developer.mozilla.org/en-US/docs/Web/API/document/scrollingElement) and the [window](https://developer.mozilla.org/en-US/docs/Web/API/Window) object to retrieve values, which are then assigned to CSS variables for use as preferred.
 
