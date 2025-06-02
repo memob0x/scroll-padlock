@@ -42,7 +42,7 @@
   "scripts": {
     "lint": "npx eslint",
     "build": "node ./build.js",
-    "test:unit": "node --test --experimental-test-coverage --test-reporter=spec --test-reporter=lcov --test-reporter=./reporter.js --test-reporter-destination=stdout --test-reporter-destination=lcov.info --test-reporter-destination=stdout ./src/*.spec.js",
+    "test:unit": "node --test --experimental-test-coverage --test-coverage-include='./src/!(*.spec).js' --test-reporter=spec --test-reporter=lcov --test-reporter=./reporter.js --test-reporter-destination=stdout --test-reporter-destination=lcov.info --test-reporter-destination=stdout ./src/*.spec.js",
     "test:e2e": "node --test ./e2e/*.spec.js",
     "test": "npm run test:unit && npm run test:e2e",
     "prepare": "husky install"

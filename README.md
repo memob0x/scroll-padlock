@@ -109,7 +109,7 @@ setStyle({
 
 ## Contributing
 
-Node version 20.11.0 or higher is required in order to execute the tests.
+Node version 22.16.0 or higher is required in order to execute the tests.
 
 ```shell
 npm test
