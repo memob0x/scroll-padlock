@@ -7,19 +7,12 @@
  */
 export default function getCSSCustomProperties({
   offsetWidth,
-
   offsetHeight,
-
   clientWidth,
-
   clientHeight,
-
   scrollHeight,
-
   scrollWidth,
-
   scrollTop,
-
   scrollLeft,
 }) {
   return `--offset-width:${Math.round(offsetWidth)}px;`

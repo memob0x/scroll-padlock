@@ -22,19 +22,14 @@ export default function setStyle(options) {
 
   const {
     documentElement,
-
     scrollingElement,
-
     head,
-
     body,
   } = doc;
 
   const {
     selector = '.scroll-padlock',
-
     element = scrollingElement || documentElement,
-
     formatter = getCSSCustomProperties,
   } = options || {};
 
@@ -44,49 +39,36 @@ export default function setStyle(options) {
 
   // element width with scrollbar width
   let offsetWidth = 0;
-
   // element height with scrollbar height
   let offsetHeight = 0;
 
   let scrollTop = 0;
-
   let scrollLeft = 0;
 
   if (
     element === body
-
     || element === documentElement
-
     || element === scrollingElement
   ) {
     ({
       innerWidth: offsetWidth,
-
       innerHeight: offsetHeight,
-
       scrollY: scrollTop,
-
       scrollX: scrollLeft,
     } = win);
   } else {
     ({
       offsetWidth,
-
       offsetHeight,
-
       scrollTop,
-
       scrollLeft,
     } = element);
   }
 
   const {
     clientWidth,
-
     clientHeight,
-
     scrollWidth,
-
     scrollHeight,
   } = element;
 
@@ -110,19 +92,12 @@ export default function setStyle(options) {
 
   sheet.insertRule(`${selector}{${formatter({
     offsetWidth,
-
     offsetHeight,
-
     clientWidth,
-
     clientHeight,
-
     scrollHeight,
-
     scrollWidth,
-
     scrollTop,
-
     scrollLeft,
   })}}`);
 

@@ -49,18 +49,18 @@
   },
   "devDependencies": {
     "@rollup/plugin-terser": "^0.4.4",
-    "eslint": "^9.19.0",
+    "eslint": "^9.28.0",
     "eslint-plugin-import": "^2.31.0",
-    "eslint-plugin-jsdoc": "^50.6.3",
-    "globals": "^15.14.0",
+    "eslint-plugin-jsdoc": "^50.7.1",
+    "globals": "^16.2.0",
     "husky": "^9.1.7",
     "jsdoc": "^4.0.4",
-    "jsdom": "^26.0.0",
-    "puppeteer": "^24.1.1",
+    "jsdom": "^26.1.0",
+    "puppeteer": "^24.10.0",
     "resemblejs": "^5.0.0",
-    "rollup": "^4.34.0",
+    "rollup": "^4.41.1",
     "rollup-plugin-gzip": "^4.0.1",
-    "sharp": "^0.33.5",
-    "typescript": "^5.7.3"
+    "sharp": "^0.34.2",
+    "typescript": "^5.8.3"
   }
 }

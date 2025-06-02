@@ -81,7 +81,6 @@ These CSS variables can be used to implement the preferred approach to prevent t
 ```css
 .scroll-padlock {
   overflow: hidden;
-
   padding-right: var(--scrollbar-width);
 }
 ```
@@ -103,9 +102,7 @@ The `setStyle` function accepts an options object which customizes its behavior.
 ```javascript
 setStyle({
   element: document.querySelector('#custom-scrolling-element'),
-
   selector: '.custom-element-scroll-padlock',
-
   formatter: ({ clientWidth }) => `--width-without-scrollbar: ${clientWidth}px;`
 });
 ```

@@ -7,9 +7,7 @@ import { fileURLToPath } from 'node:url';
 import { readFile } from 'node:fs/promises';
 
 const FOLDER_NAME_SRC = 'src';
-
 const FOLDER_NAME_DIST = 'dist';
-
 const FILE_NAME_MODULE = 'scroll-padlock';
 
 const pathRoot = dirname(fileURLToPath(import.meta.url));
@@ -34,10 +32,8 @@ const rollupResult = await rollup({
       transform: (code) => ({
         code: code.replace(
           /\/\*\*\s*@typedef\s*\{import\(['"].*['"]\)\.(\w+)\}\s*\1\s*\*\//g,
-
           (match, typeName) => jsDocTypedefs?.[typeName] || match,
         ),
-
         map: null,
       }),
     },
@@ -70,13 +66,9 @@ await Promise.all([
 
     tasks.push(rollupResult.write({
       sourcemap: true,
-
       format,
-
       name: moduleNameCamelCase,
-
       file: `${pathRoot}/${FOLDER_NAME_DIST}/${FILE_NAME_MODULE}${suffixes}.js`,
-
       plugins,
     }));
   }
@@ -89,11 +81,11 @@ const pathDtsFile = `${pathRoot}/${FOLDER_NAME_DIST}/${FILE_NAME_MODULE}.d.ts`;
 createProgram([
   `${pathRoot}/${FOLDER_NAME_DIST}/${FILE_NAME_MODULE}.js`,
 ], {
-  allowJs: true, // include JS files
-  declaration: true, // generate .d.ts files
-  emitDeclarationOnly: true, // only output declarations
-  declarationMap: true, // create declaration maps
-  outFile: pathDtsFile, // output single .d.ts file
+  allowJs: true,
+  declaration: true,
+  emitDeclarationOnly: true,
+  declarationMap: true,
+  outFile: pathDtsFile,
   paths: {
     [FILE_NAME_MODULE]: [`${pathRoot}/${FOLDER_NAME_DIST}/${FILE_NAME_MODULE}.js`],
   },
