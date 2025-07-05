@@ -1,23 +1,23 @@
 import { describe, it } from 'node:test';
-import { equal, match, throws } from 'node:assert';
-import getCSSCustomProperties from './get-css-custom-properties.js';
+import { doesNotThrow, equal, match } from 'node:assert';
+import { getCSSCustomProperties } from './get-css-custom-properties.js';
 
 describe(getCSSCustomProperties.name, () => {
-  it('should throw when the parameter is missing', () => {
-    throws(() => getCSSCustomProperties(), Error);
+  it('should not throw when the parameter is missing', () => {
+    doesNotThrow(() => getCSSCustomProperties(), Error);
   });
 
-  it('should not handle missing properties', () => {
-    equal(getCSSCustomProperties({ }), '--offset-width:NaNpx;'
-+ '--offset-height:NaNpx;'
-+ '--client-width:NaNpx;'
-+ '--client-height:NaNpx;'
-+ '--scroll-width:NaNpx;'
-+ '--scroll-height:NaNpx;'
-+ '--scrollbar-width:NaNpx;'
-+ '--scrollbar-height:NaNpx;'
-+ '--scroll-top:NaNpx;'
-+ '--scroll-left:NaNpx;');
+  it('should handle missing properties', () => {
+    equal(getCSSCustomProperties({ }), '--offset-width:0px;'
++ '--offset-height:0px;'
++ '--client-width:0px;'
++ '--client-height:0px;'
++ '--scroll-width:0px;'
++ '--scroll-height:0px;'
++ '--scrollbar-width:0px;'
++ '--scrollbar-height:0px;'
++ '--scroll-top:0px;'
++ '--scroll-left:0px;');
   });
 
   it('should format CSS custom attributes correctly', () => {

@@ -1,21 +1,19 @@
-import getCSSCustomProperties from './get-css-custom-properties.js';
-
-/** @typedef {import('./types.js').Options} Options */
+import { getCSSCustomProperties } from './get-css-custom-properties.js';
+import { Options } from './types.js';
 
 /**
  * The currently created style elements by selector.
- * @type {Record<string, HTMLStyleElement>} SetCSSRulesOptions
  */
-const stylers = {};
+const stylers: Record<string, HTMLStyleElement> = {};
 
 /**
  * Sets CSS rules for the scroll padlock.
- * @param {Options} [options] - The options for the scroll padlock.
- * @returns {HTMLStyleElement} The style element containing the CSS rules.
+ * @param options - The options for the scroll padlock.
+ * @returns The style element containing the CSS rules.
  * @throws {Error} If the given options are invalid.
  * @throws {Error} If the style element CSSStyleSheet instance can't be referenced.
  */
-export default function setStyle(options) {
+export function setStyle(options?: Options): HTMLStyleElement {
   const win = globalThis;
 
   const { document: doc } = win;
@@ -45,24 +43,27 @@ export default function setStyle(options) {
   let scrollTop = 0;
   let scrollLeft = 0;
 
-  if (
+  const isMainScroller = (
     element === body
     || element === documentElement
     || element === scrollingElement
-  ) {
-    ({
-      innerWidth: offsetWidth,
-      innerHeight: offsetHeight,
-      scrollY: scrollTop,
-      scrollX: scrollLeft,
-    } = win);
-  } else {
-    ({
-      offsetWidth,
-      offsetHeight,
-      scrollTop,
-      scrollLeft,
-    } = element);
+  );
+
+  if (isMainScroller) {
+    offsetWidth = win.innerWidth;
+    offsetHeight = win.innerHeight;
+    scrollTop = win.scrollY;
+    scrollLeft = win.scrollX;
+  }
+
+  if (!isMainScroller) {
+    scrollTop = element.scrollTop;
+    scrollLeft = element.scrollLeft;
+  }
+
+  if (!isMainScroller && element instanceof win.HTMLElement) {
+    offsetWidth = element.offsetWidth;
+    offsetHeight = element.offsetHeight;
   }
 
   const {

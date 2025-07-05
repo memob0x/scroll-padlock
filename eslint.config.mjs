@@ -1,18 +1,38 @@
+import tseslint from 'typescript-eslint';
+import eslint from '@eslint/js';
 import pluginJsDoc from 'eslint-plugin-jsdoc';
-import { flatConfigs } from 'eslint-plugin-import';
+import { flatConfigs as importsPluginConfigs } from 'eslint-plugin-import';
 import globals from 'globals';
 
 export default [
   {
     ignores: [
       'node_modules/*',
-
       'dist/*',
+      'coverage/*',
     ],
   },
 
-  flatConfigs.recommended,
+  ...[
+    eslint.configs.recommended,
+    ...tseslint.configs.recommended,
+  ].map((conf) => ({
+    ...conf,
+    files: [
+      '**/*.ts',
+    ],
+  })),
 
+  {
+    ...eslint.configs.recommended,
+    ...tseslint.configs.disableTypeChecked,
+    files: [
+      '**/*.js',
+      '**/*.mjs',
+    ],
+  },
+
+  importsPluginConfigs.recommended,
   pluginJsDoc.configs['flat/recommended'],
 
   {
@@ -28,8 +48,12 @@ export default [
       ecmaVersion: 13,
       sourceType: 'module',
     },
+  },
 
+  {
     rules: {
+      'jsdoc/require-param-type': 0,
+      'jsdoc/require-returns-type': 0,
       'jsdoc/no-undefined-types': 0,
 
       'jsdoc/check-indentation': 1,
@@ -476,7 +500,6 @@ export default [
       'no-negated-in-lhs': 'off',
 
       // https://eslint.org/docs/rules/require-atomic-updates
-      // TODO: configure
       'require-atomic-updates': 'off',
 
       // disallow comparisons with the value NaN
@@ -489,7 +512,6 @@ export default [
       'valid-typeof': ['error', { requireStringLiterals: true }],
 
       // https://eslint.org/docs/rules/arrow-body-style
-      // TODO: configure
       'arrow-body-style': ['error', 'as-needed', {
         requireReturnForObjectLiteral: false,
       }],
@@ -624,10 +646,11 @@ export default [
       'yield-star-spacing': ['error', 'after'],
 
       // https://github.com/benmosher/eslint-plugin-import/blob/master/docs/rules/no-unresolved.md
-      'import/no-unresolved': ['error', { commonjs: true, caseSensitive: true }],
+      // 'import/no-unresolved': ['error', { commonjs: true, caseSensitive: true }],
+      'import/no-unresolved': 'off',
 
       // https://github.com/benmosher/eslint-plugin-import/blob/master/docs/rules/named.md#when-not-to-use-it
-      'import/named': 'error',
+      'import/named': 'off',
 
       // https://github.com/benmosher/eslint-plugin-import/blob/master/docs/rules/default.md#when-not-to-use-it
       'import/default': 'off',
@@ -648,7 +671,6 @@ export default [
       'import/no-deprecated': 'off',
 
       // https://github.com/benmosher/eslint-plugin-import/blob/master/docs/rules/no-extraneous-dependencies.md
-      // TODO: configure
       // 'import/no-extraneous-dependencies': ['error', {
       //   devDependencies: [
       //     'test/**', // tape, common npm pattern
@@ -699,12 +721,10 @@ export default [
       // https://github.com/benmosher/eslint-plugin-import/blob/master/docs/rules/no-duplicates.md
       'import/no-duplicates': 'error',
 
-      // TODO: configure
       // https://github.com/benmosher/eslint-plugin-import/blob/master/docs/rules/no-namespace.md
       'import/no-namespace': 'off',
 
       // https://github.com/benmosher/eslint-plugin-import/blob/master/docs/rules/extensions.md
-      // TODO: configure
       // 'import/extensions': ['error', 'ignorePackages', {
       //   js: 'never',
       //    mjs: 'never',
@@ -718,7 +738,7 @@ export default [
       'import/newline-after-import': 'error',
 
       // https://github.com/benmosher/eslint-plugin-import/blob/master/docs/rules/prefer-default-export.md
-      'import/prefer-default-export': 'error',
+      'import/prefer-default-export': 'off',
 
       // https://github.com/benmosher/eslint-plugin-import/blob/master/docs/rules/no-restricted-paths.md
       'import/no-restricted-paths': 'off',
@@ -760,7 +780,6 @@ export default [
       }],
 
       // https://github.com/benmosher/eslint-plugin-import/blob/98acd6afd04dcb6920b81330114e146dc8532ea4/docs/rules/exports-last.md
-      // TODO: configure
       'import/exports-last': 'off',
 
       // https://github.com/benmosher/eslint-plugin-import/blob/44a038c06487964394b1e15b64f3bd34e5d40cde/docs/rules/group-exports.md
@@ -791,7 +810,6 @@ export default [
       'import/no-relative-parent-imports': 'off',
 
       // https://github.com/benmosher/eslint-plugin-import/blob/f63dd261809de6883b13b6b5b960e6d7f42a7813/docs/rules/no-unused-modules.md
-      // TODO: configure
       'import/no-unused-modules': ['off', {
         ignoreExports: [],
         missingExports: true,
@@ -828,11 +846,9 @@ export default [
       strict: ['error', 'never'],
 
       // https://eslint.org/docs/rules/array-bracket-newline
-      // TODO: configure
       'array-bracket-newline': ['off', 'consistent'], // object option alternative: { multiline: true, minItems: 3 }
 
       // https://eslint.org/docs/rules/array-element-newline
-      // TODO: configure
       'array-element-newline': ['off', { multiline: true, minItems: 3 }],
 
       'array-bracket-spacing': ['error', 'never'],
@@ -900,7 +916,6 @@ export default [
       'func-names': 'warn',
 
       // https://eslint.org/docs/rules/func-style
-      // TODO: configure
       'func-style': ['off', 'expression'],
 
       // https://eslint.org/docs/rules/function-paren-newline
@@ -974,7 +989,6 @@ export default [
       }],
 
       // https://eslint.org/docs/rules/line-comment-position
-      // TODO: configure
       'line-comment-position': ['off', {
         position: 'above',
         ignorePattern: '',
@@ -1000,7 +1014,7 @@ export default [
       // https://eslint.org/docs/rules/max-len
       'max-len': ['error', 100, 2, {
         ignoreUrls: true,
-        ignoreComments: false,
+        ignoreComments: true,
         ignoreRegExpLiterals: true,
         ignoreStrings: true,
         ignoreTemplateLiterals: true,
@@ -1032,7 +1046,6 @@ export default [
       'multiline-comment-style': ['off', 'starred-block'],
 
       // https://eslint.org/docs/rules/multiline-ternary
-      // TODO: configure
       'multiline-ternary': ['off', 'never'],
 
       'new-cap': ['error', {
@@ -1056,7 +1069,7 @@ export default [
       'no-array-constructor': 'error',
 
       // https://eslint.org/docs/rules/no-bitwise
-      'no-bitwise': 'error',
+      // 'no-bitwise': 'error',
 
       // https://eslint.org/docs/rules/no-continue
       'no-continue': 'error',
@@ -1132,7 +1145,7 @@ export default [
       // https://eslint.org/docs/rules/no-underscore-dangle
       'no-underscore-dangle': ['error', {
         allow: [],
-        allowAfterThis: false,
+        allowAfterThis: true,
         allowAfterSuper: false,
         enforceInMethodNames: true,
       }],
@@ -1332,10 +1345,9 @@ export default [
       'no-undef-init': 'error',
 
       // https://eslint.org/docs/rules/no-undefined
-      // TODO: configure
       'no-undefined': 'off',
 
-      'no-unused-vars': ['error', { vars: 'all', args: 'after-used', ignoreRestSiblings: true }],
+      // 'no-unused-vars': ['error', { vars: 'all', args: 'after-used', ignoreRestSiblings: true }],
       'no-use-before-define': ['error', { functions: true, classes: true, variables: true }],
     },
   },

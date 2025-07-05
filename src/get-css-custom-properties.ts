@@ -1,20 +1,22 @@
-/** @typedef {import('./types.js').ComputedLayout} ComputedLayout */
+import { ComputedLayout } from './types';
 
 /**
  * Formats the given dimensions and scroll information into CSS variables.
- * @param {ComputedLayout} computedLayout - The dimensions and scroll information.
- * @returns {string} The formatted CSS variables.
+ * @param computedLayout - The dimensions and scroll information.
+ * @returns The formatted CSS variables.
  */
-export default function getCSSCustomProperties({
-  offsetWidth,
-  offsetHeight,
-  clientWidth,
-  clientHeight,
-  scrollHeight,
-  scrollWidth,
-  scrollTop,
-  scrollLeft,
-}) {
+export function getCSSCustomProperties(computedLayout?: ComputedLayout): string {
+  const {
+    offsetWidth = 0,
+    offsetHeight = 0,
+    clientWidth = 0,
+    clientHeight = 0,
+    scrollHeight = 0,
+    scrollWidth = 0,
+    scrollTop = 0,
+    scrollLeft = 0,
+  } = computedLayout || {};
+
   return `--offset-width:${Math.round(offsetWidth)}px;`
 + `--offset-height:${Math.round(offsetHeight)}px;`
 + `--client-width:${Math.round(Math.min(offsetWidth, clientWidth))}px;`
