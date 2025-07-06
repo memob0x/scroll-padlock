@@ -40,7 +40,7 @@
     "tablet"
   ],
   "scripts": {
-    "lint": "npx eslint",
+    "lint": "npx eslint .",
     "build": "node --import tsx ./build.ts",
     "test:unit": "node --import tsx --test --experimental-test-coverage --test-coverage-include='./src/**/!(*.spec).ts' --test-reporter=spec --test-reporter=lcov --test-reporter=./reporter.js --test-reporter-destination=stdout --test-reporter-destination=./lcov.info --test-reporter-destination=stdout ./src/**/*.spec.ts",
     "test:e2e": "node --import tsx --test ./e2e/*.spec.ts",
