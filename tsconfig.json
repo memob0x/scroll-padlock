@@ -13,6 +13,8 @@
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
     "strict": true,
+    "declaration": true,
+    "declarationDir": "dist/dts"
   },
   "include": [
     "./src/**/*.ts"
