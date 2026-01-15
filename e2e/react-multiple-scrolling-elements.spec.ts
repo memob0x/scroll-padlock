@@ -36,9 +36,7 @@ describe(testBaseName, () => {
     page = await browseFile(browser, `${currentPath}/${testBaseName}.html`);
   });
 
-  afterEach(async () => {
-    await browser.close();
-  });
+  afterEach(() => browser.close());
 
   it('should be able to lock and unlock scrolling of elements without causing layout shifts', async () => {
     await clickOnScrollToBottomButton(page);
@@ -51,9 +49,9 @@ describe(testBaseName, () => {
 
     screenshots.push(await takeBrowserScreenshot(page, `${distPath}/${testBaseName}-${screenshots.length}.jpeg`, { crop: VIEWPORT_CROP }));
 
-    let rawMisMatchPercentage = await compareTwoImages(screenshots[0], screenshots[1]);
+    let mismatchPercentage = await compareTwoImages(screenshots[0], screenshots[1]);
 
-    assert.equal(Math.round(rawMisMatchPercentage), 0);
+    assert.equal(Math.round(mismatchPercentage), 0);
 
     await rm(screenshots[0]);
 
@@ -63,9 +61,9 @@ describe(testBaseName, () => {
 
     screenshots.push(await takeBrowserScreenshot(page, `${distPath}/${testBaseName}-${screenshots.length}.jpeg`, { crop: VIEWPORT_CROP }));
 
-    rawMisMatchPercentage = await compareTwoImages(screenshots[0], screenshots[1]);
+    mismatchPercentage = await compareTwoImages(screenshots[0], screenshots[1]);
 
-    assert.equal(Math.round(rawMisMatchPercentage), 0);
+    assert.equal(Math.round(mismatchPercentage), 0);
 
     await Promise.all(screenshots.map((screenshot) => rm(screenshot)));
 

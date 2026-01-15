@@ -101,7 +101,7 @@ describe(setStyle.name, () => {
 
       globalThis.document.createElement = () => fn.call(globalThis.document, 'div');
 
-      throws(() => setStyle({ selector: `.${randomUUID()}` }), {
+      throws(() => setStyle({ selector: `.selector-${randomUUID()}` }), {
         message: 'Invalid CSSStyleSheet instance.',
       });
     });
@@ -131,7 +131,7 @@ describe(setStyle.name, () => {
     it('should reuse an existent style when the same selector is passed', () => {
       equal(globalThis.document.head.querySelectorAll('style').length, 0);
 
-      const selector = `.${randomUUID()}`;
+      const selector = `.selector-${randomUUID()}`;
 
       const style0 = setStyle({ selector });
 
@@ -147,7 +147,7 @@ describe(setStyle.name, () => {
     it('should append again a previously created style element which is not in the DOM anymore', () => {
       equal(globalThis.document.head.querySelectorAll('style').length, 0);
 
-      const selector = `.${randomUUID()}`;
+      const selector = `.selector-${randomUUID()}`;
 
       const style = setStyle({ selector });
 
@@ -520,9 +520,9 @@ describe(setStyle.name, () => {
     it('should all the rules before adding a new one', () => {
       const style = setStyle();
 
-      style.sheet?.insertRule(`.${randomUUID()} { --${randomUUID()}: ${randomUUID()}; }`);
+      style.sheet?.insertRule(`.selector-${randomUUID()} { --${randomUUID()}: ${randomUUID()}; }`);
 
-      style.sheet?.insertRule(`.${randomUUID()} { --${randomUUID()}: ${randomUUID()}; }`);
+      style.sheet?.insertRule(`.selector-${randomUUID()} { --${randomUUID()}: ${randomUUID()}; }`);
 
       equal(style.sheet?.cssRules.length, 3);
 
@@ -538,7 +538,7 @@ describe(setStyle.name, () => {
     });
 
     it('should address the provided selector if the relative option is provided', () => {
-      const selector = `.${randomUUID()}`;
+      const selector = `.selector-${randomUUID()}`;
 
       const [{ cssText }] = setStyle({ selector }).sheet?.cssRules || [];
 

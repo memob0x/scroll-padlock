@@ -1,4 +1,4 @@
-import puppeteer, { Viewport } from 'puppeteer';
+import { Viewport, executablePath, launch } from 'puppeteer';
 
 /**
  * Launches a Puppeteer browser instance with the specified viewport.
@@ -6,9 +6,9 @@ import puppeteer, { Viewport } from 'puppeteer';
  * @returns A Promise that resolves to the launched Puppeteer browser instance.
  */
 export function launchBrowser(viewport: Viewport) {
-  return puppeteer.launch({
+  return launch({
     headless: true,
-    executablePath: puppeteer.executablePath(),
+    executablePath: executablePath(),
     defaultViewport: viewport,
     args: [
       '--no-sandbox',

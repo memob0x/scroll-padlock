@@ -5,6 +5,8 @@ import { Page } from 'puppeteer';
  * @param page - The Puppeteer Page instance where the button will be clicked.
  * @returns A promise that resolves to the result of the click action.
  */
-export function clickOnScrollToBottomButton(page: Page) {
-  return page.evaluate(() => document.querySelector<HTMLElement>('[data-button-name="scroll-to-bottom"]')?.click());
+export async function clickOnScrollToBottomButton(page: Page) {
+  const $page = await page.$('[data-button-name="scroll-to-bottom"]');
+
+  return $page?.click();
 }

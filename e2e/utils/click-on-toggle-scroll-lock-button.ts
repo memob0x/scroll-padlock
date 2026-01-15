@@ -5,6 +5,8 @@ import { Page } from 'puppeteer';
  * @param page - The Puppeteer Page instance to operate on.
  * @returns A promise that resolves when the button has been clicked.
  */
-export function clickOnToggleScrollLockButton(page: Page) {
-  return page.evaluate(() => document.querySelector<HTMLElement>('[data-button-name="toggle-scroll-lock"]')?.click());
+export async function clickOnToggleScrollLockButton(page: Page) {
+  const $page = await page.$('[data-button-name="toggle-scroll-lock"]');
+
+  return $page?.click();
 }

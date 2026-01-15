@@ -11,8 +11,5 @@ export async function browseFile(browser: Browser, path: string) {
 
   await page.goto(`file://${path}`);
 
-  // eslint-disable-next-line no-console
-  page.on('console', (msg) => console.log(msg.text()));
-
   return page;
 }
