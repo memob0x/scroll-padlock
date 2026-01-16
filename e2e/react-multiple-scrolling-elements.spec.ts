@@ -9,7 +9,7 @@ import {
 import { fileURLToPath } from 'node:url';
 import { Browser, launch, Page } from 'puppeteer';
 import sharp from 'sharp';
-import { compareTwoImages } from './utils/compare-two-images.ts';
+import { compareImages } from './compare-images.ts';
 import {
   BROWSER_LAUNCH_OPTIONS,
   SELECTOR_BUTTON_SCROLL_TO_BOTTOM,
@@ -63,12 +63,10 @@ describe(testBaseName, () => {
       .ensureAlpha()
       .toBuffer({ resolveWithObject: true });
 
-    // writeFileSync('a.jpeg', await sharp(screenshotA.data, { raw: screenshotA.info }).jpeg().toBuffer());
+    assert.notEqual(compareImages(screenshotA, screenshotB), 0);
 
-    assert.notEqual(compareTwoImages(screenshotA, screenshotB), 0);
+    assert.equal(compareImages(screenshotA, screenshotC), 0);
 
-    assert.equal(compareTwoImages(screenshotA, screenshotC), 0);
-
-    assert.notEqual(compareTwoImages(screenshotB, screenshotC), 0);
+    assert.notEqual(compareImages(screenshotB, screenshotC), 0);
   });
 });
