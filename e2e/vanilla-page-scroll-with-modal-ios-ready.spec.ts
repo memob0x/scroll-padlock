@@ -3,20 +3,18 @@ import {
 } from 'node:test';
 import assert from 'node:assert';
 import {
-  resolve, dirname,
+  dirname,
   basename,
 } from 'node:path';
-import { rm } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
-import { Browser, Page } from 'puppeteer';
-import { launchBrowser } from './utils/launch-browser.ts';
-import { browseFile } from './utils/browse-file.ts';
-import { takeBrowserScreenshot } from './utils/take-browser-screenshot.ts';
+import { Browser, launch, Page } from 'puppeteer';
+import sharp from 'sharp';
 import { compareTwoImages } from './utils/compare-two-images.ts';
-import { VIEWPORT, VIEWPORT_CROP } from './constants.ts';
-import { clickOnScrollToBottomButton } from './utils/click-on-scroll-to-bottom-button.ts';
-import { clickOnToggleScrollLockButton } from './utils/click-on-toggle-scroll-lock-button.ts';
-import { sleep } from './utils/sleep.ts';
+import {
+  BROWSER_LAUNCH_OPTIONS,
+  SELECTOR_BUTTON_SCROLL_TO_BOTTOM,
+  SELECTOR_BUTTON_TOGGLE_SCROLL_LOCK,
+} from './constants.ts';
 
 const currentFile = fileURLToPath(import.meta.url);
 
@@ -24,54 +22,61 @@ const currentPath = dirname(currentFile);
 
 const testBaseName = basename(currentFile, '.spec.ts');
 
-const distPath = resolve(currentPath, '..', 'dist');
-
 describe(testBaseName, () => {
   let browser: Browser;
 
   let page: Page;
 
   beforeEach(async () => {
-    browser = await launchBrowser(VIEWPORT);
+    browser = await launch(BROWSER_LAUNCH_OPTIONS);
 
-    page = await browseFile(browser, `${currentPath}/${testBaseName}.html`);
+    page = await browser.newPage();
+
+    await page.goto(`file://${currentPath}/${testBaseName}.html`);
   });
 
   afterEach(() => browser.close());
 
   it('should be able to lock and unlock element scrolling while showing a modal window, without causing layout shifts', async () => {
-    await clickOnScrollToBottomButton(page);
+    const buttonScrollToBottomEl = await page.$(SELECTOR_BUTTON_SCROLL_TO_BOTTOM);
 
-    let screenshots: string[] = [];
+    await buttonScrollToBottomEl?.click();
 
-    screenshots.push(await takeBrowserScreenshot(page, `${distPath}/${testBaseName}-${screenshots.length}.jpeg`, { crop: VIEWPORT_CROP }));
+    const screenshotA = await sharp(await page.screenshot())
+      .raw()
+      .ensureAlpha()
+      .toBuffer({ resolveWithObject: true });
 
-    await clickOnToggleScrollLockButton(page);
+    const buttonToggleScrollLockEl = await page.$(SELECTOR_BUTTON_TOGGLE_SCROLL_LOCK);
 
-    await sleep(1000);
+    await buttonToggleScrollLockEl?.click();
 
-    screenshots.push(await takeBrowserScreenshot(page, `${distPath}/${testBaseName}-${screenshots.length}.jpeg`, { crop: VIEWPORT_CROP }));
+    // NOTE: waiting for CSS transition
+    await new Promise((resolve) => { setTimeout(resolve, 1000); });
 
-    let mismatchPercentage = await compareTwoImages(screenshots[0], screenshots[1]);
+    const screenshotB = await sharp(await page.screenshot())
+      .raw()
+      .ensureAlpha()
+      .toBuffer({ resolveWithObject: true });
 
-    assert.notEqual(Math.round(mismatchPercentage), 0);
+    const modalButtonToggleScrollLockEl = await page.$(`#modal ${SELECTOR_BUTTON_TOGGLE_SCROLL_LOCK}`);
 
-    await rm(screenshots[0]);
+    await modalButtonToggleScrollLockEl?.click();
 
-    screenshots.shift();
+    // NOTE: waiting for CSS transition
+    await new Promise((resolve) => { setTimeout(resolve, 1000); });
 
-    await clickOnToggleScrollLockButton(page);
+    const screenshotC = await sharp(await page.screenshot())
+      .raw()
+      .ensureAlpha()
+      .toBuffer({ resolveWithObject: true });
 
-    await sleep(1000);
+    // writeFileSync('a.jpeg', await sharp(screenshotA.data, { raw: screenshotA.info }).jpeg().toBuffer());
 
-    screenshots.push(await takeBrowserScreenshot(page, `${distPath}/${testBaseName}-${screenshots.length}.jpeg`, { crop: VIEWPORT_CROP }));
+    assert.notEqual(compareTwoImages(screenshotA, screenshotB), 0);
 
-    mismatchPercentage = await compareTwoImages(screenshots[0], screenshots[1]);
+    assert.equal(compareTwoImages(screenshotA, screenshotC), 0);
 
-    assert.equal(Math.round(mismatchPercentage), 0);
-
-    await Promise.all(screenshots.map((screenshot) => rm(screenshot)));
-
-    screenshots = [];
+    assert.notEqual(compareTwoImages(screenshotB, screenshotC), 0);
   });
 });

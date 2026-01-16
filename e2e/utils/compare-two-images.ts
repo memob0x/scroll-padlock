@@ -1,32 +1,25 @@
 import pixelmatch from 'pixelmatch';
-import { parseImage } from './parse-image';
+import sharp from 'sharp';
+import { Buffer } from 'buffer';
 
 /**
  * Compares two images and returns the raw mismatch percentage.
- * @param pathA - Path to the first image.
- * @param pathB - Path to the second image.
+ * @param imgA - The first image.
+ * @param imgA.data - The first image data.
+ * @param imgA.info - The first image informations.
+ * @param imgB - The second image.
+ * @param imgB.data - The first image data.
+ * @param imgB.info - The first image informations.
  * @returns A promise that resolves to the raw mismatch percentage.
  */
-export async function compareTwoImages(pathA: string, pathB: string): Promise<number> {
-  const [
-    imgA,
-    imgB,
-  ] = await Promise.all([
-    parseImage(pathA),
-    parseImage(pathB),
-  ]);
-
-  if (imgA.info.width !== imgB.info.width || imgA.info.height !== imgB.info.height) {
-    throw new Error('Images must have the same dimensions');
-  }
-
-  if (!imgA.data || !imgB.data) {
-    throw new Error('Failed to read PNG image data');
-  }
-
-  const totalPixels = imgA.info.width * imgA.info.height;
-
-  const diffPixels = pixelmatch(
+export function compareTwoImages(imgA: {
+  data: Buffer<ArrayBufferLike>;
+  info: sharp.OutputInfo;
+}, imgB: {
+  data: Buffer<ArrayBufferLike>;
+  info: sharp.OutputInfo;
+}) {
+  return (pixelmatch(
     imgA.data,
     imgB.data,
     undefined, // do not generate diff image
@@ -36,7 +29,5 @@ export async function compareTwoImages(pathA: string, pathB: string): Promise<nu
       threshold: 0.1,
       includeAA: true,
     },
-  );
-
-  return (diffPixels / totalPixels) * 100;
+  ) / (imgA.info.width * imgA.info.height)) * 100;
 }

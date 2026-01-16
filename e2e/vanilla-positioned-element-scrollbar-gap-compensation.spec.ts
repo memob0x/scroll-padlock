@@ -3,18 +3,17 @@ import {
 } from 'node:test';
 import assert from 'node:assert';
 import {
-  resolve, dirname,
+  dirname,
   basename,
 } from 'node:path';
-import { rm } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
-import { Browser, Page } from 'puppeteer';
-import { launchBrowser } from './utils/launch-browser.ts';
-import { browseFile } from './utils/browse-file.ts';
-import { takeBrowserScreenshot } from './utils/take-browser-screenshot.ts';
+import { Browser, launch, Page } from 'puppeteer';
+import sharp from 'sharp';
 import { compareTwoImages } from './utils/compare-two-images.ts';
-import { VIEWPORT, VIEWPORT_CROP } from './constants.ts';
-import { clickOnScrollToBottomButton } from './utils/click-on-scroll-to-bottom-button.ts';
+import {
+  BROWSER_LAUNCH_OPTIONS,
+  SELECTOR_BUTTON_TOGGLE_SCROLL_LOCK,
+} from './constants.ts';
 
 const currentFile = fileURLToPath(import.meta.url);
 
@@ -22,48 +21,49 @@ const currentPath = dirname(currentFile);
 
 const testBaseName = basename(currentFile, '.spec.ts');
 
-const distPath = resolve(currentPath, '..', 'dist');
-
 describe(testBaseName, () => {
   let browser: Browser;
 
   let page: Page;
 
   beforeEach(async () => {
-    browser = await launchBrowser(VIEWPORT);
+    browser = await launch(BROWSER_LAUNCH_OPTIONS);
 
-    page = await browseFile(browser, `${currentPath}/${testBaseName}.html`);
+    page = await browser.newPage();
+
+    await page.goto(`file://${currentPath}/${testBaseName}.html`);
   });
 
   afterEach(() => browser.close());
 
   it('should be able to lock and unlock the scrolling element without causing shifts to positioned elements', async () => {
-    let screenshots: string[] = [];
+    const screenshotA = await sharp(await page.screenshot())
+      .raw()
+      .ensureAlpha()
+      .toBuffer({ resolveWithObject: true });
 
-    screenshots.push(await takeBrowserScreenshot(page, `${distPath}/${testBaseName}-${screenshots.length}.jpeg`, { crop: VIEWPORT_CROP }));
+    const buttonToggleScrollLockEl = await page.$(SELECTOR_BUTTON_TOGGLE_SCROLL_LOCK);
 
-    await clickOnScrollToBottomButton(page);
+    await buttonToggleScrollLockEl?.click();
 
-    screenshots.push(await takeBrowserScreenshot(page, `${distPath}/${testBaseName}-${screenshots.length}.jpeg`, { crop: VIEWPORT_CROP }));
+    const screenshotB = await sharp(await page.screenshot())
+      .raw()
+      .ensureAlpha()
+      .toBuffer({ resolveWithObject: true });
 
-    let mismatchPercentage = await compareTwoImages(screenshots[0], screenshots[1]);
+    await buttonToggleScrollLockEl?.click();
 
-    assert.equal(Math.round(mismatchPercentage), 0);
+    const screenshotC = await sharp(await page.screenshot())
+      .raw()
+      .ensureAlpha()
+      .toBuffer({ resolveWithObject: true });
 
-    await rm(screenshots[0]);
+    // writeFileSync('a.jpeg', await sharp(screenshotA.data, { raw: screenshotA.info }).jpeg().toBuffer());
 
-    screenshots.shift();
+    assert.notEqual(compareTwoImages(screenshotA, screenshotB), 0);
 
-    await clickOnScrollToBottomButton(page);
+    assert.equal(compareTwoImages(screenshotA, screenshotC), 0);
 
-    screenshots.push(await takeBrowserScreenshot(page, `${distPath}/${testBaseName}-${screenshots.length}.jpeg`, { crop: VIEWPORT_CROP }));
-
-    mismatchPercentage = await compareTwoImages(screenshots[0], screenshots[1]);
-
-    assert.equal(Math.round(mismatchPercentage), 0);
-
-    await Promise.all(screenshots.map((screenshot) => rm(screenshot)));
-
-    screenshots = [];
+    assert.notEqual(compareTwoImages(screenshotB, screenshotC), 0);
   });
 });
