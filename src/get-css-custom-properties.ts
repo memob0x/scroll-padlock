@@ -1,4 +1,4 @@
-import { ComputedLayout } from './types';
+import { ComputedLayout } from './computed-layout';
 
 /**
  * Formats the given dimensions and scroll information into CSS variables.

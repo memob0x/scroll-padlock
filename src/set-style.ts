@@ -1,5 +1,5 @@
 import { getCSSCustomProperties } from './get-css-custom-properties.js';
-import { Options } from './types.js';
+import { Options } from './options.js';
 
 /**
  * The currently created style elements by selector.

@@ -9,18 +9,18 @@ import {
 import { fileURLToPath } from 'node:url';
 import { Browser, launch, Page } from 'puppeteer';
 import sharp from 'sharp';
-import { compareImages } from './compare-images.ts';
+import { compareImages } from '../compare-images.ts';
 import {
   BROWSER_LAUNCH_OPTIONS,
   SELECTOR_BUTTON_SCROLL_TO_BOTTOM,
   SELECTOR_BUTTON_TOGGLE_SCROLL_LOCK,
-} from './constants.ts';
+} from '../constants.ts';
 
 const currentFile = fileURLToPath(import.meta.url);
 
 const currentPath = dirname(currentFile);
 
-const testBaseName = basename(currentFile, '.spec.ts');
+const testBaseName = basename(currentPath);
 
 describe(testBaseName, () => {
   let browser: Browser;
@@ -32,7 +32,7 @@ describe(testBaseName, () => {
 
     page = await browser.newPage();
 
-    await page.goto(`file://${currentPath}/${testBaseName}.html`);
+    await page.goto(`file://${currentPath}/index.html`);
   });
 
   afterEach(() => browser.close());

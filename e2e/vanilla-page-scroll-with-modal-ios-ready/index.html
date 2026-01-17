@@ -4,74 +4,7 @@
 <head>
   <title>Test</title>
 
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-    }
-
-    .locked {
-      overflow: hidden;
-      position: fixed;
-      width: 100%;
-      top: calc(var(--scroll-top) * -1);
-      left: 0;
-      padding-right: var(--scrollbar-width);
-    }
-
-    #nav {
-      position: fixed;
-      top: 0;
-      left: 0;
-    }
-
-    #modal {
-      position: fixed;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: black;
-      overflow: hidden;
-      color: white;
-      padding: 2rem 4rem;
-
-      visibility: hidden;
-      opacity: 0;
-      transition: visibility 0s 0.5s, opacity 0.5s ease;
-    }
-
-    .locked #modal {
-      overflow: auto;
-      visibility: visible;
-      opacity: 1;
-      transition: visibility 0s, opacity 0.5s ease;
-    }
-
-    #modal nav {
-      position: sticky;
-      top: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
-
-    #modal input {
-      max-width: 100%;
-      font-size: 2.5rem;
-      transform: translateY(-100px);
-      transition: transform 0.5s ease;
-    }
-
-    .locked #modal input {
-      transform: translateY(0);
-    }
-  </style>
+  <link rel="stylesheet" href="./index.css">
 </head>
 
 <body>
@@ -200,90 +133,9 @@
     <p>Respondent extrema primis, media utrisque, omnia omnibus. </p>
   </div>
 
-  <script src="../dist/scroll-padlock.umd.js"></script>
+  <script src="../../dist/scroll-padlock.umd.js"></script>
 
-  <script>
-    const cssClassName = 'locked';
-
-    const { scrollingElement } = document;
-
-    const { classList } = scrollingElement;
-
-    let scrollTop = 0;
-
-    function possiblySaveScrollState() {
-      if (classList.contains(cssClassName)) {
-        return;
-      }
-
-      scrollTop = window.scrollY;
-
-      window.scrollPadlock.setStyle({
-        selector: '.' + cssClassName,
-
-        element: scrollingElement,
-      });
-    }
-
-    function possiblyUpdateLockedScrollState() {
-      if (!classList.contains(cssClassName)) {
-        return;
-      }
-
-      classList.remove(cssClassName);
-
-      window.scrollTo(0, scrollTop);
-
-      possiblySaveScrollState();
-
-      classList.add(cssClassName);
-    }
-
-    function restoreScrollPosition() {
-      if (!classList.contains(cssClassName)) {
-        window.scrollTo(0, scrollTop);
-      }
-    }
-
-    const modalInput = document.querySelector('#modal input')
-
-    Array.from(document.querySelectorAll('[data-button-name="toggle-scroll-lock"]')).forEach(el => el.addEventListener('click', () => {
-      possiblySaveScrollState();
-
-      classList.toggle(cssClassName);
-
-      restoreScrollPosition();
-
-      let focusTarget = document.body;
-
-      if (classList.contains(cssClassName)) {
-        focusTarget = modalInput;
-      }
-
-      focusTarget.focus();
-    }));
-
-    Array.from(document.querySelectorAll('[data-button-name="scroll-to-bottom"]')).forEach(el => el.addEventListener('click', () => {
-      window.scrollBy(0, 9999);
-    }));
-
-    Array.from(document.querySelectorAll('[data-button-name="scroll-to-top"]')).forEach(el => el.addEventListener('click', () => {
-      window.scrollTo(0, 0);
-    }));
-
-    window.addEventListener('resize', () => {
-      if (classList.contains(cssClassName)) {
-        // Addressing the "ios-keyboard-sub-window-thing offset" bug:
-        // locking the page scroll while a programmatic focus
-        // on an an input field takes place it makes the keyboard tray to show
-        // and that triggers, along with the visual artifact itself, a "resize" event
-        // "Re-aligns" the iOS keyboard "sub-window"
-        window.scrollTo(0, 0);
-      }
-
-      possiblyUpdateLockedScrollState();
-    });
-  </script>
+  <script src="./index.js"></script>
 </body>
 
 </html>

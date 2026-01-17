@@ -115,12 +115,6 @@ Node version 22.16.0 or higher is required in order to execute the tests.
 npm test
 ```
 
-To generate the unit tests coverage in a readable format, [lcov](https://github.com/linux-test-project/lcov) can be used.
-
-```shell
-genhtml --branch-coverage lcov.info -o coverage
-```
-
 The locally built library is imported in the end-to-end tests, so a build is required.
 
 ```shell

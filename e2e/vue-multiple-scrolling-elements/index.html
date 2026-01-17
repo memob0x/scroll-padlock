@@ -4,38 +4,7 @@
 <head>
   <title>Test</title>
 
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      overflow: hidden;
-    }
-
-    nav {
-      position: sticky;
-      top: 0;
-      display: flex;
-      flex-direction: column;
-    }
-
-    #app {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .scroll-container {
-      height: 200px;
-      overflow-y: scroll;
-    }
-
-    .scroll-container--locked {
-      overflow: hidden;
-      padding-right: var(--scrollbar-width);
-    }
-  </style>
+  <link rel="stylesheet" href="./index.css">
 </head>
 
 <body>
@@ -146,7 +115,7 @@
     </scroll-container>
   </div>
 
-  <script src="../dist/scroll-padlock.umd.js"></script>
+  <script src="../../dist/scroll-padlock.umd.js"></script>
 
   <script type="importmap">
     {
@@ -156,99 +125,7 @@
     }
   </script>
 
-  <script type="module">
-    import { createApp, ref, defineComponent, watch } from 'vue';
-
-    const cssClassName = 'scroll-container';
-
-    const cssClassNameLocked = `${cssClassName}--locked`;
-
-    const ScrollContainer = defineComponent({
-      props: {
-        locked: {
-          type: Boolean,
-          default: false,
-        },
-
-        modelValue: {
-          type: Number,
-          default: 0,
-        },
-      },
-
-      emits: [
-        'update:modelValue'
-      ],
-
-      setup(props, { emit }) {
-        const scrollable = ref(null);
-
-        watch(() => props.modelValue, (value) => {
-          if (scrollable.value) {
-            scrollable.value.scrollTo(0, value);
-          }
-        });
-
-        watch(() => props.locked, () => {
-          if (scrollable.value && props.locked) {
-            window.scrollPadlock.setStyle({
-              element: scrollable.value,
-
-              selector: `.${cssClassNameLocked}`,
-            });
-          }
-        });
-
-        return {
-          scrollable,
-
-          updateScrollTop() {
-            emit("update:modelValue", scrollable.value.scrollTop);
-          },
-        };
-      },
-
-      template: `
-        <div :class="['${cssClassName}', { ['${cssClassNameLocked}']: locked }]" ref="scrollable" @scroll="updateScrollTop">
-          <slot></slot>
-        </div>
-      `,
-    });
-
-    createApp({
-      components: {
-        ScrollContainer,
-      },
-
-      setup() {
-        const isLocked = ref(false);
-
-        const scrollTop = ref(0);
-
-        const containers = ref([{}, {}, {}]);
-
-        return {
-          isLocked,
-
-          scrollTop,
-
-          containers,
-
-          toggleLockScroll() {
-            isLocked.value = !isLocked.value;
-          },
-
-          scrollBySomePx() {
-            scrollTop.value = 9999;
-          },
-
-          scrollToTop() {
-            scrollTop.value = 0;
-          },
-        };
-      },
-    }).mount('#app');
-  </script>
+  <script type="module" src="./index.js"></script>
 </body>
 
 </html>

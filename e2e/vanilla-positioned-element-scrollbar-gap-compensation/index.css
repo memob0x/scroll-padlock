@@ -1,0 +1,50 @@
+* {
+    box-sizing: border-box;
+}
+
+html {
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+
+.locked {
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+    top: calc(var(--scroll-top) * -1);
+    left: 0;
+    padding-right: var(--scrollbar-width);
+}
+
+body {
+    margin: 0;
+}
+
+nav {
+    position: sticky;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.circle {
+    border-radius: 100%;
+    width: 240px;
+    aspect-ratio: 1/1;
+    background-color: red;
+    position: fixed;
+    top: 10%;
+    right: var(--scrollbar-width, 0);
+}
+
+.circle+.circle {
+    background-color: blue;
+    top: 20%;
+    right: calc(40px + var(--scrollbar-width, 0px));
+}
+
+.circle+.circle+.circle {
+    background-color: green;
+    top: 30%;
+    right: calc(60px + var(--scrollbar-width, 0px));
+}

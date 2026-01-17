@@ -1,99 +1,47 @@
-<!DOCTYPE html>
-<html>
+import {
+  useState, useRef, useEffect, createElement,
+} from 'react';
+import { createRoot } from 'react-dom';
+import htm from 'htm';
 
-<head>
-  <title>Test</title>
+const html = htm.bind(createElement);
 
-  <style>
-    * {
-      box-sizing: border-box;
+const ScrollContainer = ({
+  locked, scrollTop, setScrollTop, children,
+}) => {
+  const cssClassName = 'scroll-container';
+
+  const cssClassNameLocked = `${cssClassName}--locked`;
+
+  const scrollable = useRef(null);
+
+  useEffect(() => {
+    if (scrollable.current) {
+      scrollable.current.scrollTo(0, scrollTop);
+    }
+  }, [scrollTop]);
+
+  const [cssClassNames, setCssClassNames] = useState([]);
+
+  useEffect(() => {
+    if (scrollable.current && locked) {
+      window.scrollPadlock.setStyle({
+        element: scrollable.current,
+
+        selector: `.${cssClassNameLocked}`,
+      });
     }
 
-    body {
-      margin: 0;
-      overflow: hidden;
+    const names = [cssClassName];
+
+    if (locked) {
+      names.push(cssClassNameLocked);
     }
 
-    nav {
-      position: sticky;
-      top: 0;
-      display: flex;
-      flex-direction: column;
-    }
+    setCssClassNames(names);
+  }, [locked]);
 
-    .wrapper {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .scroll-container {
-      height: 200px;
-      overflow-y: scroll;
-    }
-
-    .scroll-container--locked {
-      overflow: hidden;
-      padding-right: var(--scrollbar-width);
-    }
-  </style>
-</head>
-
-<body>
-  <div id="app"></div>
-
-  <script src="../dist/scroll-padlock.umd.js"></script>
-
-  <script type="importmap">
-    {
-      "imports": {
-        "react": "https://esm.sh/react@18.2.0",
-        "react-dom": "https://esm.sh/react-dom@18.2.0",
-        "htm": "https://esm.sh/htm@3.1.1"
-      }
-    }
-  </script>
-
-  <script type="module">
-    import { useState, useRef, useEffect, createElement } from "react";
-    import { createRoot } from "react-dom";
-    import htm from "htm";
-
-    const html = htm.bind(createElement);
-
-    const ScrollContainer = ({ locked, scrollTop, setScrollTop, children }) => {
-      const cssClassName = 'scroll-container';
-
-      const cssClassNameLocked = `${cssClassName}--locked`;
-
-      const scrollable = useRef(null);
-
-      useEffect(() => {
-        if (scrollable.current) {
-          scrollable.current.scrollTo(0, scrollTop);
-        }
-      }, [scrollTop]);
-
-      let [cssClassNames, setCssClassNames] = useState([]);
-
-      useEffect(() => {
-        if (scrollable.current && locked) {
-          window.scrollPadlock.setStyle({
-            element: scrollable.current,
-
-            selector: `.${cssClassNameLocked}`,
-          });
-        }
-
-        const names = [cssClassName]
-
-        if (locked) {
-          names.push(cssClassNameLocked);
-        }
-
-        setCssClassNames(names)
-      }, [locked]);
-
-      return html`
+  return html`
       <div
         className=${cssClassNames.join(' ')}
         ref=${scrollable}
@@ -101,16 +49,16 @@
       >
         ${children}
       </div>`;
-    };
+};
 
-    const App = () => {
-      const [isLocked, setIsLocked] = useState(false);
+const App = () => {
+  const [isLocked, setIsLocked] = useState(false);
 
-      const [scrollTop, setScrollTop] = useState(0);
+  const [scrollTop, setScrollTop] = useState(0);
 
-      const containers = [{}, {}, {}];
+  const containers = [{}, {}, {}];
 
-      return html`
+  return html`
       <div class="wrapper">
         <nav>
           <button onClick=${() => setIsLocked(!isLocked)} data-button-name="toggle-scroll-lock">
@@ -148,13 +96,8 @@
             <p>Proin volutpat metus diam, tempor neque rhoncus habitasse. Mattis sapien lectus ullamcorper dictum vehicula auctor vitae praesent. Ad eleifend habitasse duis sem integer praesent blandit. Tellus hendrerit nam, eu porttitor lacinia ligula tempor. Rhoncus dui ultricies tellus feugiat himenaeos eros magna senectus. Nec elit proin pharetra quis vitae convallis himenaeos. Dolor suscipit ad penatibus molestie turpis montes eros? Per leo dui iaculis maecenas commodo ad rutrum cubilia. Sagittis facilisis adipiscing et feugiat et pellentesque vulputate.</p>
             <p>Sapien nibh justo consequat rhoncus ipsum porta. Posuere quam senectus semper posuere penatibus orci. Integer semper quisque montes condimentum donec nisi ipsum. Diam quis fusce placerat pretium id ultrices magnis. Suspendisse ad venenatis mauris aptent taciti potenti vivamus. Velit nam tempor sociosqu quisque euismod tempus. Primis natoque sagittis sed eros curae. Volutpat aenean est feugiat luctus euismod aliquet ut sollicitudin. Praesent sociosqu pharetra orci praesent, potenti dapibus.</p>
             <p>Diam maecenas velit; nostra dictumst massa ridiculus montes netus. Elit luctus auctor sed tempus placerat placerat aptent fusce purus. Taciti semper ut himenaeos sagittis viverra; dictum ligula iaculis. Penatibus ornare lacus nunc facilisis ligula nostra ante cursus. Arcu feugiat cras quam proin hac commodo quisque. Eleifend nulla nulla semper vulputate duis porta dolor.</p>
-          </${ScrollContainer}>`
-      )}
+          </${ScrollContainer}>`)}
       </div>`;
-    };
+};
 
-    createRoot(document.getElementById("app")).render(html`<${App} />`);
-  </script>
-</body>
-
-</html>
+createRoot(document.getElementById('app')).render(html`<${App} />`);
