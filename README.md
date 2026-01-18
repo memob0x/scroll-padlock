@@ -17,11 +17,7 @@ With scrollbar gap compensation:
 
 The library exports a `setStyle` function that appends CSS styles targeting the default `.scroll-padlock` selector. By default, it uses the page's [scrolling element](https://developer.mozilla.org/en-US/docs/Web/API/document/scrollingElement) and the [window](https://developer.mozilla.org/en-US/docs/Web/API/Window) object to retrieve values, which are then assigned to CSS variables for use as preferred.
 
-## Examples
-
-The HTML files in the "e2e" folder serve as demos, showcasing how the library can be integrated with different approaches across various applications.
-
-## Usage
+## Installation
 
 It can be installed via npm:
 
@@ -62,6 +58,8 @@ It can be used globally by including the UMD version of the script:
   window.scrollPadlock.setStyle();
 </script>
 ```
+
+## Usage
 
 After calling `setStyle`, the following CSS variables become available:
 
