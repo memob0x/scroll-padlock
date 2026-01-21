@@ -1,0 +1,17 @@
+{
+    "all": true,
+    "include": [
+        "src/*.ts"
+    ],
+    "exclude": [
+        "src/*.spec.ts",
+        "src/*.d.ts"
+    ],
+    "lines": 100,
+    "functions": 100,
+    "branches": 100,
+    "statements": 100,
+    "reporter": [
+        "html"
+    ]
+}

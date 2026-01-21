@@ -11,7 +11,7 @@ type Image = {
  * Compares two images and returns the raw mismatch percentage.
  * @param a - The first image.
  * @param b - The second image.
- * @returns A promise that resolves to the raw mismatch percentage.
+ * @returns The raw mismatch percentage.
  */
 export function compareImages(a: Image, b: Image) {
   const {
