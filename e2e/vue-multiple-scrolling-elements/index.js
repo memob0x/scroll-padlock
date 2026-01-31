@@ -36,7 +36,6 @@ const ScrollContainer = defineComponent({
       if (scrollable.value && props.locked) {
         window.scrollPadlock.setStyle({
           element: scrollable.value,
-
           selector: `.${cssClassNameLocked}`,
         });
       }

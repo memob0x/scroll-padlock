@@ -15,8 +15,6 @@ With scrollbar gap compensation:
 
 ![with scrollbar gap compensation](/assets/with-scrollbar-gap-compensation.gif?raw=true)
 
-The library exports a `setStyle` function that appends CSS styles targeting the default `.scroll-padlock` selector. By default, it uses the page's [scrolling element](https://developer.mozilla.org/en-US/docs/Web/API/document/scrollingElement) and the [window](https://developer.mozilla.org/en-US/docs/Web/API/Window) object to retrieve values, which are then assigned to CSS variables for use as preferred.
-
 ## Installation
 
 It can be installed via npm:
@@ -31,50 +29,13 @@ import { setStyle } from "scroll-padlock";
 setStyle();
 ```
 
-It can be imported as an ES module in the browser:
-
-```html
-<script type="importmap">
-  {
-    "imports": {
-      "scroll-padlock": "https://cdn.jsdelivr.net/npm/scroll-padlock@latest/+esm"
-    }
-  }
-</script>
-
-<script type="module">
-  import { setStyle } from "scroll-padlock";
-
-  setStyle();
-</script>
-```
-
-It can be used globally by including the UMD version of the script:
-
-```html
-<script src="https://cdn.jsdelivr.net/npm/scroll-padlock@latest/dist/scroll-padlock.umd.min.js"></script>
-
-<script>
-  window.scrollPadlock.setStyle();
-</script>
-```
+The library also builds to a UMD format, so it can be consumed in multiple environments (browser, AMD, or CommonJS) from the same bundle.
 
 ## Usage
 
-After calling `setStyle`, the following CSS variables become available:
+The library exports a `setStyle` function that appends CSS styles targeting the default `.scroll-padlock` selector. By default, it uses the page's [scrolling element](https://developer.mozilla.org/en-US/docs/Web/API/document/scrollingElement) and the [window](https://developer.mozilla.org/en-US/docs/Web/API/Window) object to retrieve values, which are then assigned to CSS variables for use as preferred.
 
-- `--scroll-top`: the number of pixels the element's content is scrolled vertically.
-- `--scroll-left`: the number of pixels the element's content is scrolled horizontally.
-- `--scroll-width`: the total width of the element's scrollable content, including the non-visible part.
-- `--scroll-height`: the total height of the element's scrollable content, including the non-visible part.
-- `--scrollbar-width`: the width of the vertical scrollbar of the element.
-- `--scrollbar-height`: the height of the horizontal scrollbar of the element.
-- `--offset-width`: the total visible width of the element, including the scrollbar.
-- `--offset-height`: the total visible height of the element, including the scrollbar.
-- `--client-width`: the visible width of the element, excluding the scrollbar.
-- `--client-height`: the visible height of the element, excluding the scrollbar.
-
-These CSS variables can be used to implement the preferred approach to prevent the element scroll or to add the scrollbar gap componsation, see the following basic example:
+The appended CSS variables can be used to implement the preferred approach to prevent the element scroll or to add the scrollbar gap componsation, see the following basic example:
 
 ```css
 .scroll-padlock {
@@ -90,6 +51,23 @@ setStyle();
 
 document.scrollingElement.classList.add('scroll-padlock');
 ```
+
+## CSS Variables
+
+After calling `setStyle`, the following default CSS variables become available:
+
+- `--scroll-top`: the number of pixels the element's content is scrolled vertically.
+- `--scroll-left`: the number of pixels the element's content is scrolled horizontally.
+- `--scroll-width`: the total width of the element's scrollable content, including the non-visible part.
+- `--scroll-height`: the total height of the element's scrollable content, including the non-visible part.
+- `--scrollbar-width`: the width of the vertical scrollbar of the element.
+- `--scrollbar-height`: the height of the horizontal scrollbar of the element.
+- `--offset-width`: the total visible width of the element, including the scrollbar.
+- `--offset-height`: the total visible height of the element, including the scrollbar.
+- `--client-width`: the visible width of the element, excluding the scrollbar.
+- `--client-height`: the visible height of the element, excluding the scrollbar.
+
+## Options
 
 The `setStyle` function accepts an options object which customizes its behavior. Here are the available options:
 

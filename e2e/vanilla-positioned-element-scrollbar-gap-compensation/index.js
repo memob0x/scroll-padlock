@@ -18,7 +18,6 @@ function possiblySaveScrollState() {
 
   window.scrollPadlock.setStyle({
     selector: `.${cssClassName}`,
-
     element: scrollingElement,
   });
 }

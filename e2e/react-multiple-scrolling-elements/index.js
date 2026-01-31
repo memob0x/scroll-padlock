@@ -27,7 +27,6 @@ const ScrollContainer = ({
     if (scrollable.current && locked) {
       window.scrollPadlock.setStyle({
         element: scrollable.current,
-
         selector: `.${cssClassNameLocked}`,
       });
     }
