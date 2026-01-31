@@ -40,7 +40,7 @@ The appended CSS variables can be used to implement the preferred approach to pr
 ```css
 .scroll-padlock {
   overflow: hidden;
-  padding-right: var(--scrollbar-width);
+  padding-right: calc(var(--offset-width, 0) - var(--client-width, 0));
 }
 ```
 
@@ -60,8 +60,6 @@ After calling `setStyle`, the following default CSS variables become available:
 - `--scroll-left`: the number of pixels the element's content is scrolled horizontally.
 - `--scroll-width`: the total width of the element's scrollable content, including the non-visible part.
 - `--scroll-height`: the total height of the element's scrollable content, including the non-visible part.
-- `--scrollbar-width`: the width of the vertical scrollbar of the element.
-- `--scrollbar-height`: the height of the horizontal scrollbar of the element.
 - `--offset-width`: the total visible width of the element, including the scrollbar.
 - `--offset-height`: the total visible height of the element, including the scrollbar.
 - `--client-width`: the visible width of the element, excluding the scrollbar.
@@ -79,7 +77,7 @@ The `setStyle` function accepts an options object which customizes its behavior.
 setStyle({
   element: document.querySelector('#custom-scrolling-element'),
   selector: '.custom-element-scroll-padlock',
-  formatter: ({ clientWidth }) => `--width-without-scrollbar: ${clientWidth}px;`
+  formatter: ({ offsetWidth, clientWidth }) => `--scrollbar-width: ${offsetWidth - clientWidth}px;`
 });
 ```
 

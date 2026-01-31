@@ -14,8 +14,6 @@ describe(getCSSCustomProperties.name, () => {
 + '--client-height:0px;'
 + '--scroll-width:0px;'
 + '--scroll-height:0px;'
-+ '--scrollbar-width:0px;'
-+ '--scrollbar-height:0px;'
 + '--scroll-top:0px;'
 + '--scroll-left:0px;');
   });
@@ -36,8 +34,6 @@ describe(getCSSCustomProperties.name, () => {
 + '--client-height:190px;'
 + '--scroll-width:300px;'
 + '--scroll-height:400px;'
-+ '--scrollbar-width:10px;'
-+ '--scrollbar-height:10px;'
 + '--scroll-top:10px;'
 + '--scroll-left:20px;');
   });
@@ -57,22 +53,5 @@ describe(getCSSCustomProperties.name, () => {
 
     match(result, /--client-width:100px;/);
     match(result, /--client-height:190px/);
-  });
-
-  it('should calculate and set "scrollbar" values using the given "offset" and "client" values without setting negative values', () => {
-    const result = getCSSCustomProperties({
-      offsetWidth: 150,
-      offsetHeight: 250,
-      clientWidth: 100,
-      clientHeight: 200,
-
-      scrollWidth: 999,
-      scrollHeight: 999,
-      scrollTop: 999,
-      scrollLeft: 999,
-    });
-
-    match(result, /--scrollbar-width:50px;/);
-    match(result, /--scrollbar-height:50px;/);
   });
 });

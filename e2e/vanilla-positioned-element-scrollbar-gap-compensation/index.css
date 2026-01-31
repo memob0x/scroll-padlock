@@ -3,6 +3,8 @@
 }
 
 html {
+    --scrollbar-width: calc(var(--offset-width, 0) - var(--client-width, 0));
+
     overflow-x: hidden;
     overflow-y: scroll;
 }
@@ -11,9 +13,9 @@ html {
     overflow: hidden;
     position: fixed;
     width: 100%;
-    top: calc(var(--scroll-top) * -1);
+    top: calc(var(--scroll-top, 0) * -1);
     left: 0;
-    padding-right: var(--scrollbar-width);
+    padding-right: var(--scrollbar-width, 0);
 }
 
 body {
@@ -40,11 +42,11 @@ nav {
 .circle+.circle {
     background-color: blue;
     top: 20%;
-    right: calc(40px + var(--scrollbar-width, 0px));
+    right: calc(40px + var(--scrollbar-width, 0));
 }
 
 .circle+.circle+.circle {
     background-color: green;
     top: 30%;
-    right: calc(60px + var(--scrollbar-width, 0px));
+    right: calc(60px + var(--scrollbar-width, 0));
 }

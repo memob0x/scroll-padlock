@@ -548,7 +548,7 @@ describe(setStyle.name, () => {
     it('should create a rule with the right format', () => {
       const style = setStyle().sheet;
 
-      match(style?.cssRules[0].cssText || '', /^\.scroll-padlock\s*\{\s*(--[\w-]+:\s*[^;]+;\s*){10}\}$/);
+      match(style?.cssRules[0].cssText || '', /^\.scroll-padlock\s*\{\s*(--[\w-]+:\s*[^;]+;\s*){8}\}$/);
     });
   });
 
@@ -605,8 +605,6 @@ describe(setStyle.name, () => {
       equal(globalThis.getComputedStyle(element).getPropertyValue('--client-height').endsWith('px'), true);
       equal(globalThis.getComputedStyle(element).getPropertyValue('--scroll-width').endsWith('px'), true);
       equal(globalThis.getComputedStyle(element).getPropertyValue('--scroll-height').endsWith('px'), true);
-      equal(globalThis.getComputedStyle(element).getPropertyValue('--scrollbar-width').endsWith('px'), true);
-      equal(globalThis.getComputedStyle(element).getPropertyValue('--scrollbar-height').endsWith('px'), true);
       equal(globalThis.getComputedStyle(element).getPropertyValue('--scroll-top').endsWith('px'), true);
       equal(globalThis.getComputedStyle(element).getPropertyValue('--scroll-left').endsWith('px'), true);
     });

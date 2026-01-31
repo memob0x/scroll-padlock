@@ -23,8 +23,6 @@ export function getCSSCustomProperties(computedLayout?: ComputedLayout): string 
 + `--client-height:${Math.round(Math.min(offsetHeight, clientHeight))}px;`
 + `--scroll-width:${Math.round(scrollWidth)}px;`
 + `--scroll-height:${Math.round(scrollHeight)}px;`
-+ `--scrollbar-width:${Math.round(Math.max(0, offsetWidth - clientWidth))}px;`
-+ `--scrollbar-height:${Math.round(Math.max(0, offsetHeight - clientHeight))}px;`
 + `--scroll-top:${Math.round(scrollTop)}px;`
 + `--scroll-left:${Math.round(scrollLeft)}px;`;
 }

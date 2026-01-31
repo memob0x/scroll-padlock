@@ -10,9 +10,9 @@ body {
     overflow: hidden;
     position: fixed;
     width: 100%;
-    top: calc(var(--scroll-top) * -1);
+    top: calc(var(--scroll-top, 0) * -1);
     left: 0;
-    padding-right: var(--scrollbar-width);
+    padding-right: calc(var(--offset-width, 0) - var(--client-width, 0));
 }
 
 #nav {
