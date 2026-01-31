@@ -19,22 +19,31 @@ describe(getCSSCustomProperties.name, () => {
   });
 
   it('should format CSS custom attributes correctly', () => {
+    const offsetWidth = 1;
+    const offsetHeight = 2;
+    const clientWidth = 3;
+    const clientHeight = 4;
+    const scrollWidth = 5;
+    const scrollHeight = 6;
+    const scrollTop = 7;
+    const scrollLeft = 8;
+
     equal(getCSSCustomProperties({
-      offsetWidth: 100,
-      offsetHeight: 200,
-      clientWidth: 90,
-      clientHeight: 190,
-      scrollWidth: 300,
-      scrollHeight: 400,
-      scrollTop: 10,
-      scrollLeft: 20,
-    }), '--offset-width:100px;'
-+ '--offset-height:200px;'
-+ '--client-width:90px;'
-+ '--client-height:190px;'
-+ '--scroll-width:300px;'
-+ '--scroll-height:400px;'
-+ '--scroll-top:10px;'
-+ '--scroll-left:20px;');
+      offsetWidth,
+      offsetHeight,
+      clientWidth,
+      clientHeight,
+      scrollWidth,
+      scrollHeight,
+      scrollTop,
+      scrollLeft,
+    }), `--offset-width:${offsetWidth}px;`
++ `--offset-height:${offsetHeight}px;`
++ `--client-width:${clientWidth}px;`
++ `--client-height:${clientHeight}px;`
++ `--scroll-width:${scrollWidth}px;`
++ `--scroll-height:${scrollHeight}px;`
++ `--scroll-top:${scrollTop}px;`
++ `--scroll-left:${scrollLeft}px;`);
   });
 });

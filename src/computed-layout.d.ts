@@ -1,45 +1,54 @@
 /**
- * Represents the computed layout properties of an element.
+ * Represents the computed layout properties of an HTML element.
  */
 export type ComputedLayout = {
   /**
-   * The number of pixels that the content of an element is scrolled vertically.
+   * The number of pixels that the element's content is scrolled vertically.
    */
   scrollTop?: number;
+
   /**
-   * The number of pixels that the content of an element is scrolled horizontally.
+   * The number of pixels that the element's content is scrolled horizontally.
    */
   scrollLeft?: number;
+
   /**
-   * The entire width of an element, including content not visible on the screen due to overflow.
+   * The full width of the element's content, including content not visible due to overflow.
    */
   scrollWidth?: number;
+
   /**
-   * The entire height of an element, including content not visible on the screen due to overflow.
+   * The full height of the element's content, including content not visible due to overflow.
    */
   scrollHeight?: number;
+
   /**
-   * The width of the vertical scrollbar.
+   * The width of the vertical scrollbar in pixels, if present.
    */
   scrollbarWidth?: number;
+
   /**
-   * The height of the horizontal scrollbar.
+   * The height of the horizontal scrollbar in pixels, if present.
    */
   scrollbarHeight?: number;
+
   /**
-   * The layout width of an element as an integer.
+   * The total layout width of the element in pixels, including scrollbars.
    */
   offsetWidth?: number;
+
   /**
-   * The layout height of an element as an integer.
+   * The total layout height of the element in pixels, including scrollbars.
    */
   offsetHeight?: number;
+
   /**
-   * The inner width of an element in pixels.
+   * The inner width of the element in pixels, **excluding scrollbars**.
    */
   clientWidth?: number;
+
   /**
-   * The inner height of an element in pixels.
+   * The inner height of the element in pixels, **excluding scrollbars**.
    */
   clientHeight?: number;
 };

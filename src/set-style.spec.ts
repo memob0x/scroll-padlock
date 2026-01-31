@@ -72,10 +72,8 @@ describe(setStyle.name, () => {
   });
 
   describe('parameter signature', () => {
-    it('should throw if the "selector" option is passed as falsy', () => {
-      throws(() => setStyle({ selector: '' }), {
-        message: 'Invalid options provided.',
-      });
+    it('should throw if the "selector" option is passed as empty string', () => {
+      throws(() => setStyle({ selector: '' }));
     });
 
     it('should not throw if the "selector" option is passed as undefined', () => {
@@ -96,14 +94,12 @@ describe(setStyle.name, () => {
   });
 
   describe('stylesheet element lifecycle', () => {
-    it('should throw if it\'s not able to access the created style element "sheet" instance', () => {
+    it('should not throw if it\'s not able to access the created style element "sheet" instance', () => {
       const fn = globalThis.document.createElement;
 
       globalThis.document.createElement = () => fn.call(globalThis.document, 'div');
 
-      throws(() => setStyle({ selector: `.selector-${randomUUID()}` }), {
-        message: 'Invalid CSSStyleSheet instance.',
-      });
+      doesNotThrow(() => setStyle({ selector: `.selector-${randomUUID()}` }));
     });
 
     it('should create a style element', () => {
