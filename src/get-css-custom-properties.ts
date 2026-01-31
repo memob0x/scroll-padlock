@@ -17,12 +17,12 @@ export function getCSSCustomProperties(computedLayout?: ComputedLayout): string 
     scrollLeft = 0,
   } = computedLayout || {};
 
-  return `--offset-width:${Math.round(offsetWidth)}px;`
-+ `--offset-height:${Math.round(offsetHeight)}px;`
-+ `--client-width:${Math.round(Math.min(offsetWidth, clientWidth))}px;`
-+ `--client-height:${Math.round(Math.min(offsetHeight, clientHeight))}px;`
-+ `--scroll-width:${Math.round(scrollWidth)}px;`
-+ `--scroll-height:${Math.round(scrollHeight)}px;`
-+ `--scroll-top:${Math.round(scrollTop)}px;`
-+ `--scroll-left:${Math.round(scrollLeft)}px;`;
+  return `--offset-width:${offsetWidth}px;`
++ `--offset-height:${offsetHeight}px;`
++ `--client-width:${clientWidth}px;`
++ `--client-height:${clientHeight}px;`
++ `--scroll-width:${scrollWidth}px;`
++ `--scroll-height:${scrollHeight}px;`
++ `--scroll-top:${scrollTop}px;`
++ `--scroll-left:${scrollLeft}px;`;
 }

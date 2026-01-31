@@ -1,5 +1,5 @@
 import { describe, it } from 'node:test';
-import { doesNotThrow, equal, match } from 'node:assert';
+import { doesNotThrow, equal } from 'node:assert';
 import { getCSSCustomProperties } from './get-css-custom-properties.js';
 
 describe(getCSSCustomProperties.name, () => {
@@ -36,22 +36,5 @@ describe(getCSSCustomProperties.name, () => {
 + '--scroll-height:400px;'
 + '--scroll-top:10px;'
 + '--scroll-left:20px;');
-  });
-
-  it('should set "client" values using the minimum value between the given "offset" and "client" values', () => {
-    const result = getCSSCustomProperties({
-      offsetWidth: 100,
-      offsetHeight: 200,
-      clientWidth: 120,
-      clientHeight: 190,
-
-      scrollWidth: 999,
-      scrollHeight: 999,
-      scrollTop: 999,
-      scrollLeft: 999,
-    });
-
-    match(result, /--client-width:100px;/);
-    match(result, /--client-height:190px/);
   });
 });
