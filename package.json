@@ -31,7 +31,7 @@
     "prepare": "husky"
   },
   "devDependencies": {
-    "@microsoft/api-extractor": "^7.56.0",
+    "@microsoft/api-extractor": "^7.57.7",
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^12.3.0",
     "@types/jsdom": "^27.0.0",
