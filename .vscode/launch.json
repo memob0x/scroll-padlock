@@ -2,14 +2,16 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "test:unit:padlock",
+      "name": "test",
       "type": "node",
       "request": "launch",
       "runtimeArgs": [
+        "--import",
+        "tsx",
         "--inspect",
         "--test",
         "--test-reporter=spec",
-        "test/unit/scroll-padlock.spec.js"
+        "src/set-style.spec.ts"
       ],
       "internalConsoleOptions": "openOnSessionStart",
       "skipFiles": [
