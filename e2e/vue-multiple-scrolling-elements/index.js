@@ -1,6 +1,7 @@
 import {
   createApp, ref, defineComponent, watch,
 } from 'vue';
+import { setStyle } from 'scroll-padlock';
 
 const cssClassName = 'scroll-container';
 
@@ -34,7 +35,7 @@ const ScrollContainer = defineComponent({
 
     watch(() => props.locked, () => {
       if (scrollable.value && props.locked) {
-        window.scrollPadlock.setStyle({
+        setStyle({
           element: scrollable.value,
           selector: `.${cssClassNameLocked}`,
         });

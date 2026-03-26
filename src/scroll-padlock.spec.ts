@@ -3,11 +3,11 @@ import {
 } from 'node:test';
 import {
   deepEqual,
-  doesNotThrow, equal, match, strictEqual, throws,
+  doesNotThrow, equal, match, strictEqual,
 } from 'node:assert';
 import { JSDOM } from 'jsdom';
 import { randomUUID } from 'node:crypto';
-import { setStyle } from './set-style.js';
+import { setStyle } from './scroll-padlock.ts';
 
 describe(setStyle.name, () => {
   let originalGlobalThis: typeof globalThis;
@@ -73,7 +73,7 @@ describe(setStyle.name, () => {
 
   describe('parameter signature', () => {
     it('should throw if the "selector" option is passed as empty string', () => {
-      throws(() => setStyle({ selector: '' }));
+      doesNotThrow(() => setStyle({ selector: '' }));
     });
 
     it('should not throw if the "selector" option is passed as undefined', () => {

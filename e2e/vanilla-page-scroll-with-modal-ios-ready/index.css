@@ -10,9 +10,9 @@ body {
     overflow: hidden;
     position: fixed;
     width: 100%;
-    top: calc(var(--scroll-top, 0) * -1);
+    top: calc(var(--scroll-top, 0px) * -1);
     left: 0;
-    padding-right: calc(var(--offset-width, 0) - var(--client-width, 0));
+    padding-right: calc(var(--offset-width, 0px) - var(--client-width, 0px));
 }
 
 #nav {
@@ -62,5 +62,5 @@ body {
 }
 
 .locked #modal input {
-    transform: translateY(0);
+    transform: translateY(0px);
 }

@@ -26,5 +26,5 @@ nav {
 
 .scroll-container--locked {
     overflow: hidden;
-    padding-right: calc(var(--offset-width, 0) - var(--client-width, 0));
+    padding-right: calc(var(--offset-width, 0px) - var(--client-width, 0px));
 }

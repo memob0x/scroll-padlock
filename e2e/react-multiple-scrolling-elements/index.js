@@ -3,6 +3,7 @@ import {
 } from 'react';
 import { createRoot } from 'react-dom';
 import htm from 'htm';
+import { setStyle } from 'scroll-padlock';
 
 const html = htm.bind(createElement);
 
@@ -25,7 +26,7 @@ const ScrollContainer = ({
 
   useEffect(() => {
     if (scrollable.current && locked) {
-      window.scrollPadlock.setStyle({
+      setStyle({
         element: scrollable.current,
         selector: `.${cssClassNameLocked}`,
       });

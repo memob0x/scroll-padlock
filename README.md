@@ -29,7 +29,7 @@ import { setStyle } from "scroll-padlock";
 setStyle();
 ```
 
-The library also builds to a UMD format, so it can be consumed in multiple environments (browser, AMD, or CommonJS) from the same bundle.
+The library also builds to a UMD format, so it can be consumed in multiple environments from the same bundle.
 
 ## Usage
 
@@ -40,7 +40,7 @@ The appended CSS variables can be used to implement the preferred approach to pr
 ```css
 .scroll-padlock {
   overflow: hidden;
-  padding-right: calc(var(--offset-width, 0) - var(--client-width, 0));
+  padding-right: calc(var(--offset-width, 0px) - var(--client-width, 0px));
 }
 ```
 

@@ -1,3 +1,5 @@
+import { setStyle } from 'scroll-padlock';
+
 const cssClassName = 'locked';
 
 const { scrollingElement } = document;
@@ -16,7 +18,7 @@ function possiblySaveScrollState() {
 
   scrollTop = window.scrollY;
 
-  window.scrollPadlock.setStyle({
+  setStyle({
     selector: `.${cssClassName}`,
     element: scrollingElement,
   });

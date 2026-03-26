@@ -18,9 +18,15 @@
 
   <span class="circle"></span>
 
-  <script src="../../dist/scroll-padlock.umd.js"></script>
+  <script type="importmap">
+    {
+      "imports": {
+        "scroll-padlock": "../../dist/esm/scroll-padlock.js"
+      }
+    }
+  </script>
 
-  <script src="./index.js"></script>
+  <script type="module" src="./index.js"></script>
 </body>
 
 </html>
