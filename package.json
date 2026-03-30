@@ -6,15 +6,15 @@
     "url": "https://github.com/memob0x"
   },
   "description": "CSS variables-based scrollbars locker",
-  "main": "./dist/umd/scroll-padlock.js",
-  "module": "./dist/esm/scroll-padlock.js",
-  "types": "./dist/esm/scroll-padlock.d.ts",
+  "main": "./dist/scroll-padlock.js",
+  "module": "./dist/scroll-padlock.js",
+  "types": "./dist/scroll-padlock.d.ts",
   "files": [
     "dist",
     "README.md",
     "LICENSE.txt"
   ],
-  "version": "3.0.1",
+  "version": "3.1.0",
   "license": "MIT",
   "repository": "https://github.com/memob0x/scroll-padlock.git",
   "keywords": [
@@ -24,8 +24,8 @@
   ],
   "scripts": {
     "lint": "npx eslint .",
-    "build": "tsc -p tsconfig.esm.json && tsc -p tsconfig.umd.json",
-    "test:unit": "c8 node --import tsx --test ./src/**/*.spec.ts",
+    "build": "tsc",
+    "test:unit": "c8 node --import tsx --test ./src/*.spec.ts",
     "test:e2e": "node --import tsx --test ./e2e/**/*.spec.ts",
     "test": "npm run test:unit && npm run test:e2e",
     "prepare": "husky"
@@ -45,7 +45,7 @@
     "puppeteer": "^24.40.0",
     "sharp": "^0.34.5",
     "tsx": "^4.21.0",
-    "typescript": "^5.9.3",
-    "typescript-eslint": "^8.57.2"
+    "typescript": "^6.0.2",
+    "typescript-eslint": "^8.58.0"
   }
 }

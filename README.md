@@ -29,8 +29,6 @@ import { setStyle } from "scroll-padlock";
 setStyle();
 ```
 
-The library also builds to a UMD format, so it can be consumed in multiple environments from the same bundle.
-
 ## Usage
 
 The library exports a `setStyle` function that appends CSS styles targeting the default `.scroll-padlock` selector. By default, it uses the page's [scrolling element](https://developer.mozilla.org/en-US/docs/Web/API/document/scrollingElement) and the [window](https://developer.mozilla.org/en-US/docs/Web/API/Window) object to retrieve values, which are then assigned to CSS variables for use as preferred.
