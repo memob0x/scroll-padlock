@@ -23,7 +23,7 @@
     "scrollbar-width"
   ],
   "scripts": {
-    "lint": "npx eslint .",
+    "lint": "eslint .",
     "build": "tsc",
     "test:unit": "c8 node --import tsx --test ./src/*.spec.ts",
     "test:e2e": "node --import tsx --test ./e2e/**/*.spec.ts",
