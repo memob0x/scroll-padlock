@@ -1,11 +1,11 @@
-import pixelmatch from 'pixelmatch';
-import sharp from 'sharp';
-import { Buffer } from 'buffer';
+import pixelmatch from 'pixelmatch'
+import sharp from 'sharp'
+import { Buffer } from 'buffer'
 
 type Image = {
-  data: Buffer<ArrayBufferLike>;
-  info: sharp.OutputInfo;
-};
+  data: Buffer<ArrayBufferLike>
+  info: sharp.OutputInfo
+}
 
 /**
  * Compares two images and returns the raw mismatch percentage.
@@ -17,7 +17,7 @@ export function compareImages(a: Image, b: Image) {
   const {
     width,
     height,
-  } = a.info;
+  } = a.info
 
   return (pixelmatch(
     a.data,
@@ -29,5 +29,5 @@ export function compareImages(a: Image, b: Image) {
       threshold: 0.1,
       includeAA: true,
     },
-  ) / (width * height)) * 100;
+  ) / (width * height)) * 100
 }

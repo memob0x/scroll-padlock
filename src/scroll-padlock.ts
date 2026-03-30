@@ -21,27 +21,27 @@ const getCSSCustomProperties = ({
   scrollTop = 0,
   scrollLeft = 0,
 }: {
-  offsetWidth?: number,
-  offsetHeight?: number,
-  clientWidth?: number,
-  clientHeight?: number,
-  scrollWidth?: number,
-  scrollHeight?: number,
-  scrollTop?: number,
-  scrollLeft?: number,
+  offsetWidth?: number
+  offsetHeight?: number
+  clientWidth?: number
+  clientHeight?: number
+  scrollWidth?: number
+  scrollHeight?: number
+  scrollTop?: number
+  scrollLeft?: number
 }) => `--offset-width:${offsetWidth}px;`
-+ `--offset-height:${offsetHeight}px;`
-+ `--client-width:${clientWidth}px;`
-+ `--client-height:${clientHeight}px;`
-+ `--scroll-width:${scrollWidth}px;`
-+ `--scroll-height:${scrollHeight}px;`
-+ `--scroll-top:${scrollTop}px;`
-+ `--scroll-left:${scrollLeft}px;`;
+  + `--offset-height:${offsetHeight}px;`
+  + `--client-width:${clientWidth}px;`
+  + `--client-height:${clientHeight}px;`
+  + `--scroll-width:${scrollWidth}px;`
+  + `--scroll-height:${scrollHeight}px;`
+  + `--scroll-top:${scrollTop}px;`
+  + `--scroll-left:${scrollLeft}px;`
 
 /**
  * The currently created style elements by selector.
  */
-const stylers: Record<string, HTMLStyleElement> = {};
+const stylers: Record<string, HTMLStyleElement> = {}
 
 /**
  * Sets CSS rules for the scroll padlock.
@@ -52,54 +52,54 @@ const stylers: Record<string, HTMLStyleElement> = {};
  * @returns The style element containing the CSS rules.
  */
 export function setStyle(options?: {
-  selector?: string;
-  element?: Element | HTMLElement;
+  selector?: string
+  element?: Element | HTMLElement
   formatter?: typeof getCSSCustomProperties
 }): HTMLStyleElement {
-  const win = globalThis;
+  const win = globalThis
 
-  const { document: doc } = win;
+  const { document: doc } = win
 
   const {
     documentElement,
     scrollingElement,
     head,
     body,
-  } = doc;
+  } = doc
 
   const {
     selector = '.scroll-padlock',
     element = scrollingElement || documentElement,
     formatter = getCSSCustomProperties,
-  } = options || {};
+  } = options || {}
 
-  let offsetWidth = 0;
-  let offsetHeight = 0;
+  let offsetWidth = 0
+  let offsetHeight = 0
 
-  let scrollTop = 0;
-  let scrollLeft = 0;
+  let scrollTop = 0
+  let scrollLeft = 0
 
   const isMainScroller = (
     element === body
     || element === documentElement
     || element === scrollingElement
-  );
+  )
 
   if (isMainScroller) {
-    offsetWidth = win.innerWidth;
-    offsetHeight = win.innerHeight;
-    scrollTop = win.scrollY;
-    scrollLeft = win.scrollX;
+    offsetWidth = win.innerWidth
+    offsetHeight = win.innerHeight
+    scrollTop = win.scrollY
+    scrollLeft = win.scrollX
   }
 
   if (!isMainScroller) {
-    scrollTop = element.scrollTop;
-    scrollLeft = element.scrollLeft;
+    scrollTop = element.scrollTop
+    scrollLeft = element.scrollLeft
   }
 
   if (!isMainScroller && element instanceof win.HTMLElement) {
-    offsetWidth = element.offsetWidth;
-    offsetHeight = element.offsetHeight;
+    offsetWidth = element.offsetWidth
+    offsetHeight = element.offsetHeight
   }
 
   const {
@@ -107,20 +107,20 @@ export function setStyle(options?: {
     clientHeight,
     scrollWidth,
     scrollHeight,
-  } = element;
+  } = element
 
-  const styler = stylers[selector] || doc.createElement('style');
+  const styler = stylers[selector] || doc.createElement('style')
 
   if (!head.contains(styler)) {
-    head.append(styler);
+    head.append(styler)
   }
 
-  const { sheet } = styler;
+  const { sheet } = styler
 
-  stylers[selector] = styler;
+  stylers[selector] = styler
 
   while (sheet?.cssRules.length) {
-    sheet?.deleteRule(0);
+    sheet?.deleteRule(0)
   }
 
   sheet?.insertRule(`${selector}{${formatter({
@@ -132,7 +132,7 @@ export function setStyle(options?: {
     scrollWidth,
     scrollTop,
     scrollLeft,
-  })}}`);
+  })}}`)
 
-  return styler;
+  return styler
 }

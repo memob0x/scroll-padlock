@@ -1,45 +1,45 @@
 import {
   useState, useRef, useEffect, createElement,
-} from 'react';
-import { createRoot } from 'react-dom';
-import htm from 'htm';
-import { setStyle } from 'scroll-padlock';
+} from 'react'
+import { createRoot } from 'react-dom'
+import htm from 'htm'
+import { setStyle } from 'scroll-padlock'
 
-const html = htm.bind(createElement);
+const html = htm.bind(createElement)
 
 const ScrollContainer = ({
   locked, scrollTop, setScrollTop, children,
 }) => {
-  const cssClassName = 'scroll-container';
+  const cssClassName = 'scroll-container'
 
-  const cssClassNameLocked = `${cssClassName}--locked`;
+  const cssClassNameLocked = `${cssClassName}--locked`
 
-  const scrollable = useRef(null);
+  const scrollable = useRef(null)
 
   useEffect(() => {
     if (scrollable.current) {
-      scrollable.current.scrollTo(0, scrollTop);
+      scrollable.current.scrollTo(0, scrollTop)
     }
-  }, [scrollTop]);
+  }, [scrollTop])
 
-  const [cssClassNames, setCssClassNames] = useState([]);
+  const [cssClassNames, setCssClassNames] = useState([])
 
   useEffect(() => {
     if (scrollable.current && locked) {
       setStyle({
         element: scrollable.current,
         selector: `.${cssClassNameLocked}`,
-      });
+      })
     }
 
-    const names = [cssClassName];
+    const names = [cssClassName]
 
     if (locked) {
-      names.push(cssClassNameLocked);
+      names.push(cssClassNameLocked)
     }
 
-    setCssClassNames(names);
-  }, [locked]);
+    setCssClassNames(names)
+  }, [locked])
 
   return html`
       <div
@@ -48,15 +48,15 @@ const ScrollContainer = ({
         onScroll=${() => setScrollTop(scrollable.current.scrollTop)}
       >
         ${children}
-      </div>`;
-};
+      </div>`
+}
 
 const App = () => {
-  const [isLocked, setIsLocked] = useState(false);
+  const [isLocked, setIsLocked] = useState(false)
 
-  const [scrollTop, setScrollTop] = useState(0);
+  const [scrollTop, setScrollTop] = useState(0)
 
-  const containers = [{}, {}, {}];
+  const containers = [{}, {}, {}]
 
   return html`
       <div class="wrapper">
@@ -97,7 +97,7 @@ const App = () => {
             <p>Sapien nibh justo consequat rhoncus ipsum porta. Posuere quam senectus semper posuere penatibus orci. Integer semper quisque montes condimentum donec nisi ipsum. Diam quis fusce placerat pretium id ultrices magnis. Suspendisse ad venenatis mauris aptent taciti potenti vivamus. Velit nam tempor sociosqu quisque euismod tempus. Primis natoque sagittis sed eros curae. Volutpat aenean est feugiat luctus euismod aliquet ut sollicitudin. Praesent sociosqu pharetra orci praesent, potenti dapibus.</p>
             <p>Diam maecenas velit; nostra dictumst massa ridiculus montes netus. Elit luctus auctor sed tempus placerat placerat aptent fusce purus. Taciti semper ut himenaeos sagittis viverra; dictum ligula iaculis. Penatibus ornare lacus nunc facilisis ligula nostra ante cursus. Arcu feugiat cras quam proin hac commodo quisque. Eleifend nulla nulla semper vulputate duis porta dolor.</p>
           </${ScrollContainer}>`)}
-      </div>`;
-};
+      </div>`
+}
 
-createRoot(document.getElementById('app')).render(html`<${App} />`);
+createRoot(globalThis.document.getElementById('app')).render(html`<${App} />`)

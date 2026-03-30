@@ -1,27 +1,29 @@
-import { setStyle } from 'scroll-padlock';
+import { setStyle } from 'scroll-padlock'
 
-const cssClassName = 'locked';
+const cssClassName = 'locked'
 
-const { scrollingElement } = document;
+const { document } = globalThis
 
-const { classList } = scrollingElement;
+const { scrollingElement } = document
 
-let scrollTop = 0;
+const { classList } = scrollingElement
+
+let scrollTop = 0
 
 /**
  * Possibly saves the current scroll position.
  */
 function possiblySaveScrollState() {
   if (classList.contains(cssClassName)) {
-    return;
+    return
   }
 
-  scrollTop = window.scrollY;
+  scrollTop = globalThis.scrollY
 
   setStyle({
     selector: `.${cssClassName}`,
     element: scrollingElement,
-  });
+  })
 }
 
 /**
@@ -29,16 +31,16 @@ function possiblySaveScrollState() {
  */
 function possiblyUpdateLockedScrollState() {
   if (!classList.contains(cssClassName)) {
-    return;
+    return
   }
 
-  classList.remove(cssClassName);
+  classList.remove(cssClassName)
 
-  window.scrollTo(0, scrollTop);
+  globalThis.scrollTo(0, scrollTop)
 
-  possiblySaveScrollState();
+  possiblySaveScrollState()
 
-  classList.add(cssClassName);
+  classList.add(cssClassName)
 }
 
 /**
@@ -46,24 +48,24 @@ function possiblyUpdateLockedScrollState() {
  */
 function restoreScrollPosition() {
   if (!classList.contains(cssClassName)) {
-    window.scrollTo(0, scrollTop);
+    globalThis.scrollTo(0, scrollTop)
   }
 }
 
-Array.from(document.querySelectorAll('[data-button-name="toggle-scroll-lock"]')).forEach((el) => el.addEventListener('click', () => {
-  possiblySaveScrollState();
+Array.from(document.querySelectorAll('[data-button-name="toggle-scroll-lock"]')).forEach(el => el.addEventListener('click', () => {
+  possiblySaveScrollState()
 
-  classList.toggle(cssClassName);
+  classList.toggle(cssClassName)
 
-  restoreScrollPosition();
-}));
+  restoreScrollPosition()
+}))
 
-Array.from(document.querySelectorAll('[data-button-name="scroll-to-bottom"]')).forEach((el) => el.addEventListener('click', () => {
-  window.scrollBy(0, 9999);
-}));
+Array.from(document.querySelectorAll('[data-button-name="scroll-to-bottom"]')).forEach(el => el.addEventListener('click', () => {
+  globalThis.scrollBy(0, 9999)
+}))
 
-Array.from(document.querySelectorAll('[data-button-name="scroll-to-top"]')).forEach((el) => el.addEventListener('click', () => {
-  window.scrollTo(0, 0);
-}));
+Array.from(document.querySelectorAll('[data-button-name="scroll-to-top"]')).forEach(el => el.addEventListener('click', () => {
+  globalThis.scrollTo(0, 0)
+}))
 
-window.addEventListener('resize', possiblyUpdateLockedScrollState);
+globalThis.addEventListener('resize', possiblyUpdateLockedScrollState)

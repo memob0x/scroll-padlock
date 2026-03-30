@@ -1,80 +1,84 @@
 import {
   describe, it, beforeEach, afterEach,
-} from 'node:test';
-import assert from 'node:assert';
+} from 'node:test'
+import assert from 'node:assert'
 import {
   dirname,
   basename,
-} from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { Browser, launch, Page } from 'puppeteer';
-import sharp from 'sharp';
-import { compareImages } from '../compare-images.ts';
+} from 'node:path'
+import { fileURLToPath } from 'node:url'
+import { Browser, launch, Page } from 'puppeteer'
+import sharp from 'sharp'
+import { compareImages } from '../compare-images.ts'
 import {
   BROWSER_LAUNCH_OPTIONS,
   SELECTOR_BUTTON_SCROLL_TO_BOTTOM,
   SELECTOR_BUTTON_TOGGLE_SCROLL_LOCK,
-} from '../constants.ts';
+} from '../constants.ts'
 
-const currentFile = fileURLToPath(import.meta.url);
+const currentFile = fileURLToPath(import.meta.url)
 
-const currentPath = dirname(currentFile);
+const currentPath = dirname(currentFile)
 
-const testBaseName = basename(currentPath);
+const testBaseName = basename(currentPath)
 
 describe(testBaseName, () => {
-  let browser: Browser;
+  let browser: Browser
 
-  let page: Page;
+  let page: Page
 
   beforeEach(async () => {
-    browser = await launch(BROWSER_LAUNCH_OPTIONS);
+    browser = await launch(BROWSER_LAUNCH_OPTIONS)
 
-    page = await browser.newPage();
+    page = await browser.newPage()
 
-    await page.goto(`file://${currentPath}/index.html`);
-  });
+    await page.goto(`file://${currentPath}/index.html`)
+  })
 
-  afterEach(() => browser.close());
+  afterEach(() => browser.close())
 
   it('should be able to lock and unlock element scrolling while showing a modal window, without causing layout shifts', async () => {
-    const buttonScrollToBottomEl = await page.$(SELECTOR_BUTTON_SCROLL_TO_BOTTOM);
+    const buttonScrollToBottomEl = await page.$(SELECTOR_BUTTON_SCROLL_TO_BOTTOM)
 
-    await buttonScrollToBottomEl?.click();
+    await buttonScrollToBottomEl?.click()
 
     const screenshotA = await sharp(await page.screenshot())
       .raw()
       .ensureAlpha()
-      .toBuffer({ resolveWithObject: true });
+      .toBuffer({ resolveWithObject: true })
 
-    const buttonToggleScrollLockEl = await page.$(SELECTOR_BUTTON_TOGGLE_SCROLL_LOCK);
+    const buttonToggleScrollLockEl = await page.$(SELECTOR_BUTTON_TOGGLE_SCROLL_LOCK)
 
-    await buttonToggleScrollLockEl?.click();
+    await buttonToggleScrollLockEl?.click()
 
     // NOTE: waiting for CSS transition
-    await new Promise((resolve) => { setTimeout(resolve, 1000); });
+    await new Promise((resolve) => {
+      globalThis.setTimeout(resolve, 1000)
+    })
 
     const screenshotB = await sharp(await page.screenshot())
       .raw()
       .ensureAlpha()
-      .toBuffer({ resolveWithObject: true });
+      .toBuffer({ resolveWithObject: true })
 
-    const modalButtonToggleScrollLockEl = await page.$(`#modal ${SELECTOR_BUTTON_TOGGLE_SCROLL_LOCK}`);
+    const modalButtonToggleScrollLockEl = await page.$(`#modal ${SELECTOR_BUTTON_TOGGLE_SCROLL_LOCK}`)
 
-    await modalButtonToggleScrollLockEl?.click();
+    await modalButtonToggleScrollLockEl?.click()
 
     // NOTE: waiting for CSS transition
-    await new Promise((resolve) => { setTimeout(resolve, 1000); });
+    await new Promise((resolve) => {
+      globalThis.setTimeout(resolve, 1000)
+    })
 
     const screenshotC = await sharp(await page.screenshot())
       .raw()
       .ensureAlpha()
-      .toBuffer({ resolveWithObject: true });
+      .toBuffer({ resolveWithObject: true })
 
-    assert.notEqual(compareImages(screenshotA, screenshotB), 0);
+    assert.notEqual(compareImages(screenshotA, screenshotB), 0)
 
-    assert.equal(compareImages(screenshotA, screenshotC), 0);
+    assert.equal(compareImages(screenshotA, screenshotC), 0)
 
-    assert.notEqual(compareImages(screenshotB, screenshotC), 0);
-  });
-});
+    assert.notEqual(compareImages(screenshotB, screenshotC), 0)
+  })
+})
