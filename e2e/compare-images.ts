@@ -1,10 +1,10 @@
 import pixelmatch from 'pixelmatch'
-import sharp from 'sharp'
+import { OutputInfo } from 'sharp'
 import { Buffer } from 'buffer'
 
 type Image = {
   data: Buffer<ArrayBufferLike>
-  info: sharp.OutputInfo
+  info: OutputInfo
 }
 
 /**

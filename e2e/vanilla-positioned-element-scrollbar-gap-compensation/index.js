@@ -8,7 +8,7 @@ const { scrollingElement } = document
 
 const { classList } = scrollingElement
 
-let scrollTop = 0
+let globalScrollTop = 0
 
 /**
  * Possibly saves the current scroll position.
@@ -18,11 +18,17 @@ function possiblySaveScrollState() {
     return
   }
 
-  scrollTop = globalThis.scrollY
+  globalScrollTop = globalThis.scrollY
 
   setStyle({
     selector: `.${cssClassName}`,
     element: scrollingElement,
+    formatter: ({
+      scrollTop = 0,
+      offsetWidth = 0,
+      clientWidth = 0,
+    }) => `--scroll-top: ${scrollTop}px;
+--scrollbar-width: ${offsetWidth - clientWidth}px;`,
   })
 }
 
@@ -36,7 +42,7 @@ function possiblyUpdateLockedScrollState() {
 
   classList.remove(cssClassName)
 
-  globalThis.scrollTo(0, scrollTop)
+  globalThis.scrollTo(0, globalScrollTop)
 
   possiblySaveScrollState()
 
@@ -48,7 +54,7 @@ function possiblyUpdateLockedScrollState() {
  */
 function restoreScrollPosition() {
   if (!classList.contains(cssClassName)) {
-    globalThis.scrollTo(0, scrollTop)
+    globalThis.scrollTo(0, globalScrollTop)
   }
 }
 

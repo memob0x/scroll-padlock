@@ -1,44 +1,4 @@
 /**
- * Formats the given dimensions and scroll information into CSS variables.
- * @param computedLayout - Represents the computed layout properties of an HTML element.
- * @param computedLayout.offsetWidth - The total layout width of the element in pixels, including scrollbars.
- * @param computedLayout.offsetHeight - The total layout height of the element in pixels, including scrollbars.
- * @param computedLayout.clientWidth - The inner width of the element in pixels, **excluding scrollbars**.
- * @param computedLayout.clientHeight - The inner height of the element in pixels, **excluding scrollbars**.
- * @param computedLayout.scrollWidth - The full width of the element's content, including content not visible due to overflow.
- * @param computedLayout.scrollHeight - The full height of the element's content, including content not visible due to overflow.
- * @param computedLayout.scrollTop - The number of pixels that the element's content is scrolled vertically.
- * @param computedLayout.scrollLeft - The number of pixels that the element's content is scrolled horizontally.
- * @returns The formatted CSS variables.
- */
-const getCSSCustomProperties = ({
-  offsetWidth = 0,
-  offsetHeight = 0,
-  clientWidth = 0,
-  clientHeight = 0,
-  scrollWidth = 0,
-  scrollHeight = 0,
-  scrollTop = 0,
-  scrollLeft = 0,
-}: {
-  offsetWidth?: number
-  offsetHeight?: number
-  clientWidth?: number
-  clientHeight?: number
-  scrollWidth?: number
-  scrollHeight?: number
-  scrollTop?: number
-  scrollLeft?: number
-}) => `--offset-width:${offsetWidth}px;`
-  + `--offset-height:${offsetHeight}px;`
-  + `--client-width:${clientWidth}px;`
-  + `--client-height:${clientHeight}px;`
-  + `--scroll-width:${scrollWidth}px;`
-  + `--scroll-height:${scrollHeight}px;`
-  + `--scroll-top:${scrollTop}px;`
-  + `--scroll-left:${scrollLeft}px;`
-
-/**
  * The currently created style elements by selector.
  */
 const stylers: Record<string, HTMLStyleElement> = {}
@@ -54,7 +14,16 @@ const stylers: Record<string, HTMLStyleElement> = {}
 export function setStyle(options?: {
   selector?: string
   element?: Element | HTMLElement
-  formatter?: typeof getCSSCustomProperties
+  formatter?: (opts: {
+    offsetWidth?: number
+    offsetHeight?: number
+    clientWidth?: number
+    clientHeight?: number
+    scrollWidth?: number
+    scrollHeight?: number
+    scrollTop?: number
+    scrollLeft?: number
+  }) => string
 }): HTMLStyleElement {
   const win = globalThis
 
@@ -70,7 +39,10 @@ export function setStyle(options?: {
   const {
     selector = '.scroll-padlock',
     element = scrollingElement || documentElement,
-    formatter = getCSSCustomProperties,
+    formatter = ({
+      offsetWidth = 0,
+      clientWidth = 0,
+    }) => `--scrollbar-width: ${offsetWidth - clientWidth}px;`,
   } = options || {}
 
   let offsetWidth = 0

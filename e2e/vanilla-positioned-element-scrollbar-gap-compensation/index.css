@@ -3,8 +3,6 @@
 }
 
 html {
-    --scrollbar-width: calc(var(--offset-width, 0px) - var(--client-width, 0px));
-
     overflow-x: hidden;
     overflow-y: scroll;
 }

@@ -38,7 +38,7 @@ The appended CSS variables can be used to implement the preferred approach to pr
 ```css
 .scroll-padlock {
   overflow: hidden;
-  padding-right: calc(var(--offset-width, 0px) - var(--client-width, 0px));
+  padding-right: var(--scrollbar-width, 0px);
 }
 ```
 
@@ -49,19 +49,6 @@ setStyle();
 
 document.scrollingElement.classList.add('scroll-padlock');
 ```
-
-## CSS Variables
-
-After calling `setStyle`, the following default CSS variables become available:
-
-- `--scroll-top`: the number of pixels the element's content is scrolled vertically.
-- `--scroll-left`: the number of pixels the element's content is scrolled horizontally.
-- `--scroll-width`: the total width of the element's scrollable content, including the non-visible part.
-- `--scroll-height`: the total height of the element's scrollable content, including the non-visible part.
-- `--offset-width`: the total visible width of the element, including the scrollbar.
-- `--offset-height`: the total visible height of the element, including the scrollbar.
-- `--client-width`: the visible width of the element, excluding the scrollbar.
-- `--client-height`: the visible height of the element, excluding the scrollbar.
 
 ## Options
 
@@ -75,7 +62,16 @@ The `setStyle` function accepts an options object which customizes its behavior.
 setStyle({
   element: document.querySelector('#custom-scrolling-element'),
   selector: '.custom-element-scroll-padlock',
-  formatter: ({ offsetWidth, clientWidth }) => `--scrollbar-width: ${offsetWidth - clientWidth}px;`
+  formatter: ({
+    offsetWidth, // The total layout width of the element in pixels, including scrollbars.
+    offsetHeight, // The total layout height of the element in pixels, including scrollbars.
+    clientWidth, // The inner width of the element in pixels, excluding scrollbars.
+    clientHeight, // The inner height of the element in pixels, excluding scrollbars.
+    scrollWidth, // The full width of the element's content, including content not visible due to overflow.
+    scrollHeight, // The full height of the element's content, including content not visible due to overflow.
+    scrollTop, // The number of pixels that the element's content is scrolled vertically.
+    scrollLeft, // The number of pixels that the element's content is scrolled horizontally.
+  }) => `--scrollbar-width: ${offsetWidth - clientWidth}px;`
 });
 ```
 
@@ -91,10 +87,4 @@ The locally built library is imported in the end-to-end tests, so a build is req
 
 ```shell
 npm run build
-```
-
-To run the end-to-end tests, use the following command:
-
-```shell
-npm run test:e2e
 ```
