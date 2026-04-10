@@ -71,7 +71,7 @@ setStyle({
     scrollHeight, // The full height of the element's content, including content not visible due to overflow.
     scrollTop, // The number of pixels that the element's content is scrolled vertically.
     scrollLeft, // The number of pixels that the element's content is scrolled horizontally.
-  }) => `--scrollbar-width: ${offsetWidth - clientWidth}px;`
+  }) => `--custom-scrollbar-width: ${offsetWidth - clientWidth}px;`
 });
 ```
 

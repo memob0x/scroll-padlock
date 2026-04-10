@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node: [ 22.16 ]
+        node: [ 24.13 ]
     name: Node ${{ matrix.node }} sample
     steps:
       - uses: actions/checkout@v4
