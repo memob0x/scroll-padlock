@@ -2,7 +2,7 @@ import { executablePath } from 'puppeteer'
 
 export const BROWSER_LAUNCH_OPTIONS = {
   headless: true,
-  executablePath: executablePath(),
+  executablePath: await executablePath(),
   defaultViewport: {
     width: 360,
     height: 720,
