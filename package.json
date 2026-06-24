@@ -25,7 +25,7 @@
   "scripts": {
     "lint": "eslint .",
     "build": "tsc",
-    "test:unit": "node --import tsx --test --experimental-test-coverage --test-coverage-exclude \"**/*.spec.ts\" --test-coverage-lines=100 --test-coverage-branches=100 --test-coverage-functions=100 ./src/*.spec.ts",
+    "test:unit": "node --import tsx --test --experimental-test-coverage --test-coverage-exclude \"**/*.spec.ts\" --test-coverage-lines=100 --test-coverage-branches=100 --test-coverage-functions=100 --test-reporter=spec --test-reporter-destination=stdout --test-reporter=lcov --test-reporter-destination=lcov.info ./src/*.spec.ts",
     "test:e2e": "node --import tsx --test ./e2e/**/*.spec.ts",
     "test": "npm run test:unit && npm run test:e2e",
     "prepare": "husky"
